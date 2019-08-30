@@ -60,6 +60,59 @@ Si vous n'avez jamais utilisé de tutoriel "learnr", familiarisez-vous d'abord a
 
 > Conformément au RGPD ([Règlement Général sur la Protection des Données](https://ec.europa.eu/info/law/law-topic/data-protection/reform/rules-business-and-organisations/principles-gdpr_fr)), nous sommes tenus de vous informer de ce que vos résultats seront collecté afin de suivre votre progression. **Les données seront enregistrées au nom de l'utilisateur apparaissant en haut de cette page. Corrigez si nécessaire !** En utilisant ce tutoriel, vous marquez expressément votre accord pour que ces données puissent être collectées par vos enseignants et utilisées pour vous aider et vous évaluer. Après avoir été anonymisées, ces données pourront également servir à des études globales dans un cadre scientifique et/ou éducatif uniquement.
 
+## Gestion de projet 
+
+Question sur la gestion de projet git, github, rstuido, commit,...
+
+```{r qu_intro}
+quiz(
+  question("Définissez la SciViews Box 2019 ?",
+    answer("une machine virtuelle dédiée à la recherche scientifique avec de nombreux programmes préconfigurés",
+      correct = TRUE),
+    answer("TADAM"),
+    answer("Aucune des réponses proposées n'est correcte"),
+    allow_retry = TRUE, random_answer_order = TRUE
+    ),
+  question("Définissez le programme RStudio",
+    answer("un environnement de développement intégré", correct = TRUE),
+    answer("Aucune des réponses proposées n'est correcte"),
+    answer("TADAM"),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question("Définissez Git",
+    answer("un logiciel de gestion de versions", correct = TRUE),
+    answer("Aucune des réponses proposées n'est correcte"),
+    answer("TADAM"),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question("Définissez GitHub",
+    answer("un service web d'hébergement de projet"),
+    answer("Aucune des réponses proposées n'est correcte"),
+    answer("TADAM"),
+    allow_retry = TRUE, random_answer_order = TRUE)
+  )
+```
+
+
+## Analyse de situation
+
+Sur base de l'image ci-dessous
+
+Deux chercheurs distants de plusieurs centaines de kilomètres, collaborent sur un projet commun. Ils ont pour cela décidé d'employer un outil de gestion de version et d'héberger ce projet sur un système d'hébergement web dédié pour cela. 
+
+![](images/gestion-version.drawio.png)
+
+```{r qu_git}
+quiz(
+  question("Qualifiez la situation **A**",
+    answer("commit", correct = TRUE),
+    answer("clone"),
+    answer("push"),
+    answer("pull"),
+    answer("fetch"),
+    answer("fork"),
+    allow_retry = TRUE, random_answer_order = TRUE
+    )
+)
+```
 
 
 ## Conclusion
