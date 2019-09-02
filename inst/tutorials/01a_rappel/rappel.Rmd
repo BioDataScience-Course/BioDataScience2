@@ -14,10 +14,10 @@ library(learnr)
 library(knitr)
 SciViews::R()
 
-options(tutorial.event_recorder = BioDataScience::record_sdd)
-tutorial_options(exercise.checker = BioDataScience::checker_sdd)
-tutorial_options(exercise.timelimit = 60)
-tutorial_options(exercise.cap = "Code R")
+#options(tutorial.event_recorder = BioDataScience::record_sdd)
+#tutorial_options(exercise.checker = BioDataScience::checker_sdd)
+#tutorial_options(exercise.timelimit = 60)
+#tutorial_options(exercise.cap = "Code R")
 knitr::opts_chunk$set(echo = FALSE, comment = NA)
 
 library(BioDataScience)
@@ -42,10 +42,10 @@ textOutput("email") # Idem!
 ```
 
 ```{r, context="server"}
-output$user <- renderText({BioDataScience::user_name(input$user);""})
-output$email <- renderText({BioDataScience::user_email(input$email);""})
-updateTextInput(session, "user", value = BioDataScience::user_name())
-updateTextInput(session, "email", value = BioDataScience::user_email())
+#output$user <- renderText({BioDataScience::user_name(input$user);""})
+#output$email <- renderText({BioDataScience::user_email(input$email);""})
+#updateTextInput(session, "user", value = BioDataScience::user_name())
+#updateTextInput(session, "email", value = BioDataScience::user_email())
 ```
 
 ## Préambule
@@ -62,7 +62,7 @@ Si vous n'avez jamais utilisé de tutoriel "learnr", familiarisez-vous d'abord a
 
 ## Gestion de projet 
 
-Question sur la gestion de projet git, github, rstuido, commit,...
+Répondez aux questions ci-dessous
 
 ```{r qu_intro}
 quiz(
@@ -84,7 +84,12 @@ quiz(
     answer("TADAM"),
     allow_retry = TRUE, random_answer_order = TRUE),
   question("Définissez GitHub",
-    answer("un service web d'hébergement de projet"),
+    answer("un service web d'hébergement de projet", correct = TRUE),
+    answer("Aucune des réponses proposées n'est correcte"),
+    answer("TADAM"),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question("Définissez le Markdown",
+    answer("un langage avec une syntaxe facile à lire et à écrire", correct = TRUE),
     answer("Aucune des réponses proposées n'est correcte"),
     answer("TADAM"),
     allow_retry = TRUE, random_answer_order = TRUE)
@@ -94,13 +99,15 @@ quiz(
 
 ## Analyse de situation
 
-Sur base de l'image ci-dessous
+### Situation 1
 
 Deux chercheurs distants de plusieurs centaines de kilomètres, collaborent sur un projet commun. Ils ont pour cela décidé d'employer un outil de gestion de version et d'héberger ce projet sur un système d'hébergement web dédié pour cela. 
 
+Sur base de l'image ci-dessous et de la situation précisée précédemment, répondez aux questions suivantes.
+
 ![](images/gestion-version.drawio.png)
 
-```{r qu_git}
+```{r qu_git1}
 quiz(
   question("Qualifiez la situation **A**",
     answer("commit", correct = TRUE),
@@ -109,15 +116,188 @@ quiz(
     answer("pull"),
     answer("fetch"),
     answer("fork"),
+    answer("pull request"),
+    allow_retry = TRUE, random_answer_order = TRUE
+    ),
+  question("Qualifiez la situation **B**",
+    answer("commit"),
+    answer("clone"),
+    answer("push", correct = TRUE),
+    answer("pull"),
+    answer("fetch"),
+    answer("fork"),
+    answer("pull request"),
+    allow_retry = TRUE, random_answer_order = TRUE
+    ),
+  question("Qualifiez la situation **C**",
+    answer("commit"),
+    answer("clone"),
+    answer("push"),
+    answer("pull", correct = TRUE),
+    answer("fetch"),
+    answer("fork"),
+    answer("pull request"),
+    allow_retry = TRUE, random_answer_order = TRUE
+    )
+)
+```
+
+### Situation 2
+
+Le chercheur 2 s'intéressent au projet du chercheur 1. Il s'y intéressent et proposent des modifications afin d'améliorer ce projet. 
+
+Sur base de l'image ci-dessous et de la situation précisée précédemment, répondez aux questions suivantes.
+
+![](images/fork.png)
+
+```{r qu_git2}
+quiz(
+  question("Qualifiez la situation **A**",
+    answer("commit"),
+    answer("clone"),
+    answer("push"),
+    answer("pull"),
+    answer("fetch"),
+    answer("fork", correct = TRUE),
+    answer("pull request"),
+    allow_retry = TRUE, random_answer_order = TRUE
+    ),
+  question("Qualifiez la situation **B**",
+    answer("commit", correct = TRUE),
+    answer("clone"),
+    answer("push"),
+    answer("pull"),
+    answer("fetch"),
+    answer("fork"),
+    answer("pull request"),
+    allow_retry = TRUE, random_answer_order = TRUE
+    ),
+  question("Qualifiez la situation **C**",
+    answer("commit"),
+    answer("clone"),
+    answer("push"),
+    answer("pull"),
+    answer("fetch"),
+    answer("fork"),
+    answer("pull request", correct = TRUE),
     allow_retry = TRUE, random_answer_order = TRUE
     )
 )
 ```
 
 
+### Situation 3
+
+Le chercheur 2 vient d'intégrer le projet que le chercheur 1 réalisait seul. Il doit donc acquérir le dépot pour la première fois sur sa machine avant de pouvoir contribuer à ce projet. 
+
+Sur base de l'image ci-dessous et de la situation précisée précédemment, répondez aux questions suivantes.
+
+![](images/clone.png)
+
+
+```{r qu_git3}
+quiz(
+  question("Qualifiez la situation **A**",
+    answer("commit"),
+    answer("clone", correct = TRUE),
+    answer("push"),
+    answer("pull"),
+    answer("fetch"),
+    answer("fork"),
+    answer("pull request"),
+    allow_retry = TRUE, random_answer_order = TRUE
+    ),
+  question("Qualifiez la situation **B**",
+    answer("commit", correct = TRUE),
+    answer("clone"),
+    answer("push"),
+    answer("pull"),
+    answer("fetch"),
+    answer("fork"),
+    answer("pull request"),
+    allow_retry = TRUE, random_answer_order = TRUE
+    ),
+  question("Qualifiez la situation **C**",
+    answer("commit"),
+    answer("clone"),
+    answer("push", correct = TRUE),
+    answer("pull"),
+    answer("fetch"),
+    answer("fork"),
+    answer("pull request"),
+    allow_retry = TRUE, random_answer_order = TRUE
+    )
+)
+```
+
+## Reproduction de graphiques
+
+### Le nuage de points 
+
+Sur base des données qui sont mises à votre disposition reproduisez le graphique ci-dessous
+
+```{r}
+urchin <- data.io::read("urchin_bio", package = "data.io", lang = "FR")
+
+chart(urchin, height ~ weight %col=% origin) +
+  geom_point()
+```
+
+Le jeu des données mis à votre dispositon est `urchin_bio` qui comprend les variables suivantes : `r names(urchin)`
+
+```{r qu_np, exercise = TRUE, exercice.lines = 8}
+# importation des données 
+urchin <- data.io::read("urchin_bio", package = "data.io", lang = "FR")
+# Reproduisez le graphique ci-dessous
+ 
+ 
+ 
+```
+
+```{r qu_np-hint-1}
+# importation des données 
+urchin <- data.io::read("urchin_bio", package = "data.io", lang = "FR")
+# Reproduisez le graphique ci-dessous
+# Relisez le chapitre 2 du livre science des données 1
+# https://biodatascience-course.sciviews.org/sdd-umons/nuage-de-points.html 
+```
+
+```{r qu_np-hint-2}
+# importation des données 
+urchin <- data.io::read("urchin_bio", package = "data.io", lang = "FR")
+# Reproduisez le graphique ci-dessous
+# VOus pouvez utilisez la fonction chart() couplée à la function geom_point() 
+# pour réaliser le graphique demandé
+chart() +
+  geom_point()
+```
+
+```{r qu_np-hint-3}
+# importation des données 
+urchin <- data.io::read("urchin_bio", package = "data.io", lang = "FR")
+# Reproduisez le graphique ci-dessous
+# VOus pouvez utilisez la fonction chart() couplée à la function geom_point() 
+# pour réaliser le graphique demandé
+chart(urchin, height ~ weight) +
+  geom_point()
+```
+
+```{r qu_np-solution}
+# importation des données 
+urchin <- data.io::read("urchin_bio", package = "data.io", lang = "FR")
+# Reproduisez le graphique ci-dessous
+ 
+chart(urchin, height ~ weight %col=% origin) +
+  geom_point()
+```
+
+```{r qu_np-check}
+# TODO
+```
+
 ## Conclusion
 
-Vous venez de terminer votre examen.
+Vous venez de terminer votre séance d'exercice.
 
 Laissez nous vos impressions sur cet outil pédagogique ou expérimentez encore dans la zone ci-dessous. Rappelez-vous que pour placer un commentaire dans une zone de code R, vous devez utilisez un dièse (`#`) devant vos phrases.
 
