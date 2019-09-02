@@ -295,6 +295,126 @@ chart(urchin, height ~ weight %col=% origin) +
 # TODO
 ```
 
+### La boite de dispersion
+
+
+Sur base des données qui sont mises à votre disposition reproduisez le graphique ci-dessous
+
+```{r}
+tooth_growth <- read("ToothGrowth", package = "datasets")
+
+give_n <- function(x)
+  c(y = max(x) * 1.1, label = length(x)) 
+
+chart(data = tooth_growth, len ~ supp %fill=% as.factor(dose)) +
+  geom_boxplot() +
+  stat_summary(fun.data = give_n, geom = "text", hjust = 0.5,
+    position = position_dodge(0.75)) +
+  labs(y = "Longueur des dents [mm]", x = "Supplémentation", fill = "Dose")
+```
+
+
+Le jeu des données mis à votre dispositon est `ToothGrowth` qui comprend les variables suivantes : `r names(ToothGrowth)`
+
+```{r qu_bp, exercise = TRUE}
+# imporation des données
+tooth_growth <- read("ToothGrowth", package = "datasets")
+# fonction pour ajouter le nombre d'observations 
+give_n <- function(x)
+  c(y = max(x) * 1.1, label = length(x)) 
+# reproduisez le graphique 
+#
+#
+```
+
+```{r qu_bp-hint-1}
+# imporation des données
+tooth_growth <- read("ToothGrowth", package = "datasets")
+# fonction pour ajouter le nombre d'observations 
+give_n <- function(x)
+  c(y = max(x) * 1.1, label = length(x)) 
+# Relisez le chapitre 2 du livre science des données 1
+# http://biodatascience-course.sciviews.org/sdd-umons/boxplot.html  
+```
+
+```{r qu_bp-hint-2}
+# imporation des données
+tooth_growth <- read("ToothGrowth", package = "datasets")
+# fonction pour ajouter le nombre d'observations 
+give_n <- function(x)
+  c(y = max(x) * 1.1, label = length(x))
+# graphique
+chart(data = tooth_growth, len ~ supp) +
+  geom_boxplot() 
+```
+
+```{r qu_bp-hint-3}
+# imporation des données
+tooth_growth <- read("ToothGrowth", package = "datasets")
+# fonction pour ajouter le nombre d'observations 
+give_n <- function(x)
+  c(y = max(x) * 1.1, label = length(x))
+# graphique
+chart(data = tooth_growth, len ~ supp %fill=% as.factor(dose)) +
+  geom_boxplot()
+```
+
+```{r qu_bp-hint-4}
+# imporation des données
+tooth_growth <- read("ToothGrowth", package = "datasets")
+# fonction pour ajouter le nombre d'observations 
+give_n <- function(x)
+  c(y = max(x) * 1.1, label = length(x))
+# graphique
+chart(data = tooth_growth, len ~ supp %fill=% as.factor(dose)) +
+  geom_boxplot() +
+  labs(y = "Longueur des dents [mm]", x = "Supplémentation", fill = "Dose")
+```
+
+```{r qu_bp-solution}
+# imporation des données
+tooth_growth <- read("ToothGrowth", package = "datasets")
+# fonction pour ajouter le nombre d'observations 
+give_n <- function(x)
+  c(y = max(x) * 1.1, label = length(x))
+# graphique
+chart(data = tooth_growth, len ~ supp %fill=% as.factor(dose)) +
+  geom_boxplot() +
+  stat_summary(fun.data = give_n, geom = "text", hjust = 0.5,
+    position = position_dodge(0.75)) +
+  labs(y = "Longueur des dents [mm]", x = "Supplémentation", fill = "Dose")
+# Vous auriez également pu employer cette solution 
+tooth_growth <- read("ToothGrowth", package = "datasets")
+
+tooth_growth$dose <- as.ordered(tooth_growth$dose)
+tooth_growth <- labelise(tooth_growth, self = FALSE,
+  label = list(
+    len = "Longueur des dents",
+    supp = "Supplémentation",
+    dose = "Dose"
+  ),
+  units = list(
+    len = "mm",
+    supp = NA,
+    dose = "mg/J"
+  )
+)
+# Réalisation graphique
+chart(data = tooth_growth, len ~ supp %fill=% dose) +
+  geom_boxplot() +
+  stat_summary(fun.data = give_n, geom = "text", hjust = 0.5,
+    position = position_dodge(0.75))
+```
+
+```{r qu_bp-check}
+# TODO 
+```
+
+
+### Figures composée
+
+TODO
+
 ## Conclusion
 
 Vous venez de terminer votre séance d'exercice.
