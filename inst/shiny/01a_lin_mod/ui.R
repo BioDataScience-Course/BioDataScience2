@@ -10,7 +10,7 @@ shinyUI(fluidPage(
     sidebarLayout(
         sidebarPanel(
           withMathJax(),
-          p("Une droite suit l'équation mathématique suivant: $$ y = ax + b $$ "),
+          p("Une droite suit l'équation mathématique suivante: $$ y = ax + b $$ "),
           numericInput(inputId = "slope_ui", label = "Valeur de la pente (a)",
             value = 0.00, min = -10.00, max = 10.00, step = 0.5),
           p("Valeur par défaut : 0 "),
