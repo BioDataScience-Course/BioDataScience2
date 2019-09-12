@@ -265,7 +265,7 @@ question("D'après votre analyse, pouvons nous considérer qu'il y a ...",
 
 ```{r}
 x <- seq(from = 5, to = 15, by = 0.25)
-  
+set.seed(42)
 a <- x*1 + 3 + rnorm(sd = 0.5, n = length(x))
 b <- x*1.1 + 3 + rnorm(sd = 0.5, n = length(x))
 c <- x*1.2 + 3 + rnorm(sd = 0.5, n = length(x))
@@ -278,7 +278,6 @@ mais <- tibble(
   area = area
 )
 ```
-
 
 Réalisez la régression linéaire de `value` en fonction de `x` sur le jeu de données `mais`. Vous avez à votre dispositon un nuage de points et un résumé des données pour avoir une première connaissance de données.
 
@@ -295,6 +294,7 @@ lm_result <- broom::tidy(lm_reg)
 ```
 
 ```{r reg1-prep}
+set.seed(42)
 x <- seq(from = 5, to = 15, by = 0.25)
   
 a <- x*1 + 3 + rnorm(sd = 0.5, n = length(x))
