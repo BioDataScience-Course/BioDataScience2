@@ -186,7 +186,7 @@ plot(correlation(df[, 1:4], use = "complete.obs", method = "spearman"))
 plot(correlation(df[, 1:4], use = "complete.obs", method = "spearman"), type = "upper")
 ```
 
-```{rcorr3-check}
+```{r corr3-check}
 # TODO
 ```
 
