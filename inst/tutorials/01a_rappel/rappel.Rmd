@@ -5,7 +5,7 @@ output:
   learnr::tutorial
 tutorial:
   id: "sdd2.01a"
-  version: 0.0.1
+  version: 0.1.0
 runtime: shiny_prerendered
 ---
 
@@ -66,29 +66,44 @@ quiz(
   question("Définissez la SciViews Box 2019 ?",
     answer("une machine virtuelle dédiée à la recherche scientifique avec de nombreux programmes préconfigurés",
       correct = TRUE),
-    answer("TADAM"),
-    answer("Aucune des réponses proposées n'est correcte"),
+    answer("un environnement de développement intégré"),
+    answer("un logiciel de gestion de versions"),
+    answer("un service web d'hébergement de projet"),
+    answer("un langage avec une syntaxe facile à lire et à écrire"),
+    answer("aucune des réponses proposées n'est correcte"),
     allow_retry = TRUE, random_answer_order = TRUE
     ),
   question("Définissez le programme RStudio",
+    answer("une machine virtuelle dédiée à la recherche scientifique avec de nombreux programmes préconfigurés"),
     answer("un environnement de développement intégré", correct = TRUE),
-    answer("Aucune des réponses proposées n'est correcte"),
-    answer("TADAM"),
+    answer("un logiciel de gestion de versions"),
+    answer("un service web d'hébergement de projet"),
+    answer("un langage avec une syntaxe facile à lire et à écrire"),
+    answer("aucune des réponses proposées n'est correcte"),
     allow_retry = TRUE, random_answer_order = TRUE),
   question("Définissez Git",
+    answer("une machine virtuelle dédiée à la recherche scientifique avec de nombreux programmes préconfigurés"),
+    answer("un environnement de développement intégré"),
     answer("un logiciel de gestion de versions", correct = TRUE),
-    answer("Aucune des réponses proposées n'est correcte"),
-    answer("TADAM"),
+    answer("un service web d'hébergement de projet"),
+    answer("un langage avec une syntaxe facile à lire et à écrire"),
+    answer("aucune des réponses proposées n'est correcte"),
     allow_retry = TRUE, random_answer_order = TRUE),
   question("Définissez GitHub",
+    answer("une machine virtuelle dédiée à la recherche scientifique avec de nombreux programmes préconfigurés"),
+    answer("un environnement de développement intégré"),
+    answer("un logiciel de gestion de versions"),
     answer("un service web d'hébergement de projet", correct = TRUE),
-    answer("Aucune des réponses proposées n'est correcte"),
-    answer("TADAM"),
+    answer("un langage avec une syntaxe facile à lire et à écrire"),
+    answer("aucune des réponses proposées n'est correcte"),
     allow_retry = TRUE, random_answer_order = TRUE),
   question("Définissez le Markdown",
+    answer("une machine virtuelle dédiée à la recherche scientifique avec de nombreux programmes préconfigurés"),
+    answer("un environnement de développement intégré"),
+    answer("un logiciel de gestion de versions"),
+    answer("un service web d'hébergement de projet"),
     answer("un langage avec une syntaxe facile à lire et à écrire", correct = TRUE),
-    answer("Aucune des réponses proposées n'est correcte"),
-    answer("TADAM"),
+    answer("aucune des réponses proposées n'est correcte"),
     allow_retry = TRUE, random_answer_order = TRUE)
   )
 ```
