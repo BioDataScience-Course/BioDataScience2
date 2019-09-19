@@ -5,7 +5,7 @@ output:
   learnr::tutorial
 tutorial:
   id: "sdd2.01a"
-  version: 0.1.0
+  version: 1.0.0
 runtime: shiny_prerendered
 ---
 
@@ -156,9 +156,7 @@ quiz(
 
 ### Situation 2
 
-Le chercheur 2 s'intéressent au projet du chercheur 1. Il s'y intéressent et proposent des modifications afin d'améliorer ce projet. 
-
-Sur base de l'image ci-dessous et de la situation précisée précédemment, répondez aux questions suivantes.
+Le chercheur 2 s'intéresse au projet du chercheur 1, travaille dessus et propose des modifications afin l'améliorer. 
 
 ![](images/fork.png)
 
@@ -851,7 +849,7 @@ question("Combien de stations ont une densité en barbeau strictement supérieur
 
 Vous venez de terminer votre séance d'exercice.
 
-Laissez nous vos impressions sur cet outil pédagogique ou expérimentez encore dans la zone ci-dessous. Rappelez-vous que pour placer un commentaire dans une zone de code R, vous devez utilisez un dièse (`#`) devant vos phrases.
+Laissez nous vos impressions sur cet outil pédagogique ou expérimentez encore dans la zone ci-dessous. Rappelez-vous que pour placer un commentaire dans une zone de code R, vous devez utiliser un dièse (`#`) devant vos phrases.
 
 ```{r comm, exercise=TRUE, exercise.lines = 8}
 # Ajout de commentaires 
