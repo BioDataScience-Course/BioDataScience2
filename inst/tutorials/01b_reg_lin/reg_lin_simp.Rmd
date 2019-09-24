@@ -471,13 +471,16 @@ chart(df2, a ~ b) +
 
 ```{r homo1-prep}
 set.seed(42)
-x <- seq(from = 5, to = 50, by = 0.25)
-a <- x + rnorm(sd = 3, n = length(x))
-b <- a*1.25 + 3 + rnorm(sd = 3, n = length(x))
+x <- seq(from = 5, to = 15, by = 0.25)
+  
+a1 <- x*1 + 3 + rnorm(sd = 0.5, n = length(x))
+b1 <- x*1.1 + 3 + rnorm(sd = 0.5, n = length(x))
+c1 <- x*0.7 + 3 + rnorm(sd = 0.5, n = length(x))
 
-df1 <- tibble(
-  a = a,
-  b = b
+
+df2 <- tibble(
+  a = c(x,x,x),
+  b = c(a1,b1,c1),
 )
 
 #chart(df1, a ~ b) +
