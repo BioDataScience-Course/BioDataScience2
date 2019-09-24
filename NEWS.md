@@ -1,5 +1,9 @@
 # BioDataScience2 News
 
+## Changes in version 2019.3.0
+
+- Tutorial 01b_reg_lin : minor correction
+
 ## Changes in version 2019.2.0
 
 - Tutorial 01b_reg_lin finalized
