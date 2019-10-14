@@ -5,7 +5,7 @@ output:
   learnr::tutorial
 tutorial:
   id: "sdd2.01b"
-  version: 1.1.0
+  version: 1.2.0
 runtime: shiny_prerendered
 ---
 
@@ -288,7 +288,8 @@ quiz(
     answer(sprintf("%.3f", lm_param$statistic)),
     answer(sprintf("%.3f", lm_param$df)),
     answer(sprintf("%.3f", lm_result$estimate[1])),
-    answer(sprintf("%.3f", lm_result$estimate[2]))
+    answer(sprintf("%.3f", lm_result$estimate[2])),
+    allow_retry = TRUE, random_answer_order = TRUE
     )
 )
 ```

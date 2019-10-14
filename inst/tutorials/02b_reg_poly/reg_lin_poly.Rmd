@@ -5,7 +5,7 @@ output:
   learnr::tutorial
 tutorial:
   id: "sdd2.02b"
-  version: 1.0.0
+  version: 1.1.0
 runtime: shiny_prerendered
 ---
 
@@ -273,7 +273,7 @@ summary(lm_lin_simp <- lm(data = df,
 AIC(lm_lin_poly, lm_lin_simp)
 ```
 
-```{r reglin_simp-check}
+```{r regpoly_simp-check}
 # TODO 
 ```
 
@@ -297,7 +297,8 @@ quiz(
            ),
   question(text = "Quel est le meilleur modèle selon le critère d'Akaike",
            answer("modèle linéaire polynomiale", correct = TRUE),
-           answer("modèle linéaire simple")
+           answer("modèle linéaire simple"),
+           allow_retry = TRUE
            )
 )
 ```

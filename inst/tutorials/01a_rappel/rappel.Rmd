@@ -5,7 +5,7 @@ output:
   learnr::tutorial
 tutorial:
   id: "sdd2.01a"
-  version: 1.0.0
+  version: 1.1.0
 runtime: shiny_prerendered
 ---
 
@@ -461,7 +461,7 @@ question("Avec une enveloppe de confiance de 0.99, est ce que la variable x du j
          answer("distribution normale", correct = TRUE),
          answer("distribution approximativement normale"),
          answer("distribution anormale"),
-         random_answer_order = TRUE)
+         allow_retry = TRUE, random_answer_order = TRUE)
 ```
 
 
@@ -763,7 +763,7 @@ quiz(
   question("Y a t'il une différence significative au seuil $\\alpha$ de 0.05 de masse entre les deux zones étudiées pour la masse monitorée",
          answer("oui"),
          answer("non", correct = TRUE), 
-         random_answer_order = TRUE))
+         random_answer_order = TRUE, allow_retry = TRUE))
 ```
 
 ## Choix d'un test statistique
@@ -775,7 +775,7 @@ question("Sélectionnez le(s) test(s) statistique(s) qui permet(tent) de vérifi
          answer("Test de Friedman"),
          answer("Test de Pearson"),
          answer("Aucune des réponses proposées"),
-         random_answer_order = TRUE)
+         random_answer_order = TRUE, allow_retry = TRUE)
 ```
 
 ## Diversité de poissons dans les cours d'eau wallons
@@ -841,7 +841,7 @@ question("Combien de stations ont une densité en barbeau strictement supérieur
          answer(sprintf("$%s$", t111 + 3)),
          answer(sprintf("$%s$", t111+1)),
          answer(sprintf("$%s$", t111 + 52)),
-         random_answer_order = TRUE)
+         random_answer_order = TRUE, allow_retry = TRUE)
 ```
 
 
