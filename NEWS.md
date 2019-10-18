@@ -1,5 +1,9 @@
 # BioDataScience2 News
 
+## Changes in version 2019.5.0
+
+- Tutorial 02a_reg_multi finalized
+
 ## Changes in version 2019.4.0
 
 - Tutorial 02b_reg_poly finalized
