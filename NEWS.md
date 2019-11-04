@@ -1,5 +1,10 @@
 # BioDataScience2 News
 
+## Changes in version 2019.6.0
+
+- Tutorial 03a_mod_lin finalized
+
+
 ## Changes in version 2019.5.0
 
 - Tutorial 02a_reg_multi finalized
