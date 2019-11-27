@@ -1,6 +1,6 @@
 # BioDataScience2 News
 
-## Changes in version 2019.6.0
+## Changes in version 2019.7.0
 
 - shiny app 04a_michaelis_menten and 04b_exponent
 
