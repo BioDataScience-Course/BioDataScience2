@@ -1,6 +1,6 @@
 # BioDataScience2 News
 
-## Changes in version 2019.7.0
+## Changes in version 2019.8.0
 
 - shiny app 04c 04d
 
