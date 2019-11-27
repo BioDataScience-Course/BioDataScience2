@@ -2,6 +2,10 @@
 
 ## Changes in version 2019.6.0
 
+- shiny app 04a_michaelis_menten and 04b_exponent
+
+## Changes in version 2019.6.0
+
 - Tutorial 03a_mod_lin finalized
 
 
