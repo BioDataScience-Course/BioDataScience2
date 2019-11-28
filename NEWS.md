@@ -1,5 +1,9 @@
 # BioDataScience2 News
 
+## Changes in version 2019.9.0
+
+- New shiny app 04e_gompertz
+
 ## Changes in version 2019.8.0
 
 - shiny app 04c 04d
