@@ -1,5 +1,5 @@
 Package: BioDataScience2
-Version: 2019.9.0
+Version: 2019.10.0
 Title: A Series of Learnr Documents for Biological Data Science 2
 Description: Interactive documents using learnr for studying biological data science.
 Authors@R: c(
