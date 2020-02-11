@@ -5,7 +5,7 @@ output:
   learnr::tutorial
 tutorial:
   id: "sdd2.05a"
-  version: 0.0.1
+  version: 1.0.0
 runtime: shiny_prerendered
 ---
 
@@ -63,19 +63,19 @@ Lors de la réalisation d'une matrice de distance, vous devez choisir l'indice l
 
 ```{r qu_indice}
 quiz(
-  question("Dans un tableau de dénombrement d'espèces, vous souhaitez réaliser un matrice de distance avec l'indice le plus adapté. Quel indice choississez vous ? (plusieurs réponses peuvent être sélestionnés)",
+  question("Dans un tableau de dénombrement d'espèces, vous souhaitez réaliser un matrice de distance avec l'indice le plus adapté. Quel indice choississez vous ? (plusieurs réponses peuvent être sélectionnés)",
            answer("Indice de Bray-Curtis", correct = TRUE),
            answer("Indice de Canberra", correct = TRUE),
            answer("Distance Euclidienne"),
            answer("Indice de Manhattan"), 
           allow_retry = TRUE),
-  question("Dans un tableau de dénombrement d'espèces, vous souhaitez réaliser un matrice de distance avec l'indice le plus adapté. Quel indice choississez vous si vous souhaitez mettre en avant les espèces rares ? (plusieurs réponses peuvent être sélestionnés)",
+  question("Dans un tableau de dénombrement d'espèces, vous souhaitez réaliser un matrice de distance avec l'indice le plus adapté. Quel indice choississez vous si vous souhaitez mettre en avant les espèces rares ? (plusieurs réponses peuvent être sélectionnés)",
            answer("Indice de Bray-Curtis"),
            answer("Indice de Canberra", correct = TRUE),
            answer("Distance Euclidienne"),
            answer("Indice de Manhattan"), 
           allow_retry = TRUE),
-  question("Dans un tableau relatif à des mesures environnementales, vous souhaitez réaliser un matrice de distance avec l'indice le plus adapté. Quel indice choississez vous ? (plusieurs réponses peuvent être sélestionnés)",
+  question("Dans un tableau relatif à des mesures environnementales, vous souhaitez réaliser un matrice de distance avec l'indice le plus adapté. Quel indice choississez vous ? (plusieurs réponses peuvent être sélectionnés)",
            answer("Indice de Bray-Curtis"),
            answer("Indice de Canberra"),
            answer("Distance Euclidienne", correct = TRUE),
@@ -83,7 +83,6 @@ quiz(
           allow_retry = TRUE)
 )
 ```
-
 
 
 ## Conclusion
