@@ -1,5 +1,9 @@
 # BioDataScience2 News
 
+## Changes in version 2019.11.0
+
+- Tutorial 06a_kmeans
+
 ## Changes in version 2019.10.0
 
 - Tutorial 05a_distance_matrix
