@@ -1,6 +1,7 @@
 ---
-title: "Modèle linéaire"
+title: "sdd2-mod03 : Modèle linéaire"
 author: "Guyliann Engels & Philippe Grosjean"
+description: "Application des concepts liés au modèle linéaire."
 output:
   learnr::tutorial
 tutorial:

@@ -1,6 +1,7 @@
 ---
-title: "Les matrices de distance"
+title: "sdd2-mod05 : matrices de distance"
 author: "Guyliann Engels & Philippe Grosjean"
+description: "Application des concepts liés aux matrices de distance."
 output:
   learnr::tutorial
 tutorial:

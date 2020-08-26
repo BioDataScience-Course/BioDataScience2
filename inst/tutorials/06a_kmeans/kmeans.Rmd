@@ -1,6 +1,7 @@
 ---
-title: "Regroupement par les K-moyennes"
+title: "sdd2-mod06 : k-moyenne"
 author: "Guyliann Engels & Philippe Grosjean"
+description: "Regroupement par les K-moyennes"
 output:
   learnr::tutorial
 tutorial:
@@ -32,7 +33,7 @@ is <- read("iris", package = "datasets", lang = "fr")
 
 diamonds_red <- read("diamonds", package = "ggplot2") %>.%
   select(., -cut, -color, -clarity) %>.%
-  rename(., length = x, width = y, depth = z)
+  rename(., length = x, width = y, height = z) %>.%
   slice(., 1:15000)
 ```
 
@@ -222,7 +223,7 @@ Réalisez à un objet Kmeans sur le jeu de données `diamonds` avec un `k = 4`. 
 ```{r, echo=TRUE}
 diamonds_red <- read("diamonds", package = "ggplot2") %>.%
   select(., -cut, -color, -clarity) %>.%
-  rename(., length = x, width = y, depth = z)
+  rename(., length = x, width = y, height = z) %>.%
   slice(., 1:15000)
 
 skimr::skim(diamonds_red)
@@ -231,7 +232,7 @@ skimr::skim(diamonds_red)
 ```{r kmeangraph, exercise = TRUE}
 diamonds_red <- read("diamonds", package = "ggplot2") %>.%
   select(., -cut, -color, -clarity) %>.%
-  rename(., length = x, width = y, depth = z)
+  rename(., length = x, width = y, height = z) %>.%
   slice(., 1:15000)
 
 skimr::skim(diamonds_red)

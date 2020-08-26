@@ -1,5 +1,6 @@
 ---
-title: "Positionnement multidimensionnel (MDS)"
+title: "sdd2-mod06 : MDS"
+description: "Positionnement multidimensionnel (MDS)"
 author: "Guyliann Engels & Philippe Grosjean"
 output:
   learnr::tutorial

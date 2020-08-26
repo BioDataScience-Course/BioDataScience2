@@ -1,6 +1,7 @@
 ---
-title: "Rappel"
+title: "sdd2-mod01 : rappel"
 author: "Guyliann Engels & Philippe Grosjean"
+description: "Rappel du cours de sdd1."
 output:
   learnr::tutorial
 tutorial:
@@ -643,7 +644,7 @@ Cette exercice s'inspire des observations relayé sur le site du sillon Belge de
 ## Association wallone de l’élevage
 
 ```{r, warning=F, message=F, results='hide'}
-beef <- read(file = system.file("extdata", "belgianblue.xlsx", package = "BioDataScience2"), type = "xlsx")
+beef <- data.io::read(file = system.file("extdata", "belgianblue.xlsx", package = "BioDataScience2"), type = "xlsx")
 ```
 
 L'association wallone de l'élevage dispose de plusieurs centres d'insémination. Ils ont un recensement des différents taureaux reproducteurs. Reproduisez le graphique ci-dessous. Ce dernier ne montre que les individus compris entre 20 et 55 mois. vous avez à votre disposition le jeu de données `beef` qui comprend les variables suivantes : `r names(beef)`

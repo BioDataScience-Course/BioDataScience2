@@ -1,5 +1,6 @@
 ---
-title: "Cartes auto-adaptatives (SOM)"
+title: "sdd2-mod06 : SOM"
+description: "Utilisation des cartes auto-adaptatives (SOM)"
 author: "Guyliann Engels & Philippe Grosjean"
 output:
   learnr::tutorial

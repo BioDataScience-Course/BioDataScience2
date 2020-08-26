@@ -53,11 +53,16 @@ shinyUI(
           p("L'équation mathématique de la fonction est la
               suivante: $$y(t) = y_0 \\ e^{k \\ t}$$"),
           numericInput(inputId = "y0_ui", label = "Valeur de y0",
-                   value = 1.00, min = 0.50, max = 10.00, step = 0.5),
+                       value = 1.00, min = 0.50, max = 10.00, step = 0.5),
           p("Valeur par défaut : 1 "),
           numericInput(inputId = "k_ui", label = "Valeur de k",
-                   value = 1.00, min = 0.50, max = 5.00, step = 0.25),
-          p("Valeur par défaut : 1 ")
+                       value = 1.00, min = 0.50, max = 5.00, step = 0.25),
+          p("Valeur par défaut : 1 "),
+          hr(),
+          actionButton("submit", "Valide ton meilleur modèle", style="color: #fff; background-color: #337ab7; border-color: #2e6da4; font-size: large"),
+          hr(),
+          p("Ton meilleur modèle est : "),
+          uiOutput("expo_bestmodel", style="font-size: large"),
         ),
         mainPanel(
           h4("Ajustez le meilleur modèle exponentiel"),

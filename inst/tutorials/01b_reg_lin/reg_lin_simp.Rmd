@@ -1,6 +1,7 @@
 ---
-title: "Régression linéaire"
+title: "sdd2-mod01 : régression linéaire simple"
 author: "Guyliann Engels & Philippe Grosjean"
+description: "Application des concepts liés la régression linéaire simple."
 output:
   learnr::tutorial
 tutorial:
