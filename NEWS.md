@@ -1,5 +1,9 @@
 # BioDataScience2 News
 
+## Changes in version 2020.0.0
+
+- update all tutorials with sciviews box 2020
+
 ## Changes in version 2019.11.0
 
 - Tutorial 06b_mds
