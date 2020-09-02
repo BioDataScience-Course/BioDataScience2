@@ -27,4 +27,5 @@
 /inst/shiny/**/rsconnect/*
 /inst/shiny/**/**/rsconnect/*
 
-
+/inst/shiny/**/shiny_logs/*
+/inst/shiny/**/**/shiny_logs/*
