@@ -1,62 +1,36 @@
 ---
-title: "sdd2-mod02 : régression linéaire multiple"
+title: "Régression linéaire multiple"
 author: "Guyliann Engels & Philippe Grosjean"
-description: "Application des concepts liés la régression linéaire mutliple."
-output:
-  learnr::tutorial
+description: "**[SDD II Module 2](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/r%25C3%25A9gression-lin%25C3%25A9aire-multiple.html)** Application des concepts liés la régression linéaire multiple."
 tutorial:
-  id: "sdd2.02a"
+  id: "B01b_reg_multi"
   version: 1.0.0
+output: 
+  learnr::tutorial:
+    progressive: true
 runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
-library(learnr)
-library(knitr)
+BioDataScience2::learnr_setup()
 SciViews::R()
-library(BioDataScience)
-
-options(tutorial.event_recorder = BioDataScience::record_sdd)
-tutorial_options(exercise.checker = BioDataScience::checker_sdd)
-tutorial_options(exercise.timelimit = 60)
-tutorial_options(exercise.cap = "Code R")
-knitr::opts_chunk$set(echo = FALSE, comment = NA)
 ```
 
 ```{r, echo=FALSE}
-fixedRow(
-  column(9, div(
-    img(src = 'images/BioDataScience-128.png', align = "left"),
-    h1("Science des données biologiques 2"),
-    "Réalisé par le service d'Écologie numérique des Milieux aquatiques, Université de Mons (Belgique)"
-  )),
-  column(3, div(
-    textInput("user", "Utilisateur :", ""),
-    textInput("email", "Email :", "")
-  ))
-)
-textOutput("user") # This is newer shown, but required to trigger an event!
-textOutput("email") # Idem!
+BioDataScience2::learnr_banner()
 ```
 
 ```{r, context="server"}
-output$user <- renderText({BioDataScience::user_name(input$user);""})
-output$email <- renderText({BioDataScience::user_email(input$email);""})
-updateTextInput(session, "user", value = BioDataScience::user_name())
-updateTextInput(session, "email", value = BioDataScience::user_email())
+BioDataScience2::learnr_server(input, output, session)
 ```
 
-## Préambule
+----
 
-Si vous n'avez jamais utilisé de tutoriel "learnr", familiarisez-vous d'abord avec son interface [ici](http://biodatascience-course.sciviews.org/sdd-umons/learnr.html).
+**Ce tutoriel est encore sous sa première version, il est en cours de mise à jour. **
 
-![](images/attention.jpg)
+## Objectifs
 
-**Ne vous trompez pas dans votre adresse mail et votre identifiant Github**
-
-**N'oubliez pas de soumettre votre réponse après chaque exercice**
-
-> Conformément au RGPD ([Règlement Général sur la Protection des Données](https://ec.europa.eu/info/law/law-topic/data-protection/reform/rules-business-and-organisations/principles-gdpr_fr)), nous sommes tenus de vous informer de ce que vos résultats seront collecté afin de suivre votre progression. **Les données seront enregistrées au nom de l'utilisateur apparaissant en haut de cette page. Corrigez si nécessaire !** En utilisant ce tutoriel, vous marquez expressément votre accord pour que ces données puissent être collectées par vos enseignants et utilisées pour vous aider et vous évaluer. Après avoir été anonymisées, ces données pourront également servir à des études globales dans un cadre scientifique et/ou éducatif uniquement.
+- TODO
 
 ## Régression linéaire
 
