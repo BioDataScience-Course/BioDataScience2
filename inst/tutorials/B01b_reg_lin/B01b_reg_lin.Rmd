@@ -1,0 +1,314 @@
+---
+title: "Régression linéaire simple"
+author: "Guyliann Engels & Philippe Grosjean"
+description: "**[SDD II Module 1](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/r%25C3%25A9gression-lin%25C3%25A9aire-simple.html)** Application des concepts liés la régression linéaire simple."
+tutorial:
+  id: "B01b_reg_lin"
+  version: 2.0.0/10
+output: 
+  learnr::tutorial:
+    progressive: true
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+BioDataScience2::learnr_setup()
+SciViews::R()
+```
+
+```{r, echo=FALSE}
+BioDataScience2::learnr_banner()
+```
+
+```{r, context="server"}
+BioDataScience2::learnr_server(input, output, session)
+```
+
+----
+
+## Objectifs
+
+- Utiliser les outils de la régression linéaire, en particulier la fonction lm().
+
+## Corrélation 
+
+```{r correlation-init}
+set.seed(43)
+
+min <- 5
+max <- 15
+
+df <- tibble(
+  x = seq(from = min, to = max, by = 0.25),
+  y = x*2 + rnorm(sd= 0.5, n = length(x)),
+  z = 2^x + rnorm(sd= 50, n = length(x)),
+  a = sin(x) + rnorm(sd = 0.25,  n = length(x)),
+  id = paste0("A", 1:length(x))
+)
+```
+
+Vous avez à disposition le jeu de données `df` qui comprend les `r length(names(df))` variables suivantes : `r names(df)`. 
+
+- Réalisez une matrice de corrélation avec l'indice de Pearson.
+
+```{r correlation-prep}
+set.seed(43)
+# duplicated chunk : correlation-init
+min <- 5
+max <- 15
+
+df <- tibble(
+  x = seq(from = min, to = max, by = 0.25),
+  y = x*2 + rnorm(sd= 0.5, n = length(x)),
+  z = 2^x + rnorm(sd= 50, n = length(x)),
+  a = sin(x) + rnorm(sd = 0.25,  n = length(x)),
+  id = paste0("A", 1:length(x))
+)
+
+#correlation(df[1:4])
+#correlation(df[1:4], method = "spearman")
+```
+
+Vous avez à votre disposition le snippet en lien avec la matrice de corrélation.
+
+```{r, eval=FALSE, echo = TRUE}
+##Snippet utile ## .escor: correlation matrix (enhanced) [SciViews]
+correlation(DF[, INDEX_EXPRESSION], use = "complete.obs", method = "pearson")
+```
+
+```{r corr1_h3, exercise = TRUE, exercise.setup = "correlation-prep"}
+##Snippet utile ## .escor: correlation matrix (enhanced) [SciViews]
+correlation(___[,____], use = ___, method = ___)
+```
+
+```{r corr1_h3-hint-1}
+correlation(___[, ___:___], use = "complete.obs", method = "pearson")
+
+# Relisez le chapitre 12 du livre science des données 1 <https://wp.sciviewg/sdd-umons/>
+```
+
+```{r corr1_h3-hint-2}
+correlation(df[, ___:___], use = "complete.obs", method = "pearson")
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r corr1_h3-solution}
+## Solution ##
+correlation(df[, 1:4], use = "complete.obs", method = "pearson")
+```
+
+```{r corr1_h3-check}
+grade_code("Vous avez compris l'utilisation de la matrice de corrélation.")
+```
+
+Répondez à la question ci-dessous
+
+```{r qu_corr1}
+question("Quelles sont les combinaisons de variables les plus corrélées ?",
+  answer("x-y", correct = TRUE),
+  answer("x-z"),
+  answer("x-a"),
+  answer("y-z"),
+  answer("y-a"),
+  answer("z-a"),
+    allow_retry = TRUE, random_answer_order = TRUE)
+```
+
+- Réalisez une matrice de corrélation avec la méthode de Spearman
+
+Vous avez à votre disposition le snippet en lien avec la matrice de corrélation.
+
+```{r, eval=FALSE, echo = TRUE}
+##Snippet utile ## .escor: correlation matrix (enhanced) [SciViews]
+correlation(DF[, INDEX_EXPRESSION], use = "complete.obs", method = "pearson")
+```
+
+```{r corr2_h3, exercise = TRUE, exercise.setup = "correlation-prep"}
+##Snippet utile ## .escor: correlation matrix (enhanced) [SciViews]
+correlation(___[,____], use = ___, method = ___)
+```
+
+```{r corr2_h3-hint-1}
+correlation(___[, ___:___], use = "complete.obs", method = "spearman")
+
+# Relisez le chapitre 12 du livre science des données 1 <https://wp.sciviewg/sdd-umons/>
+```
+
+```{r corr2_h3-hint-2}
+correlation(df[, ___:___], use = "complete.obs", method = "spearman")
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r corr2_h3-solution}
+## Solution ##
+correlation(df[, 1:4], use = "complete.obs", method = "spearman")
+```
+
+```{r corr2_h3-check}
+grade_code("Vous avez compris la différence entre Spearman et Pearson")
+```
+
+Répondez à la question ci-dessous
+
+```{r qu_corr2}
+question("Quelles sont les combinaisons de variables les moins corrélées ?",
+  answer("x-y"),
+  answer("x-z"),
+  answer("x-a"),
+  answer("y-z"),
+  answer("y-a", correct = TRUE),
+  answer("z-a"),
+    allow_retry = TRUE, random_answer_order = TRUE
+  )
+```
+
+- Reproduisez le graphique ci-dessous en vous basant sur vos matrices réalisées précédemment
+
+```{r, echo = F}
+plot(correlation(df[, 2:4], use = "complete.obs", method = "pearson"), type = "upper")
+```
+
+
+```{r corr3_h3, exercise = TRUE, exercise.setup = "correlation-prep"}
+correlation(___[,____], use = ___, method = ___)
+```
+
+```{r corr3_h3-hint-1}
+plot(correlation(___[,____], use = ___, method = ___), type = ____)
+```
+
+```{r corr3_h3-hint-2}
+plot(correlation(___[,___:____], use = ___, method = ___), type = "upper")
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r corr3_h3-solution}
+plot(correlation(df[, 2:4], use = "complete.obs", method = "pearson"), type = "upper")
+```
+
+```{r corr3_h3-check}
+grade_code("Tu sais maintenant présenter une matrice de corrélation sous la forme d'un graphique plus convivial.")
+```
+
+## Régression linéaire
+
+```{r reglin_init}
+set.seed(42)
+x <- seq(from = 5, to = 15, by = 0.25)
+a <- x*1 + 3 + rnorm(sd = 0.5, n = length(x))
+b <- x*1.1 + 3 + rnorm(sd = 0.5, n = length(x))
+c <- x*1.2 + 3 + rnorm(sd = 0.5, n = length(x))
+
+area <- as.factor(rep(c("a", "b", "c"), each = length(x)))
+
+mais <- tibble(
+  x = c(x,x,x),
+  value = c(a,b,c),
+  area = area
+)
+
+lm_reg <- lm(data = mais, value ~ x)
+
+lm_param <- broom::glance(lm_reg)
+lm_result <- broom::tidy(lm_reg)
+```
+
+Réalisez la régression linéaire de `value` en fonction de `x` sur le jeu de données `mais`. Vous avez à votre disposition un nuage de points afin de visualiser les données.
+
+```{r}
+chart(mais, value ~ x) +
+  geom_point()
+```
+
+```{r reglin1-prep}
+set.seed(42)
+x <- seq(from = 5, to = 15, by = 0.25)
+  
+a <- x*1 + 3 + rnorm(sd = 0.5, n = length(x))
+b <- x*1.1 + 3 + rnorm(sd = 0.5, n = length(x))
+c <- x*1.2 + 3 + rnorm(sd = 0.5, n = length(x))
+
+area <- as.factor(rep(c("a", "b", "c"), each = length(x)))
+
+mais <- tibble(
+  x = c(x,x,x),
+  value = c(a,b,c),
+  area = area
+)
+```
+
+Vous avez à votre disposition le snippet suivant en lien avec le modèle linéaire.
+
+```{r, eval=FALSE, echo = TRUE}
+##Snippet utile ## .mlin: linear model
+summary(lm. <- lm(data = DF, FORMULA))
+```
+
+```{r reglin1_h2, exercise = TRUE, exercise.setup = "reglin1-prep"}
+summary(lm. <- lm(data = ___, ____))
+```
+
+```{r reglin1_h2-hint-1}
+summary(lm. <- lm(data = DF, ___ ~ ___))
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r reglin1_h2-solution}
+##Solution##
+summary(lm. <- lm(data = mais, value ~ x))
+```
+
+```{r reglin1_h2-check}
+grade_code("Vous avez réalisé votre premier modèle linéaire. Répondez maintenant aux questions ci-dessous.")
+```
+
+Suite à votre analyse répondez aux questions suivantes :
+
+```{r qu_reglin1}
+quiz(
+  question(text = "Quelle est la valeur de l'ordonnée à l'origine ?",
+    answer(sprintf("%.2f", lm_result$estimate[1]), correct = TRUE),
+    answer(sprintf("%.2f", lm_result$estimate[2])),
+    answer(sprintf("%.2f", lm_result$std.error[1])),
+    answer(sprintf("%.2f", lm_result$std.error[2])),
+    answer(sprintf("%.2f", lm_result$statistic[1])),
+    answer(sprintf("%.2f", lm_result$statistic[2])),
+    answer(sprintf("%.2f", lm_param$r.squared[1])),
+    allow_retry = TRUE, random_answer_order = TRUE
+    ),
+  question(text = "Quelle est la valeur de la pente ?",
+    answer(sprintf("%.2f", lm_result$estimate[1])),
+    answer(sprintf("%.2f", lm_result$estimate[2]), correct = TRUE),
+    answer(sprintf("%.2f", lm_result$std.error[1])),
+    answer(sprintf("%.2f", lm_result$std.error[2])),
+    answer(sprintf("%.2f", lm_result$statistic[1])),
+    answer(sprintf("%.2f", lm_result$statistic[2])),
+    answer(sprintf("%.2f", lm_param$r.squared[1])),
+    allow_retry = TRUE, random_answer_order = TRUE
+    ),
+  question(
+    text = "Est ce que la valeur de l'ordonnée à l'origne est significativement différent de zéro ?",
+    answer("oui", correct = TRUE),
+    answer("non"),
+    allow_retry = TRUE),
+  question(
+    text = "Est ce que la valeur de la pente est significativement différente de zéro ?",
+    answer("oui", correct = TRUE),
+    answer("non"),
+    allow_retry = TRUE)
+)
+```
+
+## Conclusion
+
+Vous venez de terminer votre séance d'exercice de révision.
+
+```{r comm_noscore, echo=FALSE}
+question_text(
+  "Laissez-nous vos impressions sur ce learnr",
+  answer("", TRUE, message = "Pas de commentaires... C'est bien aussi."),
+  incorrect = "Vos commentaires sont enregistrés.",
+  placeholder = "Entrez vos commentaires ici...",
+  allow_retry = TRUE
+)
+```
