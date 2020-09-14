@@ -1,12 +1,11 @@
-learndown::learndownShinyVersion("0.0.9000") # Set app version
-BioDataScience::init()
+learndown::learndownShinyVersion("0.0.9000")
+conf <- BioDataScience::init()
 
 library(shiny)
 library(learndown)
 
 
 ui <- fluidPage(
-  # Initialize a learndown-specific Shiny application
   learndownShiny("Ajustement manuel d'un modèle : régression linéaire"),
 
   sidebarLayout(
@@ -21,7 +20,7 @@ ui <- fluidPage(
 
       hr(),
 
-      submitQuitButtons() # The learndown-specific buttons
+      submitQuitButtons()
     ),
 
     mainPanel(
@@ -32,12 +31,12 @@ ui <- fluidPage(
       withMathJax(),
       fluidRow(
         column(width = 6,
-               p("Modèle paramétré :"),
-               uiOutput("model_equation")),
+          p("Modèle paramétré :"),
+          uiOutput("model_equation")),
 
         column(width = 6,
-               p("Somme des carrés des résidus (valeur à minimiser) :"),
-               uiOutput("model_resid"))
+          p("Somme des carrés des résidus (valeur à minimiser) :"),
+          uiOutput("model_resid"))
       )
     )
   )
@@ -86,17 +85,14 @@ server <- function(input, output, session) {
       ggplot2::ylab("y")
   })
 
-  # This is the learndown-specific behaviour
-  # Track start, stop, inputs, errors (and possibly outputs)
-  trackEvents(session, input, output)
-  # Track the submit button and check answer
-  trackSubmit(session, input, output,
-              solution = list(a = a_init, b = b_init),
-              comment = "y = a.x + b",
-              message.success = "Correct, c'est le meilleur modèle. a est la pente et b est l'ordonnée à l'origine de la droite.",
-              message.error = "Incorrect, un modèle mieux ajusté existe.")
-  # Track the quit button, save logs and close app after a delay (in sec)
-  trackQuit(session, input, output, delay = 60)
+  trackEvents(session, input, output,
+    sign_in.fun = BioDataScience::sign_in, config = conf)
+  trackSubmit(session, input, output, max_score = 2,
+    solution = list(a = a_init, b = b_init),
+    comment = "y = a.x + b",
+    message.success = "Correct, c'est le meilleur modèle. a est la pente et b est l'ordonnée à l'origine de la droite.",
+    message.error = "Incorrect, un modèle mieux ajusté existe.")
+  trackQuit(session, input, output, delay = 20)
 }
 
 shinyApp(ui, server)
