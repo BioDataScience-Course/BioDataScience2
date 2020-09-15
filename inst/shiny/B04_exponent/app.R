@@ -1,12 +1,11 @@
-learndown::learndownShinyVersion("0.0.9000") # Set app version
-BioDataScience::init()
+learndown::learndownShinyVersion("0.0.9000")
+conf <- BioDataScience::init()
 
 library(shiny)
 library(learndown)
 
 
 ui <- fluidPage(
-  # Initialize a learndown-specific Shiny application
   learndownShiny("Ajustement manuel d'un modèle : courbe exponentielle"),
 
   sidebarLayout(
@@ -15,9 +14,9 @@ ui <- fluidPage(
       p("$$y(x) = y_0 \\ e^{k \\ x}$$"),
 
       sliderInput("y0", label = "y0",
-                  value = 1, min = -5, max = 5, step = 0.5),
+        value = 1, min = -5, max = 5, step = 0.5),
       sliderInput("k", label = "k",
-                  value = 0.025, min = -0.20, max = 0.20, step = 0.025),
+        value = 0.025, min = -0.20, max = 0.20, step = 0.025),
 
       hr(),
       submitQuitButtons()
@@ -31,12 +30,12 @@ ui <- fluidPage(
       withMathJax(),
       fluidRow(
         column(width = 6,
-               p("Modèle paramétré :"),
-               uiOutput("model_equation")),
+          p("Modèle paramétré :"),
+          uiOutput("model_equation")),
 
         column(width = 6,
-               p("Somme des carrés des résidus (valeur à minimiser) :"),
-               uiOutput("model_resid"))
+          p("Somme des carrés des résidus (valeur à minimiser) :"),
+          uiOutput("model_resid"))
       )
     )
   )
@@ -66,8 +65,7 @@ server <- function(input, output, session) {
 
   output$model_equation <- renderUI({
     withMathJax(
-      sprintf("$$y(x) \\ = %.02f \\ e^{%.02f \\ x}$$",
-              input$vm, input$k))
+      sprintf("$$y(x) \\ = %.02f \\ e^{%.02f \\ x}$$", input$vm, input$k))
   })
 
   output$model_resid <- renderUI({
@@ -85,17 +83,14 @@ server <- function(input, output, session) {
       ggplot2::ylab("y")
   })
 
-  # This is the learndown-specific behaviour
-  # Track start, stop, inputs, errors (and possibly outputs)
-  trackEvents(session, input, output)
-  # Track the submit button and check answer
-  trackSubmit(session, input, output,
-              solution = list(y0 = y0_init, k = k_init),
-              comment = "y = y0.e^(k.x)",
-              message.success = "Correct, c'est le meilleur modèle. y0 et la valeur de y pour x = 0 et k est la vitesse de croissance.",
-              message.error = "Incorrect, un modèle mieux ajusté existe.")
-  # Track the quit button, save logs and close app after a delay (in sec)
-  trackQuit(session, input, output, delay = 60)
+  trackEvents(session, input, output,
+    sign_in.fun = BioDataScience::sign_in, config = conf)
+  trackSubmit(session, input, output, max_score = 2,
+    solution = list(y0 = y0_init, k = k_init),
+    comment = "y = y0.e^(k.x)",
+    message.success = "Correct, c'est le meilleur modèle. y0 et la valeur de y pour x = 0 et k est la vitesse de croissance.",
+    message.error = "Incorrect, un modèle mieux ajusté existe.")
+  trackQuit(session, input, output, delay = 20)
 }
 
 shinyApp(ui, server)

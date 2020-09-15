@@ -1,7 +1,7 @@
 Package: BioDataScience2
 Version: 2020.0.0
 Title: A Series of Learnr Documents for Biological Data Science 2
-Description: Interactive documents using learnr for studying biological data science.
+Description: Interactive documents using learnr for studying biological data science (second course).
 Authors@R: c(
   person("Philippe", "Grosjean", role = c("aut", "cre"),
   email = "phgrosjean@sciviews.org"),
@@ -9,13 +9,13 @@ Authors@R: c(
   email = "guyliann.engels@umons.ac.be"))
 Maintainer: Philippe Grosjean <phgrosjean@sciviews.org>
 Depends: R (>= 3.3.0)
-Imports: learnr, httr, jsonlite, remotes, svMisc, mongolite (>= 1.5)
-Suggests: SciViews, ggplot2, ggpubr, data.io, flow, chart, covr, knitr, testthat, BioDataScience
-License: CC BY-SA 4.0
+Imports: learndown, BioDataScience, shiny, miniUI
+Suggests: SciViews, ggplot2, ggpubr, data.io, flow, chart, covr, knitr, testthat, gradethis
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/BioDataScience-Course/BioDataScience2
 BugReports: https://github.com/BioDataScience-Course/BioDataScience2/issues
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0
 VignetteBuilder: knitr

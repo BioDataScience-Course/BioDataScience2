@@ -1,6 +1,6 @@
 # BioDataScience2 - Learnr Documents
 
-A Series of Learnr Documents for Biological Data Science. This package is linked to the book : [Science des données biologiques 2](https://wp.sciviews.org/sdd-umons2/). 
+A Series of Learnr Documents for Biological Data Science course 2. This package is linked to the book [Science des données biologiques 2](https://wp.sciviews.org/sdd-umons2/). 
 
 ## Installation
 

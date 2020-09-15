@@ -1,4 +1,4 @@
-learndown::learndownShinyVersion("1.0.0")
+learndown::learndownShinyVersion("0.0.9000")
 conf <- BioDataScience::config()
 
 library(shiny)
@@ -19,38 +19,31 @@ model_data <- tibble::tibble(
     rnorm(n = length(x), sd = error_sd))
 
 ui <- fluidPage(
-  # Initialize a learndown-specific Shiny application
   learndownShiny("Ajustement manuel d'un modèle : régression linéaire"),
 
   sidebarLayout(
     sidebarPanel(
       withMathJax(),
       p("$$y(x) = a \\times x + \\ b $$"),
-
       sliderInput("a", label = "a",
                   value = 0, min = -5, max = 5, step = 0.5),
       sliderInput("b", label = "b",
                   value = 0, min = -5, max = 5, step = 0.5),
-
       hr(),
-
-      submitQuitButtons() # The learndown-specific buttons
+      submitQuitButtons()
     ),
 
     mainPanel(
       plotOutput("model_plot"),
-
       hr(),
-
       withMathJax(),
       fluidRow(
         column(width = 6,
-               p("Modèle paramétré :"),
-               uiOutput("model_equation")),
-
+          p("Modèle paramétré :"),
+          uiOutput("model_equation")),
         column(width = 6,
-               p("Somme des carrés des résidus (valeur à minimiser) :"),
-               uiOutput("model_resid"))
+          p("Somme des carrés des résidus (valeur à minimiser) :"),
+          uiOutput("model_resid"))
       )
     )
   )
@@ -90,11 +83,10 @@ server <- function(input, output, session) {
   trackEvents(session, input, output,
               sign_in.fun = BioDataScience::sign_in, conf = conf)
   trackSubmit(session, input, output, max_score = 2,
-      solution =
-        list(a = a_init, b = b_init),
-        comment = "y = a.x + b",
-        message.success = "Correct, c'est le meilleur modèle. a est la pente et b est l'ordonnée à l'origine de la droite.",
-       message.error = "Incorrect, un modèle mieux ajusté existe.")
+    solution = list(a = a_init, b = b_init),
+    comment = "y = a.x + b",
+    message.success = "Correct, c'est le meilleur modèle. a est la pente et b est l'ordonnée à l'origine de la droite.",
+    message.error = "Incorrect, un modèle mieux ajusté existe.")
   trackQuit(session, input, output, delay = 20)
 }
 
