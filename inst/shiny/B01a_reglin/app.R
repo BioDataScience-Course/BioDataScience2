@@ -1,9 +1,22 @@
-learndown::learndownShinyVersion("0.0.9000") # Set app version
-BioDataScience::init()
+learndown::learndownShinyVersion("1.0.0")
+conf <- BioDataScience::config()
 
 library(shiny)
 library(learndown)
+library(BioDataScience2)
 
+a_init <- -1.5
+b_init <- 3.5
+error_sd <- 0.25
+set.seed(42)
+
+reglin <- function(x, a, b)
+  (a * x) + b
+
+model_data <- tibble::tibble(
+  x = seq(0, 10, by = 0.25),
+  y = reglin(x, a = a_init, b = b_init) +
+    rnorm(n = length(x), sd = error_sd))
 
 ui <- fluidPage(
   # Initialize a learndown-specific Shiny application
@@ -45,18 +58,6 @@ ui <- fluidPage(
 
 
 server <- function(input, output, session) {
-  a_init <- -1.5
-  b_init <- 3.5
-  error_sd <- 0.25
-  set.seed(42)
-
-  reglin <- function(x, a, b)
-    (a * x) + b
-
-  model_data <- tibble::tibble(
-    x = seq(0, 10, by = 0.25),
-    y = reglin(x, a = a_init, b = b_init) +
-      rnorm(n = length(x), sd = error_sd))
 
   model_predict <- reactive({
     dplyr::mutate(model_data,
@@ -86,17 +87,15 @@ server <- function(input, output, session) {
       ggplot2::ylab("y")
   })
 
-  # This is the learndown-specific behaviour
-  # Track start, stop, inputs, errors (and possibly outputs)
-  trackEvents(session, input, output)
-  # Track the submit button and check answer
-  trackSubmit(session, input, output,
-              solution = list(a = a_init, b = b_init),
-              comment = "y = a.x + b",
-              message.success = "Correct, c'est le meilleur modèle. a est la pente et b est l'ordonnée à l'origine de la droite.",
-              message.error = "Incorrect, un modèle mieux ajusté existe.")
-  # Track the quit button, save logs and close app after a delay (in sec)
-  trackQuit(session, input, output, delay = 60)
+  trackEvents(session, input, output,
+              sign_in.fun = BioDataScience::sign_in, conf = conf)
+  trackSubmit(session, input, output, max_score = 2,
+      solution =
+        list(a = a_init, b = b_init),
+        comment = "y = a.x + b",
+        message.success = "Correct, c'est le meilleur modèle. a est la pente et b est l'ordonnée à l'origine de la droite.",
+       message.error = "Incorrect, un modèle mieux ajusté existe.")
+  trackQuit(session, input, output, delay = 20)
 }
 
 shinyApp(ui, server)

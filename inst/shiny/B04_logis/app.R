@@ -1,4 +1,4 @@
-learndown::learndownShinyVersion("0.0.9000") # Set app version
+learndown::learndownShinyVersion("1.0.0") # Set app version
 BioDataScience::init()
 
 library(shiny)
