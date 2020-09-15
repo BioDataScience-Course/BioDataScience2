@@ -1,39 +1,46 @@
 learndown::learndownShinyVersion("0.0.9000")
-conf <- BioDataScience::init()
+conf <- BioDataScience::config()
 
 library(shiny)
 library(learndown)
+library(BioDataScience2)
 
+a_init <- -1.5
+b_init <- 3.5
+error_sd <- 0.25
+set.seed(42)
+
+reglin <- function(x, a, b)
+  (a * x) + b
+
+model_data <- tibble::tibble(
+  x = seq(0, 10, by = 0.25),
+  y = reglin(x, a = a_init, b = b_init) +
+    rnorm(n = length(x), sd = error_sd))
 
 ui <- fluidPage(
-  learndownShiny("Ajustement manuel d'un modèle : Michaelis-Menten"),
+  learndownShiny("Ajustement manuel d'un modèle : régression linéaire"),
 
   sidebarLayout(
     sidebarPanel(
       withMathJax(),
-      p("$$y(x) = \\frac{V_{m} * x}{K + x}$$"),
-
-      sliderInput("vm", label = "Vm",
-        value = 1, min = 0, max = 10, step = 0.5),
-      sliderInput("k", label = "K",
-        value = 1, min = 0, max = 10, step = 0.5),
-
+      p("$$y(x) = a \\times x + \\ b $$"),
+      sliderInput("a", label = "a",
+                  value = 0, min = -5, max = 5, step = 0.5),
+      sliderInput("b", label = "b",
+                  value = 0, min = -5, max = 5, step = 0.5),
       hr(),
-
       submitQuitButtons()
     ),
 
     mainPanel(
       plotOutput("model_plot"),
-
       hr(),
-
       withMathJax(),
       fluidRow(
         column(width = 6,
           p("Modèle paramétré :"),
           uiOutput("model_equation")),
-
         column(width = 6,
           p("Somme des carrés des résidus (valeur à minimiser) :"),
           uiOutput("model_resid"))
@@ -44,27 +51,18 @@ ui <- fluidPage(
 
 
 server <- function(input, output, session) {
-  vm_init <- 6
-  k_init <- 2
-  error_sd <- 0.05
-  set.seed(42)
-
-  model_data <- tibble::tibble(
-    x = seq(0, 25, by = 0.1),
-    y = SSmicmen(x, Vm = vm_init, K = k_init) +
-      rnorm(n = length(x), sd = error_sd))
 
   model_predict <- reactive({
     dplyr::mutate(model_data,
-      y_predit = SSmicmen(x, Vm = input$vm, K = input$k),
-      distance2 = (y_predit - y)^2
+           y_predit = reglin(x, a = input$a, b = input$b),
+           distance2 = (y_predit - y)^2
     )
   })
 
   output$model_equation <- renderUI({
     withMathJax(
-      sprintf("$$y(x) = \\frac{%.02f * x}{%.02f + x}$$",
-        input$vm, input$k))
+      sprintf("$$y(x) \\ = %.02f \\times \\ x + \\ %.02f$$",
+              input$a, input$b))
   })
 
   output$model_resid <- renderUI({
@@ -83,11 +81,11 @@ server <- function(input, output, session) {
   })
 
   trackEvents(session, input, output,
-    sign_in.fun = BioDataScience::sign_in, config = conf)
+              sign_in.fun = BioDataScience::sign_in, conf = conf)
   trackSubmit(session, input, output, max_score = 2,
-    solution = list(vm = vm_init, k = k_init),
-    comment = "y = Vm*x/K+x",
-    message.success = "Correct, c'est le meilleur modèle.",
+    solution = list(a = a_init, b = b_init),
+    comment = "y = a.x + b",
+    message.success = "Correct, c'est le meilleur modèle. a est la pente et b est l'ordonnée à l'origine de la droite.",
     message.error = "Incorrect, un modèle mieux ajusté existe.")
   trackQuit(session, input, output, delay = 20)
 }

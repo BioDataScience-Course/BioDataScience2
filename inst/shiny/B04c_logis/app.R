@@ -1,22 +1,34 @@
 learndown::learndownShinyVersion("0.0.9000")
-conf <- BioDataScience::init()
+conf <- BioDataScience::config()
 
 library(shiny)
 library(learndown)
 
+asym_init <- 5
+xmid_init <- 4
+scal_init <- 0.5
+error_sd <- 0.1
+set.seed(42)
+
+model_data <- tibble::tibble(
+  x = seq(0, 8, by = 0.1),
+  y = SSlogis(x, Asym = asym_init, xmid = xmid_init, scal = scal_init) +
+    rnorm(n = length(x), sd = error_sd))
 
 ui <- fluidPage(
-  learndownShiny("Ajustement manuel d'un modèle : régression linéaire"),
+  learndownShiny("Ajustement manuel d'un modèle : courbe logistique"),
 
   sidebarLayout(
     sidebarPanel(
       withMathJax(),
-      p("$$y(x) = a \\times x + \\ b $$"),
+      p("$$y(x) = \\frac{Asym}{1 + e^{\\frac{xmid - x}{scal}}}$$"),
 
-      sliderInput("a", label = "a",
-                  value = 0, min = -5, max = 5, step = 0.5),
-      sliderInput("b", label = "b",
-                  value = 0, min = -5, max = 5, step = 0.5),
+      sliderInput("asym", label = "Asym",
+        value = 1.00, min = 0.50, max = 10.00, step = 0.5),
+      sliderInput("xmid", label = "Xmid",
+        value = 1.00, min = 0.25, max = 10.00, step = 0.25),
+      sliderInput("scal", label = "Scal",
+        value = 1.00, min = 0.25, max = 10.00, step = 0.25),
 
       hr(),
 
@@ -44,30 +56,19 @@ ui <- fluidPage(
 
 
 server <- function(input, output, session) {
-  a_init <- -1.5
-  b_init <- 3.5
-  error_sd <- 0.25
-  set.seed(42)
-
-  reglin <- function(x, a, b)
-    (a * x) + b
-
-  model_data <- tibble::tibble(
-    x = seq(0, 10, by = 0.25),
-    y = reglin(x, a = a_init, b = b_init) +
-      rnorm(n = length(x), sd = error_sd))
 
   model_predict <- reactive({
     dplyr::mutate(model_data,
-           y_predit = reglin(x, a = input$a, b = input$b),
-           distance2 = (y_predit - y)^2
+      y_predit = SSlogis(x, Asym = input$asym, xmid = input$xmid,
+        scal = input$scal),
+      distance2 = (y_predit - y)^2
     )
   })
 
   output$model_equation <- renderUI({
     withMathJax(
-      sprintf("$$y(x) \\ = %.02f \\times \\ x + \\ %.02f$$",
-              input$a, input$b))
+      sprintf("$$y(x) = \\frac{%.02f}{1 + e^{\\frac{%.02f - x}{%.02f}}}$$",
+        input$asym, input$xmid, input$scal))
   })
 
   output$model_resid <- renderUI({
@@ -87,10 +88,10 @@ server <- function(input, output, session) {
 
   trackEvents(session, input, output,
     sign_in.fun = BioDataScience::sign_in, config = conf)
-  trackSubmit(session, input, output, max_score = 2,
-    solution = list(a = a_init, b = b_init),
-    comment = "y = a.x + b",
-    message.success = "Correct, c'est le meilleur modèle. a est la pente et b est l'ordonnée à l'origine de la droite.",
+  trackSubmit(session, input, output, max_score = 2, solution =
+    list(asym = asym_init, xmid = xmid_init, scal = scal_init),
+    comment = "y = asym/1+e(xmid-x/scal)",
+    message.success = "Correct, c'est le meilleur modèle.",
     message.error = "Incorrect, un modèle mieux ajusté existe.")
   trackQuit(session, input, output, delay = 20)
 }
