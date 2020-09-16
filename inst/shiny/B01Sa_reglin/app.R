@@ -26,9 +26,9 @@ ui <- fluidPage(
       withMathJax(),
       p("$$y(x) = a \\ x + \\ b $$"),
       sliderInput("a", label = "a",
-                  value = 0, min = -5, max = 5, step = 0.5),
+        value = 0, min = -5, max = 5, step = 0.5),
       sliderInput("b", label = "b",
-                  value = 0, min = -5, max = 5, step = 0.5),
+        value = 0, min = -5, max = 5, step = 0.5),
       hr(),
       submitQuitButtons()
     ),
@@ -54,8 +54,8 @@ server <- function(input, output, session) {
 
   model_predict <- reactive({
     dplyr::mutate(model_data,
-           y_predit = reglin(x, a = input$a, b = input$b),
-           distance2 = (y_predit - y)^2
+      y_predit = reglin(x, a = input$a, b = input$b),
+      distance2 = (y_predit - y)^2
     )
   })
 

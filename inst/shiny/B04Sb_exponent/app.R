@@ -59,8 +59,8 @@ server <- function(input, output, session) {
 
   model_predict <- reactive({
     dplyr::mutate(model_data,
-           y_predit = exponent(x, y0 = input$y0, k = input$k),
-           distance2 = (y_predit - y)^2
+      y_predit = exponent(x, y0 = input$y0, k = input$k),
+      distance2 = (y_predit - y)^2
     )
   })
 
