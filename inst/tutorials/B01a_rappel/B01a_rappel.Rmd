@@ -4,7 +4,7 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**[SDD II Module 1](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/lm.html)** Rappel du cours de sdd1."
 tutorial:
   id: "B01a_rappel"
-  version: 2.0.3/22
+  version: 2.0.4/22
 output: 
   learnr::tutorial:
     progressive: true
@@ -366,7 +366,7 @@ Sur base de données relatives à de la biométrie humaine, reproduisez le graph
 
 ```{r, warning=FALSE}
 # Importation des données
-biometry <- read("biometry", package = "BioDataScience1", lang = "FR")
+biometry <- read("biometry", package = "BioDataScience", lang = "FR")
 
 # Graphique à reproduire 
 chart(biometry, ~ weight | gender) + 
@@ -374,11 +374,11 @@ chart(biometry, ~ weight | gender) +
   ylab("Dénombrement")
 ```
 
-Le jeu des données mis à votre disposition est `biometry` du package `BioDataScience1` qui comprend les variables suivantes\ : `r names(biometry)`.
+Le jeu des données mis à votre disposition est `biometry` du package `BioDataScience` qui comprend les variables suivantes\ : `r names(biometry)`.
 
 ```{r qu_facette_h4, exercise=TRUE, exercise.lines=8}
 # Importation des données
-biometry <- read("biometry", package = "BioDataScience1", lang = "FR")
+biometry <- read("biometry", package = "BioDataScience", lang = "FR")
 
 # Votre graphique 
 chart(___, ___) +
@@ -388,7 +388,7 @@ chart(___, ___) +
 
 ```{r qu_facette_h4-hint-1}
 # Importation des données
-biometry <- read("biometry", package = "BioDataScience1", lang = "FR")
+biometry <- read("biometry", package = "BioDataScience", lang = "FR")
 
 # Votre graphique 
 chart(___, ~ ___) +
@@ -400,7 +400,7 @@ chart(___, ~ ___) +
 
 ```{r qu_facette_h4-hint-2}
 # Importation des données
-biometry <- read("biometry", package = "BioDataScience1", lang = "FR")
+biometry <- read("biometry", package = "BioDataScience", lang = "FR")
 
 # Votre graphique 
 chart(biometry, ~ ___ ) +
@@ -410,7 +410,7 @@ chart(biometry, ~ ___ ) +
 
 ```{r qu_facette_h4-hint-3}
 # Importation des données
-biometry <- read("biometry", package = "BioDataScience1", lang = "FR")
+biometry <- read("biometry", package = "BioDataScience", lang = "FR")
 
 # Votre graphique 
 chart(biometry, ~ ___ | ___) +
@@ -423,7 +423,7 @@ chart(biometry, ~ ___ | ___) +
 ```{r qu_facette_h4-solution}
 ## Solution ##
 # Importation des données
-biometry <- read("biometry", package = "BioDataScience1", lang = "FR")
+biometry <- read("biometry", package = "BioDataScience", lang = "FR")
 
 # Votre graphique 
 chart(biometry, ~ weight | gender) + 
@@ -440,11 +440,11 @@ grade_code("Vous vous souvenez de la façon d'utiliser les facettes dans un grap
 Calculer l'indice de masse corporelle imc (variable `bmi` en anglais) qui correspond à la formule suivante\ :
 
 $$bmi = mass\ [kg]/height [cm]^2$$
-Vous travaillez toujours sur le jeu des données `biometry` du package `BioDataScience1` qui comprend, pour rappel, les variables suivantes\ : `r names(biometry)`.
+Vous travaillez toujours sur le jeu des données `biometry` du package `BioDataScience` qui comprend, pour rappel, les variables suivantes\ : `r names(biometry)`.
 
 ```{r qu_mutate_h2, exercise=TRUE, exercise.lines=6}
 # Importation des données
-biometry <- read("biometry", package = "BioDataScience1", lang = "FR")
+biometry <- read("biometry", package = "BioDataScience", lang = "FR")
 # Calcul du bmi
 biometry <- mutate(___, bmi = ___)
 summary(biometry)
@@ -452,7 +452,7 @@ summary(biometry)
 
 ```{r qu_mutate_h2-hint-1}
 # Importation des données
-biometry <- read("biometry", package = "BioDataScience1", lang = "FR")
+biometry <- read("biometry", package = "BioDataScience", lang = "FR")
 # Calcul du bmi
 biometry <- mutate(___, bmi = ___/(___/100)^2)
 summary(biometry)
@@ -462,7 +462,7 @@ summary(biometry)
 
 ```{r qu_mutate_h2-solution}
 # Importation des données
-biometry <- read("biometry", package = "BioDataScience1", lang = "FR")
+biometry <- read("biometry", package = "BioDataScience", lang = "FR")
 # Calcul du bmi
 biometry <- mutate(biometry, bmi = weight/(height/100)^2)
 summary(biometry)
