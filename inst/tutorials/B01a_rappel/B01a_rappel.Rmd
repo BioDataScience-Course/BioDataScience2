@@ -4,38 +4,36 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**[SDD II Module 1](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/lm.html)** Rappel du cours de sdd1."
 tutorial:
   id: "B01a_rappel"
-  version: 2.0.2/23
+  version: 2.0.3/22
 output: 
   learnr::tutorial:
     progressive: true
+    allow_skip: true
 runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
-#BioDataScience1::learnr_setup()
 SciViews::R()
 ```
 
 ```{r, echo=FALSE}
 BioDataScience2::learnr_banner()
-#BioDataScience1::learnr_banner()
 ```
 
 ```{r, context="server"}
 BioDataScience2::learnr_server(input, output, session)
-#BioDataScience1::learnr_server(input, output, session)
 ```
 
 ----
 
 ## Objectifs
 
-- Révisez les notions du cours de Science des données I
+- Réviser les notions du cours de Science des Données I.
 
-## Gestion de projet 
+## Logiciels 
 
-Répondez aux questions ci-dessous
+Répondez aux questions ci-dessous.
 
 ```{r qu_intro}
 quiz(
@@ -47,8 +45,7 @@ quiz(
     answer("Un service web d'hébergement de projet"),
     answer("Un langage avec une syntaxe facile à lire et à écrire"),
     answer("Aucune des réponses proposées n'est correcte"),
-    allow_retry = TRUE, random_answer_order = TRUE
-    ),
+    allow_retry = TRUE, random_answer_order = TRUE),
   question("Définissez 'RStudio'",
     answer("Une machine virtuelle dédiée à la recherche scientifique avec de nombreux programmes préconfigurés"),
     answer("Un environnement de développement intégré", correct = TRUE),
@@ -81,23 +78,24 @@ quiz(
     answer("Un langage avec une syntaxe facile à lire et à écrire", correct = TRUE),
     answer("Aucune des réponses proposées n'est correcte"),
     allow_retry = TRUE, random_answer_order = TRUE)
-  )
+)
 ```
 
+## Git et GitHub
 
-## Analyse de situation
+Au cours de Science des Données, nous utilisons abondamment Git et GitHub. Assurez-vous d'avoir bien retenu la terminologie spécifique associée à ces outils de gestion de version.
 
 ### Situation 1
 
-Deux chercheurs distants de plusieurs centaines de kilomètres, collaborent sur un projet commun. Ils ont pour cela décidé d'employer un outil de gestion de version et d'héberger ce projet sur un système d'hébergement web dédié pour cela. 
+Deux chercheurs distants de plusieurs centaines de kilomètres, collaborent sur un projet commun. Ils ont pour cela décidé d'employer un outil de gestion de version et d'héberger ce projet sur un système web dédié pour cela. 
 
-Sur base de l'image ci-dessous et de la situation précisée précédemment, répondez aux questions suivantes.
+Sur base du schéma ci-dessous où chaque cercle de couleur correspond à un état du système de gestion de version de la situation expliquée, répondez aux questions suivantes.
 
 ![](images/gestion-version.drawio.png)
 
 ```{r qu_git1}
 quiz(
-  question("Qualifiez la situation **A**",
+  question("Qualifiez l'action **A**",
     answer("commit", correct = TRUE),
     answer("clone"),
     answer("push"),
@@ -105,9 +103,8 @@ quiz(
     answer("fetch"),
     answer("fork"),
     answer("pull request"),
-    allow_retry = TRUE, random_answer_order = TRUE
-    ),
-  question("Qualifiez la situation **B**",
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question("Qualifiez l'action **B**",
     answer("commit"),
     answer("clone"),
     answer("push", correct = TRUE),
@@ -115,9 +112,8 @@ quiz(
     answer("fetch"),
     answer("fork"),
     answer("pull request"),
-    allow_retry = TRUE, random_answer_order = TRUE
-    ),
-  question("Qualifiez la situation **C**",
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question("Qualifiez l'action **C**",
     answer("commit"),
     answer("clone"),
     answer("push"),
@@ -125,22 +121,19 @@ quiz(
     answer("fetch"),
     answer("fork"),
     answer("pull request"),
-    allow_retry = TRUE, random_answer_order = TRUE
-    )
+    allow_retry = TRUE, random_answer_order = TRUE)
 )
 ```
 
 ### Situation 2
 
-Le chercheur 2 s'intéresse au projet du chercheur 1, travaille dessus et propose des modifications afin l'améliorer. 
-
-Sur base de l'image ci-dessous et de la situation précisée précédemment, répondez aux questions suivantes.
+Le chercheur 2 s'intéresse au projet du chercheur 1, travaille dessus et propose des modifications afin de l'améliorer. Le schéma suivant représente l'évolution du système de gestion de version. Sur cette base, répondez aux questions suivantes.
 
 ![](images/fork.png)
 
 ```{r qu_git2}
 quiz(
-  question("Qualifiez la situation **A**",
+  question("Qualifiez l'action **A**",
     answer("commit"),
     answer("clone"),
     answer("push"),
@@ -148,9 +141,8 @@ quiz(
     answer("fetch"),
     answer("fork", correct = TRUE),
     answer("pull request"),
-    allow_retry = TRUE, random_answer_order = TRUE
-    ),
-  question("Qualifiez la situation **B**",
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question("Qualifiez l'action **B**",
     answer("commit", correct = TRUE),
     answer("clone"),
     answer("push"),
@@ -158,9 +150,8 @@ quiz(
     answer("fetch"),
     answer("fork"),
     answer("pull request"),
-    allow_retry = TRUE, random_answer_order = TRUE
-    ),
-  question("Qualifiez la situation **C**",
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question("Qualifiez l'action **C**",
     answer("commit"),
     answer("clone"),
     answer("push"),
@@ -168,24 +159,20 @@ quiz(
     answer("fetch"),
     answer("fork"),
     answer("pull request", correct = TRUE),
-    allow_retry = TRUE, random_answer_order = TRUE
-    )
+    allow_retry = TRUE, random_answer_order = TRUE)
 )
 ```
 
-
 ### Situation 3
 
-Le chercheur 2 vient d'intégrer le projet que le chercheur 1 réalisait seul. Il doit donc acquérir le dépôt pour la première fois sur sa machine avant de pouvoir contribuer à ce projet. 
-
-Sur base de l'image ci-dessous et de la situation précisée précédemment, répondez aux questions suivantes.
+Le chercheur 2 vient d'intégrer le projet que le chercheur 1 réalisait seul. Il doit donc acquérir une copie du dépôt pour la première fois sur sa machine avant de pouvoir contribuer à ce projet. Sur base du schéma ci-dessous qui représente le travail des deux chercheurs, répondez aux questions suivantes.
 
 ![](images/clone.png)
 
 
 ```{r qu_git3}
 quiz(
-  question("Qualifiez la situation **A**",
+  question("Qualifiez l'action **A**",
     answer("commit"),
     answer("clone", correct = TRUE),
     answer("push"),
@@ -193,9 +180,8 @@ quiz(
     answer("fetch"),
     answer("fork"),
     answer("pull request"),
-    allow_retry = TRUE, random_answer_order = TRUE
-    ),
-  question("Qualifiez la situation **B**",
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question("Qualifiez l'action **B**",
     answer("commit", correct = TRUE),
     answer("clone"),
     answer("push"),
@@ -203,9 +189,8 @@ quiz(
     answer("fetch"),
     answer("fork"),
     answer("pull request"),
-    allow_retry = TRUE, random_answer_order = TRUE
-    ),
-  question("Qualifiez la situation **C**",
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question("Qualifiez l'action **C**",
     answer("commit"),
     answer("clone"),
     answer("push", correct = TRUE),
@@ -213,46 +198,49 @@ quiz(
     answer("fetch"),
     answer("fork"),
     answer("pull request"),
-    allow_retry = TRUE, random_answer_order = TRUE
-    )
+    allow_retry = TRUE, random_answer_order = TRUE)
 )
 ```
 
 ## Biométrie d'oursins
 
-Sur base des données qui sont mises à votre disposition, reproduisez le graphique ci-dessous : 
+Sur base des données qui sont mises à votre disposition, reproduisez le graphique ci-dessous\ : 
 
 ```{r}
 urchin <- data.io::read("urchin_bio", package = "data.io", lang = "FR")
 
+# Graphique à reproduire
 chart(urchin, height ~ weight %col=% origin) +
   geom_point()
 ```
 
-Le jeu des données mis à votre disposition est `urchin_bio` du package `data.io` qui comprend les variables suivantes : `r names(urchin)`
+Le jeu des données mis à votre disposition est `urchin_bio` du package `data.io` qui comprend les variables suivantes\ : `r names(urchin)`.
 
-```{r qu_np_h3, exercise = TRUE}
-# importation des données 
+```{r qu_np_h3, exercise=TRUE, exercise.lines=7}
+# Importation des données 
 urchin <- data.io::read(___, package = ___, lang = "FR")
-# Reproduisez le graphique ci-dessous
+
+# Votre graphique
 chart(___, ___ ~ ___ %col=% ___) +
   geom_point()
 ```
 
 ```{r qu_np_h3-hint-1}
-# importation des données 
+# Importation des données 
 urchin <- data.io::read("urchin_bio", package = "data.io", lang = "FR")
-# Reproduisez le graphique ci-dessous
+
+# Votre graphique
 chart(___, ___ ~ ___ %col=% ___) +
   geom_point()
 
-# Relisez le chapitre 2 du livre science des données 1 <https://wp.sciviewg/sdd-umons/>
+# Relisez le chapitre 2 du livre Science des Données 1 <https://wp.sciviewg/sdd-umons/>
 ```
 
 ```{r qu_np_h3-hint-2}
-# importation des données 
+# Importation des données 
 urchin <- data.io::read("urchin_bio", package = "data.io", lang = "FR")
-# Reproduisez le graphique ci-dessous
+
+# Votre graphique
 chart(urchin, ___ ~ ___ %col=% ___) +
   geom_point()
 
@@ -261,10 +249,10 @@ chart(urchin, ___ ~ ___ %col=% ___) +
 
 ```{r qu_np_h3-solution}
 ## Solution ##
-# importation des données 
+# Importation des données 
 urchin <- data.io::read("urchin_bio", package = "data.io", lang = "FR")
-# Reproduisez le graphique ci-dessous
- 
+
+# Votre graphique
 chart(urchin, height ~ weight %col=% origin) +
   geom_point()
 ```
@@ -273,15 +261,16 @@ chart(urchin, height ~ weight %col=% origin) +
 grade_code("Vous vous souvenez comment réaliser un nuage de points.")
 ```
 
-## Croissance des dents de cochon d'Inde
+## Croissance de dents
 
-Sur base des données qui sont mises à votre disposition reproduisez le graphique ci-dessous : 
+Sur base des données qui sont mises à votre disposition reproduisez le graphique ci-dessous\ : 
 
 ```{r}
-# importation des données
+# Importation des données
 tooth_growth <- read("ToothGrowth", package = "datasets") %>.%
   mutate(., dose = as.factor(dose))
-# reproduction graphique
+
+# Graphique à reproduire
 chart(data = tooth_growth, len ~ supp %fill=% dose) +
   geom_boxplot() +
   labs(y = "Longueur des dents [mm]", 
@@ -289,56 +278,61 @@ chart(data = tooth_growth, len ~ supp %fill=% dose) +
        fill = "Dose")
 ```
 
-Le jeu des données mis à votre disposition est `ToothGrowth` du package `datasets`qui comprend les variables suivantes : `r names(ToothGrowth)`. 
+Le jeu des données mis à votre disposition est `ToothGrowth` du package `datasets` qui comprend les variables suivantes\ : `r names(ToothGrowth)`. 
 
-```{r qu_bp_h5, exercise = TRUE}
-# importation des données
+```{r qu_bp_h5, exercise=TRUE, exercise.lines=9}
+# Importation des données
 tooth_growth <- read("ToothGrowth", package = "datasets") %>.%
   mutate(., dose = as.factor(dose))
-# reproduction graphique
+
+# Votre graphique
 chart(___, ___) +
   ___ +
   labs(___)
 ```
 
 ```{r qu_bp_h5-hint-1}
-# importation des données
+# Importation des données
 tooth_growth <- read("ToothGrowth", package = "datasets") %>.%
   mutate(., dose = as.factor(dose))
-# reproduction graphique
+
+# Votre graphique
 chart(___, ___ ~ ___ %fill=% ___) +
   ___ +
   labs(x = ___, y = ___, fill = ___)
 
-# Relisez le chapitre 2 du livre science des données 1 <https://wp.sciviewg/sdd-umons/>
+# Relisez le chapitre 2 du livre Science des Données 1 <https://wp.sciviewg/sdd-umons/>
 
 ```
 
 ```{r qu_bp_h5-hint-2}
-# importation des données
+# Importation des données
 tooth_growth <- read("ToothGrowth", package = "datasets") %>.%
   mutate(., dose = as.factor(dose))
-# reproduction graphique
+
+# Votre graphique
 chart(tooth_growth, ___ ~ ___ %fill=% ___) +
   ___ +
   labs(x = ___, y = ___, fill = ___)
 ```
 
 ```{r qu_bp_h5-hint-3}
-# importation des données
+# Importation des données
 tooth_growth <- read("ToothGrowth", package = "datasets") %>.%
   mutate(., dose = as.factor(dose))
-# reproduction graphique
+
+# Votre graphique
 chart(data = tooth_growth, len ~ supp %fill=% dose) +
   ___ +
   labs(x = ___, y = ___, fill = ___)
 ```
 
 ```{r qu_bp_h5-hint-4}
-# importation des données
+# Importation des données
 tooth_growth <- read("ToothGrowth", package = "datasets") %>.%
   mutate(., dose = as.factor(dose))
-# reproduction graphique
+
+# Votre graphique
 chart(data = tooth_growth, len ~ supp %fill=% dose) +
   geom_boxplot() +
   labs(x = ___, y = ___, fill = ___)
@@ -348,10 +342,11 @@ chart(data = tooth_growth, len ~ supp %fill=% dose) +
 
 ```{r qu_bp_h5-solution}
 ## Solution ##
-# importation des données
+# Importation des données
 tooth_growth <- read("ToothGrowth", package = "datasets") %>.%
   mutate(., dose = as.factor(dose))
-# reproduction graphique
+
+# Votre graphique
 chart(data = tooth_growth, len ~ supp %fill=% dose) +
   geom_boxplot() +
   labs(y = "Longueur des dents [mm]", 
@@ -360,30 +355,32 @@ chart(data = tooth_growth, len ~ supp %fill=% dose) +
 ```
 
 ```{r qu_bp_h5-check}
-grade_code("Vous souvenez comment réaliser une boite de dispersion.")
+grade_code("Vous vous souvenez comment réaliser une boite de dispersion.")
 ```
 
-*Une autre alternative aurait été d'utiliser la fonction labelise() sur le jeu de données tooth_growth afin de donner un label et une unité à chaque variable*
+*Une alternative aurait été d'utiliser la fonction `labelise()` sur le jeu de données `ToothGrowth` afin de spécifier un label et une unité à chaque variable.*
 
 ## Biométrie humaine 1
 
-Sur base des données qui sont mises à votre disposition reproduisez le graphique ci-dessous : 
+Sur base de données relatives à de la biométrie humaine, reproduisez le graphique ci-dessous\ : 
 
-```{r}
+```{r, warning=FALSE}
 # Importation des données
 biometry <- read("biometry", package = "BioDataScience1", lang = "FR")
-# Reproduction du graphique 
+
+# Graphique à reproduire 
 chart(biometry, ~ weight | gender) + 
   geom_histogram() +
   ylab("Dénombrement")
 ```
 
-Le jeu des données mis à votre disposition est `biometry` du package `BioDataScience1`qui comprend les variables suivantes : `r names(biometry)`.
+Le jeu des données mis à votre disposition est `biometry` du package `BioDataScience1` qui comprend les variables suivantes\ : `r names(biometry)`.
 
-```{r qu_facette_h4, exercise = TRUE}
+```{r qu_facette_h4, exercise=TRUE, exercise.lines=8}
 # Importation des données
 biometry <- read("biometry", package = "BioDataScience1", lang = "FR")
-# Reproduction du graphique 
+
+# Votre graphique 
 chart(___, ___) +
   ___() +
   labs(y = ___)
@@ -392,16 +389,20 @@ chart(___, ___) +
 ```{r qu_facette_h4-hint-1}
 # Importation des données
 biometry <- read("biometry", package = "BioDataScience1", lang = "FR")
-# Reproduction du graphique 
+
+# Votre graphique 
 chart(___, ~ ___) +
   ___() +
   labs(y = ___)
+
+# Relisez le chapitre 3 du livre Science des Données 1 <https://wp.sciviewg/sdd-umons/>
 ```
 
 ```{r qu_facette_h4-hint-2}
 # Importation des données
 biometry <- read("biometry", package = "BioDataScience1", lang = "FR")
-# Reproduction du graphique 
+
+# Votre graphique 
 chart(biometry, ~ ___ ) +
   geom_histogram() +
   labs(y = ___)
@@ -410,7 +411,8 @@ chart(biometry, ~ ___ ) +
 ```{r qu_facette_h4-hint-3}
 # Importation des données
 biometry <- read("biometry", package = "BioDataScience1", lang = "FR")
-# Reproduction du graphique 
+
+# Votre graphique 
 chart(biometry, ~ ___ | ___) +
   geom_histogram() +
   labs(y = ___)
@@ -422,28 +424,30 @@ chart(biometry, ~ ___ | ___) +
 ## Solution ##
 # Importation des données
 biometry <- read("biometry", package = "BioDataScience1", lang = "FR")
-# Reproduction du graphique 
+
+# Votre graphique 
 chart(biometry, ~ weight | gender) + 
   geom_histogram() +
   ylab("Dénombrement")
 ```
 
 ```{r qu_facette_h4-check}
-grade_code("Vous vous souvenez de comment utiliser les facettes.")
+grade_code("Vous vous souvenez de la façon d'utiliser les facettes dans un graphique.")
 ```
 
 ## Biométrie humaine 2
 
-Calculer la variable `bmi` qui correspond à la formule ci-dessous :
+Calculer l'indice de masse corporelle imc (variable `bmi` en anglais) qui correspond à la formule suivante\ :
 
-$$imc = masse\ [kg]/height [cm]^2$$
-Le jeu des données mis à votre disposition est `biometry` du package `BioDataScience1`qui comprend les variables suivantes : `r names(biometry)`.
+$$bmi = mass\ [kg]/height [cm]^2$$
+Vous travaillez toujours sur le jeu des données `biometry` du package `BioDataScience1` qui comprend, pour rappel, les variables suivantes\ : `r names(biometry)`.
 
-```{r qu_mutate_h2, exercise = TRUE}
+```{r qu_mutate_h2, exercise=TRUE, exercise.lines=6}
 # Importation des données
 biometry <- read("biometry", package = "BioDataScience1", lang = "FR")
 # Calcul du bmi
 biometry <- mutate(___, bmi = ___)
+summary(biometry)
 ```
 
 ```{r qu_mutate_h2-hint-1}
@@ -451,6 +455,9 @@ biometry <- mutate(___, bmi = ___)
 biometry <- read("biometry", package = "BioDataScience1", lang = "FR")
 # Calcul du bmi
 biometry <- mutate(___, bmi = ___/(___/100)^2)
+summary(biometry)
+
+#### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r qu_mutate_h2-solution}
@@ -458,40 +465,52 @@ biometry <- mutate(___, bmi = ___/(___/100)^2)
 biometry <- read("biometry", package = "BioDataScience1", lang = "FR")
 # Calcul du bmi
 biometry <- mutate(biometry, bmi = weight/(height/100)^2)
+summary(biometry)
 ```
 
 ```{r qu_mutate_h2-check}
-grade_code("Vous vous souvenez de comment utiliser la fonction mutate().")
+grade_code("Vous êtes toujours capable d'utiliser la fonction mutate().")
 ```
 
-## Rendement des pommes de terre en Belgique
+## Rendement de patates
 
-Des scientifiques belges s'intéressent aux rendements de deux variétés de pomme de terre  : la bintje et la fontane. Après 110 jours, il réalise des prélèvements sur différentes parcelles en Belgique qu'ils quantifient en tonnes par hectare. 
+Des scientifiques belges s'intéressent aux rendements de deux variétés de pomme de terre\ : la bintje et la fontane. Après 110 jours, ils réalisent des prélèvements sur différentes parcelles en Belgique dont ils quantifient la production, exprimée en tonnes par hectare. 
 
-```{r, warning=F, message=F}
+```{r, warning=FALSE, message=FALSE}
 set.seed(42)
 pdt <- tibble(
-  rendement = c(rnorm(n = 18, mean = 33.6, sd = 4), rnorm(n = 28, mean = 39.5, sd = 4)), 
-  variete = c(rep("bintje", times = 18), rep("fontane", times = 28)))
+  rendement = c(
+    rnorm(n = 18, mean = 33.6, sd = 4),
+    rnorm(n = 28, mean = 39.5, sd = 4)), 
+  variete = c(
+    rep("bintje", times = 18),
+    rep("fontane", times = 28))
+)
 ```
 
-Reproduisez le tableau ci-dessous, le jeu de données mis à votre disposition se nomme `pdt` et les variables sont les suivantes : `r names(pdt)`. La fonction de mise en forme du tableau est `kable()` du package `knitr`
+Reproduisez le tableau ci-dessous, le jeu de données mis à votre disposition se nomme `pdt` et les variables sont les suivantes\ : `r names(pdt)`. La fonction de mise en forme du tableau est `kable()` du package `knitr`.
 
 ```{r}
 pdt %>.%
   group_by(., variete) %>.%
   summarise(., mean = mean(rendement), count = n()) %>.%
-  knitr::kable(., col.names = c("Variété" ,"Rendement moyen [t/ha]", "Nombre de parcelles"))
+  knitr::kable(., col.names =
+    c("Variété" ,"Rendement moyen [t/ha]", "Nombre de parcelles"))
 ```
 
 ```{r qu_group-prep}
 set.seed(42)
 pdt <- tibble(
-  rendement = c(rnorm(n = 18, mean = 33.6, sd = 4), rnorm(n = 28, mean = 39.5, sd = 4)), 
-  variete = c(rep("bintje", times = 18), rep("fontane", times = 28)))
+  rendement = c(
+    rnorm(n = 18, mean = 33.6, sd = 4),
+    rnorm(n = 28, mean = 39.5, sd = 4)), 
+  variete = c(
+    rep("bintje", times = 18),
+    rep("fontane", times = 28))
+)
 ```
 
-```{r qu_group_h3, exercise = TRUE, exercise.setup = "qu_group-prep"}
+```{r qu_group_h3, exercise=TRUE, exercise.lines=5, exercise.setup="qu_group-prep"}
 pdt %>.%
   group_by(., ___) %>.%
   summarise(., mean = ___, count = ___) %>.%
@@ -510,6 +529,8 @@ pdt %>.%
   group_by(., ) %>.%
   summarise(., mean = mean(rendement), count = n()) %>.%
   knitr::kable(., col.names = c(___))
+
+#### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r qu_group_h3-solution}
@@ -520,43 +541,42 @@ pdt %>.%
 ```
 
 ```{r qu_group_h3-check}
-grade_code("Vous savez uiliser correctement les fonctions liées au tableau dans R.")
+grade_code("Vous savez uiliser correctement les fonctions de résumé de tableau dans R.")
 ```
 
+Cet exercice s'inspire des observations relayé sur le site du sillon Belge de d'un [article consulté le 3 septembre 2019](https://www.sillonbelge.be/4731/article/2019-08-28/bintje-et-fontane-apres-110-115-jours-faute-de-casser-la-baraque-ces-deux).
 
-Cette exercice s'inspire des observations relayé sur le site du sillon Belge de l'article consulté le 3 septembre 2019 suivant :   <https://www.sillonbelge.be/4731/article/2019-08-28/bintje-et-fontane-apres-110-115-jours-faute-de-casser-la-baraque-ces-deux>
+## Taureaux d'élevage
 
-## Association wallone de l’élevage
-
-```{r, warning=F, message=F, results='hide'}
-beef <- data.io::read(file = system.file("extdata", "belgianblue.xlsx", package = "BioDataScience2"), type = "xlsx")
+```{r, warning=FALSE, message=FALSE, results='hide'}
+beef <- data.io::read(file = system.file("extdata", "belgianblue.xlsx",
+  package = "BioDataScience2"), type = "xlsx")
 ```
 
-L'association wallone de l'élevage dispose de plusieurs centres d'insémination. Ils ont un recensement des différents taureaux reproducteurs. Reproduisez le graphique ci-dessous. Ce dernier ne montre que les individus compris entre 20 et 55 mois. vous avez à votre disposition le jeu de données `beef` qui comprend les variables suivantes : `r names(beef)`
+L'association wallonne de l'élevage dispose de plusieurs centres d'insémination. Ils ont un recensement des différents taureaux reproducteurs. Réalisez par vous-même le graphique ci-dessous. Notez bien que ce dernier ne montre que les individus âgés de 20 à 55 mois. Vous avez à votre disposition le jeu de données `beef` qui comprend les variables suivantes\ : `r names(beef)`.
 
 ```{r}
 beef %>.%
   filter(., age >= 20 & age <= 55) %>.%
   chart(., weight ~ age %col=% variety) +
   geom_point() +
-  labs(
-    y = "Masse [kg]", x = "Age [mois]", 
-    color = "Variété")
+  labs(y = "Masse [kg]", x = "Age [mois]", color = "Variété")
 ```
 
-Vous avez quelques informations sur ces données ci-dessous
+Voici quelques informations utiles sur ce jeu de données.
 
-```{r, echo = TRUE}
+```{r, echo=TRUE}
 summary(beef)
 ```
 
 ```{r, qu_filter_h4-prep}
-beef <- read(file = system.file("extdata", "belgianblue.xlsx", package = "BioDataScience2"), type = "xlsx")
+beef <- read(file = system.file("extdata", "belgianblue.xlsx",
+  package = "BioDataScience2"), type = "xlsx")
 ```
 
-```{r qu_filter_h4, exercise = TRUE, exercise.setup = "qu_filter_h4-prep"}
-# Le jeu de données beef est déjà chargé en mémoire.
-# reproduisez le graphique suivant
+```{r qu_filter_h4, exercise=TRUE, exercise.lines=8, exercise.setup="qu_filter_h4-prep"}
+# Le jeu de données beef est déjà chargé en mémoire
+# Réalisez votre graphique
 beef %>.%
   ___(., ___) %>.%
   chart(., ___) +
@@ -565,8 +585,8 @@ beef %>.%
 ```
 
 ```{r qu_filter_h4-hint-1}
-# Le jeu de données beef est déjà chargé en mémoire.
-# reproduisez le graphique suivant
+# Le jeu de données beef est déjà chargé en mémoire
+# Réalisez votre graphique
 beef %>.%
   filter(., ___) %>.%
   chart(., ___) +
@@ -577,35 +597,34 @@ beef %>.%
 ```
 
 ```{r qu_filter_h4-hint-2}
-# Le jeu de données beef est déjà chargé en mémoire.
-# reproduisez le graphique suivant
+# Le jeu de données beef est déjà chargé en mémoire
+# Réalisez votre graphique
 beef %>.%
   filter(., ___ & ___) %>.%
   chart(., ___) +
   ___() +
   labs(___)
 
-# Les conditions au sein de la fonction filter() se fait avec des opérateurs logique comme &
+# Les conditions au sein de la fonction filter() s'écrivent avec des opérateurs logique >, >=, <=, <, == ou !=
+# et se combinent avec & (et) et | (ou)
 ```
 
 ```{r qu_filter_h4-hint-3}
-# Le jeu de données beef est déjà chargé en mémoire.
-# reproduisez le graphique suivant
+# Le jeu de données beef est déjà chargé en mémoire
+# Réalisez votre graphique
 beef %>.%
   filter(., age >= 20 & age <= 55) %>.%
   chart(., ___) +
   ___() +
   labs(___)
 
-# Les conditions au sein de la fonction filter() se fait avec des opérateurs logique comme &, <=, >,...
-
  #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r qu_filter_h4-solution}
 ## Solution ##
-# Le jeu de données beef est déjà chargé en mémoire.
-# reproduisez le graphique suivant
+# Le jeu de données beef est déjà chargé en mémoire
+# Réalisez votre graphique
 beef %>.%
   filter(., age >= 20 & age <= 55) %>.%
   chart(., weight ~ age %col=% variety) +
@@ -614,41 +633,47 @@ beef %>.%
 ```
 
 ```{r qu_filter_h4-check}
-grade_code("Vous vous souvenez de l'utilisation des filtres.")
+grade_code("Vous vous souvenez de l'utilisation des filtres sur les tableaux.")
 ```
 
 ## Test de Student
 
 ```{r}
 set.seed(43)
-weight <- tibble::tibble(weight = c(rnorm(n = 15, mean = 100, sd = 5), 
-                      rnorm(n = 15, mean = 102, sd = 5)), 
-           area = rep(c("a", "b"), each = 15))
+weight <- tibble::tibble(
+  weight = c(
+    rnorm(n = 15, mean = 100, sd = 5), 
+    rnorm(n = 15, mean = 102, sd = 5)), 
+  area = rep(c("a", "b"), each = 15)
+)
 weight$area <- as.factor(weight$area)
 ```
 
-Vous avez à votre disposition le jeu de données `weight` dont voici quelques informations :
+Vous avez à votre disposition le jeu de données `weight` dont voici quelques informations\ :
 
-```{r, echo = TRUE}
-# nom du jeu de données : weight
-# nom des variables du jeu de données
+```{r, echo=TRUE}
+# Nom des variables du jeu de données
 names(weight)
-# résumé des variables
+# Résumé des variables
 summary(weight)
 ```
 
-Réalisez un test de Student bilatéral avec un seuil $\alpha$ de 0.05 et de variance inégale.
+Réalisez un test de Student bilatéral avec un seuil $\alpha$ de 0.05 et de variances inégales.
 
 ```{r qu_student_prepa}
 set.seed(43)
-weight <- tibble::tibble(weight = c(rnorm(n = 15, mean = 100, sd = 5), 
-                      rnorm(n = 15, mean = 102, sd = 5)), 
-           area = rep(c("a", "b"), each = 15))
+weight <- tibble::tibble(
+  weight = c(
+    rnorm(n = 15, mean = 100, sd = 5), 
+    rnorm(n = 15, mean = 102, sd = 5)), 
+  area = rep(c("a", "b"), each = 15)
+)
 weight$area <- as.factor(weight$area)
 ```
 
-```{r qu_student_h3, exercise = TRUE, exercise.setup = "qu_student_prepa"}
-t.test(___, ___ ~ ___, alternative = ___, conf.level = ___ var.equal = ___)
+```{r qu_student_h3, exercise=TRUE, exercise.lines=3, exercise.setup="qu_student_prepa"}
+t.test(___, ___ ~ ___,
+  alternative = ___, conf.level = ___ var.equal = ___)
 ```
 
 ```{r qu_student_h3-hint-1}
@@ -670,36 +695,34 @@ t.test(data = weight, weight ~ area,
 ```
 
 ```{r qu_student_h3-check}
-grade_code("Vous vous souvenez de l'utilisation du test de Student")
+grade_code("Vous vous souvenez de l'utilisation du test de Student.")
 ```
 
 ```{r qu_student1}
-question("Y a t'il une différence significative au seuil $\\alpha$ de 0.05 de masse entre les deux zones étudiées pour la masse monitorée",
-         answer("oui"),
-         answer("non", correct = TRUE), 
-         random_answer_order = TRUE, allow_retry = TRUE)
+question("Y a t'il une différence significative au seuil $\\alpha$ de 0.05 de masse entre les deux zones étudiées pour la masse ?",
+  answer("oui"),
+  answer("non", correct = TRUE), 
+  random_answer_order = TRUE, allow_retry = TRUE)
 ```
 
 ## Choix d'un test statistique
 
 ```{r qu_test}
-question("Sélectionnez le(s) test(s) statistique(s) qui permet(tent) de vérifier l'homogénéité des variances",
-         answer("Test de Bartlett", correct = TRUE),
-         answer("Test de Shapiro-wilk"),
-         answer("Test de Friedman"),
-         answer("Test de Pearson"),
-         answer("Aucune des réponses proposées"),
-         random_answer_order = TRUE, allow_retry = TRUE)
+question("Indiquez quel test statistique permet de vérifier l'homogénéité des variances",
+  answer("Test de Bartlett", correct = TRUE),
+  answer("Test de Shapiro-Wilk"),
+  answer("Test de Friedman"),
+  answer("Test de Pearson"),
+  answer("Aucune des réponses proposées"),
+  random_answer_order = TRUE, allow_retry = TRUE)
 ```
 
 ## Conclusion
 
-Vous venez de terminer votre séance d'exercice de révision.
-
+Vous venez de terminer votre séance d'exercices de révision.
 
 ```{r comm_noscore, echo=FALSE}
-question_text(
-  "Laissez-nous vos impressions sur ce learnr",
+question_text("Laissez-nous vos impressions sur ce learnr",
   answer("", TRUE, message = "Pas de commentaires... C'est bien aussi."),
   incorrect = "Vos commentaires sont enregistrés.",
   placeholder = "Entrez vos commentaires ici...",

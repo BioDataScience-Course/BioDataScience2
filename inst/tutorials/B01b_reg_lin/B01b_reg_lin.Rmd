@@ -8,6 +8,7 @@ tutorial:
 output: 
   learnr::tutorial:
     progressive: true
+    allow_skip: true
 runtime: shiny_prerendered
 ---
 
@@ -28,7 +29,7 @@ BioDataScience2::learnr_server(input, output, session)
 
 ## Objectifs
 
-- Utiliser les outils de la régression linéaire, en particulier la fonction lm().
+- Utiliser les outils de la régression linéaire, en particulier la fonction `lm()`.
 
 ## Corrélation 
 
