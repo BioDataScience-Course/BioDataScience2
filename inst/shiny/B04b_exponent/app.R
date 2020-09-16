@@ -1,9 +1,16 @@
 learndown::learndownShinyVersion("0.0.9000")
-conf <- BioDataScience::init()
+conf <- BioDataScience::config()
 
 library(shiny)
 library(learndown)
 
+y0_init <- 3.5
+k_init <- 0.10
+error_sd <- 0.5
+set.seed(42)
+
+exponent <- function(x, y0, k)
+  y0 * exp(k * x)
 
 ui <- fluidPage(
   learndownShiny("Ajustement manuel d'un modèle : courbe exponentielle"),
@@ -43,13 +50,7 @@ ui <- fluidPage(
 
 
 server <- function(input, output, session) {
-  y0_init <- 3.5
-  k_init <- 0.10
-  error_sd <- 0.5
-  set.seed(42)
 
-  exponent <- function(x, y0, k)
-    y0 * exp(k * x)
 
   model_data <- tibble::tibble(
     x = seq(0, 20, by = 0.5),
