@@ -396,10 +396,10 @@ chart(data = tooth_growth, len ~ supp %fill=% dose) +
 <p>Sur base de données relatives à de la biométrie humaine, reproduisez le graphique ci-dessous :</p>
 <pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
 <p><img src="B01a_rappel_files/figure-html/unnamed-chunk-5-1.png" width="624" /></p>
-<p>Le jeu des données mis à votre disposition est <code>biometry</code> du package <code>BioDataScience1</code> qui comprend les variables suivantes : gender, day_birth, weight, height, wrist, year_measure, age.</p>
+<p>Le jeu des données mis à votre disposition est <code>biometry</code> du package <code>BioDataScience</code> qui comprend les variables suivantes : gender, day_birth, weight, height, wrist, year_measure, age.</p>
 <div class="tutorial-exercise" data-label="qu_facette_h4" data-caption="Code R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="8">
 <pre class="text"><code># Importation des données
-biometry &lt;- read(&quot;biometry&quot;, package = &quot;BioDataScience1&quot;, lang = &quot;FR&quot;)
+biometry &lt;- read(&quot;biometry&quot;, package = &quot;BioDataScience&quot;, lang = &quot;FR&quot;)
 
 # Votre graphique 
 chart(___, ___) +
@@ -409,7 +409,7 @@ chart(___, ___) +
 </div>
 <div class="tutorial-exercise-support" data-label="qu_facette_h4-hint-1" data-caption="Code R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># Importation des données
-biometry &lt;- read(&quot;biometry&quot;, package = &quot;BioDataScience1&quot;, lang = &quot;FR&quot;)
+biometry &lt;- read(&quot;biometry&quot;, package = &quot;BioDataScience&quot;, lang = &quot;FR&quot;)
 
 # Votre graphique 
 chart(___, ~ ___) +
@@ -420,7 +420,7 @@ chart(___, ~ ___) +
 </div>
 <div class="tutorial-exercise-support" data-label="qu_facette_h4-hint-2" data-caption="Code R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># Importation des données
-biometry &lt;- read(&quot;biometry&quot;, package = &quot;BioDataScience1&quot;, lang = &quot;FR&quot;)
+biometry &lt;- read(&quot;biometry&quot;, package = &quot;BioDataScience&quot;, lang = &quot;FR&quot;)
 
 # Votre graphique 
 chart(biometry, ~ ___ ) +
@@ -429,7 +429,7 @@ chart(biometry, ~ ___ ) +
 </div>
 <div class="tutorial-exercise-support" data-label="qu_facette_h4-hint-3" data-caption="Code R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># Importation des données
-biometry &lt;- read(&quot;biometry&quot;, package = &quot;BioDataScience1&quot;, lang = &quot;FR&quot;)
+biometry &lt;- read(&quot;biometry&quot;, package = &quot;BioDataScience&quot;, lang = &quot;FR&quot;)
 
 # Votre graphique 
 chart(biometry, ~ ___ | ___) +
@@ -441,7 +441,7 @@ chart(biometry, ~ ___ | ___) +
 <div class="tutorial-exercise-support" data-label="qu_facette_h4-solution" data-caption="Code R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>## Solution ##
 # Importation des données
-biometry &lt;- read(&quot;biometry&quot;, package = &quot;BioDataScience1&quot;, lang = &quot;FR&quot;)
+biometry &lt;- read(&quot;biometry&quot;, package = &quot;BioDataScience&quot;, lang = &quot;FR&quot;)
 
 # Votre graphique 
 chart(biometry, ~ weight | gender) + 
@@ -452,10 +452,10 @@ chart(biometry, ~ weight | gender) +
 <div id="section-biométrie-humaine-2" class="section level2">
 <h2>Biométrie humaine 2</h2>
 <p>Calculer l’indice de masse corporelle imc (variable <code>bmi</code> en anglais) qui correspond à la formule suivante :</p>
-<p><span class="math display">\[bmi = mass\ [kg]/height [cm]^2\]</span> Vous travaillez toujours sur le jeu des données <code>biometry</code> du package <code>BioDataScience1</code> qui comprend, pour rappel, les variables suivantes : gender, day_birth, weight, height, wrist, year_measure, age.</p>
+<p><span class="math display">\[bmi = mass\ [kg]/height [cm]^2\]</span> Vous travaillez toujours sur le jeu des données <code>biometry</code> du package <code>BioDataScience</code> qui comprend, pour rappel, les variables suivantes : gender, day_birth, weight, height, wrist, year_measure, age.</p>
 <div class="tutorial-exercise" data-label="qu_mutate_h2" data-caption="Code R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="6">
 <pre class="text"><code># Importation des données
-biometry &lt;- read(&quot;biometry&quot;, package = &quot;BioDataScience1&quot;, lang = &quot;FR&quot;)
+biometry &lt;- read(&quot;biometry&quot;, package = &quot;BioDataScience&quot;, lang = &quot;FR&quot;)
 # Calcul du bmi
 biometry &lt;- mutate(___, bmi = ___)
 summary(biometry)</code></pre>
@@ -463,7 +463,7 @@ summary(biometry)</code></pre>
 </div>
 <div class="tutorial-exercise-support" data-label="qu_mutate_h2-hint-1" data-caption="Code R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># Importation des données
-biometry &lt;- read(&quot;biometry&quot;, package = &quot;BioDataScience1&quot;, lang = &quot;FR&quot;)
+biometry &lt;- read(&quot;biometry&quot;, package = &quot;BioDataScience&quot;, lang = &quot;FR&quot;)
 # Calcul du bmi
 biometry &lt;- mutate(___, bmi = ___/(___/100)^2)
 summary(biometry)
@@ -472,7 +472,7 @@ summary(biometry)
 </div>
 <div class="tutorial-exercise-support" data-label="qu_mutate_h2-solution" data-caption="Code R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># Importation des données
-biometry &lt;- read(&quot;biometry&quot;, package = &quot;BioDataScience1&quot;, lang = &quot;FR&quot;)
+biometry &lt;- read(&quot;biometry&quot;, package = &quot;BioDataScience&quot;, lang = &quot;FR&quot;)
 # Calcul du bmi
 biometry &lt;- mutate(biometry, bmi = weight/(height/100)^2)
 summary(biometry)</code></pre>
@@ -530,11 +530,11 @@ summary(biometry)</code></pre>
   summarise(., mean = mean(rendement), count = n()) %&gt;.%
   knitr::kable(., col.names = c(&quot;Variété&quot; ,&quot;Rendement moyen [t/ha]&quot;, &quot;Nombre de parcelles&quot;))</code></pre>
 </div>
-<p>Cet exercice s’inspire des observations relayé sur le site du sillon Belge de l’article consulté le 3 septembre 2019 suivant : <a href="https://www.sillonbelge.be/4731/article/2019-08-28/bintje-et-fontane-apres-110-115-jours-faute-de-casser-la-baraque-ces-deux" class="uri">https://www.sillonbelge.be/4731/article/2019-08-28/bintje-et-fontane-apres-110-115-jours-faute-de-casser-la-baraque-ces-deux</a></p>
+<p>Cet exercice s’inspire des observations relayé sur le site du sillon Belge de d’un <a href="https://www.sillonbelge.be/4731/article/2019-08-28/bintje-et-fontane-apres-110-115-jours-faute-de-casser-la-baraque-ces-deux">article consulté le 3 septembre 2019</a>.</p>
 </div>
 <div id="section-taureaux-délevage" class="section level2">
 <h2>Taureaux d’élevage</h2>
-<p>L’association wallonne de l’élevage dispose de plusieurs centres d’insémination. Ils ont un recensement des différents taureaux reproducteurs. Réalisez par vous-même le graphique ci-dessous. Notez bien que dernier ne montre que les individus compris entre 20 et 55 mois. Vous avez à votre disposition le jeu de données <code>beef</code> qui comprend les variables suivantes : variety, name, age, height, weight</p>
+<p>L’association wallonne de l’élevage dispose de plusieurs centres d’insémination. Ils ont un recensement des différents taureaux reproducteurs. Réalisez par vous-même le graphique ci-dessous. Notez bien que ce dernier ne montre que les individus âgés de 20 à 55 mois. Vous avez à votre disposition le jeu de données <code>beef</code> qui comprend les variables suivantes : variety, name, age, height, weight.</p>
 <p><img src="B01a_rappel_files/figure-html/unnamed-chunk-9-1.png" width="624" /></p>
 <p>Voici quelques informations utiles sur ce jeu de données.</p>
 <pre class="r"><code>summary(beef)</code></pre>
@@ -665,7 +665,7 @@ t.test(data = weight, weight ~ area,
 </div>
 <div id="section-conclusion" class="section level2">
 <h2>Conclusion</h2>
-<p>Vous venez de terminer votre séance d’exercice de révision.</p>
+<p>Vous venez de terminer votre séance d’exercices de révision.</p>
 <div class="panel panel-default">
 <div data-label="comm_noscore" class="tutorial-question panel-body">
 <div id="comm_noscore-answer_container" class="shiny-html-output"></div>
@@ -680,7 +680,7 @@ SciViews::R()
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-learnr:::register_http_handlers(session, metadata = list(id = "B01a_rappel", version = "2.0.3/22"))
+learnr:::register_http_handlers(session, metadata = list(id = "B01a_rappel", version = "2.0.4/22"))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
@@ -707,29 +707,29 @@ BioDataScience2::learnr_server(input, output, session)
  
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "qu_intro-1", question = structure("Définissez &#39;SciViews Box&#39;", html = TRUE, class = c("html", 
-"character")), answers = list(structure(list(id = "lnr_ans_353f863", 
+"character")), answers = list(structure(list(id = "lnr_ans_46515fc", 
     option = "Une machine virtuelle dédiée à la recherche scientifique avec de nombreux programmes préconfigurés", 
     value = "Une machine virtuelle dédiée à la recherche scientifique avec de nombreux programmes préconfigurés", 
     label = structure("Une machine virtuelle dédiée à la recherche scientifique avec de nombreux programmes préconfigurés", html = TRUE, class = c("html", 
     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_2585374", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_9c35561", 
     option = "Un environnement de développement intégré", 
     value = "Un environnement de développement intégré", label = structure("Un environnement de développement intégré", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_b6a644d", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_b8a09d9", 
     option = "Un logiciel de gestion de versions", value = "Un logiciel de gestion de versions", 
     label = structure("Un logiciel de gestion de versions", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_b86e597", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_5c8cddb", 
     option = "Un service web d'hébergement de projet", value = "Un service web d'hébergement de projet", 
     label = structure("Un service web d&#39;hébergement de projet", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_a994d0b", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_43dd45f", 
     option = "Un langage avec une syntaxe facile à lire et à écrire", 
     value = "Un langage avec une syntaxe facile à lire et à écrire", 
     label = structure("Un langage avec une syntaxe facile à lire et à écrire", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_ac7698", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_d3c856b", 
     option = "Aucune des réponses proposées n'est correcte", 
     value = "Aucune des réponses proposées n'est correcte", 
     label = structure("Aucune des réponses proposées n&#39;est correcte", html = TRUE, class = c("html", 
@@ -742,35 +742,35 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label 
 "character")), message = NULL, post_message = NULL), ids = list(
     answer = "qu_intro-1-answer", question = "qu_intro-1"), loading = structure("<strong>Loading:<\u002fstrong> \nDéfinissez &#39;SciViews Box&#39;\n<br/><br/><br/>", html = TRUE, class = c("html", 
 "character")), random_answer_order = TRUE, allow_retry = TRUE, 
-    seed = 1338987959.87649, options = list()), class = c("learnr_radio", 
+    seed = 1666125383.22415, options = list()), class = c("learnr_radio", 
 "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "qu_intro-2", question = structure("Définissez &#39;RStudio&#39;", html = TRUE, class = c("html", 
-"character")), answers = list(structure(list(id = "lnr_ans_1cbc429", 
+"character")), answers = list(structure(list(id = "lnr_ans_5a2d717", 
     option = "Une machine virtuelle dédiée à la recherche scientifique avec de nombreux programmes préconfigurés", 
     value = "Une machine virtuelle dédiée à la recherche scientifique avec de nombreux programmes préconfigurés", 
     label = structure("Une machine virtuelle dédiée à la recherche scientifique avec de nombreux programmes préconfigurés", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_cdaf6a5", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_e7d3299", 
     option = "Un environnement de développement intégré", 
     value = "Un environnement de développement intégré", label = structure("Un environnement de développement intégré", html = TRUE, class = c("html", 
     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_a02fff", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_34bef44", 
     option = "Un logiciel de gestion de versions", value = "Un logiciel de gestion de versions", 
     label = structure("Un logiciel de gestion de versions", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_77a0a7d", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_f98cfa0", 
     option = "Un service web d'hébergement de projet", value = "Un service web d'hébergement de projet", 
     label = structure("Un service web d&#39;hébergement de projet", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_cd6d8be", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_ada5253", 
     option = "Un langage avec une syntaxe facile à lire et à écrire", 
     value = "Un langage avec une syntaxe facile à lire et à écrire", 
     label = structure("Un langage avec une syntaxe facile à lire et à écrire", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_7e8b9a", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_9075180", 
     option = "Aucune des réponses proposées n'est correcte", 
     value = "Aucune des réponses proposées n'est correcte", 
     label = structure("Aucune des réponses proposées n&#39;est correcte", html = TRUE, class = c("html", 
@@ -783,35 +783,35 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label 
 "character")), message = NULL, post_message = NULL), ids = list(
     answer = "qu_intro-2-answer", question = "qu_intro-2"), loading = structure("<strong>Loading:<\u002fstrong> \nDéfinissez &#39;RStudio&#39;\n<br/><br/><br/>", html = TRUE, class = c("html", 
 "character")), random_answer_order = TRUE, allow_retry = TRUE, 
-    seed = 178137858.417048, options = list()), class = c("learnr_radio", 
+    seed = 1187929641.44683, options = list()), class = c("learnr_radio", 
 "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "qu_intro-3", question = structure("Définissez &#39;Git&#39;", html = TRUE, class = c("html", 
-"character")), answers = list(structure(list(id = "lnr_ans_dbb080a", 
+"character")), answers = list(structure(list(id = "lnr_ans_c8b2efb", 
     option = "Une machine virtuelle dédiée à la recherche scientifique avec de nombreux programmes préconfigurés", 
     value = "Une machine virtuelle dédiée à la recherche scientifique avec de nombreux programmes préconfigurés", 
     label = structure("Une machine virtuelle dédiée à la recherche scientifique avec de nombreux programmes préconfigurés", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_bf4bc7f", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_a2df86d", 
     option = "Un environnement de développement intégré", 
     value = "Un environnement de développement intégré", label = structure("Un environnement de développement intégré", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_eb4e568", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_c96629c", 
     option = "Un logiciel de gestion de versions", value = "Un logiciel de gestion de versions", 
     label = structure("Un logiciel de gestion de versions", html = TRUE, class = c("html", 
     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_e524716", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_74091e", 
     option = "Un service web d'hébergement de projet", value = "Un service web d'hébergement de projet", 
     label = structure("Un service web d&#39;hébergement de projet", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_3d2c99e", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_e128116", 
     option = "Un langage avec une syntaxe facile à lire et à écrire", 
     value = "Un langage avec une syntaxe facile à lire et à écrire", 
     label = structure("Un langage avec une syntaxe facile à lire et à écrire", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_2d5b3f0", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_f78060b", 
     option = "Aucune des réponses proposées n'est correcte", 
     value = "Aucune des réponses proposées n'est correcte", 
     label = structure("Aucune des réponses proposées n&#39;est correcte", html = TRUE, class = c("html", 
@@ -824,35 +824,35 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label 
 "character")), message = NULL, post_message = NULL), ids = list(
     answer = "qu_intro-3-answer", question = "qu_intro-3"), loading = structure("<strong>Loading:<\u002fstrong> \nDéfinissez &#39;Git&#39;\n<br/><br/><br/>", html = TRUE, class = c("html", 
 "character")), random_answer_order = TRUE, allow_retry = TRUE, 
-    seed = 527110670.254545, options = list()), class = c("learnr_radio", 
+    seed = 946338814.059327, options = list()), class = c("learnr_radio", 
 "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "qu_intro-4", question = structure("Définissez &#39;GitHub&#39;", html = TRUE, class = c("html", 
-"character")), answers = list(structure(list(id = "lnr_ans_f9802fb", 
+"character")), answers = list(structure(list(id = "lnr_ans_72ada1e", 
     option = "Une machine virtuelle dédiée à la recherche scientifique avec de nombreux programmes préconfigurés", 
     value = "Une machine virtuelle dédiée à la recherche scientifique avec de nombreux programmes préconfigurés", 
     label = structure("Une machine virtuelle dédiée à la recherche scientifique avec de nombreux programmes préconfigurés", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_11be90b", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_6c56369", 
     option = "Un environnement de développement intégré", 
     value = "Un environnement de développement intégré", label = structure("Un environnement de développement intégré", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_900bff7", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_17c5176", 
     option = "Un logiciel de gestion de versions", value = "Un logiciel de gestion de versions", 
     label = structure("Un logiciel de gestion de versions", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_b0c54f5", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_6095dcf", 
     option = "Un service web d'hébergement de projet", value = "Un service web d'hébergement de projet", 
     label = structure("Un service web d&#39;hébergement de projet", html = TRUE, class = c("html", 
     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_6dbb9fd", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_e4c1758", 
     option = "Un langage avec une syntaxe facile à lire et à écrire", 
     value = "Un langage avec une syntaxe facile à lire et à écrire", 
     label = structure("Un langage avec une syntaxe facile à lire et à écrire", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_a2b7bd0", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_a4af35f", 
     option = "Aucune des réponses proposées n'est correcte", 
     value = "Aucune des réponses proposées n'est correcte", 
     label = structure("Aucune des réponses proposées n&#39;est correcte", html = TRUE, class = c("html", 
@@ -865,35 +865,35 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label 
 "character")), message = NULL, post_message = NULL), ids = list(
     answer = "qu_intro-4-answer", question = "qu_intro-4"), loading = structure("<strong>Loading:<\u002fstrong> \nDéfinissez &#39;GitHub&#39;\n<br/><br/><br/>", html = TRUE, class = c("html", 
 "character")), random_answer_order = TRUE, allow_retry = TRUE, 
-    seed = 1261676076.91249, options = list()), class = c("learnr_radio", 
+    seed = 1744565196.68762, options = list()), class = c("learnr_radio", 
 "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "qu_intro-5", question = structure("Définissez &#39;Markdown&#39;", html = TRUE, class = c("html", 
-"character")), answers = list(structure(list(id = "lnr_ans_14f386b", 
+"character")), answers = list(structure(list(id = "lnr_ans_cd17987", 
     option = "Une machine virtuelle dédiée à la recherche scientifique avec de nombreux programmes préconfigurés", 
     value = "Une machine virtuelle dédiée à la recherche scientifique avec de nombreux programmes préconfigurés", 
     label = structure("Une machine virtuelle dédiée à la recherche scientifique avec de nombreux programmes préconfigurés", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_ca9b8a9", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_2c2d287", 
     option = "Un environnement de développement intégré", 
     value = "Un environnement de développement intégré", label = structure("Un environnement de développement intégré", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_639f211", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_726a9c5", 
     option = "Un logiciel de gestion de versions", value = "Un logiciel de gestion de versions", 
     label = structure("Un logiciel de gestion de versions", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_5ef8beb", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_dd6d806", 
     option = "Un service web d'hébergement de projet", value = "Un service web d'hébergement de projet", 
     label = structure("Un service web d&#39;hébergement de projet", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_9672f59", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_d11fa72", 
     option = "Un langage avec une syntaxe facile à lire et à écrire", 
     value = "Un langage avec une syntaxe facile à lire et à écrire", 
     label = structure("Un langage avec une syntaxe facile à lire et à écrire", html = TRUE, class = c("html", 
     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_7346f0f", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_e3c2a37", 
     option = "Aucune des réponses proposées n'est correcte", 
     value = "Aucune des réponses proposées n'est correcte", 
     label = structure("Aucune des réponses proposées n&#39;est correcte", html = TRUE, class = c("html", 
@@ -906,31 +906,31 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label 
 "character")), message = NULL, post_message = NULL), ids = list(
     answer = "qu_intro-5-answer", question = "qu_intro-5"), loading = structure("<strong>Loading:<\u002fstrong> \nDéfinissez &#39;Markdown&#39;\n<br/><br/><br/>", html = TRUE, class = c("html", 
 "character")), random_answer_order = TRUE, allow_retry = TRUE, 
-    seed = 916312025.073309, options = list()), class = c("learnr_radio", 
+    seed = 1884662920.12239, options = list()), class = c("learnr_radio", 
 "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "qu_git1-1", question = structure("Qualifiez l&#39;action <strong>A<\u002fstrong>", html = TRUE, class = c("html", 
-"character")), answers = list(structure(list(id = "lnr_ans_e92195d", 
+"character")), answers = list(structure(list(id = "lnr_ans_ee07abe", 
     option = "commit", value = "commit", label = structure("commit", html = TRUE, class = c("html", 
     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_1cda0a3", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_a87d5b1", 
     option = "clone", value = "clone", label = structure("clone", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_25bd90c", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_4a5ff12", 
     option = "push", value = "push", label = structure("push", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_ef54c22", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_b1c53ea", 
     option = "pull", value = "pull", label = structure("pull", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_fae4995", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_b7c80cf", 
     option = "fetch", value = "fetch", label = structure("fetch", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_c783707", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_671c1a1", 
     option = "fork", value = "fork", label = structure("fork", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_dabc7f0", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_1f092a4", 
     option = "pull request", value = "pull request", label = structure("pull request", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
 "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", 
@@ -941,31 +941,31 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label 
 "character")), message = NULL, post_message = NULL), ids = list(
     answer = "qu_git1-1-answer", question = "qu_git1-1"), loading = structure("<strong>Loading:<\u002fstrong> \nQualifiez l&#39;action <strong>A<\u002fstrong>\n<br/><br/><br/>", html = TRUE, class = c("html", 
 "character")), random_answer_order = TRUE, allow_retry = TRUE, 
-    seed = 1345413941.37349, options = list()), class = c("learnr_radio", 
+    seed = 1170433462.95497, options = list()), class = c("learnr_radio", 
 "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "qu_git1-2", question = structure("Qualifiez l&#39;action <strong>B<\u002fstrong>", html = TRUE, class = c("html", 
-"character")), answers = list(structure(list(id = "lnr_ans_8e50fe2", 
+"character")), answers = list(structure(list(id = "lnr_ans_e2a6889", 
     option = "commit", value = "commit", label = structure("commit", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_4cac1a2", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_4946b43", 
     option = "clone", value = "clone", label = structure("clone", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_8c1234c", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_ca9da2f", 
     option = "push", value = "push", label = structure("push", html = TRUE, class = c("html", 
     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_430a695", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_a427164", 
     option = "pull", value = "pull", label = structure("pull", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_5728a32", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_f4e9cc1", 
     option = "fetch", value = "fetch", label = structure("fetch", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_67d1dd0", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_2e3e4f7", 
     option = "fork", value = "fork", label = structure("fork", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_19e174a", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_52314ac", 
     option = "pull request", value = "pull request", label = structure("pull request", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
 "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", 
@@ -976,31 +976,31 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label 
 "character")), message = NULL, post_message = NULL), ids = list(
     answer = "qu_git1-2-answer", question = "qu_git1-2"), loading = structure("<strong>Loading:<\u002fstrong> \nQualifiez l&#39;action <strong>B<\u002fstrong>\n<br/><br/><br/>", html = TRUE, class = c("html", 
 "character")), random_answer_order = TRUE, allow_retry = TRUE, 
-    seed = 1165206824.45741, options = list()), class = c("learnr_radio", 
+    seed = 716662813.666278, options = list()), class = c("learnr_radio", 
 "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "qu_git1-3", question = structure("Qualifiez l&#39;action <strong>C<\u002fstrong>", html = TRUE, class = c("html", 
-"character")), answers = list(structure(list(id = "lnr_ans_674e756", 
+"character")), answers = list(structure(list(id = "lnr_ans_2ceaac9", 
     option = "commit", value = "commit", label = structure("commit", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_39b9a14", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_1760aec", 
     option = "clone", value = "clone", label = structure("clone", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_9321a00", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_28bf1e1", 
     option = "push", value = "push", label = structure("push", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_217e2b5", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_184fc0b", 
     option = "pull", value = "pull", label = structure("pull", html = TRUE, class = c("html", 
     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_db11476", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_1dfd8a0", 
     option = "fetch", value = "fetch", label = structure("fetch", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_9dea1c3", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_b781051", 
     option = "fork", value = "fork", label = structure("fork", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_285829b", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_afafe71", 
     option = "pull request", value = "pull request", label = structure("pull request", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
 "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", 
@@ -1011,31 +1011,31 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label 
 "character")), message = NULL, post_message = NULL), ids = list(
     answer = "qu_git1-3-answer", question = "qu_git1-3"), loading = structure("<strong>Loading:<\u002fstrong> \nQualifiez l&#39;action <strong>C<\u002fstrong>\n<br/><br/><br/>", html = TRUE, class = c("html", 
 "character")), random_answer_order = TRUE, allow_retry = TRUE, 
-    seed = 1912319672.60951, options = list()), class = c("learnr_radio", 
+    seed = 710584601.169108, options = list()), class = c("learnr_radio", 
 "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "qu_git2-1", question = structure("Qualifiez l&#39;action <strong>A<\u002fstrong>", html = TRUE, class = c("html", 
-"character")), answers = list(structure(list(id = "lnr_ans_e943440", 
+"character")), answers = list(structure(list(id = "lnr_ans_b0d50ed", 
     option = "commit", value = "commit", label = structure("commit", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_84e8643", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_92a6fad", 
     option = "clone", value = "clone", label = structure("clone", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_62748dc", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_71e1b5a", 
     option = "push", value = "push", label = structure("push", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_c82ce5b", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_853d86c", 
     option = "pull", value = "pull", label = structure("pull", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_c00b86b", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_64b7a74", 
     option = "fetch", value = "fetch", label = structure("fetch", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_49c6083", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_cee9b5b", 
     option = "fork", value = "fork", label = structure("fork", html = TRUE, class = c("html", 
     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_a691feb", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_e035e3d", 
     option = "pull request", value = "pull request", label = structure("pull request", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
 "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", 
@@ -1046,31 +1046,31 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label 
 "character")), message = NULL, post_message = NULL), ids = list(
     answer = "qu_git2-1-answer", question = "qu_git2-1"), loading = structure("<strong>Loading:<\u002fstrong> \nQualifiez l&#39;action <strong>A<\u002fstrong>\n<br/><br/><br/>", html = TRUE, class = c("html", 
 "character")), random_answer_order = TRUE, allow_retry = TRUE, 
-    seed = 746785117.652251, options = list()), class = c("learnr_radio", 
+    seed = 352397022.835902, options = list()), class = c("learnr_radio", 
 "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "qu_git2-2", question = structure("Qualifiez l&#39;action <strong>B<\u002fstrong>", html = TRUE, class = c("html", 
-"character")), answers = list(structure(list(id = "lnr_ans_81e96c2", 
+"character")), answers = list(structure(list(id = "lnr_ans_1a80eb1", 
     option = "commit", value = "commit", label = structure("commit", html = TRUE, class = c("html", 
     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_86a6565", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_a8ab893", 
     option = "clone", value = "clone", label = structure("clone", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_ad561ac", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_f397361", 
     option = "push", value = "push", label = structure("push", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_784afb4", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_c42546a", 
     option = "pull", value = "pull", label = structure("pull", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_5dc41", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_45abff8", 
     option = "fetch", value = "fetch", label = structure("fetch", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_caab305", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_170942e", 
     option = "fork", value = "fork", label = structure("fork", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_13de183", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_9757b03", 
     option = "pull request", value = "pull request", label = structure("pull request", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
 "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", 
@@ -1081,31 +1081,31 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label 
 "character")), message = NULL, post_message = NULL), ids = list(
     answer = "qu_git2-2-answer", question = "qu_git2-2"), loading = structure("<strong>Loading:<\u002fstrong> \nQualifiez l&#39;action <strong>B<\u002fstrong>\n<br/><br/><br/>", html = TRUE, class = c("html", 
 "character")), random_answer_order = TRUE, allow_retry = TRUE, 
-    seed = 1675790714.21965, options = list()), class = c("learnr_radio", 
+    seed = 1105918195.48502, options = list()), class = c("learnr_radio", 
 "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "qu_git2-3", question = structure("Qualifiez l&#39;action <strong>C<\u002fstrong>", html = TRUE, class = c("html", 
-"character")), answers = list(structure(list(id = "lnr_ans_269bf4b", 
+"character")), answers = list(structure(list(id = "lnr_ans_35fc287", 
     option = "commit", value = "commit", label = structure("commit", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_cedf5b7", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_ca3b02f", 
     option = "clone", value = "clone", label = structure("clone", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_643a4a3", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_44aede5", 
     option = "push", value = "push", label = structure("push", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_8f8c1c3", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_ffbeca9", 
     option = "pull", value = "pull", label = structure("pull", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_70ff226", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_f84b19c", 
     option = "fetch", value = "fetch", label = structure("fetch", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_30b0b5a", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_560e414", 
     option = "fork", value = "fork", label = structure("fork", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_4d2ab7b", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_23747b5", 
     option = "pull request", value = "pull request", label = structure("pull request", html = TRUE, class = c("html", 
     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", 
 "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", 
@@ -1116,31 +1116,31 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label 
 "character")), message = NULL, post_message = NULL), ids = list(
     answer = "qu_git2-3-answer", question = "qu_git2-3"), loading = structure("<strong>Loading:<\u002fstrong> \nQualifiez l&#39;action <strong>C<\u002fstrong>\n<br/><br/><br/>", html = TRUE, class = c("html", 
 "character")), random_answer_order = TRUE, allow_retry = TRUE, 
-    seed = 29739725.9861514, options = list()), class = c("learnr_radio", 
+    seed = 126754221.440975, options = list()), class = c("learnr_radio", 
 "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "qu_git3-1", question = structure("Qualifiez l&#39;action <strong>A<\u002fstrong>", html = TRUE, class = c("html", 
-"character")), answers = list(structure(list(id = "lnr_ans_b88f329", 
+"character")), answers = list(structure(list(id = "lnr_ans_2d12aa5", 
     option = "commit", value = "commit", label = structure("commit", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_ce3abb5", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_aacc4b0", 
     option = "clone", value = "clone", label = structure("clone", html = TRUE, class = c("html", 
     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_62990a7", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_2e61a28", 
     option = "push", value = "push", label = structure("push", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_94ae3ab", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_1bd6db0", 
     option = "pull", value = "pull", label = structure("pull", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_9f1f88a", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_13aa99d", 
     option = "fetch", value = "fetch", label = structure("fetch", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_881f5a8", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_4699db", 
     option = "fork", value = "fork", label = structure("fork", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_3aec3d1", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_313464e", 
     option = "pull request", value = "pull request", label = structure("pull request", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
 "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", 
@@ -1151,31 +1151,31 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label 
 "character")), message = NULL, post_message = NULL), ids = list(
     answer = "qu_git3-1-answer", question = "qu_git3-1"), loading = structure("<strong>Loading:<\u002fstrong> \nQualifiez l&#39;action <strong>A<\u002fstrong>\n<br/><br/><br/>", html = TRUE, class = c("html", 
 "character")), random_answer_order = TRUE, allow_retry = TRUE, 
-    seed = 922884904.070248, options = list()), class = c("learnr_radio", 
+    seed = 845388214.106335, options = list()), class = c("learnr_radio", 
 "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "qu_git3-2", question = structure("Qualifiez l&#39;action <strong>B<\u002fstrong>", html = TRUE, class = c("html", 
-"character")), answers = list(structure(list(id = "lnr_ans_c2a76b2", 
+"character")), answers = list(structure(list(id = "lnr_ans_92ab95", 
     option = "commit", value = "commit", label = structure("commit", html = TRUE, class = c("html", 
     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_fe62ace", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_7b93258", 
     option = "clone", value = "clone", label = structure("clone", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_c47715c", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_fc517fb", 
     option = "push", value = "push", label = structure("push", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_c22fd61", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_ffb6f54", 
     option = "pull", value = "pull", label = structure("pull", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_850d99", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_94e4ab9", 
     option = "fetch", value = "fetch", label = structure("fetch", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_512a12f", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_c3c4f41", 
     option = "fork", value = "fork", label = structure("fork", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_a03f8a1", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_abe83f7", 
     option = "pull request", value = "pull request", label = structure("pull request", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
 "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", 
@@ -1186,31 +1186,31 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label 
 "character")), message = NULL, post_message = NULL), ids = list(
     answer = "qu_git3-2-answer", question = "qu_git3-2"), loading = structure("<strong>Loading:<\u002fstrong> \nQualifiez l&#39;action <strong>B<\u002fstrong>\n<br/><br/><br/>", html = TRUE, class = c("html", 
 "character")), random_answer_order = TRUE, allow_retry = TRUE, 
-    seed = 746131838.652555, options = list()), class = c("learnr_radio", 
+    seed = 467565569.782273, options = list()), class = c("learnr_radio", 
 "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "qu_git3-3", question = structure("Qualifiez l&#39;action <strong>C<\u002fstrong>", html = TRUE, class = c("html", 
-"character")), answers = list(structure(list(id = "lnr_ans_3aef2da", 
+"character")), answers = list(structure(list(id = "lnr_ans_ed767d7", 
     option = "commit", value = "commit", label = structure("commit", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_bba722", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_a12187c", 
     option = "clone", value = "clone", label = structure("clone", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_cf3d110", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_6e6cd9c", 
     option = "push", value = "push", label = structure("push", html = TRUE, class = c("html", 
     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_9bd7918", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_fbeb62a", 
     option = "pull", value = "pull", label = structure("pull", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_8f01bdc", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_a9c1530", 
     option = "fetch", value = "fetch", label = structure("fetch", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_cc6562b", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_3c1357", 
     option = "fork", value = "fork", label = structure("fork", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
-"tutorial_quiz_answer")), structure(list(id = "lnr_ans_8def4d3", 
+"tutorial_quiz_answer")), structure(list(id = "lnr_ans_484b14a", 
     option = "pull request", value = "pull request", label = structure("pull request", html = TRUE, class = c("html", 
     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
 "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", 
@@ -1221,7 +1221,7 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label 
 "character")), message = NULL, post_message = NULL), ids = list(
     answer = "qu_git3-3-answer", question = "qu_git3-3"), loading = structure("<strong>Loading:<\u002fstrong> \nQualifiez l&#39;action <strong>C<\u002fstrong>\n<br/><br/><br/>", html = TRUE, class = c("html", 
 "character")), random_answer_order = TRUE, allow_retry = TRUE, 
-    seed = 1146061413.46632, options = list()), class = c("learnr_radio", 
+    seed = 1143958268.9673, options = list()), class = c("learnr_radio", 
 "tutorial_question")))
 </script>
  
@@ -1320,12 +1320,12 @@ output$`tutorial-exercise-qu_facette_h4-output` <- renderUI({
  
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache("qu_facette_h4", list(setup = NULL, chunks = list(list(label = "qu_facette_h4", 
-    code = "# Importation des données\nbiometry <- read(\"biometry\", package = \"BioDataScience1\", lang = \"FR\")\n\n# Votre graphique \nchart(___, ___) +\n  ___() +\n  labs(y = ___)", 
+    code = "# Importation des données\nbiometry <- read(\"biometry\", package = \"BioDataScience\", lang = \"FR\")\n\n# Votre graphique \nchart(___, ___) +\n  ___() +\n  labs(y = ___)", 
     opts = list(label = "\"qu_facette_h4\"", exercise = "TRUE", 
         exercise.lines = "8"), engine = "r")), code_check = NULL, 
     error_check = NULL, check = structure("grade_code(\"Vous vous souvenez de la façon d'utiliser les facettes dans un graphique.\")", chunk_opts = list(
         label = "qu_facette_h4-check")), solution = structure(c("## Solution ##", 
-    "# Importation des données", "biometry <- read(\"biometry\", package = \"BioDataScience1\", lang = \"FR\")", 
+    "# Importation des données", "biometry <- read(\"biometry\", package = \"BioDataScience\", lang = \"FR\")", 
     "", "# Votre graphique ", "chart(biometry, ~ weight | gender) + ", 
     "  geom_histogram() +", "  ylab(\"Dénombrement\")"), chunk_opts = list(
         label = "qu_facette_h4-solution")), options = list(eval = FALSE, 
@@ -1349,7 +1349,7 @@ learnr:::store_exercise_cache("qu_facette_h4", list(setup = NULL, chunks = list(
         exercise.error.check.code = "grade_code()", exercise.cap = "Code R", 
         label = "qu_facette_h4", exercise = TRUE, exercise.lines = 8, 
         out.width.px = 624, out.height.px = 384, code = c("# Importation des données", 
-        "biometry <- read(\"biometry\", package = \"BioDataScience1\", lang = \"FR\")", 
+        "biometry <- read(\"biometry\", package = \"BioDataScience\", lang = \"FR\")", 
         "", "# Votre graphique ", "chart(___, ___) +", "  ___() +", 
         "  labs(y = ___)"), params.src = "qu_facette_h4, exercise=TRUE, exercise.lines=8", 
         fig.num = 0, exercise.df_print = "paged"), engine = "r"))
@@ -1364,12 +1364,12 @@ output$`tutorial-exercise-qu_mutate_h2-output` <- renderUI({
  
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::store_exercise_cache("qu_mutate_h2", list(setup = NULL, chunks = list(list(label = "qu_mutate_h2", 
-    code = "# Importation des données\nbiometry <- read(\"biometry\", package = \"BioDataScience1\", lang = \"FR\")\n# Calcul du bmi\nbiometry <- mutate(___, bmi = ___)\nsummary(biometry)", 
+    code = "# Importation des données\nbiometry <- read(\"biometry\", package = \"BioDataScience\", lang = \"FR\")\n# Calcul du bmi\nbiometry <- mutate(___, bmi = ___)\nsummary(biometry)", 
     opts = list(label = "\"qu_mutate_h2\"", exercise = "TRUE", 
         exercise.lines = "6"), engine = "r")), code_check = NULL, 
     error_check = NULL, check = structure("grade_code(\"Vous êtes toujours capable d'utiliser la fonction mutate().\")", chunk_opts = list(
         label = "qu_mutate_h2-check")), solution = structure(c("# Importation des données", 
-    "biometry <- read(\"biometry\", package = \"BioDataScience1\", lang = \"FR\")", 
+    "biometry <- read(\"biometry\", package = \"BioDataScience\", lang = \"FR\")", 
     "# Calcul du bmi", "biometry <- mutate(biometry, bmi = weight/(height/100)^2)", 
     "summary(biometry)"), chunk_opts = list(label = "qu_mutate_h2-solution")), 
     options = list(eval = FALSE, echo = TRUE, results = "markup", 
@@ -1393,7 +1393,7 @@ learnr:::store_exercise_cache("qu_mutate_h2", list(setup = NULL, chunks = list(l
         exercise.error.check.code = "grade_code()", exercise.cap = "Code R", 
         label = "qu_mutate_h2", exercise = TRUE, exercise.lines = 6, 
         out.width.px = 624, out.height.px = 384, code = c("# Importation des données", 
-        "biometry <- read(\"biometry\", package = \"BioDataScience1\", lang = \"FR\")", 
+        "biometry <- read(\"biometry\", package = \"BioDataScience\", lang = \"FR\")", 
         "# Calcul du bmi", "biometry <- mutate(___, bmi = ___)", 
         "summary(biometry)"), params.src = "qu_mutate_h2, exercise=TRUE, exercise.lines=6", 
         fig.num = 0, exercise.df_print = "paged"), engine = "r"))
@@ -1541,7 +1541,7 @@ learnr:::store_exercise_cache("qu_student_h3", list(setup = "set.seed(43)\nweigh
  
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "qu_student1", 
-    question = structure("Y a t&#39;il une différence significative au seuil \\(\\alpha\\) de 0.05 de masse entre les deux zones étudiées pour la masse?", html = TRUE, class = c("html", 
+    question = structure("Y a t&#39;il une différence significative au seuil \\(\\alpha\\) de 0.05 de masse entre les deux zones étudiées pour la masse ?", html = TRUE, class = c("html", 
     "character")), answers = list(structure(list(id = "lnr_ans_f59de81", 
         option = "oui", value = "oui", label = structure("oui", html = TRUE, class = c("html", 
         "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", 
@@ -1555,14 +1555,14 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label 
     "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", 
     "character")), message = NULL, post_message = NULL), ids = list(
         answer = "qu_student1-answer", question = "qu_student1"), 
-    loading = structure("<strong>Loading:<\u002fstrong> \nY a t&#39;il une différence significative au seuil \\(\\alpha\\) de 0.05 de masse entre les deux zones étudiées pour la masse?\n<br/><br/><br/>", html = TRUE, class = c("html", 
+    loading = structure("<strong>Loading:<\u002fstrong> \nY a t&#39;il une différence significative au seuil \\(\\alpha\\) de 0.05 de masse entre les deux zones étudiées pour la masse ?\n<br/><br/><br/>", html = TRUE, class = c("html", 
     "character")), random_answer_order = TRUE, allow_retry = TRUE, 
     seed = 1451709077.824, options = list()), class = c("learnr_radio", 
 "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "qu_test", question = structure("Sélectionnez le(s) test(s) statistique(s) qui permet(tent) de vérifier l&#39;homogénéité des variances", html = TRUE, class = c("html", 
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "qu_test", question = structure("Indiquez quel test statistique permet de vérifier l&#39;homogénéité des variances", html = TRUE, class = c("html", 
 "character")), answers = list(structure(list(id = "lnr_ans_8a654f3", 
     option = "Test de Bartlett", value = "Test de Bartlett", 
     label = structure("Test de Bartlett", html = TRUE, class = c("html", 
@@ -1588,7 +1588,7 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label 
 "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", 
 "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", 
 "character")), message = NULL, post_message = NULL), ids = list(
-    answer = "qu_test-answer", question = "qu_test"), loading = structure("<strong>Loading:<\u002fstrong> \nSélectionnez le(s) test(s) statistique(s) qui permet(tent) de vérifier l&#39;homogénéité des variances\n<br/><br/><br/>", html = TRUE, class = c("html", 
+    answer = "qu_test-answer", question = "qu_test"), loading = structure("<strong>Loading:<\u002fstrong> \nIndiquez quel test statistique permet de vérifier l&#39;homogénéité des variances\n<br/><br/><br/>", html = TRUE, class = c("html", 
 "character")), random_answer_order = TRUE, allow_retry = TRUE, 
     seed = 264647005.376764, options = list()), class = c("learnr_radio", 
 "tutorial_question")))

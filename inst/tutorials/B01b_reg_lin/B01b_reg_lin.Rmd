@@ -29,13 +29,14 @@ BioDataScience2::learnr_server(input, output, session)
 
 ## Objectifs
 
-- Utiliser les outils de la régression linéaire, en particulier la fonction `lm()`.
+- Revoir la corrélation et les indices de Pearson et Spearman
+- Maîtriser la régression linéaire dans R, en particulier la fonction `lm()`.
 
 ## Corrélation 
 
 ```{r correlation-init}
 set.seed(43)
-
+# duplicated chunk : correlation-init
 min <- 5
 max <- 15
 
@@ -48,7 +49,7 @@ df <- tibble(
 )
 ```
 
-Vous avez à disposition le jeu de données `df` qui comprend les `r length(names(df))` variables suivantes : `r names(df)`. 
+Vous avez à disposition le jeu de données `df` qui comprend les `r length(names(df))` variables suivantes\ : `r names(df)`. 
 
 - Réalisez une matrice de corrélation avec l'indice de Pearson.
 
@@ -72,18 +73,20 @@ df <- tibble(
 
 💬 *Un snippet peut vous aider à réaliser cet exercice.*
 
-```{r corr1_h3, exercise = TRUE, exercise.setup = "correlation-prep"}
+```{r corr1_h3, exercise=TRUE, exercise.lines=2, exercise.setup="correlation-prep"}
 correlation(___[, ___], use = ___, method = ___)
 ```
 
 ```{r corr1_h3-hint-1}
 ##Snippet utile ## .escor: correlation matrix (enhanced) [SciViews]
 correlation(DF[, INDEX_EXPRESSION], use = "complete.obs", method = "pearson")
+
 # Relisez le chapitre 12 du livre science des données 1 <https://wp.sciviewg/sdd-umons/>
 ```
 
 ```{r corr1_h3-hint-2}
 correlation(df[, ___:___], use = "complete.obs", method = "pearson")
+
 #### ATTENTION: Hint suivant = solution !####
 ```
 
@@ -93,10 +96,10 @@ correlation(df[, 1:4], use = "complete.obs", method = "pearson")
 ```
 
 ```{r corr1_h3-check}
-grade_code("Vous avez compris l'utilisation de la matrice de corrélation.")
+grade_code("Vous avez compris comment réaliser une matrice de corrélation.")
 ```
 
-Répondez à la question ci-dessous
+Répondez à la question ci-dessous.
 
 ```{r qu_corr1}
 question("Quelles sont les combinaisons de variables les plus corrélées ?",
@@ -106,25 +109,27 @@ question("Quelles sont les combinaisons de variables les plus corrélées ?",
   answer("y-z"),
   answer("y-a"),
   answer("z-a"),
-    allow_retry = TRUE, random_answer_order = TRUE)
+  allow_retry = TRUE, random_answer_order = TRUE)
 ```
 
-- Réalisez une matrice de corrélation avec la méthode de Spearman
+- Réalisez une matrice de corrélation avec la méthode de Spearman.
 
 💬 *Un snippet peut vous aider à réaliser cet exercice.*
 
-```{r corr2_h3, exercise = TRUE, exercise.setup = "correlation-prep"}
+```{r corr2_h3, exercise=TRUE, exercise.lines=2,  exercise.setup="correlation-prep"}
 correlation(___[, ___], use = ___, method = ___)
 ```
 
 ```{r corr2_h3-hint-1}
 ##Snippet utile ## .escor: correlation matrix (enhanced) [SciViews]
 correlation(DF[, INDEX_EXPRESSION], use = "complete.obs", method = "pearson")
+
 # Relisez le chapitre 12 du livre science des données 1 <https://wp.sciviewg/sdd-umons/>
 ```
 
 ```{r corr2_h3-hint-2}
 correlation(df[, ___:___], use = "complete.obs", method = "spearman")
+
 #### ATTENTION: Hint suivant = solution !####
 ```
 
@@ -134,7 +139,7 @@ correlation(df[, 1:4], use = "complete.obs", method = "spearman")
 ```
 
 ```{r corr2_h3-check}
-grade_code("Vous avez compris la différence entre Spearman et Pearson")
+grade_code("C'est cela. Rappelez-vous bien la différence entre Spearman (corrélation non linéaire) et Pearson (corrélation linéaire).")
 ```
 
 Répondez à la question ci-dessous
@@ -153,11 +158,11 @@ question("Quelles sont les combinaisons de variables les moins corrélées ?",
 
 - Reproduisez le graphique ci-dessous en vous basant sur vos matrices réalisées précédemment
 
-```{r, echo = F}
+```{r, echo=FALSE}
 plot(correlation(df[, 2:4], use = "complete.obs", method = "pearson"), type = "upper")
 ```
 
-```{r corr3_h3, exercise = TRUE, exercise.setup = "correlation-prep"}
+```{r corr3_h3, exercise=TRUE, exercise.lines=2, exercise.setup="correlation-prep"}
 correlation(___[,____], use = ___, method = ___)
 ```
 
@@ -167,6 +172,7 @@ plot(correlation(___[,____], use = ___, method = ___), type = ____)
 
 ```{r corr3_h3-hint-2}
 plot(correlation(___[,___:____], use = ___, method = ___), type = "upper")
+
 #### ATTENTION: Hint suivant = solution !####
 ```
 
@@ -175,7 +181,7 @@ plot(correlation(df[, 2:4], use = "complete.obs", method = "pearson"), type = "u
 ```
 
 ```{r corr3_h3-check}
-grade_code("Tu sais maintenant présenter une matrice de corrélation sous la forme d'un graphique plus convivial.")
+grade_code("Présenter une matrice de corrélation sous la forme d'un graphique, c'est quand même plus convivial.")
 ```
 
 ## Régression linéaire
@@ -183,28 +189,28 @@ grade_code("Tu sais maintenant présenter une matrice de corrélation sous la fo
 ```{r reglin_init}
 set.seed(42)
 x <- seq(from = 5, to = 15, by = 0.25)
-a <- x*1 + 3 + rnorm(sd = 0.5, n = length(x))
-b <- x*1.1 + 3 + rnorm(sd = 0.5, n = length(x))
-c <- x*1.2 + 3 + rnorm(sd = 0.5, n = length(x))
+a <- x * 1.0 + 3 + rnorm(sd = 0.5, n = length(x))
+b <- x * 1.1 + 3 + rnorm(sd = 0.5, n = length(x))
+c <- x * 1.2 + 3 + rnorm(sd = 0.5, n = length(x))
 
 area <- as.factor(rep(c("a", "b", "c"), each = length(x)))
 
-mais <- tibble(
-  x = c(x,x,x),
-  value = c(a,b,c),
+maize <- tibble(
+  x = c(x, x, x),
+  value = c(a, b, c),
   area = area
 )
 
-lm_reg <- lm(data = mais, value ~ x)
+lm_reg <- lm(data = maize, value ~ x)
 
 lm_param <- broom::glance(lm_reg)
 lm_result <- broom::tidy(lm_reg)
 ```
 
-Réalisez la régression linéaire de `value` en fonction de `x` sur le jeu de données `mais`. Vous avez à votre disposition un nuage de points afin de visualiser les données.
+Réalisez la régression linéaire de `value` en fonction de `x` sur le jeu de données `maize` (des données dont il n'est pas important de connaître l'origine ni la signification pour l'exercice, et mesurées sur des plans de maïs). Le graphique en nuage de points permet de visualiser les données.
 
 ```{r}
-chart(mais, value ~ x) +
+chart(data = maize, value ~ x) +
   geom_point()
 ```
 
@@ -218,38 +224,37 @@ c <- x*1.2 + 3 + rnorm(sd = 0.5, n = length(x))
 
 area <- as.factor(rep(c("a", "b", "c"), each = length(x)))
 
-mais <- tibble(
-  x = c(x,x,x),
-  value = c(a,b,c),
+maize <- tibble(
+  x = c(x, x, x),
+  value = c(a, b, c),
   area = area
 )
 ```
 
-Vous avez à votre disposition le snippet suivant en lien avec le modèle linéaire.
-
 💬 **Un snippet peut vous aider à réaliser cet exercice.**
 
 
-```{r reglin1_h2, exercise = TRUE, exercise.setup = "reglin1-prep"}
+```{r reglin1_h2, exercise=TRUE, exercise.lines=2, exercise.setup="reglin1-prep"}
 summary(lm. <- lm(data = ___, ____))
 ```
 
 ```{r reglin1_h2-hint-1}
 ##Snippet utile ## .mlin: linear model
 summary(lm. <- lm(data = DF, FORMULA))
+
 #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r reglin1_h2-solution}
 ##Solution##
-summary(lm. <- lm(data = mais, value ~ x))
+summary(lm. <- lm(data = maize, value ~ x))
 ```
 
 ```{r reglin1_h2-check}
-grade_code("Vous avez réalisé votre premier modèle linéaire. Répondez maintenant aux questions ci-dessous.")
+grade_code("Vous avez réalisé votre premier modèle linéaire.")
 ```
 
-Suite à votre analyse répondez aux questions suivantes :
+Suite à votre analyse répondez aux questions suivantes\ :
 
 ```{r qu_reglin1}
 quiz(
@@ -261,8 +266,7 @@ quiz(
     answer(sprintf("%.2f", lm_result$statistic[1])),
     answer(sprintf("%.2f", lm_result$statistic[2])),
     answer(sprintf("%.2f", lm_param$r.squared[1])),
-    allow_retry = TRUE, random_answer_order = TRUE
-    ),
+    allow_retry = TRUE, random_answer_order = TRUE),
   question(text = "Quelle est la valeur de la pente ?",
     answer(sprintf("%.2f", lm_result$estimate[1])),
     answer(sprintf("%.2f", lm_result$estimate[2]), correct = TRUE),
@@ -271,10 +275,8 @@ quiz(
     answer(sprintf("%.2f", lm_result$statistic[1])),
     answer(sprintf("%.2f", lm_result$statistic[2])),
     answer(sprintf("%.2f", lm_param$r.squared[1])),
-    allow_retry = TRUE, random_answer_order = TRUE
-    ),
-  question(
-    text = "Est ce que la valeur de l'ordonnée à l'origne est significativement différent de zéro ?",
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(text = "Est ce que la valeur de l'ordonnée à l'origne est significativement différente de zéro ?",
     answer("oui", correct = TRUE),
     answer("non"),
     allow_retry = TRUE),
@@ -288,7 +290,7 @@ quiz(
 
 ## Conclusion
 
-Vous venez de terminer votre séance d'exercice de révision.
+Votre auto-évaluation concernant la régression linéaires dans R (première partie) arrive à son terme. Il est temps de revenir au syllabus et de poursuivre vers des exercices pratiques maintenant.
 
 ```{r comm_noscore, echo=FALSE}
 question_text(
