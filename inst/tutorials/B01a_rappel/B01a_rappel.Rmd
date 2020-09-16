@@ -4,7 +4,7 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**[SDD II Module 1](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/lm.html)** Rappel du cours de sdd1."
 tutorial:
   id: "B01a_rappel"
-  version: 2.0.0/23
+  version: 2.0.1/23
 output: 
   learnr::tutorial:
     progressive: true
@@ -371,7 +371,7 @@ Sur base des données qui sont mises à votre disposition reproduisez le graphiq
 
 ```{r}
 # Importation des données
-biometry <- read("biometry", package = "BioDataScience", lang = "FR")
+biometry <- read("biometry", package = "BioDataScience1", lang = "FR")
 # Reproduction du graphique 
 chart(biometry, ~ weight | gender) + 
   geom_histogram() +
