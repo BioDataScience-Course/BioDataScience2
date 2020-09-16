@@ -3,7 +3,7 @@ title: "Rappel de SDD I"
 author: "Guyliann Engels & Philippe Grosjean"
 description: "**[SDD II Module 1](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/lm.html)** Rappel du cours de sdd1."
 tutorial:
-  id: "B01a_rappel"
+  id: "B01La_rappel"
   version: 2.0.4/22
 output: 
   learnr::tutorial:

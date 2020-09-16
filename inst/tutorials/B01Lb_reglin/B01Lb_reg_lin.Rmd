@@ -3,7 +3,7 @@ title: "Régression linéaire simple"
 author: "Guyliann Engels & Philippe Grosjean"
 description: "**[SDD II Module 1](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/r%25C3%25A9gression-lin%25C3%25A9aire-simple.html)** Application des concepts liés la régression linéaire simple."
 tutorial:
-  id: "B01b_reg_lin"
+  id: "B01Lb_reg_lin"
   version: 2.0.2/10
 output: 
   learnr::tutorial:

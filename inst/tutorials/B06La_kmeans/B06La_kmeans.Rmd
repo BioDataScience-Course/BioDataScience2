@@ -3,7 +3,7 @@ title: "K-moyenne"
 author: "Guyliann Engels & Philippe Grosjean"
 description: "**[SDD II Module 6](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/k-moyennes.html)** Regroupement par les K-moyennes"
 tutorial:
-  id: "B06a_kmeans"
+  id: "B06La_kmeans"
   version: 1.0.0
 output: 
   learnr::tutorial:

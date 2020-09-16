@@ -3,7 +3,7 @@ title: "Matrices de distances"
 author: "Guyliann Engels & Philippe Grosjean"
 description: "**[SDD II Module 5](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/distance-entre-individus.html)** Application des concepts liés aux matrices de distances."
 tutorial:
-  id: "B05a_distance_matrix"
+  id: "B05La_distance_matrix"
   version: 1.0.0
 output: 
   learnr::tutorial:

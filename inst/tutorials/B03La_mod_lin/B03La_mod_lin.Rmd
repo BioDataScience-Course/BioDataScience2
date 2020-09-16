@@ -3,7 +3,7 @@ title: "Modèle linéaire"
 author: "Guyliann Engels & Philippe Grosjean"
 description: "**[SDD II Module 3](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/mod-lineaire.html)** Application des concepts liés au modèle linéaire."
 tutorial:
-  id: "B03a_mod_lin"
+  id: "B03La_mod_lin"
   version: 1.0.0
 output: 
   learnr::tutorial:
