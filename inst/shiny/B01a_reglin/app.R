@@ -1,4 +1,4 @@
-learndown::learndownShinyVersion("0.0.9000")
+learndown::learndownShinyVersion("1.0.0")
 conf <- BioDataScience::config()
 
 library(shiny)
@@ -24,7 +24,7 @@ ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
       withMathJax(),
-      p("$$y(x) = a \\times x + \\ b $$"),
+      p("$$y(x) = a \\ x + \\ b $$"),
       sliderInput("a", label = "a",
                   value = 0, min = -5, max = 5, step = 0.5),
       sliderInput("b", label = "b",
@@ -61,7 +61,7 @@ server <- function(input, output, session) {
 
   output$model_equation <- renderUI({
     withMathJax(
-      sprintf("$$y(x) \\ = %.02f \\times \\ x + \\ %.02f$$",
+      sprintf("$$y(x) \\ = %.02f \\ x + \\ %.02f$$",
               input$a, input$b))
   })
 

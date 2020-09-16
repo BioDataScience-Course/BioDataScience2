@@ -90,7 +90,7 @@ som. <- som(MATRIX, grid = somgrid(X, Y, topo = "hexagonal"))
 plot(som., type = "mapping", shape = "straight")
 ```
 
-```{r som, exercise = TRUE}
+```{r som, exercise = TRUE, exercise.checker=learndown::checker_ack_learnr}
 summary(enviro)
 ```
 
@@ -149,7 +149,7 @@ plot(som., type = "codes",
 plot(zoo_som, type = "changes", shape = "straight")
 ```
 
-```{r som1, exercise = TRUE}
+```{r som1, exercise = TRUE, exercise.checker=learndown::checker_ack_learnr}
 summary(enviro)
 ```
 
@@ -200,7 +200,7 @@ Vous venez de terminer votre séance d'exercice.
 
 Laissez nous vos impressions sur cet outil pédagogique ou expérimentez encore dans la zone ci-dessous. Rappelez-vous que pour placer un commentaire dans une zone de code R, vous devez utilisez un dièse (`#`) devant vos phrases.
 
-```{r comm, exercise=TRUE, exercise.lines = 8}
+```{r comm, exercise=TRUE, exercise.lines = 8, exercise.checker=learndown::checker_ack_learnr}
 # Ajout de commentaires 
 # ...
 ```
