@@ -4,7 +4,7 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**[SDD II Module 1](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/lm.html)** Rappel du cours de sdd1."
 tutorial:
   id: "B01a_rappel"
-  version: 2.0.1/23
+  version: 2.0.2/23
 output: 
   learnr::tutorial:
     progressive: true
@@ -270,7 +270,7 @@ chart(urchin, height ~ weight %col=% origin) +
 ```
 
 ```{r qu_np_h3-check}
-grade_code("Vous souvenez comment réaliser un nuage de points.")
+grade_code("Vous vous souvenez comment réaliser un nuage de points.")
 ```
 
 ## Croissance des dents de cochon d'Inde
@@ -400,7 +400,7 @@ chart(___, ~ ___) +
 
 ```{r qu_facette_h4-hint-2}
 # Importation des données
-biometry <- read("biometry", package = "BioDataScience", lang = "FR")
+biometry <- read("biometry", package = "BioDataScience1", lang = "FR")
 # Reproduction du graphique 
 chart(biometry, ~ ___ ) +
   geom_histogram() +
@@ -409,7 +409,7 @@ chart(biometry, ~ ___ ) +
 
 ```{r qu_facette_h4-hint-3}
 # Importation des données
-biometry <- read("biometry", package = "BioDataScience", lang = "FR")
+biometry <- read("biometry", package = "BioDataScience1", lang = "FR")
 # Reproduction du graphique 
 chart(biometry, ~ ___ | ___) +
   geom_histogram() +
@@ -421,7 +421,7 @@ chart(biometry, ~ ___ | ___) +
 ```{r qu_facette_h4-solution}
 ## Solution ##
 # Importation des données
-biometry <- read("biometry", package = "BioDataScience", lang = "FR")
+biometry <- read("biometry", package = "BioDataScience1", lang = "FR")
 # Reproduction du graphique 
 chart(biometry, ~ weight | gender) + 
   geom_histogram() +
@@ -429,7 +429,7 @@ chart(biometry, ~ weight | gender) +
 ```
 
 ```{r qu_facette_h4-check}
-grade_code("Vous souvenez de comment utiliser les facettes.")
+grade_code("Vous vous souvenez de comment utiliser les facettes.")
 ```
 
 ## Biométrie humaine 2
@@ -461,7 +461,7 @@ biometry <- mutate(biometry, bmi = weight/(height/100)^2)
 ```
 
 ```{r qu_mutate_h2-check}
-grade_code("Vous souvenez de comment utiliser la fonction mutate().")
+grade_code("Vous vous souvenez de comment utiliser la fonction mutate().")
 ```
 
 ## Rendement des pommes de terre en Belgique
@@ -566,7 +566,6 @@ beef %>.%
 
 ```{r qu_filter_h4-hint-1}
 # Le jeu de données beef est déjà chargé en mémoire.
-summary(beef)
 # reproduisez le graphique suivant
 beef %>.%
   filter(., ___) %>.%
@@ -579,7 +578,6 @@ beef %>.%
 
 ```{r qu_filter_h4-hint-2}
 # Le jeu de données beef est déjà chargé en mémoire.
-summary(beef)
 # reproduisez le graphique suivant
 beef %>.%
   filter(., ___ & ___) %>.%
@@ -592,7 +590,6 @@ beef %>.%
 
 ```{r qu_filter_h4-hint-3}
 # Le jeu de données beef est déjà chargé en mémoire.
-summary(beef)
 # reproduisez le graphique suivant
 beef %>.%
   filter(., age >= 20 & age <= 55) %>.%
@@ -608,7 +605,6 @@ beef %>.%
 ```{r qu_filter_h4-solution}
 ## Solution ##
 # Le jeu de données beef est déjà chargé en mémoire.
-summary(beef)
 # reproduisez le graphique suivant
 beef %>.%
   filter(., age >= 20 & age <= 55) %>.%
