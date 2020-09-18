@@ -3,6 +3,7 @@ conf <- BioDataScience::config()
 
 library(shiny)
 library(learndown)
+library(BioDataScience2)
 
 y0_init <- 3.5
 k_init <- 0.10
