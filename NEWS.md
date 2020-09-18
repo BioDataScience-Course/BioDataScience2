@@ -2,7 +2,12 @@
 
 ## Changes in version 2020.0.0
 
-- update all tutorials with sciviews box 2020
+- Update all tutorials with SciViews Box 2020, and name change with B01Xa_name,
+with 'B' refers to second course, '01' to first module, 'X' being `L` for learnr
+or `S` for Shiny and 'a' the sequence in case there are several similar items in
+the same module.
+
+- RStudio addins.
 
 ## Changes in version 2019.11.0
 
@@ -20,20 +25,19 @@
 
 ## Changes in version 2019.9.0
 
-- New shiny app 04e_gompertz
+- New Shiny app 04e_gompertz
 
 ## Changes in version 2019.8.0
 
-- shiny app 04c 04d
+- Shiny app 04c 04d
 
 ## Changes in version 2019.7.0
 
-- shiny app 04a_michaelis_menten and 04b_exponent
+- Shiny app 04a_michaelis_menten and 04b_exponent
 
 ## Changes in version 2019.6.0
 
 - Tutorial 03a_mod_lin finalized
-
 
 ## Changes in version 2019.5.0
 
