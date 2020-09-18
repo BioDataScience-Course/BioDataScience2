@@ -1,4 +1,4 @@
-Name: Run tutorial or app from BioDataScience2
+Name: Run sdd II tutorial or app
 Description: Run one of the learnr tutorials or Shiny applications in this package
 Binding: run_addin
 Interactive: true
