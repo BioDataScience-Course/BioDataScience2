@@ -1,10 +1,10 @@
 ---
 title: "Régression linéaire simple"
 author: "Guyliann Engels & Philippe Grosjean"
-description: "**[SDD II Module 1](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/r%25C3%25A9gression-lin%25C3%25A9aire-simple.html)** Application des concepts liés la régression linéaire simple."
+description: "**SDD II Module1** Application des concepts liés la régression linéaire simple."
 tutorial:
   id: "B01Lb_reglin1"
-  version: 2.0.2/10
+  version: 2.1.0/10
 output: 
   learnr::tutorial:
     progressive: true
@@ -51,6 +51,11 @@ df <- tibble(
 
 Vous avez à disposition le jeu de données `df` qui comprend les `r length(names(df))` variables suivantes\ : `r names(df)`. 
 
+```{r}
+summary(df)
+```
+
+
 - Réalisez une matrice de corrélation avec l'indice de Pearson.
 
 ```{r correlation-prep}
@@ -74,7 +79,7 @@ df <- tibble(
 💬 *Un snippet peut vous aider à réaliser cet exercice.*
 
 ```{r corr1_h3, exercise=TRUE, exercise.lines=2, exercise.setup="correlation-prep"}
-correlation(___[, ___], use = ___, method = ___)
+correlation(___[, ___:___], use = ___, method = ___)
 ```
 
 ```{r corr1_h3-hint-1}
@@ -117,7 +122,7 @@ question("Quelles sont les combinaisons de variables les plus corrélées ?",
 💬 *Un snippet peut vous aider à réaliser cet exercice.*
 
 ```{r corr2_h3, exercise=TRUE, exercise.lines=2,  exercise.setup="correlation-prep"}
-correlation(___[, ___], use = ___, method = ___)
+correlation(___[, ___:___], use = ___, method = ___)
 ```
 
 ```{r corr2_h3-hint-1}
@@ -163,11 +168,11 @@ plot(correlation(df[, 2:4], use = "complete.obs", method = "pearson"), type = "u
 ```
 
 ```{r corr3_h3, exercise=TRUE, exercise.lines=2, exercise.setup="correlation-prep"}
-correlation(___[,____], use = ___, method = ___)
+correlation(___[,___:___], use = ___, method = ___)
 ```
 
 ```{r corr3_h3-hint-1}
-plot(correlation(___[,____], use = ___, method = ___), type = ____)
+plot(correlation(___[,___:___], use = ___, method = ___), type = ____)
 ```
 
 ```{r corr3_h3-hint-2}
@@ -233,9 +238,8 @@ maize <- tibble(
 
 💬 **Un snippet peut vous aider à réaliser cet exercice.**
 
-
 ```{r reglin1_h2, exercise=TRUE, exercise.lines=2, exercise.setup="reglin1-prep"}
-summary(lm. <- lm(data = ___, ____))
+summary(lm. <- lm(data = ___, ___ ~ ___))
 ```
 
 ```{r reglin1_h2-hint-1}

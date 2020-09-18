@@ -1,10 +1,10 @@
 ---
 title: "Rappel de SDD I"
 author: "Guyliann Engels & Philippe Grosjean"
-description: "**[SDD II Module 1](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/lm.html)** Rappel du cours de sdd1."
+description: "**SDD II Module 1** Rappel du cours de sdd1."
 tutorial:
   id: "B01La_rappel"
-  version: 2.0.4/22
+  version: 2.1.2/22
 output: 
   learnr::tutorial:
     progressive: true
@@ -263,46 +263,63 @@ grade_code("Vous vous souvenez comment réaliser un nuage de points.")
 
 ## Croissance de dents
 
-Sur base des données qui sont mises à votre disposition reproduisez le graphique ci-dessous\ : 
+Sur base des données qui sont mises à votre disposition reproduisez le graphique ci-dessous à l'identique \ : 
 
 ```{r}
 # Importation des données
 tooth_growth <- read("ToothGrowth", package = "datasets") %>.%
   mutate(., dose = as.factor(dose))
 
+tooth_growth <- labelise(
+  tooth_growth,
+  label = list(len = "Longueur des dents",
+               supp = "Supplémentation",
+               dose = "Dose"),
+  units = list(len = "mm"))
+
 # Graphique à reproduire
 chart(data = tooth_growth, len ~ supp %fill=% dose) +
-  geom_boxplot() +
-  labs(y = "Longueur des dents [mm]", 
-       x = "Supplémentation", 
-       fill = "Dose")
+  geom_boxplot()
 ```
 
 Le jeu des données mis à votre disposition est `ToothGrowth` du package `datasets` qui comprend les variables suivantes\ : `r names(ToothGrowth)`. 
 
-```{r qu_bp_h5, exercise=TRUE, exercise.lines=9}
+```{r qu_bp_h5, exercise=TRUE, exercise.lines=15}
 # Importation des données
 tooth_growth <- read("ToothGrowth", package = "datasets") %>.%
   mutate(., dose = as.factor(dose))
+
+# Vos labels
+tooth_growth <- labelise(
+  tooth_growth,
+  label = list(len = ___,
+               supp = ___,
+               dose = "Dose"),
+  units = list(len = "mm"))
 
 # Votre graphique
 chart(___, ___) +
-  ___ +
-  labs(___)
+  ___()
 ```
 
 ```{r qu_bp_h5-hint-1}
+# Relisez le chapitre 2 du livre Science des Données 1 <https://wp.sciviewg/sdd-umons/>
+
 # Importation des données
 tooth_growth <- read("ToothGrowth", package = "datasets") %>.%
   mutate(., dose = as.factor(dose))
 
+# Vos labels
+tooth_growth <- labelise(
+  tooth_growth,
+  label = list(len = ___,
+               supp = ___,
+               dose = "Dose"),
+  units = list(len = "mm"))
+
 # Votre graphique
-chart(___, ___ ~ ___ %fill=% ___) +
-  ___ +
-  labs(x = ___, y = ___, fill = ___)
-
-# Relisez le chapitre 2 du livre Science des Données 1 <https://wp.sciviewg/sdd-umons/>
-
+chart(___, ___) +
+  ___()
 ```
 
 ```{r qu_bp_h5-hint-2}
@@ -310,10 +327,17 @@ chart(___, ___ ~ ___ %fill=% ___) +
 tooth_growth <- read("ToothGrowth", package = "datasets") %>.%
   mutate(., dose = as.factor(dose))
 
+# Vos labels
+tooth_growth <- labelise(
+  tooth_growth,
+  label = list(len = "Longueur des dents",
+               supp = ___,
+               dose = "Dose"),
+  units = list(len = "mm"))
+
 # Votre graphique
-chart(tooth_growth, ___ ~ ___ %fill=% ___) +
-  ___ +
-  labs(x = ___, y = ___, fill = ___)
+chart(___, ___ ~ ___) +
+  ___()
 ```
 
 ```{r qu_bp_h5-hint-3}
@@ -321,10 +345,17 @@ chart(tooth_growth, ___ ~ ___ %fill=% ___) +
 tooth_growth <- read("ToothGrowth", package = "datasets") %>.%
   mutate(., dose = as.factor(dose))
 
+# Vos labels
+tooth_growth <- labelise(
+  tooth_growth,
+  label = list(len = "Longueur des dents",
+               supp = ___,
+               dose = "Dose"),
+  units = list(len = "mm"))
+
 # Votre graphique
-chart(data = tooth_growth, len ~ supp %fill=% dose) +
-  ___ +
-  labs(x = ___, y = ___, fill = ___)
+chart(data = tooth_growth, ___ ~ ___ %fill=% ___) +
+  geom_boxplot()
 ```
 
 ```{r qu_bp_h5-hint-4}
@@ -332,10 +363,17 @@ chart(data = tooth_growth, len ~ supp %fill=% dose) +
 tooth_growth <- read("ToothGrowth", package = "datasets") %>.%
   mutate(., dose = as.factor(dose))
 
+# Vos labels 
+tooth_growth <- labelise(
+  tooth_growth,
+  label = list(len = "Longueur des dents",
+               supp = "Supplémentation",
+               dose = "Dose"),
+  units = list(len = "mm"))
+
 # Votre graphique
-chart(data = tooth_growth, len ~ supp %fill=% dose) +
-  geom_boxplot() +
-  labs(x = ___, y = ___, fill = ___)
+chart(data = tooth_growth, len ~ supp %fill=% ___) +
+  geom_boxplot()
 
  #### ATTENTION: Hint suivant = solution !####
 ```
@@ -346,19 +384,23 @@ chart(data = tooth_growth, len ~ supp %fill=% dose) +
 tooth_growth <- read("ToothGrowth", package = "datasets") %>.%
   mutate(., dose = as.factor(dose))
 
+# Vos labels 
+tooth_growth <- labelise(
+  tooth_growth,
+  label = list(len = "Longueur des dents",
+               supp = "Supplémentation",
+               dose = "Dose"),
+  units = list(len = "mm"))
+
 # Votre graphique
 chart(data = tooth_growth, len ~ supp %fill=% dose) +
-  geom_boxplot() +
-  labs(y = "Longueur des dents [mm]", 
-       x = "Supplémentation", 
-       fill = "Dose")
+  geom_boxplot()
 ```
 
 ```{r qu_bp_h5-check}
 grade_code("Vous vous souvenez comment réaliser une boite de dispersion.")
 ```
 
-*Une alternative aurait été d'utiliser la fonction `labelise()` sur le jeu de données `ToothGrowth` afin de spécifier un label et une unité à chaque variable.*
 
 ## Biométrie humaine 1
 
@@ -383,19 +425,19 @@ biometry <- read("biometry", package = "BioDataScience", lang = "FR")
 # Votre graphique 
 chart(___, ___) +
   ___() +
-  labs(y = ___)
+  ylab(___)
 ```
 
 ```{r qu_facette_h4-hint-1}
+# Relisez le chapitre 3 du livre Science des Données 1 <https://wp.sciviewg/sdd-umons/>
+
 # Importation des données
 biometry <- read("biometry", package = "BioDataScience", lang = "FR")
 
 # Votre graphique 
-chart(___, ~ ___) +
+chart(___, ___) +
   ___() +
-  labs(y = ___)
-
-# Relisez le chapitre 3 du livre Science des Données 1 <https://wp.sciviewg/sdd-umons/>
+  ylab(___)
 ```
 
 ```{r qu_facette_h4-hint-2}
@@ -403,9 +445,9 @@ chart(___, ~ ___) +
 biometry <- read("biometry", package = "BioDataScience", lang = "FR")
 
 # Votre graphique 
-chart(biometry, ~ ___ ) +
+chart(biometry, ~ ___) +
   geom_histogram() +
-  labs(y = ___)
+  ylab(___)
 ```
 
 ```{r qu_facette_h4-hint-3}
@@ -415,7 +457,7 @@ biometry <- read("biometry", package = "BioDataScience", lang = "FR")
 # Votre graphique 
 chart(biometry, ~ ___ | ___) +
   geom_histogram() +
-  labs(y = ___)
+  ylab(___)
 
 #### ATTENTION: Hint suivant = solution !####
 ```
@@ -439,14 +481,17 @@ grade_code("Vous vous souvenez de la façon d'utiliser les facettes dans un grap
 
 Calculer l'indice de masse corporelle imc (variable `bmi` en anglais) qui correspond à la formule suivante\ :
 
-$$bmi = mass\ [kg]/height [cm]^2$$
+$$bmi = mass\ [kg]/height [m]^2$$
 Vous travaillez toujours sur le jeu des données `biometry` du package `BioDataScience` qui comprend, pour rappel, les variables suivantes\ : `r names(biometry)`.
 
-```{r qu_mutate_h2, exercise=TRUE, exercise.lines=6}
+```{r qu_mutate_h2, exercise=TRUE, exercise.lines=10}
 # Importation des données
 biometry <- read("biometry", package = "BioDataScience", lang = "FR")
 # Calcul du bmi
-biometry <- mutate(___, bmi = ___)
+biometry <- mutate(biometry,
+  height_m = height/100, 
+  bmi = weight/height_m^2)
+# résumé de jeu de données
 summary(biometry)
 ```
 
@@ -454,7 +499,10 @@ summary(biometry)
 # Importation des données
 biometry <- read("biometry", package = "BioDataScience", lang = "FR")
 # Calcul du bmi
-biometry <- mutate(___, bmi = ___/(___/100)^2)
+biometry <- mutate(biometry,
+  height_m = ___/100, 
+  bmi = ___/___^2)
+# résumé de jeu de données
 summary(biometry)
 
 #### ATTENTION: Hint suivant = solution !####
@@ -464,7 +512,10 @@ summary(biometry)
 # Importation des données
 biometry <- read("biometry", package = "BioDataScience", lang = "FR")
 # Calcul du bmi
-biometry <- mutate(biometry, bmi = weight/(height/100)^2)
+biometry <- mutate(biometry,
+  height_m = height/100, 
+  bmi = weight/height_m^2)
+# résumé de jeu de données
 summary(biometry)
 ```
 
@@ -513,22 +564,22 @@ pdt <- tibble(
 ```{r qu_group_h3, exercise=TRUE, exercise.lines=5, exercise.setup="qu_group-prep"}
 pdt %>.%
   group_by(., ___) %>.%
-  summarise(., mean = ___, count = ___) %>.%
+  summarise(., mean = ___(___), count = ___()) %>.%
   knitr::kable(., ___)
 ```
 
 ```{r qu_group_h3-hint-1}
 pdt %>.%
   group_by(., ) %>.%
-  summarise(., mean = ___, count = ___) %>.%
-  knitr::kable(., col.names = c(___))
+  summarise(., mean = ___(___), count = ___()) %>.%
+  knitr::kable(., col.names = c(___,___,___))
 ```
 
 ```{r qu_group_h3-hint-2}
 pdt %>.%
   group_by(., ) %>.%
   summarise(., mean = mean(rendement), count = n()) %>.%
-  knitr::kable(., col.names = c(___))
+  knitr::kable(., col.names = c(___,___,___))
 
 #### ATTENTION: Hint suivant = solution !####
 ```
@@ -551,6 +602,11 @@ Cet exercice s'inspire des observations relayé sur le site du sillon Belge de d
 ```{r, warning=FALSE, message=FALSE, results='hide'}
 beef <- data.io::read(file = system.file("extdata", "belgianblue.xlsx",
   package = "BioDataScience2"), type = "xlsx")
+
+beef <- labelise(
+  beef,
+  label = list(weight = "Masse", age = "Age", variety = "Variété"),
+  unit = list(weight = "kg", age = "mois"))
 ```
 
 L'association wallonne de l'élevage dispose de plusieurs centres d'insémination. Ils ont un recensement des différents taureaux reproducteurs. Réalisez par vous-même le graphique ci-dessous. Notez bien que ce dernier ne montre que les individus âgés de 20 à 55 mois. Vous avez à votre disposition le jeu de données `beef` qui comprend les variables suivantes\ : `r names(beef)`.
@@ -559,8 +615,7 @@ L'association wallonne de l'élevage dispose de plusieurs centres d'inséminatio
 beef %>.%
   filter(., age >= 20 & age <= 55) %>.%
   chart(., weight ~ age %col=% variety) +
-  geom_point() +
-  labs(y = "Masse [kg]", x = "Age [mois]", color = "Variété")
+  geom_point()
 ```
 
 Voici quelques informations utiles sur ce jeu de données.
@@ -572,26 +627,29 @@ summary(beef)
 ```{r, qu_filter_h4-prep}
 beef <- read(file = system.file("extdata", "belgianblue.xlsx",
   package = "BioDataScience2"), type = "xlsx")
+
+beef <- labelise(
+  beef,
+  label = list(weight = "Masse", age = "Age", variety = "Variété"),
+  unit = list(weight = "kg", age = "mois"))
 ```
 
 ```{r qu_filter_h4, exercise=TRUE, exercise.lines=8, exercise.setup="qu_filter_h4-prep"}
 # Le jeu de données beef est déjà chargé en mémoire
 # Réalisez votre graphique
 beef %>.%
-  ___(., ___) %>.%
+  ___(., ___ & ___) %>.%
   chart(., ___) +
-  ___() +
-  labs(___)
+  ___()
 ```
 
 ```{r qu_filter_h4-hint-1}
 # Le jeu de données beef est déjà chargé en mémoire
 # Réalisez votre graphique
 beef %>.%
-  filter(., ___) %>.%
+  filter(., ___ & ___) %>.%
   chart(., ___) +
-  ___() +
-  labs(___)
+  ___() 
 
 # La fonction pour filtrer des lignes d'un tableau selon une ou plusieurs conditions est filter()
 ```
@@ -602,8 +660,7 @@ beef %>.%
 beef %>.%
   filter(., ___ & ___) %>.%
   chart(., ___) +
-  ___() +
-  labs(___)
+  ___() 
 
 # Les conditions au sein de la fonction filter() s'écrivent avec des opérateurs logique >, >=, <=, <, == ou !=
 # et se combinent avec & (et) et | (ou)
@@ -615,8 +672,7 @@ beef %>.%
 beef %>.%
   filter(., age >= 20 & age <= 55) %>.%
   chart(., ___) +
-  ___() +
-  labs(___)
+  ___()
 
  #### ATTENTION: Hint suivant = solution !####
 ```
@@ -628,8 +684,7 @@ beef %>.%
 beef %>.%
   filter(., age >= 20 & age <= 55) %>.%
   chart(., weight ~ age %col=% variety) +
-  geom_point() +
-  labs(y = "Masse [kg]", x = "Age [mois]", color = "Variété")
+  geom_point()
 ```
 
 ```{r qu_filter_h4-check}
@@ -672,8 +727,8 @@ weight$area <- as.factor(weight$area)
 ```
 
 ```{r qu_student_h3, exercise=TRUE, exercise.lines=3, exercise.setup="qu_student_prepa"}
-t.test(___, ___ ~ ___,
-  alternative = ___, conf.level = ___ var.equal = ___)
+t.test(data = ___, ___ ~ ___,
+  alternative = ___, conf.level = ___, var.equal = ___)
 ```
 
 ```{r qu_student_h3-hint-1}
