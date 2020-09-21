@@ -4,7 +4,7 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II Module 1** Rappel du cours de sdd1."
 tutorial:
   id: "B01La_rappel"
-  version: 2.1.2/22
+  version: 2.1.3/22
 output: 
   learnr::tutorial:
     progressive: true
@@ -488,9 +488,9 @@ Vous travaillez toujours sur le jeu des données `biometry` du package `BioDataS
 # Importation des données
 biometry <- read("biometry", package = "BioDataScience", lang = "FR")
 # Calcul du bmi
-biometry <- mutate(biometry,
-  height_m = height/100, 
-  bmi = weight/height_m^2)
+biometry <- mutate(___,
+  height_m = ___/100, 
+  bmi = ___/___^2)
 # résumé de jeu de données
 summary(biometry)
 ```
@@ -501,7 +501,7 @@ biometry <- read("biometry", package = "BioDataScience", lang = "FR")
 # Calcul du bmi
 biometry <- mutate(biometry,
   height_m = ___/100, 
-  bmi = ___/___^2)
+  bmi = ___/height_m^2)
 # résumé de jeu de données
 summary(biometry)
 
