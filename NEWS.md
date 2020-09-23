@@ -1,5 +1,10 @@
 # BioDataScience2 News
 
+
+## changes in version 2020.1.1
+
+- Update all tutorials with SciViews Box 2020 and BioDatascience packages
+
 ## Changes in version 2020.1.0
 
 - Update B01La_rappel and B01Lb_reglin1 for better interaction with gradethis package. 
