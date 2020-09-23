@@ -1,9 +1,9 @@
 ---
 title: "Cartes auto-adaptatives"
 author: "Guyliann Engels & Philippe Grosjean"
-description: "**[SDD II Module 6](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/cartes-auto-adaptatives-som.html)** Application des concepts liés au cartes auto-adaptatives (SOM)"
+description: "**SDD II Module 6** Application des concepts liés au cartes auto-adaptatives (SOM)"
 tutorial:
-  id: "B06c_som"
+  id: "B06Lc_som"
   version: 1.0.0
 output: 
   learnr::tutorial:
@@ -90,11 +90,11 @@ som. <- som(MATRIX, grid = somgrid(X, Y, topo = "hexagonal"))
 plot(som., type = "mapping", shape = "straight")
 ```
 
-```{r som, exercise = TRUE, exercise.checker=learndown::checker_ack_learnr}
+```{r som_noscore, exercise = TRUE, exercise.checker=learndown::checker_ack_learnr}
 summary(enviro)
 ```
 
-```{r som-hint-1}
+```{r som_noscore-hint-1}
 # function de base
 DF %>.%
   scale(.) %>.%
@@ -105,7 +105,7 @@ som. <- som(MATRIX, grid = somgrid(X, Y, topo = "hexagonal"))
 plot(som., type = "mapping", shape = "straight")
 ```
 
-```{r som-hint-2}
+```{r som_noscore-hint-2}
 # function de base
 enviro %>.%
   scale(.) %>.%
@@ -116,11 +116,11 @@ som. <- som(envi_mat, grid = somgrid(3, 3, topo = "hexagonal"))
 plot(som., type = "mapping", shape = "straight")
 ```
 
-```{r som-check}
+```{r som_noscore-check}
 # TODO
 ```
 
-```{r qu_som}
+```{r qu_som_noscore}
 question("Selon vous quelle est la grille la plus adpatée afin de représenter les données provenant d `enviro` ?",
            answer("Une grille 2 sur 1"),
            answer("Une grille 3 sur 3", correct = TRUE),
@@ -149,11 +149,11 @@ plot(som., type = "codes",
 plot(zoo_som, type = "changes", shape = "straight")
 ```
 
-```{r som1, exercise = TRUE, exercise.checker=learndown::checker_ack_learnr}
+```{r som1_noscore, exercise = TRUE, exercise.checker=learndown::checker_ack_learnr}
 summary(enviro)
 ```
 
-```{r som1-hint-1}
+```{r som1_noscore-hint-1}
 DF %>.%
   scale(.) %>.%
   as.matrix(.) -> MATRIX
@@ -166,7 +166,7 @@ plot(som., type = "codes",
 plot(zoo_som, type = "changes", shape = "straight")
 ```
 
-```{r som1-hint-2}
+```{r som1_noscore-hint-2}
 DF %>.%
   scale(.) %>.%
   as.matrix(.) -> MATRIX
@@ -177,7 +177,7 @@ plot(som., type = "codes",
      codeRendering = "segments", shape = "straight")
 ```
 
-```{r som1-hint-3}
+```{r som1_noscore-hint-3}
 enviro %>.%
   scale(.) %>.%
   as.matrix(.) -> enviro_mat
@@ -188,7 +188,7 @@ plot(som., type = "codes",
      codeRendering = "segments", shape = "straight")
 ```
 
-```{r som1-check}
+```{r som1_noscore-check}
 # TODO
 ```
 
@@ -198,13 +198,12 @@ Après avoir réalisé ce graphiques, tentez de l'analyser.
 
 Vous venez de terminer votre séance d'exercice.
 
-Laissez nous vos impressions sur cet outil pédagogique ou expérimentez encore dans la zone ci-dessous. Rappelez-vous que pour placer un commentaire dans une zone de code R, vous devez utilisez un dièse (`#`) devant vos phrases.
-
-```{r comm, exercise=TRUE, exercise.lines = 8, exercise.checker=learndown::checker_ack_learnr}
-# Ajout de commentaires 
-# ...
-```
-
-```{r comm-check}
-# Not yet...
+```{r comm_noscore, echo=FALSE}
+question_text(
+  "Laissez-nous vos impressions sur ce learnr",
+  answer("", TRUE, message = "Pas de commentaires... C'est bien aussi."),
+  incorrect = "Vos commentaires sont enregistrés.",
+  placeholder = "Entrez vos commentaires ici...",
+  allow_retry = TRUE
+)
 ```

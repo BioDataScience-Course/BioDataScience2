@@ -1,7 +1,7 @@
 ---
 title: "Positionnement multidimensionnel (MDS)"
 author: "Guyliann Engels & Philippe Grosjean"
-description: "**[SDD II Module 6](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/positionnement-multidimensionnel-mds.html)** Application des concepts liés au positionnement multidimensionnel (MDS)."
+description: "**SDD II Module 6** Application des concepts liés au positionnement multidimensionnel (MDS)."
 tutorial:
   id: "B06Lb_mds"
   version: 1.0.0
@@ -271,29 +271,29 @@ autoplot(mds.)
 glance(mds.)
 ```
 
-```{r mds, exercise = TRUE}
+```{r mds_noscore, exercise = TRUE, exercise.checker=learndown::checker_ack_learnr}
 summary(bci)
 ```
 
-```{r mds-hint-1}
+```{r mds_noscore-hint-1}
 dist. <- vegan::vegdist(x, method = "bray")
 mds. <- mds$metric(dist.)
 autplot(mds.)
 glance(mds.)
 ```
 
-```{r mds-hint-2}
+```{r mds_noscore-hint-2}
 dist. <- vegan::vegdist(bci, method = "canberra")
 mds. <- mds$metric(dist.)
 autoplot(mds.)
 glance(mds.)
 ```
 
-```{r mds-check}
+```{r mds_noscore-check}
 # TODO
 ```
 
-```{r qu_mds}
+```{r qu_mds_noscore}
 question("Considérez vous que cette PCoA est une bonne PCoA ?",
            answer("oui, sur base des valeurs de goodness-of-fit, 
                    nous pouvons observer que le PCoA exprime une 
@@ -317,29 +317,29 @@ autoplot(mds.)
 glance(mds.)
 ```
 
-```{r nmds, exercise = TRUE}
+```{r nmds_noscore, exercise = TRUE, exercise.checker=learndown::checker_ack_learnr}
 summary(bci)
 ```
 
-```{r nmds-hint-1}
+```{r nmds_noscore-hint-1}
 dist. <- vegan::vegdist(x, method = "bray")
 mds. <- mds$nonmetric(dist.)
 autplot(mds.)
 glance(mds.)
 ```
 
-```{r nmds-hint-2}
+```{r nmds_noscore-hint-2}
 dist. <- vegan::vegdist(bci, method = "canberra")
 mds. <- mds$nonmetric(dist.)
 autoplot(mds.)
 glance(mds.)
 ```
 
-```{r nmds-check}
+```{r nmds_noscore-check}
 # TODO
 ```
 
-```{r qu_nmds}
+```{r qu_nmds_noscore}
 question("Considérez vous que cette MDS non métrique est une 
           MDS non métrique de qualité?",
            answer("oui, sur base de la valeur du R^2 linéaire élevée, 
@@ -362,13 +362,12 @@ question("Considérez vous que cette MDS non métrique est une
 
 Vous venez de terminer votre séance d'exercice.
 
-Laissez nous vos impressions sur cet outil pédagogique ou expérimentez encore dans la zone ci-dessous. Rappelez-vous que pour placer un commentaire dans une zone de code R, vous devez utilisez un dièse (`#`) devant vos phrases.
-
-```{r comm, exercise=TRUE, exercise.lines = 8}
-# Ajout de commentaires 
-# ...
-```
-
-```{r comm-check}
-# Not yet...
+```{r comm_noscore, echo=FALSE}
+question_text(
+  "Laissez-nous vos impressions sur ce learnr",
+  answer("", TRUE, message = "Pas de commentaires... C'est bien aussi."),
+  incorrect = "Vos commentaires sont enregistrés.",
+  placeholder = "Entrez vos commentaires ici...",
+  allow_retry = TRUE
+)
 ```

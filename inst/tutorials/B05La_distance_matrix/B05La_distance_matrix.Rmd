@@ -1,7 +1,7 @@
 ---
 title: "Matrices de distances"
 author: "Guyliann Engels & Philippe Grosjean"
-description: "**[SDD II Module 5](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/distance-entre-individus.html)** Application des concepts liés aux matrices de distances."
+description: "**SDD II Module 5** Application des concepts liés aux matrices de distances."
 tutorial:
   id: "B05La_distance_matrix"
   version: 1.0.0
@@ -36,7 +36,7 @@ BioDataScience2::learnr_server(input, output, session)
 
 Lors de la réalisation d'une matrice de distance, vous devez choisir l'indice le plus adapté
 
-```{r qu_indice}
+```{r qu_indice_noscore}
 quiz(
   question("Dans un tableau de dénombrement d'espèces, vous souhaitez réaliser un matrice de distance avec l'indice le plus adapté. Quel indice choississez vous ? (plusieurs réponses peuvent être sélectionnés)",
            answer("Indice de Bray-Curtis", correct = TRUE),
@@ -64,13 +64,12 @@ quiz(
 
 Vous venez de terminer votre séance d'exercice.
 
-Laissez nous vos impressions sur cet outil pédagogique ou expérimentez encore dans la zone ci-dessous. Rappelez-vous que pour placer un commentaire dans une zone de code R, vous devez utilisez un dièse (`#`) devant vos phrases.
-
-```{r comm, exercise=TRUE, exercise.lines = 8}
-# Ajout de commentaires 
-# ...
-```
-
-```{r comm-check}
-# Not yet...
+```{r comm_noscore, echo=FALSE}
+question_text(
+  "Laissez-nous vos impressions sur ce learnr",
+  answer("", TRUE, message = "Pas de commentaires... C'est bien aussi."),
+  incorrect = "Vos commentaires sont enregistrés.",
+  placeholder = "Entrez vos commentaires ici...",
+  allow_retry = TRUE
+)
 ```

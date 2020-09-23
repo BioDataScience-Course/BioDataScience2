@@ -1,9 +1,9 @@
 ---
 title: "Régression linéaire multiple"
 author: "Guyliann Engels & Philippe Grosjean"
-description: "**[SDD II Module 2](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/r%25C3%25A9gression-lin%25C3%25A9aire-multiple.html)** Application des concepts liés la régression linéaire multiple."
+description: "**SDD II Module 2** Application des concepts liés la régression linéaire multiple."
 tutorial:
-  id: "B01Lb_reg_multi"
+  id: "B02La_reg_multi"
   version: 1.0.0
 output: 
   learnr::tutorial:
@@ -82,12 +82,12 @@ df1 <- tibble(
   y = reg_lin(vec2, 0.5, 0) + rnorm(sd=0.5, n = length(vec1)))
 ```
 
-```{r reglin, exercise = TRUE, exercise.setup = "reglin-prep"}
+```{r reglin_noscore, exercise = TRUE, exercise.setup = "reglin-prep", exercise.checker=learndown::checker_ack_learnr}
 #
 summary(df1)
 ```
 
-```{r reglin-hint-1}
+```{r reglin_noscore-hint-1}
 #snippet
 summary(lm. <- lm(data = DF, YNUM ~ XNUM))
 lm. %>.% (function (lm, model = lm[["model"]], vars = names(model))
@@ -102,7 +102,7 @@ lm. %>.% (function (lm, model = lm[["model"]], vars = names(model))
   stat_smooth(method = "lm", formula = y ~ x + 0))(.)
 ```
 
-```{r reglin-solution}
+```{r reglin_noscore-solution}
 summary(lm. <- lm(data = df1, y~ x+ 0))
 lm. %>.% (function (lm, model = lm[["model"]], vars = names(model))
   chart(model, aes_string(x = vars[2], y = vars[1])) +
@@ -110,13 +110,13 @@ lm. %>.% (function (lm, model = lm[["model"]], vars = names(model))
   stat_smooth(method = "lm", formula = y ~ x + 0))(.)
 ```
 
-```{r reglin-check}
+```{r reglin_noscore-check}
 # TODO 
 ```
 
 Suite à votre analyse répondez aux questions suivantes
 
-```{r qu_reglin1}
+```{r qu_reglin1_noscore}
 quiz(
   question(text = "Quelle est la valeur de l'ordonnée à l'origine ?",
     answer(sprintf("%.2f", 0), correct = TRUE),
@@ -143,7 +143,6 @@ quiz(
     )
 )
 ```
-
 
 ## Régression linéaire multiple
 
@@ -208,32 +207,32 @@ df2 <- tibble::tibble(
                 b = 2))
 ```
 
-```{r regmulti, exercise = TRUE, exercise.setup = "regmulti-prep"}
+```{r regmulti_noscore, exercise = TRUE, exercise.setup = "regmulti-prep", exercise.checker=learndown::checker_ack_learnr}
 # résumé des données 
 df2
 #
 ```
 
-```{r regmulti-hint-1}
+```{r regmulti_noscore-hint-1}
 # Snippet
 summary(lm. <- lm(data = DF, FORMULA))
 ```
 
-```{r regmulti-hint-2}
+```{r regmulti_noscore-hint-2}
 summary(lm. <- lm(data = DF, formula =  Y  ~ VAR1 + VAR2))
 ```
 
-```{r regmulti-solution}
+```{r regmulti_noscore-solution}
 summary(lm. <- lm(data = df2, formula = y ~ x + x1))
 ```
 
-```{r regmulti-check}
+```{r regmulti_noscore-check}
 #TODO
 ```
 
 Suite à votre analyse répondez aux questions suivantes : 
 
-```{r qu_regmulti}
+```{r qu_regmulti_noscore}
 quiz(
   question(text = "Quelle est la valeur de l'ordonnée à l'origine ?",
     answer(sprintf("%.2f", lm_mult_coef$estimate[1]), correct = TRUE),
@@ -257,13 +256,12 @@ quiz(
 
 Vous venez de terminer votre séance d'exercice.
 
-Laissez nous vos impressions sur cet outil pédagogique ou expérimentez encore dans la zone ci-dessous. Rappelez-vous que pour placer un commentaire dans une zone de code R, vous devez utilisez un dièse (`#`) devant vos phrases.
-
-```{r comm, exercise=TRUE, exercise.lines = 8}
-# Ajout de commentaires 
-# ...
-```
-
-```{r comm-check}
-# Not yet...
+```{r comm_noscore, echo=FALSE}
+question_text(
+  "Laissez-nous vos impressions sur ce learnr",
+  answer("", TRUE, message = "Pas de commentaires... C'est bien aussi."),
+  incorrect = "Vos commentaires sont enregistrés.",
+  placeholder = "Entrez vos commentaires ici...",
+  allow_retry = TRUE
+)
 ```

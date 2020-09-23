@@ -1,7 +1,7 @@
 ---
 title: "K-moyenne"
 author: "Guyliann Engels & Philippe Grosjean"
-description: "**[SDD II Module 6](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/k-moyennes.html)** Regroupement par les K-moyennes"
+description: "**SDD II Module 6** Regroupement par les K-moyennes"
 tutorial:
   id: "B06La_kmeans"
   version: 1.0.0
@@ -66,7 +66,7 @@ is %>.%
 # factoextra::fviz_nbclust(x, FUNcluster = kmeans, method = "wss")
 ```
 
-```{r nbclust, exercise = TRUE}
+```{r nbclust_noscore, exercise = TRUE, exercise.checker=learndown::checker_ack_learnr}
 is <- read("iris", package = "datasets", lang = "fr")
 summary(is)
 
@@ -77,7 +77,7 @@ is %>.%
 
 ```
 
-```{r nbclust-hint-1}
+```{r nbclust_noscore-hint-1}
 is %>.%
   select(., -species) %>.%
   scale(.) %>.%
@@ -86,7 +86,7 @@ is %>.%
 factoextra::fviz_nbclust(x, FUNcluster = kmeans, method ="wss")
 ```
 
-```{r nbclust-hint-2}
+```{r nbclust_noscore-hint-2}
 is %>.%
   select(., -species) %>.%
   scale(.) %>.%
@@ -95,12 +95,12 @@ is %>.%
 factoextra::fviz_nbclust(is_scale, FUNcluster = kmeans, method = "wss")
 ```
 
-```{r nbclust-check}
+```{r nbclust_noscore-check}
 #TODO
 ```
 
 
-```{r qu_nbclust}
+```{r qu_nbclust_noscore}
 question("Sur base du graphique que vous avez réalisé, combien de groupes réaliseriez vous ? (plusieurs réponses sont possibles) ",
            answer("1"),
            answer("2"),
@@ -143,24 +143,24 @@ kmeans. <- kmeans(X, centers = VALUES, nstart = VALUES1)
 (DF <- broom::tidy(kmeans.))
 ```
 
-```{r kmeans, exercise = TRUE}
+```{r kmeans_noscore, exercise = TRUE, exercise.checker=learndown::checker_ack_learnr}
 #TODO
 ```
 
-```{r kmeans-hint-1}
+```{r kmeans_noscore-hint-1}
 DF_scale <- as_tibble(scale(DF))
 kmeans(X, centers = VALUES, nstart = VALUES1)
 (DF <- broom::glance(kmeans.))
 (DF <- broom::tidy(kmeans.))
 ```
 
-```{r kmeans-hint-2}
+```{r kmeans_noscore-hint-2}
 kmeans. <- kmeans(scale(enviro), centers = 3, nstart = 25) # la valeur de nstart est par défaut à 1 mais augmenter cette valeur rend l'analyse plus robuste (le temps de calcul augmente malheureusement)
 (glance_kmeans <- broom::glance(kmeans.))
 (tidy_kmeans <- broom::tidy(kmeans.))
 ```
 
-```{r kmeans-check}
+```{r kmeans_noscore-check}
 #TODO
 ```
 
@@ -202,7 +202,7 @@ diamonds_red <- read("diamonds", package = "ggplot2") %>.%
 skimr::skim(diamonds_red)
 ```
 
-```{r kmeangraph, exercise = TRUE}
+```{r kmeangraph_noscore, exercise = TRUE, exercise.checker=learndown::checker_ack_learnr}
 diamonds_red <- read("diamonds", package = "ggplot2") %>.%
   select(., -cut, -color, -clarity) %>.%
   rename(., length = x, width = y, height = z) %>.%
@@ -211,7 +211,7 @@ diamonds_red <- read("diamonds", package = "ggplot2") %>.%
 skimr::skim(diamonds_red)
 ```
 
-```{r kmeangraph-hint-1}
+```{r kmeangraph_noscore-hint-1}
 DF <- as_tibble(scale(DF))
 
 OBJECT_KMEANS <- kmeans(DF, centers = VALUES, nstart = VALUES1)
@@ -228,7 +228,7 @@ chart(data = DF_kMEANS, YVAR ~ XVAR %col=% FACTOR) +
              size = 5, shape = 17)
 ```
 
-```{r kmeangraph-hint-2}
+```{r kmeangraph_noscore-hint-2}
 diamonds_scale <- as_tibble(scale(diamonds_red))
 
 diamonds_kmeans <- kmeans(diamonds_scale, centers = 4, nstart = 1)
@@ -245,7 +245,7 @@ chart(data = diam_kmeans, price ~ depth %col=% cluster) +
              size = 5, shape = 17)
 ```
 
-```{r kmeangraph-check}
+```{r kmeangraph_noscore-check}
 # TODO
 ```
 
@@ -253,13 +253,12 @@ chart(data = diam_kmeans, price ~ depth %col=% cluster) +
 
 Vous venez de terminer votre séance d'exercice.
 
-Laissez nous vos impressions sur cet outil pédagogique ou expérimentez encore dans la zone ci-dessous. Rappelez-vous que pour placer un commentaire dans une zone de code R, vous devez utilisez un dièse (`#`) devant vos phrases.
-
-```{r comm, exercise=TRUE, exercise.lines = 8}
-# Ajout de commentaires 
-# ...
-```
-
-```{r comm-check}
-# Not yet...
+```{r comm_noscore, echo=FALSE}
+question_text(
+  "Laissez-nous vos impressions sur ce learnr",
+  answer("", TRUE, message = "Pas de commentaires... C'est bien aussi."),
+  incorrect = "Vos commentaires sont enregistrés.",
+  placeholder = "Entrez vos commentaires ici...",
+  allow_retry = TRUE
+)
 ```
