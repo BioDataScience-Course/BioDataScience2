@@ -1,5 +1,8 @@
 # BioDataScience2 News
 
+## Changes in version 2020.2.0
+
+- Update B02La_reg_multi and B02Lb_reg_poly
 
 ## changes in version 2020.1.1
 
