@@ -27,8 +27,6 @@ BioDataScience2::learnr_server(input, output, session)
 
 ----
 
-**Ce tutoriel est encore sous sa première version, il est en cours de mise à jour.**
-
 ## Objectifs
 
 - Maîtriser la régression linéaire polynomiale dans R avec la fonction `lm()`.
