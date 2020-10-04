@@ -4,10 +4,11 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II Module 2** Application des concepts liés la régression linéaire polynomiale."
 tutorial:
   id: "B02Lb_reg_poly"
-  version: 1.0.0
+  version: 2.0.0/7
 output: 
   learnr::tutorial:
     progressive: true
+    allow_skip: true
 runtime: shiny_prerendered
 ---
 
@@ -30,7 +31,8 @@ BioDataScience2::learnr_server(input, output, session)
 
 ## Objectifs
 
-- TODO
+- Maîtriser la régression linéaire polynomiale dans R avec la fonction `lm()`.
+- Utiliser le **critère d'Akaike** pour comparer deux modèles.
 
 ## Régression linéaire polynomiale
 
@@ -57,7 +59,7 @@ lm_poly_coef <- broom::tidy(lm_poly)
 lm_poly_param <- broom::glance(lm_poly)
 ```
 
-Réalisez la régression linéaire polynomiale d'ordre 2 de la variable `y` en fonction de la variable `x` sur le jeu de données `df`. Vous avez à votre dispositon un nuage de points et un résumé des données pour avoir une première connaissance de données.
+Réalisez la **régression linéaire polynomiale d'ordre 2** de la variable `y` en fonction de la variable `x` sur le jeu de données `df`. Vous avez à votre dispositon un nuage de points et un résumé des données pour prendre connaissance des données.
 
 ```{r}
 chart(df, y ~ x) +
@@ -84,41 +86,48 @@ df <- tibble(
 )
 ```
 
+💬 **Un snippet peut vous aider à réaliser cet exercice.**
 
-```{r regpoly_noscore, exercise = TRUE, exercise.setup = "regpoly-prep", exercise.checker=learndown::checker_ack_learnr}
+```{r regpoly_h2, exercise = TRUE, exercise.setup = "regpoly-prep"}
 # Résumé des données
 summary(df)
-# 
-
-
+# Regression lineaire polynomiale
+summary(lm. <- lm(data = ___, ___ ~ ___))
+lm. %>.% (function (lm, model = lm[["model"]], vars = names(model))
+  chart(model, aes_string(x = vars[2], y = vars[1])) +
+  geom_point() +
+  stat_smooth(method = "lm", formula = y ~ x + I(x^2)))(.)
 ```
 
-```{r regpoly_noscore-hint-1}
+```{r regpoly_h2-hint}
 #snippet
-summary(lm. <- lm(data = DF,
-  YNUM ~  XNUM + I(XNUM^2)))
+summary(lm. <- lm(data = DF, YNUM ~  XNUM + I(XNUM^2)))
+lm. %>.% (function (lm, model = lm[["model"]], vars = names(model))
+  chart(model, aes_string(x = vars[2], y = vars[1])) +
+  geom_point() +
+  stat_smooth(method = "lm", formula = y ~ x + I(x^2)))(.)
+
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r regpoly_h2-solution}
+# Résumé des données
+summary(df)
+# Regression lineaire polynomiale
+summary(lm. <- lm(data = df, y ~ x + I(x^2)))
 lm. %>.% (function (lm, model = lm[["model"]], vars = names(model))
   chart(model, aes_string(x = vars[2], y = vars[1])) +
   geom_point() +
   stat_smooth(method = "lm", formula = y ~ x + I(x^2)))(.)
 ```
 
-```{r regpoly_noscore-solution}
-summary(lm. <- lm(data = df,
-  y ~  x + I(x^2)))
-lm. %>.% (function (lm, model = lm[["model"]], vars = names(model))
-  chart(model, aes_string(x = vars[2], y = vars[1])) +
-  geom_point() +
-  stat_smooth(method = "lm", formula = y ~ x + I(x^2)))(.)
+```{r regpoly_h2-check}
+grade_code("Magnifique première régression polynomiale !")
 ```
 
-```{r regpoly_noscore-check}
-# TODO 
-```
+Suite à votre analyse répondez aux questions suivantes : 
 
-Suite à votre analyse répondez aux questions suivantes
-
-```{r qu_regpoly_noscore}
+```{r qu_regpoly}
 quiz(
   question(text = "Quelle est la valeur de l'ordonnée à l'origine ?",
     answer(sprintf("%.2f", lm_poly_coef$estimate[1]), correct = TRUE),
@@ -152,7 +161,6 @@ set.seed(42)
 x <- seq(from = 1, to = 10, by = 0.25)
 x1 <- x + rnorm(n = length(x))
 
-
 mod_poly2 <- function(x1, alpha1, alpha2, intercept, random_effect){
   y <- intercept + (alpha1 * x1) + (alpha2 * (x1^2)) 
   y + rnorm(n = length(x1), sd = random_effect)
@@ -172,7 +180,7 @@ lm_lp_coef <- broom::tidy(lm_poly)
 lm_lp_param <- broom::glance(lm_poly)
 ```
 
-Réalisez une régression linéaire simple et une régression linéaire polynomiale d'ordre 2 de la variable `y` en fonction de la variable `x` sur le jeu de données `df`. Utilsez le critère d'Akaike afin de déterminer le meilleur modèle. Vous avez à votre dispositon un nuage de points et un résumé des données pour avoir une première connaissance de données.
+Réalisez une régression **linéaire simple** et une régression **linéaire polynomiale d'ordre 2** de la variable `y` en fonction de la variable `x` sur le jeu de données `df`. Utilisez le critère d'Akaike afin de déterminer le meilleur modèle. Vous avez à votre dispositon un nuage de points et un résumé des données pour prendre connaissance des données.
 
 ```{r}
 chart(df, y ~ x) +
@@ -181,13 +189,11 @@ chart(df, y ~ x) +
 
 
 ```{r regpoly_simp-prep}
-
 # edition de l'exercice 
 set.seed(42)
 
 x <- seq(from = 1, to = 10, by = 0.25)
 x1 <- x + rnorm(n = length(x))
-
 
 mod_poly2 <- function(x1, alpha1, alpha2, intercept, random_effect){
   y <- intercept + (alpha1 * x1) + (alpha2 * (x1^2)) 
@@ -208,53 +214,60 @@ lm_lp_coef <- broom::tidy(lm_lin_poly)
 lm_lp_param <- broom::glance(lm_lin_poly)
 ```
 
-```{r regpoly_simp_noscore, exercise = TRUE, exercise.setup = "regpoly_simp-prep", exercise.checker=learndown::checker_ack_learnr}
+💬 **Un snippet peut vous aider à réaliser cet exercice.**
+
+```{r regpoly_simp_h3, exercise = TRUE, exercise.setup = "regpoly_simp-prep"}
 # résumé 
 summary(df)
-#
-#
+# régression linéaire simple
+summary(lm_lin_simp <- lm(data = ___, ___ ~  ___ ))
+# régression linéaire polynomiale
+summary(lm_lin_poly <- lm(data = ___, ___ ~  ___ ))
+# comparaison des 2 modèles
+___(lm_lin_simp, lm_lin_poly)
 ```
 
+```{r regpoly_simp_h3-hint-1}
+# snippet 1
+summary(lm. <- lm(data = DF, YNUM ~ XNUM))
+lm. %>.% (function (lm, model = lm[["model"]], vars = names(model))
+  chart(model, aes_string(x = vars[2], y = vars[1])) +
+  geom_point() +
+  stat_smooth(method = "lm", formula = y ~ x))(.)
 
-```{r regpoly_simp_noscore-hint-1}
-# snippet
-summary(lm. <- lm(data = DF,
-  YNUM ~  XNUM + I(XNUM^2)))
+# snippet 2
+summary(lm. <- lm(data = DF, YNUM ~  XNUM + I(XNUM^2)))
 lm. %>.% (function (lm, model = lm[["model"]], vars = names(model))
   chart(model, aes_string(x = vars[2], y = vars[1])) +
   geom_point() +
   stat_smooth(method = "lm", formula = y ~ x + I(x^2)))(.)
 ```
 
-```{r regpoly_simp_noscore-hint-2}
-# snippet (suite)
-summary(lm. <- lm(data = DF, YNUM ~ XNUM))
-lm. %>.% (function (lm, model = lm[["model"]], vars = names(model))
-  chart(model, aes_string(x = vars[2], y = vars[1])) +
-  geom_point() +
-  stat_smooth(method = "lm", formula = y ~ x))(.)
-```
-
-```{r regpoly_simp_noscore-hint-3}
+```{r regpoly_simp_h3-hint-2}
 # snippet (suite)
 AIC(lm.)
+
+#### ATTENTION: Hint suivant = solution !####
 ```
 
-```{r regpoly_simp_noscore-solution}
-summary(lm_lin_poly <- lm(data = df,
-  y ~  x + I(x^2)))
-summary(lm_lin_simp <- lm(data = df,
-  y ~  x ))
-AIC(lm_lin_poly, lm_lin_simp)
+```{r regpoly_simp_h3-solution}
+# résumé 
+summary(df)
+# régression linéaire simple
+summary(lm_lin_simp <- lm(data = df, y ~ x ))
+# régression linéaire polynomiale
+summary(lm_lin_poly <- lm(data = df, y ~ x + I(x^2)))
+# comparaison des 2 modèles
+AIC(lm_lin_simp, lm_lin_poly)
 ```
 
-```{r regpoly_simp_noscore-check}
-# TODO 
+```{r regpoly_simp_h3-check}
+grade_code("Vous venez de réaliser votre première comparaison de modèle. Lequel est le meilleur ?")
 ```
 
-Suite à votre analyse répondez aux questions suivantes
+Suite à votre analyse répondez aux questions suivantes : 
 
-```{r qu_regpoly_simp_noscore}
+```{r qu_regpoly_simp}
 quiz(
   question(text = "Quelle est la valeur du critère d'Akaike de la régression polynomiale ?",
            answer(sprintf("%.2f", lm_lp_param$AIC), correct = TRUE),
@@ -280,7 +293,7 @@ quiz(
 
 ## Conclusion
 
-Vous venez de terminer votre séance d'exercice.
+Vous venez de terminer votre séance d'exercices.
 
 ```{r comm_noscore, echo=FALSE}
 question_text(

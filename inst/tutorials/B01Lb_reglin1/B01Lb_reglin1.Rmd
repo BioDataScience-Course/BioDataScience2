@@ -4,7 +4,7 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II Module1** Application des concepts liés la régression linéaire simple."
 tutorial:
   id: "B01Lb_reglin1"
-  version: 2.1.0/10
+  version: 2.1.1/10
 output: 
   learnr::tutorial:
     progressive: true
@@ -119,7 +119,7 @@ question("Quelles sont les combinaisons de variables les plus corrélées ?",
 
 - Réalisez une matrice de corrélation avec la méthode de Spearman.
 
-💬 *Un snippet peut vous aider à réaliser cet exercice.*
+💬 **Un snippet peut vous aider à réaliser cet exercice.**
 
 ```{r corr2_h3, exercise=TRUE, exercise.lines=2,  exercise.setup="correlation-prep"}
 correlation(___[, ___:___], use = ___, method = ___)
@@ -191,7 +191,7 @@ grade_code("Présenter une matrice de corrélation sous la forme d'un graphique,
 
 ## Régression linéaire
 
-```{r reglin_init}
+```{r reglin1_init}
 set.seed(42)
 x <- seq(from = 5, to = 15, by = 0.25)
 a <- x * 1.0 + 3 + rnorm(sd = 0.5, n = length(x))

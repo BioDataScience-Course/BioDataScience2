@@ -4,10 +4,11 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II Module 2** Application des concepts liés la régression linéaire multiple."
 tutorial:
   id: "B02La_reg_multi"
-  version: 1.0.0
+  version: 2.0.0/7
 output: 
   learnr::tutorial:
     progressive: true
+    allow_skip: true
 runtime: shiny_prerendered
 ---
 
@@ -26,15 +27,14 @@ BioDataScience2::learnr_server(input, output, session)
 
 ----
 
-**Ce tutoriel est encore sous sa première version, il est en cours de mise à jour. **
-
 ## Objectifs
 
-- TODO
+- Savoir lire la sortie renvoyée par `summary()` lorsqu'il est appliqué à un objet `lm`.
+- Maîtriser la régression linéaire multiple dans R avec la fonction `lm()`.
 
 ## Régression linéaire
 
-Réalisez une régression linéaire simple sur le jeu de données df1 de la variable y en fonction de la vairable x 
+Réalisez une régression linéaire simple sur le jeu de données `df1` de la variable `y` en fonction de la variable `x`. 
 
 ```{r reglin-init}
 # edition de l'exercice 
@@ -52,18 +52,17 @@ df1 <- tibble(
   x = vec2,
   y = reg_lin(vec2, 0.5, 0) + rnorm(sd=0.5, n = length(vec1)))
 
-lm_lin <- lm(df1, formula = y ~ x -1)
+lm_lin <- lm(df1, formula = y ~ x - 1)
 lm_lin_param <- broom::glance(lm_lin)
 lm_lin_result <- broom::tidy(lm_lin)
 ```
 
-Vous avez à votre disposition le graphique suivant pour visualiser les données
+Vous avez à votre disposition le graphique suivant pour visualiser les données.
 
 ```{r}
 chart(df1, formula= y ~ x) +
   geom_point() 
 ```
-
 
 ```{r reglin-prep}
 # edition de l'exercice 
@@ -82,12 +81,18 @@ df1 <- tibble(
   y = reg_lin(vec2, 0.5, 0) + rnorm(sd=0.5, n = length(vec1)))
 ```
 
-```{r reglin_noscore, exercise = TRUE, exercise.setup = "reglin-prep", exercise.checker=learndown::checker_ack_learnr}
+💬 **Un snippet peut vous aider à réaliser cet exercice.**
+
+```{r reglin_h2, exercise = TRUE, exercise.setup = "reglin-prep"}
 #
-summary(df1)
+summary(lm. <- lm(data = ___, ___ ~ ___))
+lm. %>.% (function (lm, model = lm[["model"]], vars = names(model))
+  chart(model, aes_string(x = vars[2], y = vars[1])) +
+  geom_point() +
+  stat_smooth(method = "lm", formula = y ~ x))(.)
 ```
 
-```{r reglin_noscore-hint-1}
+```{r reglin_h2-hint}
 #snippet
 summary(lm. <- lm(data = DF, YNUM ~ XNUM))
 lm. %>.% (function (lm, model = lm[["model"]], vars = names(model))
@@ -100,23 +105,25 @@ lm. %>.% (function (lm, model = lm[["model"]], vars = names(model))
   chart(model, aes_string(x = vars[2], y = vars[1])) +
   geom_point() +
   stat_smooth(method = "lm", formula = y ~ x + 0))(.)
+
+#### ATTENTION: Hint suivant = solution !####
 ```
 
-```{r reglin_noscore-solution}
-summary(lm. <- lm(data = df1, y~ x+ 0))
+```{r reglin_h2-solution}
+summary(lm. <- lm(data = df1, y ~ x + 0))
 lm. %>.% (function (lm, model = lm[["model"]], vars = names(model))
   chart(model, aes_string(x = vars[2], y = vars[1])) +
   geom_point() +
   stat_smooth(method = "lm", formula = y ~ x + 0))(.)
 ```
 
-```{r reglin_noscore-check}
-# TODO 
+```{r reglin_h2-check}
+grade_code("Vous avez réalisé votre premier modèle linéaire.")
 ```
 
-Suite à votre analyse répondez aux questions suivantes
+Suite à votre analyse répondez aux questions suivantes : 
 
-```{r qu_reglin1_noscore}
+```{r qu_reglin}
 quiz(
   question(text = "Quelle est la valeur de l'ordonnée à l'origine ?",
     answer(sprintf("%.2f", 0), correct = TRUE),
@@ -178,7 +185,7 @@ lm_mult_coef <- broom::tidy(lm_mult)
 lm_mult_param <- broom::glance(lm_mult)
 ```
 
-Réalisez une régression linéaire simple sur le jeu de données `df2` de la variable y en fonction de la variable `x` et `x1`
+Réalisez une régression linéaire simple sur le jeu de données `df2` de la variable `y` en fonction de la variable `x` et `x1`.
 
 ```{r regmulti-prep}
 # edition de l'exercice 
@@ -207,32 +214,33 @@ df2 <- tibble::tibble(
                 b = 2))
 ```
 
-```{r regmulti_noscore, exercise = TRUE, exercise.setup = "regmulti-prep", exercise.checker=learndown::checker_ack_learnr}
+💬 **Un snippet peut vous aider à réaliser cet exercice.**
+
+```{r regmulti_h2, exercise = TRUE, exercise.setup = "regmulti-prep"}
 # résumé des données 
 df2
-#
+# régression multiple 
+summary(lm. <- lm(data = ___, ___ ~ ___))
 ```
 
-```{r regmulti_noscore-hint-1}
-# Snippet
-summary(lm. <- lm(data = DF, FORMULA))
+```{r regmulti_h2-hint}
+summary(lm. <- lm(data = DF, Y  ~ VAR1 + VAR2))
 ```
 
-```{r regmulti_noscore-hint-2}
-summary(lm. <- lm(data = DF, formula =  Y  ~ VAR1 + VAR2))
+```{r regmulti_h2-solution}
+# résumé des données 
+df2
+# régression multiple 
+summary(lm. <- lm(data = df2, y ~ x + x1))
 ```
 
-```{r regmulti_noscore-solution}
-summary(lm. <- lm(data = df2, formula = y ~ x + x1))
-```
-
-```{r regmulti_noscore-check}
-#TODO
+```{r regmulti_h2-check}
+grade_code("Vous venez de réaliser votre première régression linéaire multiple. Elles n'auront bientôt plus de secret pour vous !")
 ```
 
 Suite à votre analyse répondez aux questions suivantes : 
 
-```{r qu_regmulti_noscore}
+```{r qu_regmulti}
 quiz(
   question(text = "Quelle est la valeur de l'ordonnée à l'origine ?",
     answer(sprintf("%.2f", lm_mult_coef$estimate[1]), correct = TRUE),
@@ -254,7 +262,7 @@ quiz(
 
 ## Conclusion
 
-Vous venez de terminer votre séance d'exercice.
+Vous venez de terminer votre séance d'exercices.
 
 ```{r comm_noscore, echo=FALSE}
 question_text(
