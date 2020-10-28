@@ -4,7 +4,7 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II Module 3** Application des concepts liés au modèle linéaire."
 tutorial:
   id: "B03La_mod_lin"
-  version: 1.0.0
+  version: 2.0.0/8
 output: 
   learnr::tutorial:
     progressive: true
@@ -30,7 +30,7 @@ BioDataScience2::learnr_server(input, output, session)
 
 ## Objectifs
 
-- TODO
+- Maîtriser le modèle linéaire et l'ANCOVA
 
 ## Modèle linéaire 1
 
@@ -50,7 +50,7 @@ mais1 <- tibble(
 )
 ```
 
-Réalisez la régression linéaire multiple la plus adpatée de `value` en fonction de `x`  et de la variable `area` sur le jeu de données `mais1`. Vous avez à votre dispositon un nuage de points et un résumé des données pour avoir une première connaissance de données.
+Réalisez la régression linéaire multiple la plus adpatée de `value` en fonction de `x` et de la variable `area` sur le jeu de données `mais1`. Vous avez à votre dispositon un nuage de points et un résumé des données pour prendre connaissance des données.
 
 ```{r}
 lm1 <- lm(data = mais1, value ~ x * area)
@@ -60,6 +60,8 @@ lm1_result <- broom::tidy(lm1)
 
 chart(mais1, value ~ x %col=%area) +
   geom_point()
+
+summary(mais1)
 ```
 
 ```{r mais1_prep}
@@ -79,32 +81,32 @@ mais1 <- tibble(
 )
 ```
 
-```{r mais1_noscore, exercise = TRUE, exercise.setup = "mais1_prep", exercise.checker=learndown::checker_ack_learnr}
-#
-summary(mais1)
-#
+```{r mais1_h3, exercise = TRUE, exercise.setup = "mais1_prep"}
 
+summary(lm. <- lm(data = ___, ___))
 ```
 
-```{r mais1_noscore-hint-1}
+```{r mais1_h3-hint-1}
 # chunk
 summary(lm. <- lm(data = DF, FORMULA))
 ```
 
-```{r mais1_noscore-hint-2}
+```{r mais1_h3-hint-2}
 # chunk
 summary(lm. <- lm(data = DF, VAR1 ~ VAR2*VAR3))
+
+#### ATTENTION: Hint suivant = solution !####
 ```
 
-```{r mais1_noscore-solution}
+```{r mais1_h3-solution}
 summary(lm1 <- lm(data = mais1, value ~ x * area))
 ```
 
-```{r mais1_noscore-check}
-# TODO
+```{r mais1_h3-check}
+grade_code("Félicitation ! Tu viens de réaliser ton premier modèle linéaire.")
 ```
 
-```{r qu_mais1_noscore}
+```{r qu_mais1}
 question("Quelle est la valeur de la pente du modèle linéaire du niveau `a` de la variable `area` ?",
          answer(sprintf("%.3f", lm1_result$estimate[[2]]), correct = TRUE),
            answer(sprintf("%.3f", lm1_param$AIC)),
@@ -132,13 +134,13 @@ mais2 <- tibble(
 )
 ```
 
-Réalisez la régression linéaire multiple la plus adpatée de `value` en fonction de `x`  et de la variable `area` sur le jeu de données `mais2`. Vous avez à votre dispositon un nuage de points et un résumé des données pour avoir une première connaissance de données.
+Réalisez la régression linéaire multiple la plus adpatée de `value` en fonction de `x` et de la variable `area` sur le jeu de données `mais2`. Vous avez à votre dispositon un nuage de points et un résumé des données pour prendre connaissance des données.
 
 ```{r}
 chart(mais2, value ~ x %col=% area) +
   geom_point()
 
-#summary(mais)
+summary(mais2)
 
 #lm2 <- lm(data = mais2, value ~ x * area) # modèle le plus compliqué doit être simplifié 
 #lm2 <- lm(data = mais2, value ~ x + area + x:area)
@@ -165,40 +167,40 @@ mais2 <- tibble(
 )
 ```
 
-```{r mais2_noscore, exercise.checker=learndown::checker_ack_learnr, exercise = TRUE, exercise.setup = "mais2_prep"}
-#
-summary(mais2)
-#
+```{r mais2_h4, exercise = TRUE, exercise.setup = "mais2_prep"}
 
+summary(lm. <- lm(data = ___, ___))
 ```
 
-```{r mais2_noscore-hint-1}
+```{r mais2_h4-hint-1}
 # chunk
 summary(lm. <- lm(data = DF, FORMULA))
 ```
 
-```{r mais2_noscore-hint-2}
+```{r mais2_h4-hint-2}
 # chunk
 summary(lm. <- lm(data = DF, VAR1 ~ VAR2*VAR3))
+# ou encore
+summary(lm. <- lm(data = DF, VAR1 ~ VAR2 + VAR3 + VAR2:VAR3))
 ```
 
-```{r mais2_noscore-hint-3}
+```{r mais2_h4-hint-3}
 summary(lm2 <- lm(data = mais2, value ~ x * area))
-```
-
-```{r mais2_nocore-hint-4}
+# ou 
 summary(lm2 <- lm(data = mais2, value ~ x + area + x:area))
+
+#### ATTENTION: Hint suivant = solution !####
 ```
 
-```{r mais2_noscore-solution}
+```{r mais2_h4-solution}
 summary(lm2 <- lm(data = mais2, value ~ x:area))
 ```
 
-```{r mais2_noscore-check}
-# TODO
+```{r mais2_h4-check}
+grade_code("Tu progresses bien ! Plus que quelques petits notions à apprendre pour bien maitriser la matière.")
 ```
 
-```{r qu_mais2_noscore}
+```{r qu_mais2}
 question("Quelle est la valeur de la pente du modèle linéaire du niveau `c` de la variable `area` ?",
          answer(sprintf("%.3f", (lm2_result$estimate[[2]] + lm2_result$estimate[[4]])), correct = TRUE),
            answer(sprintf("%.3f", lm2_param$AIC)),
@@ -226,7 +228,7 @@ mais3 <- tibble(
 )
 ```
 
-Réalisez la régression linéaire multiple la plus adpatée de `value` en fonction de `x`  et de la variable `area` sur le jeu de données `mais3 `. Vous avez à votre dispositon un nuage de points et un résumé des données pour avoir une première connaissance de données.
+Réalisez la régression linéaire multiple la plus adpatée de `value` en fonction de `x` et de la variable `area` sur le jeu de données `mais3 `. Vous avez à votre dispositon un nuage de points et un résumé des données pour prendre connaissance des données.
 
 
 ```{r}
@@ -240,6 +242,8 @@ lm3_result <- broom::tidy(lm3)
 
 chart(mais3, value ~ x %col=%area) +
   geom_point()
+
+summary(mais3)
 ```
 
 ```{r mais3_prep}
@@ -259,38 +263,40 @@ mais3 <- tibble(
 )
 ```
 
-```{r mais3_noscore, exercise.checker=learndown::checker_ack_learnr, exercise = TRUE, exercise.setup = "mais3_prep"}
-#
-summary(mais3)
-#
+```{r mais3_h4, exercise = TRUE, exercise.setup = "mais3_prep"}
 
+summary(lm. <- lm(data = ___, ___))
 ```
 
-```{r mais3_noscore-hint-1}
+```{r mais3_h4-hint-1}
 # chunk
 summary(lm. <- lm(data = DF, FORMULA))
 ```
 
-```{r mais3_noscore-hint-2}
+```{r mais3_h4-hint-2}
 # chunk
 summary(lm. <- lm(data = DF, VAR1 ~ VAR2*VAR3))
 # ou encore
 summary(lm. <- lm(data = DF, VAR1 ~ VAR2 + VAR3 + VAR2:VAR3))
 ```
 
-```{r mais3_noscore-hint-3}
-summary(lm3 <- lm(data = mais3, value ~ x + area + x:area))
+```{r mais3_h4-hint-3}
+summary(lm2 <- lm(data = mais2, value ~ x * area))
+# ou 
+summary(lm2 <- lm(data = mais2, value ~ x + area + x:area))
 ```
 
-```{r mais3_noscore-solution}
+```{r mais3_h4-solution}
 summary(lm3 <- lm(data = mais3, value ~ x + area))
+
+#### ATTENTION: Hint suivant = solution !####
 ```
 
-```{r mais3_noscore-check}
-# TODO
+```{r mais3_h4-check}
+grade_code("Continue comme ca. C'est excellent !")
 ```
 
-```{r qu_mais3_noscore}
+```{r qu_mais3}
 question("Quelle est la valeur de l'ordonnée à l'origine du modèle linéaire du niveau `b` de la variable `area` ?",
          answer(sprintf("%.3f", (lm3_result$estimate[[1]] + lm3_result$estimate[[3]])), correct = TRUE),
            answer(sprintf("%.3f", lm3_param$AIC)),
@@ -318,7 +324,7 @@ mais4 <- tibble(
 )
 ```
 
-Réalisez la régression linéaire multiple la plus adpatée de `value` en fonction de `x`  et de la variable `area` sur le jeu de données `mais4`. Vous avez à votre dispositon un nuage de points et un résumé des données pour avoir une première connaissance de données.
+Réalisez la régression linéaire multiple la plus adpatée de `value` en fonction de `x`  et de la variable `area` sur le jeu de données `mais4`. Vous avez à votre dispositon un nuage de points et un résumé des données pour prendre connaissance des données.
 
 
 ```{r}
@@ -332,6 +338,8 @@ lm4_result <- broom::tidy(lm4)
 
 chart(mais4, value ~ x %col=%area) +
   geom_point()
+
+summary(mais4)
 ```
 
 ```{r mais4_prep}
@@ -351,38 +359,40 @@ mais4 <- tibble(
 )
 ```
 
-```{r mais4_noscore, exercise.checker=learndown::checker_ack_learnr, exercise = TRUE, exercise.setup = "mais4_prep"}
-#
-summary(mais4)
-#
+```{r mais4_h4, exercise = TRUE, exercise.setup = "mais4_prep"}
 
+summary(lm. <- lm(data = ___, ___))
 ```
 
-```{r mais4_noscore-hint-1}
+```{r mais4_h4-hint-1}
 # chunk
 summary(lm. <- lm(data = DF, FORMULA))
 ```
 
-```{r mais4_noscore-hint-2}
+```{r mais4_h4-hint-2}
 # chunk
 summary(lm. <- lm(data = DF, VAR1 ~ VAR2*VAR3))
 # ou encore
 summary(lm. <- lm(data = DF, VAR1 ~ VAR2 + VAR3 + VAR2:VAR3))
 ```
 
-```{r mais4_noscore-hint-3}
-summary(lm4 <- lm(data = mais4, value ~ x + area + x:area))
+```{r mais4_h4-hint-3}
+summary(lm2 <- lm(data = mais2, value ~ x * area))
+# ou 
+summary(lm2 <- lm(data = mais2, value ~ x + area + x:area))
 ```
 
-```{r mais4_noscore-solution}
+```{r mais4_h4-solution}
 summary(lm4 <- lm(data = mais4, value ~ x + x:area - 1))
+
+#### ATTENTION: Hint suivant = solution !####
 ```
 
-```{r mais4_noscore-check}
-# TODO
+```{r mais4_h4-check}
+grade_code("Tu maitrises vraiment bien la modélisation linéaire !")
 ```
 
-```{r qu_mais4_noscore}
+```{r qu_mais4}
 question("Quelle est la valeur de l'ordonnée à l'origine du modèle linéaire du niveau `b` de la variable `area` ?",
          answer(sprintf("%.3f", 0), correct = TRUE),
            answer(sprintf("%.3f", lm4_param$AIC)),

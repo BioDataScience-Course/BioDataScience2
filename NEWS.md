@@ -1,5 +1,9 @@
 # BioDataScience2 News
 
+## Changes in version 2020.2.3
+
+- Update B03La_mod_lin
+
 ## Changes in version 2020.2.2
 
 - Minor change in B02la_reg_multi 
