@@ -1,0 +1,246 @@
+---
+title: "Régression non linéaire"
+author: "Guyliann Engels & Philippe Grosjean"
+description: "**SDD II Module 4** Application des concepts liés à la régression non linéaire"
+tutorial:
+  id: "B04La_nls"
+  version: 1.0.0/5
+output: 
+  learnr::tutorial:
+    progressive: true
+runtime: shiny_prerendered
+---
+  
+```{r setup, include=FALSE}
+BioDataScience2::learnr_setup()
+SciViews::R()
+
+set.seed(42)
+tumor <- tibble(
+  time = seq(1, 60, by = 1),
+  volume = SSgompertz(time, Asym = 8, b2 = 11, b3 = 0.9) + rnorm(length(time), 0, 0.05)
+)
+```
+
+```{r, echo=FALSE}
+BioDataScience2::learnr_banner()
+```
+
+```{r, context="server"}
+BioDataScience2::learnr_server(input, output, session)
+```
+
+----
+  
+## Objectifs
+  
+- Maîtriser l'ajustement d'une courbe dans un nuage de points à l'aide de la régression non linéaire. 
+
+## Croissance exponentielle 
+
+Réalisez une régression non linéaire sur le jeu de données `df1` de la variable `y` en fonction de la variable `t`. 
+
+```{r expo_init}
+exponent <- function(x, y0, k) y0 * exp(k * x)
+
+set.seed(42)
+df1 <- tibble(
+  t = seq(0.3, 3, by = 0.1),
+  y = exponent(t, y0 = 1.5, k = 1.1) + rnorm(n = length(t), sd = 0.3)
+)
+```
+
+Vous avez à votre disposition : 
+
+- le graphique suivant pour visualiser les données
+
+```{r}
+chart(data = df1, formula = y ~ t) +
+  geom_point() 
+```
+
+- la fonction suivante pour calculer votre modèle 
+
+```{r echo=TRUE}
+exponent <- function(x, y0, k) y0 * exp(k * x)
+```
+
+Fixez vos paramètres de départ à 1 pour `y0` et à 0.5 pour `k` et affichez les différentes étapes du calcul itératif.  
+
+```{r expo_prep}
+# copy of expo_init
+exponent <- function(x, y0, k) y0 * exp(k * x)
+
+set.seed(42)
+df1 <- tibble(
+  t = seq(0.3, 3, by = 0.1),
+  y = exponent(t, y0 = 1.5, k = 0.7) + rnorm(n = length(t), sd = 0.15)
+)
+```
+
+```{r expo_h3, exercise = TRUE, exercise.setup = "expo_prep"}
+expo <- ___(___, ___, ___, ___)
+summary(___)
+```
+
+```{r expo_h3-hint-1}
+expo <- nls(data = ___, ___ ~ exponent(___, ___, ___),
+            start = list(___), trace = ___)
+summary(___)
+```
+
+```{r expo_h3-hint-2}
+expo <- nls(data = df1, y ~ exponent(t, ___, ___),
+            start = list(y0 = ___, k = ___), trace = ___)
+summary(___)
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r expo_h3-solution}
+expo <- nls(data = df1, y ~ exponent(t, y0, k),
+            start = list(y0 = 1, k = 0.5), trace = TRUE)
+summary(expo)
+```
+
+```{r expo_h3-check}
+grade_code("Félicitation ! Voici ton premier modèle non linéaire... et certainement pas le dernier.")
+```
+
+## Volume tumoral 
+
+Des chercheurs en cancérologie essayent de modéliser la croissance tumoral. Pour cela, ils ont mesuré l'évolution du volume de la tumeur au cours du temps. Ils obtiennent le graphique suivant :
+
+```{r}
+chart(data = tumor, formula = volume ~ time) +
+  geom_point() + 
+  labs(x = "Time [Days]", y = "Tumor volume [10^9 µm^3")
+```
+
+Aidez-les en réalisant les différents modèles proposés ci-dessous et sélectionnez le meilleur.
+
+### Courbe logistique 
+
+A partir du jeu de données `tumor`, modéliser la croissance tumorale (`volume`) en fonction du temps (`time`) en utilisant une courbe logistique. Calculez le critère d'Akaïke pour votre modèle. 
+
+```{r tumor_logis_h3, exercise = TRUE}
+logis <- ___(___,___)
+summary(___)
+___(___)
+```
+
+```{r tumor_logis_h3-hint-1}
+logis <- nls(data = ___, ___ ~ SSlogis(___, ___, ___, ___))
+summary(___)
+___(___)
+```
+
+```{r tumor_logis_h3-hint-2}
+logis <- nls(data = tumor, volume ~ SSlogis(time, ___, ___, ___))
+summary(___)
+___(logis)
+
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r tumor_logis_h3-solution}
+logis <- nls(data = tumor, volume ~ SSlogis(time, Asym, xmid, scal))
+summary(logis)
+AIC(logis)
+```
+
+```{r tumor_logis_h3-check}
+grade_code("Tu progresses bien ! Essayons un autre modèle pour voir si l'on peut trouver mieux.")
+```
+
+### Modèle de Gompertz
+
+A partir du jeu de données `tumor`, modéliser la croissance tumorale (`volume`) en fonction du temps (`time`) en utilisant le modèle de Gompertz. Calculez le critère d'Akaïke pour votre modèle. 
+
+```{r tumor_gomp_h3, exercise = TRUE}
+gomp <- ___(___,___)
+summary(___)
+___(___)
+```
+
+```{r tumor_gomp_h3-hint-1}
+gomp <- nls(data = ___, ___ ~ SSgompertz(___, ___, ___, ___))
+summary(___)
+___(___)
+```
+
+```{r tumor_gomp_h3-hint-2}
+gomp <- nls(data = tumor, volume ~ SSgompertz(time, ___, ___, ___))
+summary(___)
+___(gomp)
+
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r tumor_gomp_h3-solution}
+gomp <- nls(data = tumor, volume ~ SSgompertz(time, Asym, b2, b3))
+summary(gomp)
+AIC(gomp)
+```
+
+```{r tumor_gomp_h3-check}
+grade_code("Bravo ! C'est impressionnant. Et si on en testait un dernier ...")
+```
+
+### Modèle de von Bertalanffy
+
+A partir du jeu de données `tumor`, modéliser la croissance tumorale (`volume`) en fonction du temps (`time`) en utilisant le modèle de von Bertalanffy. Calculez le critère d'Akaïke pour votre modèle. 
+
+```{r tumor_vb_h3, exercise = TRUE}
+vb <- ___(___,___)
+summary(___)
+___(___)
+```
+
+```{r tumor_vb_h3-hint-1}
+vb <- nls(data = ___, ___ ~ SSasympOff(___, ___, ___, ___))
+summary(___)
+___(___)
+```
+
+```{r tumor_vb_h3-hint-2}
+vb <- nls(data = tumor, volume ~ SSasympOff(time, ___, ___, ___))
+summary(___)
+___(vb)
+
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r tumor_vb_h3-solution}
+vb <- nls(data = tumor, volume ~ SSasympOff(time, Asym, lrc, c0))
+summary(vb)
+AIC(vb)
+```
+
+```{r tumor_vb_h3-check}
+grade_code("Tu maitrises parfaitement la régression non linéaire !")
+```
+
+### Comparaison des modèles à partir du critère d'Akaïke
+
+```{r qu_tumor}
+question("Quelle est le meilleur modèle ?",
+         answer("Modèle de Gompertz", correct = TRUE),
+           answer("Courbe logistique"),
+           answer("Modèle de von Bertalanffy"), 
+           allow_retry = TRUE, random_answer_order = TRUE
+           )
+```
+
+## Conclusion
+
+Vous venez de terminer votre séance d'exercice.
+
+```{r comm_noscore, echo=FALSE}
+question_text(
+  "Laissez-nous vos impressions sur ce learnr",
+  answer("", TRUE, message = "Pas de commentaires... C'est bien aussi."),
+  incorrect = "Vos commentaires sont enregistrés.",
+  placeholder = "Entrez vos commentaires ici...",
+  allow_retry = TRUE
+)
+```
