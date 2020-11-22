@@ -1,4 +1,4 @@
-learndown::learndownShinyVersion("0.0.9000")
+learndown::learndownShinyVersion("1.0.1")
 conf <- BioDataScience::config()
 
 library(shiny)
@@ -13,6 +13,11 @@ set.seed(42)
 exponent <- function(x, y0, k)
   y0 * exp(k * x)
 
+model_data <- tibble::tibble(
+  x = seq(0, 20, by = 0.5),
+  y = exponent(x, y0 = y0_init, k = k_init) +
+    rnorm(n = length(x), sd = error_sd))
+
 ui <- fluidPage(
   learndownShiny("Ajustement manuel d'un modèle : courbe exponentielle"),
 
@@ -20,27 +25,22 @@ ui <- fluidPage(
     sidebarPanel(
       withMathJax(),
       p("$$y(x) = y_0 \\ e^{k \\ x}$$"),
-
       sliderInput("y0", label = "y0",
         value = 1, min = -5, max = 5, step = 0.5),
       sliderInput("k", label = "k",
         value = 0.025, min = -0.20, max = 0.20, step = 0.025),
-
       hr(),
       submitQuitButtons()
     ),
 
     mainPanel(
       plotOutput("model_plot"),
-
       hr(),
-
       withMathJax(),
       fluidRow(
         column(width = 6,
           p("Modèle paramétré :"),
           uiOutput("model_equation")),
-
         column(width = 6,
           p("Somme des carrés des résidus (valeur à minimiser) :"),
           uiOutput("model_resid"))
@@ -53,11 +53,6 @@ ui <- fluidPage(
 server <- function(input, output, session) {
 
 
-  model_data <- tibble::tibble(
-    x = seq(0, 20, by = 0.5),
-    y = exponent(x, y0 = y0_init, k = k_init) +
-      rnorm(n = length(x), sd = error_sd))
-
   model_predict <- reactive({
     dplyr::mutate(model_data,
       y_predit = exponent(x, y0 = input$y0, k = input$k),
@@ -67,7 +62,8 @@ server <- function(input, output, session) {
 
   output$model_equation <- renderUI({
     withMathJax(
-      sprintf("$$y(x) \\ = %.02f \\ e^{%.02f \\ x}$$", input$vm, input$k))
+      sprintf("$$y(x) = %.02f \\ e^{ %.02f \\ x}$$", input$y0, input$k)
+      )
   })
 
   output$model_resid <- renderUI({
