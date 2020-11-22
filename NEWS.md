@@ -1,5 +1,11 @@
 # BioDataScience2 News
 
+## Changes in version 2020.3.0
+
+- New tutorial B04La
+
+- New shinyapps B04Sa, B04Sb, B04Sc, B04Sd, B04Se, B04Sf 
+
 ## Changes in version 2020.2.4
 
 - Minor change in B03La_mod_lin
