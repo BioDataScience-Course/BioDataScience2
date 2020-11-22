@@ -159,23 +159,18 @@ Réalisé par le service d'Écologie numérique, Université de Mons (Belgique)
 </ul>
 <pre class="r"><code>exponent &lt;- function(x, y0, k) y0 * exp(k * x)</code></pre>
 <p>Fixez vos paramètres de départ à 1 pour <code>y0</code> et à 0.5 pour <code>k</code> et affichez les différentes étapes du calcul itératif.</p>
-<div class="tutorial-exercise" data-label="expo_h3" data-caption="Code R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>expo &lt;- ___(___, ___, ___, ___)
+<div class="tutorial-exercise" data-label="expo_h2" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>expo &lt;- ___(data = ___, ___ ~ ___(t, ___, ___), start = list(___ = ___, ___ = ___), trace = TRUE)
 summary(___)</code></pre>
-<script type="application/json" data-ui-opts="1">{"engine":"r","has_checker":true}</script>
+<script type="application/json" data-ui-opts="1">{"engine":"r","has_checker":true,"caption":"Code R"}</script>
 </div>
-<div class="tutorial-exercise-support" data-label="expo_h3-hint-1" data-caption="Code R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>expo &lt;- nls(data = ___, ___ ~ exponent(___, ___, ___),
-            start = list(___), trace = ___)
-summary(___)</code></pre>
-</div>
-<div class="tutorial-exercise-support" data-label="expo_h3-hint-2" data-caption="Code R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<div class="tutorial-exercise-support" data-label="expo_h2-hint-1" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>expo &lt;- nls(data = df1, y ~ exponent(t, ___, ___),
-            start = list(y0 = ___, k = ___), trace = ___)
+            start = list(y0 = ___, k = ___), trace = TRUE)
 summary(___)
 #### ATTENTION: Hint suivant = solution !####</code></pre>
 </div>
-<div class="tutorial-exercise-support" data-label="expo_h3-solution" data-caption="Code R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<div class="tutorial-exercise-support" data-label="expo_h2-solution" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>expo &lt;- nls(data = df1, y ~ exponent(t, y0, k),
             start = list(y0 = 1, k = 0.5), trace = TRUE)
 summary(expo)</code></pre>
@@ -183,30 +178,26 @@ summary(expo)</code></pre>
 </div>
 <div id="section-volume-tumoral" class="section level2">
 <h2>Volume tumoral</h2>
-<p>Des chercheurs en cancérologie cherchent à modéliser la croissance tumoral. Pour cela, ils ont mesuré l’évolution du volume de la tumeur au cours du temps. Ils obtiennent le graphique suivant :</p>
+<p>Des chercheurs en cancérologie essayent de modéliser la croissance tumoral. Pour cela, ils ont mesuré l’évolution du volume de la tumeur au cours du temps. Ils obtiennent le graphique suivant :</p>
 <p><img src="B04La_nls_files/figure-html/unnamed-chunk-5-1.png" width="624" /></p>
+<p>Aidez-les en réalisant les différents modèles proposés ci-dessous et sélectionnez le meilleur.</p>
 <div id="section-courbe-logistique" class="section level3">
 <h3>Courbe logistique</h3>
 <p>A partir du jeu de données <code>tumor</code>, modéliser la croissance tumorale (<code>volume</code>) en fonction du temps (<code>time</code>) en utilisant une courbe logistique. Calculez le critère d’Akaïke pour votre modèle.</p>
-<div class="tutorial-exercise" data-label="tumor_logis_h3" data-caption="Code R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>logis &lt;- ___(___,___)
-summary(___)
-___(___)</code></pre>
-<script type="application/json" data-ui-opts="1">{"engine":"r","has_checker":true}</script>
-</div>
-<div class="tutorial-exercise-support" data-label="tumor_logis_h3-hint-1" data-caption="Code R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<div class="tutorial-exercise" data-label="tumor_logis_h2" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>logis &lt;- nls(data = ___, ___ ~ SSlogis(___, ___, ___, ___))
 summary(___)
 ___(___)</code></pre>
+<script type="application/json" data-ui-opts="1">{"engine":"r","has_checker":true,"caption":"Code R"}</script>
 </div>
-<div class="tutorial-exercise-support" data-label="tumor_logis_h3-hint-2" data-caption="Code R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<div class="tutorial-exercise-support" data-label="tumor_logis_h2-hint-1" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>logis &lt;- nls(data = tumor, volume ~ SSlogis(time, ___, ___, ___))
 summary(___)
 ___(logis)
 
 #### ATTENTION: Hint suivant = solution !####</code></pre>
 </div>
-<div class="tutorial-exercise-support" data-label="tumor_logis_h3-solution" data-caption="Code R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<div class="tutorial-exercise-support" data-label="tumor_logis_h2-solution" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>logis &lt;- nls(data = tumor, volume ~ SSlogis(time, Asym, xmid, scal))
 summary(logis)
 AIC(logis)</code></pre>
@@ -215,25 +206,20 @@ AIC(logis)</code></pre>
 <div id="section-modèle-de-gompertz" class="section level3">
 <h3>Modèle de Gompertz</h3>
 <p>A partir du jeu de données <code>tumor</code>, modéliser la croissance tumorale (<code>volume</code>) en fonction du temps (<code>time</code>) en utilisant le modèle de Gompertz. Calculez le critère d’Akaïke pour votre modèle.</p>
-<div class="tutorial-exercise" data-label="tumor_gomp_h3" data-caption="Code R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>gomp &lt;- ___(___,___)
-summary(___)
-___(___)</code></pre>
-<script type="application/json" data-ui-opts="1">{"engine":"r","has_checker":true}</script>
-</div>
-<div class="tutorial-exercise-support" data-label="tumor_gomp_h3-hint-1" data-caption="Code R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<div class="tutorial-exercise" data-label="tumor_gomp_h2" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>gomp &lt;- nls(data = ___, ___ ~ SSgompertz(___, ___, ___, ___))
 summary(___)
 ___(___)</code></pre>
+<script type="application/json" data-ui-opts="1">{"engine":"r","has_checker":true,"caption":"Code R"}</script>
 </div>
-<div class="tutorial-exercise-support" data-label="tumor_gomp_h3-hint-2" data-caption="Code R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<div class="tutorial-exercise-support" data-label="tumor_gomp_h2-hint-1" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>gomp &lt;- nls(data = tumor, volume ~ SSgompertz(time, ___, ___, ___))
 summary(___)
 ___(gomp)
 
 #### ATTENTION: Hint suivant = solution !####</code></pre>
 </div>
-<div class="tutorial-exercise-support" data-label="tumor_gomp_h3-solution" data-caption="Code R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<div class="tutorial-exercise-support" data-label="tumor_gomp_h2-solution" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>gomp &lt;- nls(data = tumor, volume ~ SSgompertz(time, Asym, b2, b3))
 summary(gomp)
 AIC(gomp)</code></pre>
@@ -242,25 +228,20 @@ AIC(gomp)</code></pre>
 <div id="section-modèle-de-von-bertalanffy" class="section level3">
 <h3>Modèle de von Bertalanffy</h3>
 <p>A partir du jeu de données <code>tumor</code>, modéliser la croissance tumorale (<code>volume</code>) en fonction du temps (<code>time</code>) en utilisant le modèle de von Bertalanffy. Calculez le critère d’Akaïke pour votre modèle.</p>
-<div class="tutorial-exercise" data-label="tumor_vb_h3" data-caption="Code R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>vb &lt;- ___(___,___)
-summary(___)
-___(___)</code></pre>
-<script type="application/json" data-ui-opts="1">{"engine":"r","has_checker":true}</script>
-</div>
-<div class="tutorial-exercise-support" data-label="tumor_vb_h3-hint-1" data-caption="Code R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<div class="tutorial-exercise" data-label="tumor_vb_h2" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>vb &lt;- nls(data = ___, ___ ~ SSasympOff(___, ___, ___, ___))
 summary(___)
 ___(___)</code></pre>
+<script type="application/json" data-ui-opts="1">{"engine":"r","has_checker":true,"caption":"Code R"}</script>
 </div>
-<div class="tutorial-exercise-support" data-label="tumor_vb_h3-hint-2" data-caption="Code R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<div class="tutorial-exercise-support" data-label="tumor_vb_h2-hint-1" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>vb &lt;- nls(data = tumor, volume ~ SSasympOff(time, ___, ___, ___))
 summary(___)
 ___(vb)
 
 #### ATTENTION: Hint suivant = solution !####</code></pre>
 </div>
-<div class="tutorial-exercise-support" data-label="tumor_vb_h3-solution" data-caption="Code R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<div class="tutorial-exercise-support" data-label="tumor_vb_h2-solution" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>vb &lt;- nls(data = tumor, volume ~ SSasympOff(time, Asym, lrc, c0))
 summary(vb)
 AIC(vb)</code></pre>
@@ -301,7 +282,7 @@ tumor <- tibble(
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-learnr:::register_http_handlers(session, metadata = list(id = "B04La_nls", version = "1.0.0/5"))
+learnr:::register_http_handlers(session, metadata = list(id = "B04La_nls", version = "1.1.0/5"))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
@@ -337,23 +318,23 @@ BioDataScience2::learnr_server(input, output, session)
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-`tutorial-exercise-expo_h3-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-expo_h3-code-editor`)), session)
-output$`tutorial-exercise-expo_h3-output` <- renderUI({
-  `tutorial-exercise-expo_h3-result`()
+`tutorial-exercise-expo_h2-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-expo_h2-code-editor`)), session)
+output$`tutorial-exercise-expo_h2-output` <- renderUI({
+  `tutorial-exercise-expo_h2-result`()
 })
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-learnr:::store_exercise_cache("expo_h3", list(setup = "# copy of expo_init\nexponent <- function(x, y0, k) y0 * exp(k * x)\n\nset.seed(42)\ndf1 <- tibble(\n  t = seq(0.3, 3, by = 0.1),\n  y = exponent(t, y0 = 1.5, k = 0.7) + rnorm(n = length(t), sd = 0.15)\n)", 
+learnr:::store_exercise_cache("expo_h2", list(setup = "# copy of expo_init\nexponent <- function(x, y0, k) y0 * exp(k * x)\n\nset.seed(42)\ndf1 <- tibble(\n  t = seq(0.3, 3, by = 0.1),\n  y = exponent(t, y0 = 1.5, k = 0.7) + rnorm(n = length(t), sd = 0.15)\n)", 
     chunks = list(list(label = "expo_prep", code = "# copy of expo_init\nexponent <- function(x, y0, k) y0 * exp(k * x)\n\nset.seed(42)\ndf1 <- tibble(\n  t = seq(0.3, 3, by = 0.1),\n  y = exponent(t, y0 = 1.5, k = 0.7) + rnorm(n = length(t), sd = 0.15)\n)", 
         opts = list(label = "\"expo_prep\""), engine = "r"), 
-        list(label = "expo_h3", code = "expo <- ___(___, ___, ___, ___)\nsummary(___)", 
-            opts = list(label = "\"expo_h3\"", exercise = "TRUE", 
+        list(label = "expo_h2", code = "expo <- ___(data = ___, ___ ~ ___(t, ___, ___), start = list(___ = ___, ___ = ___), trace = TRUE)\nsummary(___)", 
+            opts = list(label = "\"expo_h2\"", exercise = "TRUE", 
                 exercise.setup = "\"expo_prep\""), engine = "r")), 
     code_check = NULL, error_check = NULL, check = structure("grade_code(\"Félicitation ! Voici ton premier modèle non linéaire... et certainement pas le dernier.\")", chunk_opts = list(
-        label = "expo_h3-check")), solution = structure(c("expo <- nls(data = df1, y ~ exponent(t, y0, k),", 
+        label = "expo_h2-check")), solution = structure(c("expo <- nls(data = df1, y ~ exponent(t, y0, k),", 
     "            start = list(y0 = 1, k = 0.5), trace = TRUE)", 
-    "summary(expo)"), chunk_opts = list(label = "expo_h3-solution")), 
+    "summary(expo)"), chunk_opts = list(label = "expo_h2-solution")), 
     options = list(eval = FALSE, echo = TRUE, results = "markup", 
         tidy = FALSE, tidy.opts = NULL, collapse = FALSE, prompt = FALSE, 
         comment = NA, highlight = FALSE, strip.white = TRUE, 
@@ -373,26 +354,26 @@ learnr:::store_exercise_cache("expo_h3", list(setup = "# copy of expo_init\nexpo
         max.print = 1000, tutorial = TRUE, exercise.timelimit = 60, 
         exercise.checker = "function (label = NULL, solution_code = NULL, user_code = NULL, \n    check_code = NULL, envir_result = NULL, evaluate_result = NULL, \n    envir_prep = NULL, last_value = NULL, ...) \n{\n    (utils::getFromNamespace(\"grade_learnr_\", \"gradethis\"))(label = label, \n        solution_code = solution_code, user_code = user_code, \n        check_code = check_code, envir_result = envir_result, \n        evaluate_result = evaluate_result, envir_prep = envir_prep, \n        last_value = last_value, ...)\n}", 
         exercise.error.check.code = "grade_code()", exercise.cap = "Code R", 
-        label = "expo_h3", exercise = TRUE, exercise.setup = "expo_prep", 
-        out.width.px = 624, out.height.px = 384, code = c("expo <- ___(___, ___, ___, ___)", 
-        "summary(___)"), params.src = "expo_h3, exercise = TRUE, exercise.setup = \"expo_prep\"", 
+        label = "expo_h2", exercise = TRUE, exercise.setup = "expo_prep", 
+        out.width.px = 624, out.height.px = 384, code = c("expo <- ___(data = ___, ___ ~ ___(t, ___, ___), start = list(___ = ___, ___ = ___), trace = TRUE)", 
+        "summary(___)"), params.src = "expo_h2, exercise = TRUE, exercise.setup = \"expo_prep\"", 
         fig.num = 0, exercise.df_print = "paged"), engine = "r"))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-`tutorial-exercise-tumor_logis_h3-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-tumor_logis_h3-code-editor`)), session)
-output$`tutorial-exercise-tumor_logis_h3-output` <- renderUI({
-  `tutorial-exercise-tumor_logis_h3-result`()
+`tutorial-exercise-tumor_logis_h2-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-tumor_logis_h2-code-editor`)), session)
+output$`tutorial-exercise-tumor_logis_h2-output` <- renderUI({
+  `tutorial-exercise-tumor_logis_h2-result`()
 })
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-learnr:::store_exercise_cache("tumor_logis_h3", list(setup = NULL, chunks = list(list(label = "tumor_logis_h3", 
-    code = "logis <- ___(___,___)\nsummary(___)\n___(___)", opts = list(
-        label = "\"tumor_logis_h3\"", exercise = "TRUE"), engine = "r")), 
-    code_check = NULL, error_check = NULL, check = structure("grade_code(\"Tu progresses bien ! Essayons un autre modèle pour voir si l'on peut trouver mieux.\")", chunk_opts = list(
-        label = "tumor_logis_h3-check")), solution = structure(c("logis <- nls(data = tumor, volume ~ SSlogis(time, Asym, xmid, scal))", 
-    "summary(logis)", "AIC(logis)"), chunk_opts = list(label = "tumor_logis_h3-solution")), 
+learnr:::store_exercise_cache("tumor_logis_h2", list(setup = NULL, chunks = list(list(label = "tumor_logis_h2", 
+    code = "logis <- nls(data = ___, ___ ~ SSlogis(___, ___, ___, ___))\nsummary(___)\n___(___)", 
+    opts = list(label = "\"tumor_logis_h2\"", exercise = "TRUE"), 
+    engine = "r")), code_check = NULL, error_check = NULL, check = structure("grade_code(\"Tu progresses bien ! Essayons un autre modèle pour voir si l'on peut trouver mieux.\")", chunk_opts = list(
+    label = "tumor_logis_h2-check")), solution = structure(c("logis <- nls(data = tumor, volume ~ SSlogis(time, Asym, xmid, scal))", 
+"summary(logis)", "AIC(logis)"), chunk_opts = list(label = "tumor_logis_h2-solution")), 
     options = list(eval = FALSE, echo = TRUE, results = "markup", 
         tidy = FALSE, tidy.opts = NULL, collapse = FALSE, prompt = FALSE, 
         comment = NA, highlight = FALSE, strip.white = TRUE, 
@@ -412,26 +393,26 @@ learnr:::store_exercise_cache("tumor_logis_h3", list(setup = NULL, chunks = list
         max.print = 1000, tutorial = TRUE, exercise.timelimit = 60, 
         exercise.checker = "function (label = NULL, solution_code = NULL, user_code = NULL, \n    check_code = NULL, envir_result = NULL, evaluate_result = NULL, \n    envir_prep = NULL, last_value = NULL, ...) \n{\n    (utils::getFromNamespace(\"grade_learnr_\", \"gradethis\"))(label = label, \n        solution_code = solution_code, user_code = user_code, \n        check_code = check_code, envir_result = envir_result, \n        evaluate_result = evaluate_result, envir_prep = envir_prep, \n        last_value = last_value, ...)\n}", 
         exercise.error.check.code = "grade_code()", exercise.cap = "Code R", 
-        label = "tumor_logis_h3", exercise = TRUE, out.width.px = 624, 
-        out.height.px = 384, code = c("logis <- ___(___,___)", 
-        "summary(___)", "___(___)"), params.src = "tumor_logis_h3, exercise = TRUE", 
+        label = "tumor_logis_h2", exercise = TRUE, out.width.px = 624, 
+        out.height.px = 384, code = c("logis <- nls(data = ___, ___ ~ SSlogis(___, ___, ___, ___))", 
+        "summary(___)", "___(___)"), params.src = "tumor_logis_h2, exercise = TRUE", 
         fig.num = 0, exercise.df_print = "paged"), engine = "r"))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-`tutorial-exercise-tumor_gomp_h3-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-tumor_gomp_h3-code-editor`)), session)
-output$`tutorial-exercise-tumor_gomp_h3-output` <- renderUI({
-  `tutorial-exercise-tumor_gomp_h3-result`()
+`tutorial-exercise-tumor_gomp_h2-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-tumor_gomp_h2-code-editor`)), session)
+output$`tutorial-exercise-tumor_gomp_h2-output` <- renderUI({
+  `tutorial-exercise-tumor_gomp_h2-result`()
 })
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-learnr:::store_exercise_cache("tumor_gomp_h3", list(setup = NULL, chunks = list(list(label = "tumor_gomp_h3", 
-    code = "gomp <- ___(___,___)\nsummary(___)\n___(___)", opts = list(
-        label = "\"tumor_gomp_h3\"", exercise = "TRUE"), engine = "r")), 
-    code_check = NULL, error_check = NULL, check = structure("grade_code(\"Bravo ! C'est impressionnant. Et si on en testait un dernier ...\")", chunk_opts = list(
-        label = "tumor_gomp_h3-check")), solution = structure(c("gomp <- nls(data = tumor, volume ~ SSgompertz(time, Asym, b2, b3))", 
-    "summary(gomp)", "AIC(gomp)"), chunk_opts = list(label = "tumor_gomp_h3-solution")), 
+learnr:::store_exercise_cache("tumor_gomp_h2", list(setup = NULL, chunks = list(list(label = "tumor_gomp_h2", 
+    code = "gomp <- nls(data = ___, ___ ~ SSgompertz(___, ___, ___, ___))\nsummary(___)\n___(___)", 
+    opts = list(label = "\"tumor_gomp_h2\"", exercise = "TRUE"), 
+    engine = "r")), code_check = NULL, error_check = NULL, check = structure("grade_code(\"Bravo ! C'est impressionnant. Et si on en testait un dernier ...\")", chunk_opts = list(
+    label = "tumor_gomp_h2-check")), solution = structure(c("gomp <- nls(data = tumor, volume ~ SSgompertz(time, Asym, b2, b3))", 
+"summary(gomp)", "AIC(gomp)"), chunk_opts = list(label = "tumor_gomp_h2-solution")), 
     options = list(eval = FALSE, echo = TRUE, results = "markup", 
         tidy = FALSE, tidy.opts = NULL, collapse = FALSE, prompt = FALSE, 
         comment = NA, highlight = FALSE, strip.white = TRUE, 
@@ -451,26 +432,26 @@ learnr:::store_exercise_cache("tumor_gomp_h3", list(setup = NULL, chunks = list(
         max.print = 1000, tutorial = TRUE, exercise.timelimit = 60, 
         exercise.checker = "function (label = NULL, solution_code = NULL, user_code = NULL, \n    check_code = NULL, envir_result = NULL, evaluate_result = NULL, \n    envir_prep = NULL, last_value = NULL, ...) \n{\n    (utils::getFromNamespace(\"grade_learnr_\", \"gradethis\"))(label = label, \n        solution_code = solution_code, user_code = user_code, \n        check_code = check_code, envir_result = envir_result, \n        evaluate_result = evaluate_result, envir_prep = envir_prep, \n        last_value = last_value, ...)\n}", 
         exercise.error.check.code = "grade_code()", exercise.cap = "Code R", 
-        label = "tumor_gomp_h3", exercise = TRUE, out.width.px = 624, 
-        out.height.px = 384, code = c("gomp <- ___(___,___)", 
-        "summary(___)", "___(___)"), params.src = "tumor_gomp_h3, exercise = TRUE", 
+        label = "tumor_gomp_h2", exercise = TRUE, out.width.px = 624, 
+        out.height.px = 384, code = c("gomp <- nls(data = ___, ___ ~ SSgompertz(___, ___, ___, ___))", 
+        "summary(___)", "___(___)"), params.src = "tumor_gomp_h2, exercise = TRUE", 
         fig.num = 0, exercise.df_print = "paged"), engine = "r"))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-`tutorial-exercise-tumor_vb_h3-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-tumor_vb_h3-code-editor`)), session)
-output$`tutorial-exercise-tumor_vb_h3-output` <- renderUI({
-  `tutorial-exercise-tumor_vb_h3-result`()
+`tutorial-exercise-tumor_vb_h2-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-tumor_vb_h2-code-editor`)), session)
+output$`tutorial-exercise-tumor_vb_h2-output` <- renderUI({
+  `tutorial-exercise-tumor_vb_h2-result`()
 })
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-learnr:::store_exercise_cache("tumor_vb_h3", list(setup = NULL, chunks = list(list(label = "tumor_vb_h3", 
-    code = "vb <- ___(___,___)\nsummary(___)\n___(___)", opts = list(
-        label = "\"tumor_vb_h3\"", exercise = "TRUE"), engine = "r")), 
-    code_check = NULL, error_check = NULL, check = structure("grade_code(\"Tu maitrises parfaitement la régression non linéaire !\")", chunk_opts = list(
-        label = "tumor_vb_h3-check")), solution = structure(c("vb <- nls(data = tumor, volume ~ SSasympOff(time, Asym, lrc, c0))", 
-    "summary(vb)", "AIC(vb)"), chunk_opts = list(label = "tumor_vb_h3-solution")), 
+learnr:::store_exercise_cache("tumor_vb_h2", list(setup = NULL, chunks = list(list(label = "tumor_vb_h2", 
+    code = "vb <- nls(data = ___, ___ ~ SSasympOff(___, ___, ___, ___))\nsummary(___)\n___(___)", 
+    opts = list(label = "\"tumor_vb_h2\"", exercise = "TRUE"), 
+    engine = "r")), code_check = NULL, error_check = NULL, check = structure("grade_code(\"Tu maitrises parfaitement la régression non linéaire !\")", chunk_opts = list(
+    label = "tumor_vb_h2-check")), solution = structure(c("vb <- nls(data = tumor, volume ~ SSasympOff(time, Asym, lrc, c0))", 
+"summary(vb)", "AIC(vb)"), chunk_opts = list(label = "tumor_vb_h2-solution")), 
     options = list(eval = FALSE, echo = TRUE, results = "markup", 
         tidy = FALSE, tidy.opts = NULL, collapse = FALSE, prompt = FALSE, 
         comment = NA, highlight = FALSE, strip.white = TRUE, 
@@ -490,9 +471,9 @@ learnr:::store_exercise_cache("tumor_vb_h3", list(setup = NULL, chunks = list(li
         max.print = 1000, tutorial = TRUE, exercise.timelimit = 60, 
         exercise.checker = "function (label = NULL, solution_code = NULL, user_code = NULL, \n    check_code = NULL, envir_result = NULL, evaluate_result = NULL, \n    envir_prep = NULL, last_value = NULL, ...) \n{\n    (utils::getFromNamespace(\"grade_learnr_\", \"gradethis\"))(label = label, \n        solution_code = solution_code, user_code = user_code, \n        check_code = check_code, envir_result = envir_result, \n        evaluate_result = evaluate_result, envir_prep = envir_prep, \n        last_value = last_value, ...)\n}", 
         exercise.error.check.code = "grade_code()", exercise.cap = "Code R", 
-        label = "tumor_vb_h3", exercise = TRUE, out.width.px = 624, 
-        out.height.px = 384, code = c("vb <- ___(___,___)", "summary(___)", 
-        "___(___)"), params.src = "tumor_vb_h3, exercise = TRUE", 
+        label = "tumor_vb_h2", exercise = TRUE, out.width.px = 624, 
+        out.height.px = 384, code = c("vb <- nls(data = ___, ___ ~ SSasympOff(___, ___, ___, ___))", 
+        "summary(___)", "___(___)"), params.src = "tumor_vb_h2, exercise = TRUE", 
         fig.num = 0, exercise.df_print = "paged"), engine = "r"))
 </script>
  
@@ -549,7 +530,7 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_text", label =
 <!--/html_preserve-->
 <!--html_preserve-->
 <script type="application/shiny-prerendered" data-context="execution_dependencies">
-{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150]}},"value":[{"type":"character","attributes":{},"value":["acepack","anytime","askpass","assertthat","backports","base","base64enc","BiocManager","BioDataScience","BioDataScience2","bit","bit64","blob","broom","cellranger","chart","checkmate","cli","cluster","codetools","colorspace","compiler","cowplot","crayon","curl","data.io","data.table","datasets","DBI","dbplyr","digest","dplyr","ellipse","ellipsis","evaluate","fansi","farver","fastmap","flow","forcats","foreign","Formula","fs","generics","gganimate","ggplot2","ggplotify","ggpubr","ggsignif","glue","gradethis","graphics","grDevices","grid","gridExtra","gridGraphics","gtable","haven","Hmisc","hms","htmlTable","htmltools","htmlwidgets","httpuv","httr","igraph","inline","jpeg","jsonlite","knitr","labeling","later","lattice","latticeExtra","learndown","learnr","lifecycle","lubridate","magick","magrittr","markdown","MASS","Matrix","memoise","methods","mime","miniUI","modelr","mongolite","munsell","nanotime","nlme","nnet","openssl","pillar","pkgconfig","PKI","png","prettyunits","progress","promises","proto","pryr","purrr","R6","RColorBrewer","Rcpp","RcppCCTZ","readr","readxl","remotes","reprex","rlang","rmarkdown","rpart","rprojroot","RSQLite","rstudioapi","rvcheck","rvest","scales","SciViews","shiny","shinylogs","shinytoastr","splines","stats","stringi","stringr","survival","svMisc","testthat","tibble","tidyr","tidyselect","tidyverse","tools","tsibble","tweenr","utils","vctrs","viridis","viridisLite","webshot","withr","xfun","xml2","xtable","yaml","zoo"]},{"type":"character","attributes":{},"value":["1.4.1","0.3.7","1.1","0.2.1","1.1.6","3.6.3","0.1-3","1.30.10","2020.0.0","2020.2.3","1.1-15.2","0.9-7","1.2.1","0.5.6","1.1.0","1.3.0","2.0.0","2.0.2","2.1.0","0.2-16","1.4-1","3.6.3","1.0.0","1.3.4","4.3","1.2.2","1.12.8","3.6.3","1.1.0","1.4.3","0.6.25","0.8.5","0.4.1","0.3.0","0.14","0.4.1","2.0.3","1.0.1","1.0.0","0.5.0","0.8-76","1.2-3","1.4.1","0.0.2","1.0.5","3.3.0","0.0.5","0.2.5","0.6.0","1.4.0","0.1.0.9004","3.6.3","3.6.3","3.6.3","2.3","0.5-0","0.3.0","2.2.0","4.4-0","0.5.3","1.13.3","0.5.0.9000","1.5.1","1.5.2","1.4.1","1.2.5","0.3.15","0.1-8.1","1.6.1","1.28","0.3","1.0.0","0.20-41","0.6-29","1.1.8","0.10.1.9006","0.2.0","1.7.8","2.3","1.5","1.1","7.3-51.5","1.2-18","1.1.0","3.6.3","0.9","0.1.1.1","0.1.6","2.2.0","0.5.0","0.2.4","3.1-147","7.3-13","1.4.1","1.4.3","2.0.3","0.1-7","0.1-7","1.1.1","1.2.2","1.1.0","1.0.0","0.1.4","0.3.4","2.4.1","1.1-2","1.0.4.6","0.2.7","1.3.1","1.3.1","2.1.1","0.3.0","0.4.5","2.1","4.1-15","1.3-2","2.2.0","0.11","0.1.8","0.3.5","1.1.0","1.1.1","1.4.0.2","0.1.7.9000","2.1.1","3.6.3","3.6.3","1.4.6","1.4.0","3.1-12","1.1.0","2.3.2","3.0.1","1.0.2","1.0.0","1.3.0","3.6.3","0.8.6","1.0.1","3.6.3","0.2.4","0.5.1","0.3.0","0.5.2","2.2.0","0.13","1.3.2","1.8-4","2.2.1","1.8-7"]}]}]}
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145]}},"value":[{"type":"character","attributes":{},"value":["acepack","anytime","askpass","assertthat","backports","base","base64enc","BiocManager","BioDataScience","BioDataScience2","bit","bit64","blob","broom","cellranger","chart","checkmate","cli","cluster","codetools","colorspace","compiler","cowplot","crayon","curl","data.io","data.table","datasets","DBI","dbplyr","digest","dplyr","ellipse","ellipsis","evaluate","fansi","farver","fastmap","flow","forcats","foreign","Formula","fs","generics","ggplot2","ggplotify","ggpubr","ggsignif","glue","gradethis","graphics","grDevices","grid","gridExtra","gridGraphics","gtable","haven","Hmisc","hms","htmlTable","htmltools","htmlwidgets","httpuv","httr","igraph","jpeg","jsonlite","knitr","labeling","later","lattice","latticeExtra","learndown","learnr","lifecycle","lubridate","magick","magrittr","markdown","MASS","Matrix","memoise","methods","mime","miniUI","modelr","mongolite","munsell","nanotime","nlme","nnet","openssl","pillar","pkgconfig","PKI","png","promises","proto","pryr","purrr","R6","RColorBrewer","Rcpp","RcppCCTZ","readr","readxl","remotes","reprex","rlang","rmarkdown","rpart","rprojroot","RSQLite","rstudioapi","rvcheck","rvest","scales","SciViews","shiny","shinylogs","shinytoastr","splines","stats","stringi","stringr","survival","svMisc","testthat","tibble","tidyr","tidyselect","tidyverse","tools","tsibble","utils","vctrs","viridis","viridisLite","webshot","withr","xfun","xml2","xtable","yaml","zoo"]},{"type":"character","attributes":{},"value":["1.4.1","0.3.7","1.1","0.2.1","1.1.6","3.6.3","0.1-3","1.30.10","2020.0.0","2020.2.4","1.1-15.2","0.9-7","1.2.1","0.5.6","1.1.0","1.3.0","2.0.0","2.0.2","2.1.0","0.2-16","1.4-1","3.6.3","1.0.0","1.3.4","4.3","1.2.2","1.12.8","3.6.3","1.1.0","1.4.3","0.6.25","0.8.5","0.4.1","0.3.0","0.14","0.4.1","2.0.3","1.0.1","1.0.0","0.5.0","0.8-75","1.2-3","1.4.1","0.0.2","3.3.0","0.0.5","0.2.5","0.6.0","1.4.0","0.2.0.9000","3.6.3","3.6.3","3.6.3","2.3","0.5-0","0.3.0","2.2.0","4.4-0","0.5.3","1.13.3","0.4.0","1.5.1","1.5.2","1.4.1","1.2.5","0.1-8.1","1.6.1","1.28","0.3","1.0.0","0.20-38","0.6-29","1.1.8","0.10.1.9006","0.2.0","1.7.8","2.3","1.5","1.1","7.3-51.5","1.2-18","1.1.0","3.6.3","0.9","0.1.1.1","0.1.6","2.2.0","0.5.0","0.2.4","3.1-144","7.3-12","1.4.1","1.4.3","2.0.3","0.1-7","0.1-7","1.1.0","1.0.0","0.1.4","0.3.4","2.4.1","1.1-2","1.0.4","0.2.7","1.3.1","1.3.1","2.1.1","0.3.0","0.4.5","2.1","4.1-15","1.3-2","2.2.0","0.11","0.1.8","0.3.5","1.1.0","1.1.1","1.4.0.2","0.1.7","2.1.1","3.6.3","3.6.3","1.4.6","1.4.0","3.1-8","1.1.0","2.3.2","3.0.1","1.0.2","1.0.0","1.3.0","3.6.3","0.8.6","3.6.3","0.2.4","0.5.1","0.3.0","0.5.2","2.2.0","0.13","1.3.1","1.8-4","2.2.1","1.8-7"]}]}]}
 </script>
 <!--/html_preserve-->
 </div>
