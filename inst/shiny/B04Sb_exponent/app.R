@@ -1,4 +1,4 @@
-learndown::learndownShinyVersion("1.0.1")
+learndown::learndownShinyVersion("1.1.0")
 conf <- BioDataScience::config()
 
 library(shiny)
@@ -17,6 +17,11 @@ model_data <- tibble::tibble(
   x = seq(0, 20, by = 0.5),
   y = exponent(x, y0 = y0_init, k = k_init) +
     rnorm(n = length(x), sd = error_sd))
+
+graph <- chart::chart(model_data, y ~ x) +
+  ggplot2::geom_point() +
+  ggplot2::xlab("x") +
+  ggplot2::ylab("y")
 
 ui <- fluidPage(
   learndownShiny("Ajustement manuel d'un modèle : courbe exponentielle"),
@@ -73,12 +78,14 @@ server <- function(input, output, session) {
 
   output$model_plot <- renderPlot({
     data <- model_predict()
+    p <- graph
 
-    chart::chart(data, y ~ x) +
-      ggplot2::geom_point() +
-      ggplot2::geom_line(chart::f_aes(y_predit ~ x), color = "red") +
-      ggplot2::xlab("x") +
-      ggplot2::ylab("y")
+    if(!any(is.nan(data$y_predit))) {
+      p <- p +
+        ggplot2::geom_line(chart::f_aes(y_predit ~ x), color = "red", data = data)
+    }
+
+    p
   })
 
   trackEvents(session, input, output,

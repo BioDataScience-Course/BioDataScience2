@@ -1,4 +1,4 @@
-learndown::learndownShinyVersion("1.0.0")
+learndown::learndownShinyVersion("1.2.0")
 conf <- BioDataScience::config()
 
 library(shiny)
@@ -18,6 +18,11 @@ model_data <- tibble::tibble(
   y = SSfpl(x, A = a_init, B = b_init, xmid = xmid_init, scal = scal_init) +
     rnorm(n = length(x), sd = error_sd))
 
+graph <- chart::chart(model_data, y ~ x) +
+  ggplot2::geom_point() +
+  ggplot2::xlab("x") +
+  ggplot2::ylab("y")
+
 ui <- fluidPage(
   learndownShiny("Ajustement manuel d'un modèle : modèle logistique généralisé"),
 
@@ -33,7 +38,7 @@ ui <- fluidPage(
       sliderInput("xmid", label = "Xmid",
         value = 1.00, min = 0.25, max = 10.00, step = 0.25),
       sliderInput("scal", label = "Scal",
-        value = 1.00, min = 0.25, max = 10.00, step = 0.25),
+        value = 1.00, min = -1.00, max = 5.00, step = 0.25),
       hr(),
       submitQuitButtons()
     ),
@@ -82,12 +87,13 @@ server <- function(input, output, session) {
 
   output$model_plot <- renderPlot({
     data <- model_predict()
+    p <- graph
 
-    chart::chart(data, y ~ x) +
-      ggplot2::geom_point() +
-      ggplot2::geom_line(chart::f_aes(y_predit ~ x), color = "red") +
-      ggplot2::xlab("x") +
-      ggplot2::ylab("y")
+    if(!any(is.nan(data$y_predit))) {
+      p <- p +
+        ggplot2::geom_line(chart::f_aes(y_predit ~ x), color = "red", data = data)
+    }
+    p
   })
 
   trackEvents(session, input, output,
