@@ -1,5 +1,9 @@
 # BioDataScience2 News
 
+## Changes in version 2020.3.1
+
+- Tutorials that are not in final stage are now placed in the devel/ directory.
+
 ## Changes in version 2020.3.0
 
 - New tutorial B04La
