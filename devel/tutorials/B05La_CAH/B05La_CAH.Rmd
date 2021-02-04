@@ -1,9 +1,9 @@
 ---
 title: "Classification hiérarchique"
 author: "Guyliann Engels, Raphael Conotte & Philippe Grosjean"
-description: "**SDD II Module 5** Application des concepts à la classification hiérarchique."
+description: "**SDD II Module 5** Classification hiérarchique."
 tutorial:
-  id: "B05La_CAH"
+  id: "B05La_cah"
   version: 2.0.0/10
 output: 
   learnr::tutorial:
@@ -14,8 +14,7 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
 SciViews::R()
-library(ade4)
-data("doubs")
+data("doubs", package = "ade4")
 enviro <- doubs$env
 fish <- doubs$fish
 ```
@@ -38,17 +37,17 @@ BioDataScience2::learnr_server(input, output, session)
 
 - Appréhender la classification hiérarchique et le dendrogramme.
 
-- Maîtriser l'utilisation de la fonction `hclust`. 
+- Maîtriser l'utilisation de la fonction `hclust`.
 
 - Être capable d’effectuer un regroupement pertinent des individus d’un jeu de données multivarié à l’aide de ces techniques.
 
 Vous devez avoir étudié le contenu du [module 5](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/hierarchique.html) du cours.
 
-## Abondance d'espèces de poissons
+## Communautés piscicoles de rivière
 
-Des scientifiques ont réalisé des mesures d'abondance d'espèces de poissons et des mesures physico-chimiques sur 30 stations différentes.
+L'abondance de diverses espèces de poissons, ainsi que les conditions physico-chimiques associées sont mesurées sur 30 stations différentes le long du Doubs, une rivière qui s'écoule en Suisse et en France.
 
-L'objet `doubs` du package `ade4` est une liste qui contient 4 jeux de donnnées. Dans un premier temps, vous allez vous intéresser aux données sur l'abondance de 27 espèces de poissons sur les 30 sites. Ces données, présentent dans l'objet `fish`, sont présentées ci-dessous. 
+Dans un premier temps, vous allez vous intéresser aux données sur l'abondance de 27 espèces de poissons sur les 30 sites (dans `fish`). 
 
 ```{r}
 head(fish)
@@ -57,26 +56,26 @@ head(fish)
 ### Choix de l'indice
 
 ```{r qu_indice1}
-question("À partir des données du tableau présenté ci-dessus, vous souhaitez réaliser un matrice de distance avec l'indice le plus adapté. Quel indice choississez vous ? (plusieurs réponses peuvent être sélectionnés)",
-          answer("Indice de Bray-Curtis", correct = TRUE),
-          answer("Indice de Canberra", correct = TRUE),
-          answer("Distance Euclidienne"),
-          answer("Indice de Manhattan"), 
-          allow_retry = TRUE, random_answer_order = TRUE)
+question("À partir des données du tableau présenté ci-dessus, vous souhaitez réaliser un matrice de distance avec l'indice le plus adapté. Quel indice pourriez-vous choisir ? (plusieurs réponses peuvent être sélectionnés)",
+  answer("Indice de Bray-Curtis", correct = TRUE),
+  answer("Indice de Canberra", correct = TRUE),
+  answer("Distance Euclidienne"),
+  answer("Indice de Manhattan"), 
+  allow_retry = TRUE, random_answer_order = TRUE)
 ```
 
 ### Indice de Bray-Curtis
 
-A partir des données contenues dans `fish`, calculez la matrice de distances en utilisant l'indice de Bray_Curtis utilisé par défaut dans la fonction `vegdist()`.
+A partir du jeu de données `fish`, calculez la matrice de distances en utilisant l'indice de Bray-Curtis utilisé par défaut dans la fonction `vegdist()`.
 
-```{r bray_h2, exercise = TRUE}
-fish_dist <- <- ___(___) 
+```{r bray_h2, exercise=TRUE}
+fish_dist <- ___(___) 
 # Afficher la matrice de distances arrondie à 2 décimales 
 ___(___, ___)
 ```
 
 ```{r bray_h2-hint-1}
-enviro_dist <- vegan::vegdist(DF)
+fish_dist <- vegan::vegdist(DF)
 # Afficher la matrice de distances arrondie à 2 décimales 
 round(OBJECT_DIST, ___)
 
@@ -90,21 +89,21 @@ round(fish_dist, 2)
 ```
 
 ```{r bray_h2-check}
-grade_code("Bravo ! Vous venez de réaliser votre première matrice de distances. Savez-vous qu'il existe d'autres indices ? Vous pouvez facilement changer de methode de calcul en utilisant l'argument `method =` de la fonction `vegdist()` en précisant entre guillements l'indice que vous souhaitez utiliser ("canberra" pour l'indice de Canberra, "euclidean" pour la distance Euclidienne et "manhattan" pour la distance de Manhattan.)")
+grade_code("Vous venez de réaliser votre première matrice de distances. L'argument `method =` de la fonction `vegdist()` précise la métrique utilisée : \"canberra\" pour l'indice de Canberra, \"euclidean\" pour la distance Euclidienne et \"manhattan\" pour la distance de Manhattan.")
 ```
 
 ### Indice de Canberra
 
-A partir des données contenues dans `fish`, calculez la matrice de distances en utilisant l'indice de Canberra pour l'argument `method =` dans la fonction `vegdist()`.
+A partir des mêmes données dans `fish`, calculez la matrice de distances en utilisant cette fois l'indice de Canberra.
 
-```{r canberra_h2, exercise = TRUE}
-fish_dist <- <- ___(___, ___) 
+```{r canberra_h2, exercise=TRUE}
+fish_dist <- ___(___, ___) 
 # Afficher la matrice de distances arrondie à 2 décimales 
 ___(___, ___)
 ```
 
 ```{r canberra_h2-hint-1}
-enviro_dist <- vegan::vegdist(DF, method = ___)
+fish_dist <- vegan::vegdist(DF, method = ___)
 # Afficher la matrice de distances arrondie à 2 décimales 
 round(OBJECT_DIST, ___)
 
@@ -118,26 +117,24 @@ round(fish_dist, 2)
 ```
 
 ```{r canberra_h2-check}
-grade_code("Facile non ! Notez aussi que les matrices de distances ne sont pas prévues pour être imprimées et visualisées telles quelles. Ils constituent la première étape vers une représentation utile à l’aide de la classification hiérarchisée. Réprésentation qui sera abordée un peu plus loin dans ce learnr !")
+grade_code("Rappelez-vous que ces matrices de distances ne sont pas prévues pour être imprimées et visualisées telles quelles. Elles constituent la première étape vers une représentation utile, par exemple, un dendrogramme obtenu par classification hiérarchique ascendante.")
 ```
 
 ## Données environnementales
 
-En plus des données sur l'abondance de 27 espèces de poisson, l'objet `doubs` du package `ade4` contient également les données portant sur les mesures environnementales. Le tableau présenté ci-dessous comprend 30 sites d'échantillonages avec 11 mesures environnementales.
+En plus des données sur l'abondance de 27 espèces de poissons, les données environnementales sont à votre disposition dans `enviro`. Onze mesures ont été réalisées sur chacune des 30 stations (voir `?ade4::doubs` pour plus de détails).
 
-Voici une courte description des variables étudiées (en anglais). Ces informations proviennent de la page d'aide `?ade4::doubs`
-
-- dfs : distance from the source (km * 10), 
-- alt : altitude (m), 
-- slo : (log(x + 1) where x is the slope (per mil * 100), 
-- flo : minimum average stream flow (m3/s * 100), 
-- pH : pH,
-- har : total hardness of water (mg/l of Calcium), 
-- pho : phosphates (mg/l * 100), 
-- nit : nitrates (mg/l * 100), 
-- amm : ammonia nitrogen (mg/l * 100), 
-- oxy : dissolved oxygen (mg/l * 10), 
-- bdo : biological demand for oxygen (mg/l * 10)
+- **dfs\ :** distance depuis la source (km * 10),
+- **alt\ :** altitude (m), 
+- **slo\ :** pente du sol de la rivière transformée en `log(x + 1)`, 
+- **flo\ :** flux moyen minimum (m^3^/s * 100), 
+- **pH\ :** pH de l'eau,
+- **har\ :** dureté totale de l'eau (mg Ca^++^/L), 
+- **pho\ :** phosphates (mg/L * 100), 
+- **nit\ :** nitrates (mg/L * 100), 
+- **amm\ :** azote ammoniacal (mg/L * 100), 
+- **oxy\ :** oxygène dissout (mg/L * 10), 
+- **bdo\ :** demande biologique en oxygène (mg/L * 10)
 
 ```{r}
 head(enviro)
@@ -146,12 +143,12 @@ head(enviro)
 ### Choix de l'indice
 
 ```{r qu_indice2}
-question("Vous souhaitez réaliser un matrice de distances sur les données présentent dans ce tableau. Quels sont les indices le plus adapté.?",
-          answer("Indice de Bray-Curtis"),
-          answer("Indice de Canberra"),
-          answer("Distance Euclidienne", correct = TRUE),
-          answer("Indice de Manhattan", correct = TRUE), 
-          allow_retry = TRUE, random_answer_order = TRUE)
+question("Vous souhaitez réaliser un matrice de distances sur les données présentent dans ce tableau. Quels sont les indices les plus adaptés ?",
+  answer("Indice de Bray-Curtis"),
+  answer("Indice de Canberra"),
+  answer("Distance Euclidienne", correct = TRUE),
+  answer("Indice de Manhattan", correct = TRUE), 
+  allow_retry = TRUE, random_answer_order = TRUE)
 ```
 
 ### Distance Euclidienne 1
@@ -179,35 +176,35 @@ round(enviro_dist, 2)
 ```
 
 ```{r euclidean1_h2-check}
-grade_code("Très bien ! Mais les unités respectives de vos variables n'ont pas été considérées. L'altidude en (m) ou la concentration en nitrates (mg/l * 100), par exemple, ne sont pas mesurées dans les mêmes unités. Le risque est alors de donner plus de poids aux valeurs élevées. Il est donc préférable de commencer par standardiser le tableau (moyenne de zéro et écart type de un) selon les colonnes avant d’effectuer le calcul. La fonction `scale()` permet de le faire et c'est ce que vous allez réaliser dans l'exercice suivant.")
+grade_code("Mais ici, nous n'avons pas tenu compte du fiat que les variables sont mesurées dans des unités différentes. Rappelez-vous toujours de standardiser d'abord ce genre de données (moyenne = 0, écart type = 1).")
 ```
 
 ### Distance Euclidienne 2
 
-Calculez une nouvelle matrice de distances, mais cette fois après avoir standardisé les données avec la fonction `scale()`. Convertisser ensuite la matrice obtenue avec la fonction `as_tibble()` avant de procéder au calcul de la matrice de distances en utilisant la distance Euclidienne. 
+Calculez une nouvelle matrice de distances, mais cette fois après avoir standardisé les données avec la fonction `scale()`. Convertissez ensuite la matrice obtenue avec la fonction `as_tibble()` avant de procéder au calcul de la matrice de distances en utilisant la distance Euclidienne. 
 
-```{r euclidean2_h2, exercise = TRUE}
-___%>.%
+```{r euclidean2_h2, exercise=TRUE, exercise.lines=5}
+___ %>.%
   # Standardisation des 11 colonnes
   ___(___) %>.% 
-  # Conversion de la matrice en data.frame + tibble
+  # Conversion de la matrice en tibble
   ___(___) %>.%
   # Calcul de la matrice de distances
   ___(___, ___) -> enviro_dist
-# Afficher la matrice de distance arrondies à 2 décimales 
-___(___, ___)
+# Afficher les premières valeurs de la matrice
+head(___)
 ```
 
 ```{r euclidean2_h2-hint-1}
-DF %>.%
+enviro %>.%
   # Standardisation des 11 colonnes
-  scale(___) %>.% 
-  # Conversion de la matrice en data.frame + tibble
-  as_tibble(___) %>.%
+  ___(.) %>.% 
+  # Conversion de la matrice en tibble
+  ___(.) %>.%
   # Calcul de la matrice de distances
-  vegan::___(___, method = ___) -> enviro_dist
-# Afficher la matrice de distances arrondie à 2 décimales 
-round(OBJECT_DIST, ___)
+  vegan::___(., method = ___) -> enviro_dist
+# Afficher les premières valeurs de la matrice
+head(___)
 
 #### ATTENTION: Hint suivant = solution !####
 ```
@@ -216,22 +213,21 @@ round(OBJECT_DIST, ___)
 enviro %>.%
   # Standardisation des 11 colonnes
   scale(.) %>.% 
-  # Conversion de la matrice en data.frame + tibble
+  # Conversion de la matrice en tibble
   as_tibble(.) %>.%
   # Calcul de la matrice de distances
   vegan::vegdist(., method = "euclidean") -> enviro_dist
-# Afficher la matrice de distances arrondie à 2 décimales 
-round(enviro_dist, 2)
+# Afficher les premières valeurs de la matrice
+head(enviro_dist)
 ```
 
 ```{r euclidean2_h2-check}
-grade_code("Félicitiation, vous gérez vraiment bien les matrices de distances. Vous pourriez aussi essayer une autre méthode sur ces données standardisées comme la distance de Manhattan en utilisant `method = "manhattan"`.")
+grade_code("Vous pourriez aussi essayer une autre méthode sur ces données standardisées comme la distance de Manhattan en utilisant `method = \"manhattan\"`.")
 ```
 
-## Classification hiérarchique 
+## Classification hiérarchique
 
-Maintenant que vous maitrisez le calcule des matrices de distances, vous pouvez obtenir facilement une matrice de distances entre toutes les paires de stations présentent dans le jeu de données `enviro`. Vous pouvez dès lors essayer de les regrouper en fonction de leur ressemblance. 
-Vous allez maintenant apprendre à représenter graphiquement ces regroupements en utilisant un **dendrogramme**. 
+Maintenant que vous pouvez calculer vos matrices de distances, passez à l'étape suivante et réalisez une classification hiérarchique ascendante, et puis un dendrogramme.
 
 ```{r hac_prep}
 enviro %>.%
@@ -304,7 +300,7 @@ enviro %>.%
 enviro_clust <- hclust(enviro_dist, method = "ward.D2")
 ```
 
-Réprésentez avec la fonction `plot()` le dendrogramme que vous venez de calculer dans l'exercice précédant. Matérialisez ensuite sur ce graphique une coupure en traçant un trait horizontal rouge avec la fonction `abline()` à une hauteur de 8. Vous avez à disposition l'objet `enviro_clust`. 
+Représentez avec la fonction `plot()` le dendrogramme que vous venez de calculer dans l'exercice précédant. Matérialisez ensuite sur ce graphique une coupure en traçant un trait horizontal rouge avec la fonction `abline()` à une hauteur de 8. Vous avez à disposition l'objet `enviro_clust`. 
 
 ```{r hclust3_h2, exercise = TRUE, exercise.setup = "group_prep"}
 ___(___)
@@ -355,12 +351,12 @@ chart(data = enviro, alt ~ dfs %col=% group) +
 ```
 
 ```{r hclust4_h2-check}
-grade_code("Félicitation ! Vous venez de réaliser une étude complète en utilisant la **classification ascendante hiérarchique**. ")
+grade_code("Vous venez de réaliser une étude complète en utilisant la **classification ascendante hiérarchique**. ")
 ```
 
 ## Conclusion
 
-Bravo ! Vous venez de terminer votre auto-évaluation relative aux matrices de distances et à la classification hiérarchique. 
+Bravo\ ! Vous venez de terminer votre auto-évaluation relative aux matrices de distances et à la classification ascendante hiérarchique.
 
 ```{r comm_noscore, echo=FALSE}
 question_text(

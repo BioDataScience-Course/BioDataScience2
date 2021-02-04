@@ -1,7 +1,7 @@
 ---
 title: "Régression linéaire multiple"
 author: "Guyliann Engels & Philippe Grosjean"
-description: "**SDD II Module 2** Application des concepts liés la régression linéaire multiple."
+description: "**SDD II Module 2** Régression linéaire multiple."
 tutorial:
   id: "B02La_reg_multi"
   version: 2.2.0/7
