@@ -1,7 +1,7 @@
 ---
 title: "Cartes auto-adaptatives"
 author: "Guyliann Engels & Philippe Grosjean"
-description: "**SDD II Module 6** Application des concepts liés au cartes auto-adaptatives (SOM)"
+description: "**SDD II Module 6** Cartes auto-adaptatives (SOM)"
 tutorial:
   id: "B06Lc_som"
   version: 1.0.0
@@ -77,7 +77,7 @@ summary(enviro)
 
 ## Cartes auto-adaptatives (SOM)
 
-La fonction som() du package kohonen ne peut employer qu'une matrice. Commencez par centrer et transfomez `enviro` en une matrice.
+La fonction som() du package {kohonen} ne peut employer qu'une matrice. Commencez par centrer et transfomez `enviro` en une matrice.
 
 ```{r, echo = TRUE, eval = FALSE}
 # function de base
@@ -135,7 +135,7 @@ Utilisez à nouveau le jeu de données `enviro`.
 - Réalisez une grille 3 sur 3
 - Réalisez un graphique de type = "codes"
 
-```{r, echo = TRUE, eval = FALSE}
+```{r, echo=TRUE, eval=FALSE}
 # function de base
 DF %>.%
   scale(.) %>.%
@@ -149,7 +149,7 @@ plot(som., type = "codes",
 plot(zoo_som, type = "changes", shape = "straight")
 ```
 
-```{r som1_noscore, exercise = TRUE, exercise.checker=learndown::checker_ack_learnr}
+```{r som1_noscore, exercise=TRUE, exercise.checker=learndown::checker_ack_learnr}
 summary(enviro)
 ```
 
