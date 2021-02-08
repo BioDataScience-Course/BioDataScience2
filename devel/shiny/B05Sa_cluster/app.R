@@ -351,16 +351,17 @@ peng %>.%
 
 # specific Function ----
 
-score_cah <- function(x, reference = peng$species) {
+score_cah <- function(x, reference = peng$species, digits = 5) {
   tab <- table(reference, x)
   max_gr <- apply(tab, 1, which.max)
+  tab[ , ]
 
   if(length(unique(max_gr)) < 3)
     res <- "Votre CAH ne permet pas de retrouver les 3 groupes. Un ou plusieurs groupes sont confondus."
 
   if(length(unique(max_gr)) == 3) {
-    tot <- rowSums(tab[, unique(max.col(tab))]) / rowSums(tab)
-    res <- paste0("Votre CAH permet de discerner 3 groupes avec une précision de ", (100*sum(tot)/nlevels(reference)), "%.")
+    tot <- apply(tab, 1, max) / rowSums(tab)
+    res <- paste0("Votre CAH permet de discerner 3 groupes avec une précision de ", round((100*sum(tot)/nlevels(reference)),digits = digits ), "%.")
   }
   res
 }
@@ -368,11 +369,12 @@ score_cah <- function(x, reference = peng$species) {
 # UI -----
 
 ui <- fluidPage(
-  learndownShiny("Regroupement d'espèces de manchôt avec la classification hiérarchique ascendante."),
+  learndownShiny("Regroupement d'espèces de manchôts avec la classification hiérarchique ascendante."),
 
   sidebarLayout(
     sidebarPanel(
-      p("Vous avez à disposition 342 manchôts mâles de 3 espèces différentes. Trouvez les meilleurs paramètres afin d'obtenir la plus haute similitude entre votre CAH et les observations de terrain."),
+      p("Vous avez à disposition 342 manchôts de 3 espèces différentes. Trouvez les meilleurs paramètres afin d'obtenir la plus haute similitude entre votre CAH et les observations de terrain."),
+      p("Les variables monitorées sont les suivante : la longueur du bec (mm), la profondeur du bec (mm), la longueur de la nageoire (mm), la masse (g)."),
       selectInput("method_dist", "Indice de distance", choices = c("euclidian", "bray", "canberra", "manhattan")),
       selectInput("scale", "Standardisation", choices = c(FALSE, TRUE)),
       selectInput("method_clust", "Méthode de CAH", choices = c("complete", "single","average", "ward.D2")),
@@ -409,7 +411,7 @@ server <- function(input, output, session) {
   output$dendrogram <- renderPlot({
     cah <- cah()
     chart(cah) +
-      ylab("hauteur")
+      ylab("Hauteur")
   })
 
   output$tab_res <- renderTable({
@@ -427,14 +429,14 @@ server <- function(input, output, session) {
   })
 
 
-  # trackEvents(session, input, output,
-  #   sign_in.fun = BioDataScience::sign_in, config = conf)
-  # trackSubmit(session, input, output, max_score = 4, solution =
-  #   list(asym = asym_init, lrc = lrc_init, c0 = c0_init, m = m_init),
-  #   comment = "y(x) = Asym * e^(- b2 * b3^x)",
-  #   message.success = "Correct, c'est le meilleur modèle.",
-  #   message.error = "Incorrect, un modèle mieux ajusté existe.")
-  # trackQuit(session, input, output, delay = 20)
+   trackEvents(session, input, output,
+     sign_in.fun = BioDataScience::sign_in, config = conf)
+   trackSubmit(session, input, output, max_score = 3, solution =
+     list(method_dist = "euclidian", scale = "TRUE", method_clust = "ward.D2"),
+     comment = "",
+     message.success = "Correct, c'est la meilleur solution. La CAH obtient un score très bon de plus de 94 % de correspondace",
+     message.error = "Incorrect, un meilleur choix des paramètres est possible.")
+   trackQuit(session, input, output, delay = 20)
 }
 
 shinyApp(ui, server)
