@@ -4,7 +4,7 @@ author: "Guyliann Engels, Raphael Conotte & Philippe Grosjean"
 description: "**SDD II Module 5** Matrices de distances et CAH."
 tutorial:
   id: "B05La_cah"
-  version: 2.0.0/10
+  version: 2.0.1/10
 output: 
   learnr::tutorial:
     progressive: true
@@ -14,10 +14,10 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
 
-# CAH for SciViews, version 1.1.0
+# CAH for SciViews, version 1.1.1
 # Copyright (c) 2021, Philippe Grosjean (phgrsojean@sciviews.org)
 
-SciViews::R
+SciViews::R()
 
 # dist is really a dissimilarity matrix => we use dissimilarity() as in the
 # {cluster} package, i.e., class is c("dissimilarity", "dist")
@@ -26,8 +26,8 @@ SciViews::R
 # factoextra::get_dist and probably other dist-compatible functions
 # Depending on method =, use either vegan::vegdist or stats::dist as default fun
 dissimilarity <- function(data, formula = ~ ., subset = NULL,
-method = "euclidean", scale = FALSE, rownames.col = "rowname",
-transpose = FALSE, fun = NULL, ...) {
+  method = "euclidean", scale = FALSE, rownames.col = "rowname",
+  transpose = FALSE, fun = NULL, ...) {
   # TODO: get more meaningful warnings and errors by replacing fun by actual
   # name of the function
   if (is.null(fun)) {# Default function depends on the chosen method
@@ -121,7 +121,7 @@ as.dissimilarity.matrix <- function(x, ...) {
 
 # We want to print only the first few rows and columns
 print.dissimilarity <- function(x, digits.d = 3L, rownames.lab = "labels",
-...) {
+  ...) {
   mat <- as.matrix(x)
   mat <- format(round(mat, digits.d))
   diag(mat) <- ""
@@ -161,8 +161,8 @@ nobs.dissimilarity <- function(object, ...)
 # TODO: `[` by first transforming into a matrix with as.matrix()
 
 autoplot.dissimilarity <- function(object, order = TRUE, show.labels = TRUE,
-lab.size = NULL, gradient = list(low = "red", mid = "white", high = "blue"),
-...) {
+  lab.size = NULL, gradient = list(low = "red", mid = "white", high = "blue"),
+  ...) {
   factoextra::fviz_dist(object, order = order, show_labels = show.labels,
     lab_size = lab.size, gradient = gradient)
 }
@@ -262,7 +262,7 @@ augment.cluster <- function(x, data, k = NULL, h = NULL, ...) {
 # /beautiful-dendrogram-visualizations-in-r-5-must-known-methods
 # -unsupervised-machine-learning
 plot.cluster <- function(x, y, hang = -1, check = TRUE, type = "vertical",
-lab = "Height", ...) {
+  lab = "Height", ...) {
   type <- match.arg(type[1], c("vertical", "horizontal", "circular"))
   # type == "circular" is special because we need to transform as ape::phylo
   if (type == "circular") {
@@ -290,7 +290,7 @@ circle <- function(x = 0, y = 0, d = 1, col = 0, lwd = 1, lty = 1, ...)
 
 # TODO: make sure the dendrogram is correct with different ggplot themes
 autoplot.cluster <- function(object, type = "vertical", circ.text.size = 3,
-theme = theme_sciviews(), xlab = "", ylab = "Height", ...) {
+  theme = theme_sciviews(), xlab = "", ylab = "Height", ...) {
   if (is.null(type))
     type <- "vertical"
   type <- match.arg(type[1], c("vertical", "horizontal", "circular"))
@@ -327,32 +327,45 @@ theme = theme_sciviews(), xlab = "", ylab = "Height", ...) {
       ylab("")
 
   } else if (type == "vertical") {# Vertical dendrogram
-      dendro <- dendro +
-        scale_x_continuous(breaks = seq_along(ddata$labels$label),
-          labels = ddata$labels$label) +
-        scale_y_continuous(expand = expansion(mult = c(0, 0.02))) +
-        theme(panel.border = element_blank(),
-          axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
-          axis.line.x = element_blank(),
-          axis.ticks.x = element_blank(),
-          axis.text.y = element_text(angle = 90, hjust = 0.5))
+    dendro <- dendro +
+      scale_x_continuous(breaks = seq_along(ddata$labels$label),
+        labels = ddata$labels$label) +
+      scale_y_continuous(expand = expansion(mult = c(0, 0.02))) +
+      theme(panel.border = element_blank(),
+        axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        axis.line.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_text(angle = 90, hjust = 0.5))
 
   } else {# Horizontal dendrogram
-      dendro <- dendro +
-        scale_x_continuous(breaks = seq_along(ddata$labels$label),
-          labels = ddata$labels$label, position = "top") +
-        scale_y_reverse(expand = expansion(mult = c(0.05, 0))) +
-        coord_flip() +
-        theme(panel.border = element_blank(),
-          axis.line.y = element_blank(),
-          axis.ticks.y = element_blank())
+    dendro <- dendro +
+      scale_x_continuous(breaks = seq_along(ddata$labels$label),
+        labels = ddata$labels$label, position = "top") +
+      scale_y_reverse(expand = expansion(mult = c(0.05, 0))) +
+      coord_flip() +
+      theme(panel.border = element_blank(),
+        axis.line.y = element_blank(),
+        axis.ticks.y = element_blank())
   }
   dendro
 }
 
 chart.cluster <- function(data, ...,
-type = NULL, env = parent.frame())
+  type = NULL, env = parent.frame())
   autoplot(data, type = type, ...)
+
+# To indicate where to cut in the dendrogram, one could use `geom_hline()`,
+# but when the dendrogram is horizontal or circular, this is suprizing. So,
+# I define geom_dendroline(h = ....)
+geom_dendroline <- function(h, ...)
+  geom_hline(yintercept = h, ...)
+
+# A hack to get fun$type() working in learnr
+chart <- list(
+  vertical = function(data, type, ...) chart(data, type = "vertical", ...),
+  horizontal = function(data, type, ...) chart(data, type = "horizontal", ...),
+  circular = function(data, type, ...) chart(data, type = "circular", ...)
+)
 
 # Loading datasets
 data("doubs", package = "ade4")
@@ -677,7 +690,7 @@ envir_dist <- dissimilarity(envir, method = "euclidean", scale = TRUE)
 envir_clust <- cluster(envir_dist, method = "ward.D2")
 ```
 
-En partant de `envir_clust` calculé par la méthode Ward D2 ci-dessus qui est déjà en mémoire, tracez maintenant un dendrogramme **horizontal**, et indiquez-y un **niveau de coupure à hauteur de 7 en rouge** (inspirez-vous des notes du cours ainsi que de l'aide en ligne des fonctions `geom_...()`).
+En partant de `envir_clust` calculé par la méthode Ward D2 ci-dessus qui est déjà en mémoire, tracez maintenant un dendrogramme **horizontal**, et indiquez-y un **niveau de coupure à hauteur de 7 en rouge** (inspirez-vous des notes du cours pour voir quel `geom_...()` utiliser).
 
 ```{r hclust3_h2, exercise=TRUE, exercise.setup="group_prep"}
 chart$___(___) +
@@ -686,14 +699,14 @@ chart$___(___) +
 
 ```{r hclust3_h2-hint}
 chart$___(___) +
-  geom_hline(___ = 7, ___ = "red")
+  geom_dendroline(___ = 7, ___ = "red")
 
 #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r hclust3_h2-solution}
 chart$horizontal(envir_clust) +
-  geom_hline(yintercept = 7, color = "red")
+  geom_dendroline(h = 7, color = "red")
 ```
 
 ```{r hclust3_h2-check}
@@ -739,7 +752,7 @@ Un second critère utilisable dans notre cas consiste à comparer des regroupeme
 fish_dist <- dissimilarity(fish, method = "bray")
 fish_clust <- cluster(fish_dist, method = "ward.D2")
 chart$horizontal(fish_clust) +
-  geom_hline(yintercept = 1.05, color = "red") # Hauteur choisie pour avoir 5 groupes
+  geom_dendroline(h = 1.05, color = "red") # Hauteur choisie pour avoir 5 groupes
 (fish_groups <- predict(fish_clust, h = 1.05)) # Extrait les 5 groupes
 ```
 
