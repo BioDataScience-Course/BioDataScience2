@@ -14,44 +14,42 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
 
-# CAH for SciViews, version 1.0.0
+# CAH for SciViews, version 1.1.0
 # Copyright (c) 2021, Philippe Grosjean (phgrsojean@sciviews.org)
 
 SciViews::R
 
-# dist is really a dissimilarity matrix => we use dissimilarity as in the
+# dist is really a dissimilarity matrix => we use dissimilarity() as in the
 # {cluster} package, i.e., class is c("dissimilarity", "dist")
 # TODO: also make a similarity object and convert between the two
-# We also use metric = instead of method = to avoid confusion with method
-# argument of hclust()/cluster() and to be compatible with cluster::daisy()
 # fun can be stats::dist, vegan::vegdist, vegan::designdist, cluster::daisy
 # factoextra::get_dist and probably other dist-compatible functions
-# Depending on metric =, use either vegan::vegdist or stats::dist as default fun
+# Depending on method =, use either vegan::vegdist or stats::dist as default fun
 dissimilarity <- function(data, formula = ~ ., subset = NULL,
-metric = "euclidean", scale = FALSE, rownames = "rowname", transpose = FALSE,
-fun = NULL, ...) {
-  # TODO: get more meaningful warn ings and errors by replacing fun by actual
+method = "euclidean", scale = FALSE, rownames.col = "rowname",
+transpose = FALSE, fun = NULL, ...) {
+  # TODO: get more meaningful warnings and errors by replacing fun by actual
   # name of the function
-  if (is.null(fun)) {
-    if (metric %in% c("maximum", "binary", "minkowski")) {
+  if (is.null(fun)) {# Default function depends on the chosen method
+    if (method %in% c("maximum", "binary", "minkowski")) {
       fun <- stats::dist
     } else {
       fun <- vegan::vegdist # Note: euclidean/manhattan/canberra in both, but
-      # we prioritize vegdist, and canberra is not calculated the same in dist
+      # we prioritize vegdist, and canberra is not calculated the same in dist!
     }
   }
   # We accept only formulas with right-hand side => length must be two
   if (length(formula) == 3)
     stop("The formula cannot have a left-hand term")
 
-  # With matrices, we don't use rownames
+  # With matrices, we don't use rownames.col: rownames are already correctly set
   if (!is.matrix(data)) {# row names may be in a column (usual for tibbles)
     data <- as.data.frame(data)
-    if (rownames %in% names(data)) {
-      rownames(data) <- data[[rownames]]
-      data[[rownames]] <- NULL
-    } else {# rownames is NOT used
-      rownames <- NULL
+    if (rownames.col %in% names(data)) {
+      rownames(data) <- data[[rownames.col]]
+      data[[rownames.col]] <- NULL
+    } else {# rownames.col is NOT used
+      rownames.col <- NULL
     }
     if (as.character(formula[2] != ".")) {
       # Subset the columns
@@ -60,7 +58,7 @@ fun = NULL, ...) {
       data <- data[subset, ]
     }
   } else {# A matrix
-    rownames <- NULL
+    rownames.col <- NULL
     if (as.character(formula[2] != ".")) {
       # Subset the columns (and possibly the rows)
       if (is.null(subset)) {
@@ -74,32 +72,35 @@ fun = NULL, ...) {
   if (isTRUE(transpose))
     data <- t(data)
 
-  # Arguments method=/metric = and stand = not always there
+  # Arguments method =/metric = and stand = not always there
   if (!is.null(as.list(args(fun))$metric)) {# metric = instead of method =
-    dst <- fun(data, metric = metric, stand = scale, ...)
+    dst <- fun(data, metric = method, stand = scale, ...)
   } else if (isTRUE(scale)) {
     if (is.null(as.list(args(fun))$stand)) {# fun has no stand = argument
       data <- scale(data)
-      dst <- fun(data, method = metric, ...)
-    } else {# We don't do it ourself because there may by also qualitative or
-      # binary data (like for cluster::daisy, for instance)
-      dst <- fun(data, method = metric, stand = scale, ...)
+      dst <- fun(data, method = method, ...)
+    } else {# We don't standardise ourself because there may be also qualitative
+      # or binary data (like for cluster::daisy, for instance)
+      dst <- fun(data, method = method, stand = scale, ...)
     }
   } else {# Just method = and scale = FALSE
-    dst <- fun(data, method = metric, ...)
+    dst <- fun(data, method = method, ...)
   }
   attr(dst, "call") <- match.call()
-  # Depending if it is a dist or dissimilarity object, the metric is stored in
-  # method or in Metric, but we use metric
-  attr(dst, "metric") <- metric
+  # Depending if it is a dist or dissimilarity object, the method is stored in
+  # method or in Metric, but we use metric in our own version to avoid a clash
+  # with the method item in cluster()/hclust() further on (hclust change it
+  # into dist.method, but it is better to have the right name right now)
+  attr(dst, "metric") <- method
   # dist or dissimilarity object use Labels, but we use labels everywhere else
+  # including in cluster()/hclust()
   # So, we make sure labels is present (in hclust, it is labels anyway!)
   attr(dst, "labels") <- rownames(data)
   # Default values for Diag and Upper set to FALSE
   if (is.null(attr(dst, "Diag"))) attr(dst, "Diag") <- FALSE
   if (is.null(attr(dst, "Upper"))) attr(dst, "Upper") <- FALSE
   # Keep info about how raw data were transformed
-  attr(dst, "rownames") <- rownames
+  attr(dst, "rownames.col") <- rownames.col
   attr(dst, "transpose") <- transpose
   attr(dst, "scale") <- scale
   class(dst) <- unique(c("dissimilarity", class(dst)))
@@ -113,22 +114,24 @@ as_dissimilarity <- as.dissimilarity # Synonym
 as.dissimilarity.matrix <- function(x, ...) {
   dst <- as.dist(x, ...)
   attr(dst, "call") <- match.call()
-  attr(dst, "Metric") <- attr(dst, "method")
+  attr(dst, "metric") <- attr(dst, "method") # Make sur metric is used
   class(dst) <- unique(c("dissimilarity", class(dst)))
   dst
 }
 
-# We want to print only the first few row and columns
-print.dissimilarity <- function(x, digits.d = 3L, rownames = "labels", ...) {
+# We want to print only the first few rows and columns
+print.dissimilarity <- function(x, digits.d = 3L, rownames.lab = "labels",
+...) {
   mat <- as.matrix(x)
   mat <- format(round(mat, digits.d))
   diag(mat) <- ""
   mat[upper.tri(mat)] <- ""
   class(mat) <- c("dst", "matrix")
   tbl <- tibble::as_tibble(mat)
-  # TODO: replace this by tibble::add_column
+  #tbl <- tibble::add_column(tbl, {{rownames.lab}} = rownames(mat), .before = 1)
+  # I prefer this
   tbl <- dplyr::bind_cols(
-    as_tibble_col(rownames(mat), column_name = rownames), tbl)
+    as_tibble_col(rownames(mat), column_name = rownames.lab), tbl)
   tbl <- tbl[, -ncol(tbl)]
   more_info <- ""
   if (isTRUE(attr(x, "scale"))) {
@@ -141,7 +144,7 @@ print.dissimilarity <- function(x, digits.d = 3L, rownames = "labels", ...) {
     if (isTRUE(attr(x, "transpose")))
       more_info <- " (transposed data)"
   }
-  cat("Dissimilarity matrix with metric: ", attr(x, "method"),
+  cat("Dissimilarity matrix with metric: ", attr(x, "metric"),
     more_info, "\n", sep = "")
   print(tbl)
   invisible(x)
@@ -155,7 +158,7 @@ labels.dissimilarity <- function(object, ...) {
 nobs.dissimilarity <- function(object, ...)
   attr(object, "Size")
 
-# TODO: [ by first transforming into a matrix with as.matrix()
+# TODO: `[` by first transforming into a matrix with as.matrix()
 
 autoplot.dissimilarity <- function(object, order = TRUE, show.labels = TRUE,
 lab.size = NULL, gradient = list(low = "red", mid = "white", high = "blue"),
@@ -178,7 +181,7 @@ cluster.default <- function(x, ...)
 # Cluster uses hclust() by default, ... but it looks first for a faster
 # implementation in either {fastcluster} or {flashClust} before falling back
 # to the {stats} version.
-# The functions cluster::agnes() and cluster::diana() should be compatible too
+# The functions cluster::agnes() and cluster::diana() should be compatible too,
 # as well as any function that returns an object convertible into hclust
 # by as.hclust() (but not tested yet)
 # Also, a version where the raw data are provided and the disimilarity matrix
@@ -199,8 +202,8 @@ cluster.dist <- function(x, method = "complete", fun = NULL, ...) {
   # hclust has to give a different name to the distance metric: dist.method
   # but we use metric. Again, keep both for maximum compatibility
   clst$metric <- clst$dist.method
-  # If the orignial data were scaled or transposed, get the info also
-  clst$rownames <- attr(x, "rownames")
+  # If the original data were scaled or transposed, get the info also
+  clst$rownames.col <- attr(x, "rownames.col")
   clst$scale <- attr(x, "scale")
   clst$transpose <- attr(x, "transpose")
   class(clst) <- unique(c("cluster", class(clst)))
@@ -221,7 +224,7 @@ nobs.cluster <- function(object, ...)
 # Other methods by first transforming into dendrogram: rev, reorder, order, [[
 
 # cutree() is an explicit name, but it does not follow the rule of using
-# predefined methods... and here, it really something that predict() is made for
+# known methods... and here, it really something that predict() is made for,
 # except it cannot handle newdata =, but that argument is not in its definition
 predict.cluster <- function(object, k = NULL, h = NULL, ...)
   cutree(object, k = k, h = h)
@@ -233,9 +236,9 @@ augment.cluster <- function(x, data, k = NULL, h = NULL, ...) {
   # Should we transpose the data (note: this is against augment() rules, but...)
   if (isTRUE(x$transpose)) {
     # We first have to make sure rownames are correct before the transposition
-    if (!is.matrix(data) && !is.null(data[[rownames]])) {
-      rownames(data) <- data[[rownames]]
-      data[[rownames]] <- NULL
+    if (!is.matrix(data) && !is.null(data[[x$rownames.col]])) {
+      rownames(data) <- data[[x$rownames.col]]
+      data[[x$rownames.col]] <- NULL
     }
     data <- t(data)
     msg <- "transposed data"
@@ -255,15 +258,16 @@ augment.cluster <- function(x, data, k = NULL, h = NULL, ...) {
 
 # Instead of the default plot.hclust(), we prefer the plot.dendrogram() version
 # that allows for more and better variations of the dendrogram (horizontal or
-# circular), see http://www.sthda.com/english/wiki/beautiful-dendrogram-visualizations-in-r-5-must-known-methods-unsupervised-machine-learning
-# TODO: how can I get a scale for height with the circular type?
+# circular), see http://www.sthda.com/english/wiki
+# /beautiful-dendrogram-visualizations-in-r-5-must-known-methods
+# -unsupervised-machine-learning
 plot.cluster <- function(x, y, hang = -1, check = TRUE, type = "vertical",
 lab = "Height", ...) {
   type <- match.arg(type[1], c("vertical", "horizontal", "circular"))
   # type == "circular" is special because we need to transform as ape::phylo
   if (type == "circular") {
     if (!missing(hang))
-      warning("'hang' is not used with a circualr dendrogram")
+      warning("'hang' is not used with a circular dendrogram")
     phylo <- ape::as.phylo(x)
     plot(phylo, type = "fan", font = 1, ...)
   } else {# Use plot.dendrogram() instead
@@ -273,28 +277,23 @@ lab = "Height", ...) {
     if (type == "horizontal") {
       plot(dendro, horiz = TRUE, xlab = lab, ...)
     } else {
-      plot(dendro, horiz = FALSE, ylab = lab, ...)
+      plot(dendro, horiz = FALSE, ylab = lab, ...) # note: label different axe
     }
   }
 }
 
 # This is to draw circles in a plot (where to cut in a circular dendrogram)
+# TODO: should be nice to do similar function for other symbols too in SciViews
 circle <- function(x = 0, y = 0, d = 1, col = 0, lwd = 1, lty = 1, ...)
   symbols(x = x, y = y, circles = d / 2, fg = col, lwd = lwd, lty = lty,
     inches = FALSE, add = TRUE, ...)
 
+# TODO: make sure the dendrogram is correct with different ggplot themes
 autoplot.cluster <- function(object, type = "vertical", circ.text.size = 3,
 theme = theme_sciviews(), xlab = "", ylab = "Height", ...) {
   if (is.null(type))
     type <- "vertical"
   type <- match.arg(type[1], c("vertical", "horizontal", "circular"))
-  # Default theme
-  if (is.null(theme))
-  #  if (type == "circular") {
-  #    theme <- theme_void()
-  #  } else {
-      theme <- theme_sciviews()
-  #  }
 
   # Create the dendrogram
   ddata <- ggdendro::dendro_data(object, type = "rectangle")
@@ -374,7 +373,7 @@ BioDataScience2::learnr_server(input, output, session)
 ## Objectifs
 
 - Vérifier que vous avez bien compris la logique et les différentes étapes de réalisation d'un drendrogramme\ : matrice de distance, classification ascendante hiérarchique (CAH), représentation graphique et coupure du dendrogramme pour obtenir des groupes.
-- Vous préparer à analyser de manière autonome un jeu de données multivariées à l'aide de la CAH
+- Vous préparer à analyser et interpréter de manière autonome un jeu de données multivariées à l'aide de la CAH
 
 Vous devez avoir étudié le contenu du [module 5](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/hierarchique.html){target='_blank'} du cours et réalisé les exercices H5P qui s'y trouvent avant de vous lancer dans ce tutoriel Learnr.
 
@@ -468,24 +467,24 @@ question("À partir des données du tableau `fish`, vous souhaitez réaliser un 
 
 ### Calcul de la matrice de distances
 
-A partir du jeu de données `fish`, calculez la matrice de distances entre stations en utilisant l'indice de Bray-Curtis et `dissimilarity()`, considérant que toutes les fonctions nécessaires sont déjà chargées dans R. Pour une aide concernant les arguments de la fonction, voyez `?vegan::vegdist` en substituant `metric =` à la place de `method =`.
+A partir du jeu de données `fish`, calculez la matrice de distances entre stations en utilisant l'indice de Bray-Curtis et `dissimilarity()`, considérant que toutes les fonctions nécessaires sont déjà chargées dans R. Pour une aide concernant les arguments de la fonction, voyez `?vegan::vegdist`.
 
 ```{r fish_bray_h2, exercise=TRUE}
 print(fish_dist <- ___(___, ___))
 ```
 
 ```{r fish_bray_h2-hint-1}
-print(fish_dist <- dissimilarity(___, metric = "___"))
+print(fish_dist <- dissimilarity(___, method = "___"))
 
 #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r fish_bray_h2-solution}
-print(fish_dist <- dissimilarity(fish, metric = "bray"))
+print(fish_dist <- dissimilarity(fish, method = "bray"))
 ```
 
 ```{r fish_bray_h2-check}
-grade_code("Vous venez de réaliser votre première matrice de distances. L'argument `metric =` de la fonction `dissimilarity()` précise la métrique utilisée : \"bray\" pour Bray-Curtis, \"canberra\" pour l'indice de Canberra, \"euclidean\" pour la distance Euclidienne et \"manhattan\" pour la distance de Manhattan, ...")
+grade_code("Vous venez de réaliser votre première matrice de distances. L'argument `method =` de la fonction `dissimilarity()` précise la métrique utilisée : \"bray\" pour Bray-Curtis, \"canberra\" pour l'indice de Canberra, \"euclidean\" pour la distance Euclidienne et \"manhattan\" pour la distance de Manhattan, ...")
 ```
 
 Notez l'avis (warning) qui s'affiche. En réalité, aucun poisson n'a été observé à la station 8. Dans ce cas, la métrique n'est pas fiable pour la comparaison (ne pas en observer ne signifie pas qu'il n'y en a pas, mais juste qu'on n'en a pas capturé).
@@ -560,20 +559,20 @@ question("Vous souhaitez réaliser un matrice de distances sur les données envi
 
 ### Distance Euclidienne 1
 
-A partir des données contenues dans `envir`, calculez la matrice de dissimilarités en utilisant la distance Euclidienne et *sans* transformer les données. Pour rappel, les métriques sont définies comme l'argument `method = ` de `?vegan::vegdist`.
+A partir des données contenues dans `envir`, calculez la matrice de dissimilarités en utilisant la distance Euclidienne et *sans* transformer les données. Pour rappel, vous explorez l'aide en ligne de `?vegan::vegdist` pour déterminer les arguments à utiliser dans `dissimilarity()`.
 
 ```{r euclidean1_h2, exercise=TRUE}
 print(envir_dist <- ___(___, ___))
 ```
 
 ```{r euclidean1_h2-hint-1}
-print(envir_dist <- ___(___, metric = "___"))
+print(envir_dist <- ___(___, method = "___"))
 
 #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r euclidean1_h2-solution}
-print(envir_dist <- dissimilarity(envir, metric = "euclidean"))
+print(envir_dist <- dissimilarity(envir, method = "euclidean"))
 ```
 
 ```{r euclidean1_h2-check}
@@ -582,28 +581,28 @@ grade_code("Parfait ! Nous allons calculer une autre version de la matrice de di
 
 ### Distance Euclidienne 2
 
-Calculez une nouvelle matrice de dissimilarités de distances euclidiennes, mais cette fois en standardisant les données. 
+Calculez une nouvelle matrice de dissimilarités de distances euclidiennes, mais cette fois en **standardisant** les données. Inspirez-vous des notes de cours pour déterminer quel argument utiliser en plus pour cela.
 
 ```{r euclidean2_h3, exercise=TRUE}
 print(envir_dist <- ___(___, ___, ___))
 ```
 
 ```{r euclidean2_h3-hint-1}
-print(envir_dist <- dissimilarity(___, metric = "___", ___))
+print(envir_dist <- dissimilarity(___, method = "___", ___))
 ```
 
 ```{r euclidean2_h3-hint-2}
-print(envir_dist <- dissimilarity(___, metric = "euclidean", ___ = TRUE))
+print(envir_dist <- dissimilarity(___, method = "euclidean", ___ = TRUE))
 
 #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r euclidean2_h3-solution}
-print(envir_dist <- dissimilarity(envir, metric = "euclidean", scale = TRUE))
+print(envir_dist <- dissimilarity(envir, method = "euclidean", scale = TRUE))
 ```
 
 ```{r euclidean2_h3-check}
-grade_code("Amazing whaaa ! Vous pourriez aussi essayer une autre méthode sur ces données standardisées comme la distance de Manhattan en utilisant `method = \"manhattan\"`. La fonction qui standardise en R est scale(), et l'argument ici porte le même nom, scale = ")
+grade_code("Amazing whaaa ! Vous pourriez aussi essayer une autre méthode sur ces données standardisées comme la distance de Manhattan en utilisant `method = \"manhattan\"`. La fonction qui standardise en R est scale(), et l'argument ici porte le même nom : scale = ")
 ```
 
 ## Étape 3 : classification ascendante hiérarchique
@@ -611,7 +610,7 @@ grade_code("Amazing whaaa ! Vous pourriez aussi essayer une autre méthode sur c
 Maintenant que vous pouvez calculer vos matrices de distances, passez à l'étape suivante et réalisez une classification hiérarchique ascendante, et puis un dendrogramme.
 
 ```{r hac_prep}
-envir_dist <- dissimilarity(envir, metric = "euclidean", scale = TRUE)
+envir_dist <- dissimilarity(envir, method = "euclidean", scale = TRUE)
 ```
 
 ### Dendrogramme 1
@@ -641,7 +640,7 @@ grade_code("Félicitation ! Vous venez de réaliser votre premier dendrogramme. 
 
 ### Dendrogramme 2
 
-Réalisez un nouveau dendrogramme à partir de l'objet `envir_dist` mais cette fois-ci, utilisez la méthode de Ward D2. Voyez l'aide en ligne de la fonction `?stats::hclust` pour le détails des arguments à employer. Tracez ensuite votre dendrogramme de manière circulaire.
+Réalisez un nouveau dendrogramme à partir de l'objet `envir_dist` mais cette fois-ci, utilisez la **méthode de Ward D2**. Voyez l'aide en ligne de la fonction `?stats::hclust` pour le détails des arguments à employer. Tracez ensuite votre dendrogramme de manière **circulaire**.
 
 ```{r hclust2_h3, exercise=TRUE, exercise.setup="hac_prep"}
 envir_clust <- ___(___, ___)
@@ -674,11 +673,11 @@ La variante horizontale du dendrogramme permet aussi de visionner plus d'items q
 ### Dendrogramme 3
 
 ```{r group_prep}
-envir_dist <- dissimilarity(envir, metric = "euclidean", scale = TRUE)
+envir_dist <- dissimilarity(envir, method = "euclidean", scale = TRUE)
 envir_clust <- cluster(envir_dist, method = "ward.D2")
 ```
 
-En partant de `envir_clust` calculé par la méthode Ward D2 ci-dessus qui est déjà en mémoire, tracez maintenant un dendrogramme horizontal, et indiquez-y un niveau de coupure à hauteur de 7 en rouge (inspirez-vous des notes du cours ainsi que de l'aide en ligne des fonctions `geom_...()`).
+En partant de `envir_clust` calculé par la méthode Ward D2 ci-dessus qui est déjà en mémoire, tracez maintenant un dendrogramme **horizontal**, et indiquez-y un **niveau de coupure à hauteur de 7 en rouge** (inspirez-vous des notes du cours ainsi que de l'aide en ligne des fonctions `geom_...()`).
 
 ```{r hclust3_h2, exercise=TRUE, exercise.setup="group_prep"}
 chart$___(___) +
@@ -701,16 +700,27 @@ chart$horizontal(envir_clust) +
 grade_code("Bravo. Vous voyez en quoi ce dendrogramme est plus facile à utiliser pour déterminer un niveau de coupure idéale ? Une coupure à 7 permet de former 4 groupes. Une coupure à 10 se justifie également, et elle séparera alors les stations en 3 groupes.")
 ```
 
-Notez que vous repérez le niveau de coupure avec le même code, quelle que soit la variante du dendrogramme utilisée.
+Notez que vous indiquez le niveau de coupure avec le même code, quelle que soit la variante du dendrogramme utilisée avec `chart()`. Il n'est pas toujours facile de repérer la valeur à utiliser pour la coupure. La méthode `str()` appliquée à votre objet "cluster" `envir_clust` vous renvoie une visualisation textuelle du dendrogramme qui permet de lire directement les niveaux des différentes branches. Pour ne pas afficher tout, mais limiter à un nombre de groupes donnés, vous pouvez utiliser l'argument `max.level = <nbr_de_groupes>`. Démonstration.
+
+```{r}
+envir_dist <- dissimilarity(envir, method = "euclidean", scale = TRUE)
+envir_clust <- cluster(envir_dist, method = "ward.D2")
+```
+
+
+```{r, echo=TRUE}
+str(envir_clust, max.level = 5)
+```
+
 
 ## Interprétation
 
-Une fois le dendrogramme réalisé et le niveau de coupure choisi, nous devons récupérer les groupes ainsi constitués afind de les interpréter. Vous utilisez `predict()` pour récupérer un vecteur nommé (nom des stations de 1 à 30 au dessus, groupes de 1 à 4 en dessous)\ :
+Une fois le dendrogramme réalisé et le niveau de coupure choisi, nous devons récupérer les groupes ainsi constitués afin de les interpréter. Vous utilisez `predict()` pour récupérer un vecteur nommé (nom des stations de 1 à 30 au dessus, groupes de 1 à 4 en dessous)\ :
 
 ```{r}
 # We need to repeat this because the preparation to the exercice is erased once
 # the exercise is done!
-envir_dist <- dissimilarity(envir, metric = "euclidean", scale = TRUE)
+envir_dist <- dissimilarity(envir, method = "euclidean", scale = TRUE)
 envir_clust <- cluster(envir_dist, method = "ward.D2")
 ```
 
@@ -726,7 +736,7 @@ Un premier critère pour déterminer si notre regroupement à un sens ici est de
 Un second critère utilisable dans notre cas consiste à comparer des regroupements effectués sur base de jeux de données différents. Nous avions également les communautés piscicoles à disposition dans `fish`, présentées tout au début de ce tutoriel. Nous pouvons donc effectuer notre CAH avec Ward D2 sur des dissimilarités de Bay-Curtis comme ceci (analyse complète en cinq lignes de code)\ :
 
 ```{r, echo=TRUE}
-fish_dist <- dissimilarity(fish, metric = "bray")
+fish_dist <- dissimilarity(fish, method = "bray")
 fish_clust <- cluster(fish_dist, method = "ward.D2")
 chart$horizontal(fish_clust) +
   geom_hline(yintercept = 1.05, color = "red") # Hauteur choisie pour avoir 5 groupes
@@ -748,7 +758,7 @@ La première colonne avec les nombres de 1 à 5 sont les numéros de groupes pou
 
 Notre singleton est le groupe n°3 de `fish` que nous ignorons. Pour les groupes n°1 et 2 nous avons un maximum de stations sur la diagonale (7 pour 1/1 et 5 pour 2/2) montrant ainsi une bonne concordance. Le groupe n°4 de `fish` correspond à 5 stations dans le groupe 4 d'`envir` et 3 stations dans son groupe 2. Enfin, 2 des 3 stations du groupe `fish` 5 correspondent au groupe `envir` 3. Mais notez ceci (allez revoir les sorties de `predict()` plus haut)\ : le groupe 5 de `fish` contient les stations 23, 24 et 25. Le groupe 3 d'`envir` contient les stations 23 et 25, alors que la station 24 est placée dans le groupe 4 pour `envir`. Par conséquent, il est fort probable que le dendrogramme d'`envir` ait mal classé cette station 24 et donc, que la correspondance `fish` 5 = `envir` 3 soit excellente.
 
-Ce genre de résultat est assez caractéristique de données biologiques\ : la concordance n'est pas parfaite, mais une belle tendance se dégage avec les correspondances qui peuvent être résumées comme suit\ :
+Ce genre de résultat est assez caractéristique de données biologiques\ : la concordance n'est pas parfaite, mais une belle tendance se dégage avec les correspondances qui peuvent être résumées finalement comme suit\ :
 
 - `fish` 1 = `envir` 1, stations de 1 jusqu'à 10-14
 - `fish` 2 = `envir` 2, stations depuis 10-14 jusqu'à 19-22
@@ -766,7 +776,7 @@ Notez encore quelques petites astuces supplémentaires\ :
 - D'autres paramètres sont aussi possibles. Par exemple, une variation progressive d'une station à l'autre serait bien mieux représentée par une CAH avec `methode = "single"`. Si cela pique votre curiosité, vous pouvez le tester de manière tout-à-fait optionnelle dans le zone de code ci-dessous, voir observer le résultat d'autres méthodes encore, ou l'effet d'une standardisation ou non des données, ou de la transposition du tableau, ...
 
 ```{r cah_envir_noscore, exercise=TRUE, exercise.lines=5}
-envir_dist <- dissimilarity(envir, metric = "euclidean",
+envir_dist <- dissimilarity(envir, method = "euclidean",
   scale = TRUE, transpose = FALSE) # Testez des variantes ici
 envir_clust <- cluster(envir_dist, method = "___") # méthodes possibles:
                           # single, average, centroid, ward.D, mcquitty
