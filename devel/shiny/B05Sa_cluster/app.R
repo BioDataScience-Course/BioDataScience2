@@ -394,7 +394,7 @@ ui <- fluidPage(
     sidebarPanel(
       p("Vous avez à disposition des mesures sur 342 manchots de 3 espèces différentes. Trouvez les meilleurs paramètres pour votre CAH afin d'optimiser votre regroupement."),
       p("Les variables mesurées sont les suivantes : la longueur du bec (mm), la largeur du bec (mm), la longueur de la nageoire (mm) et la masse (g)."),
-      selectInput("method_dist", "Métrique de distance", choices = c("euclidian", "bray", "canberra", "manhattan")),
+      selectInput("method_dist", "Métrique de distance", choices = c("euclidean", "bray", "canberra", "manhattan")),
       selectInput("scale", "Standardisation", choices = c(FALSE, TRUE)),
       selectInput("method_clust", "Méthode de CAH",
         choices = c("complete", "single", "average", "ward.D2")),
@@ -404,14 +404,6 @@ ui <- fluidPage(
 
     mainPanel(
       plotOutput("dendrogram"),
-      # fluidRow(
-      #   column(width = 6,
-      #          plotOutput("dendro")
-      #         ),
-      #   column(width = 6,
-      #         plotOutput("dendro")
-      #          )
-      # ),
       tableOutput("tab_res"),
       hr(),
       textOutput("scores_res")
@@ -452,7 +444,7 @@ server <- function(input, output, session) {
   trackEvents(session, input, output,
     sign_in.fun = BioDataScience::sign_in, config = conf)
   trackSubmit(session, input, output, max_score = 3, solution =
-      list(method_dist = "euclidian", scale = "TRUE", method_clust = "ward.D2"),
+      list(method_dist = "euclidean", scale = "TRUE", method_clust = "ward.D2"),
     comment = "",
     message.success = "Correct, c'est la meilleur solution. La CAH obtient un score très bon de plus de 94 % de correspondance",
     message.error = "Incorrect, un meilleur choix des paramètres est possible.")
