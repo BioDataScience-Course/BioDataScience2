@@ -12,8 +12,8 @@ library(chart)
 # add news functions ----
 ## This function move to a package
 
-# CAH for SciViews, version 1.1.1
-# Copyright (c) 2021, Philippe Grosjean (phgrsojean@sciviews.org)
+# CAH for SciViews, version 1.2.0
+# Copyright (c) 2021, Philippe Grosjean (phgrosjean@sciviews.org)
 
 # dist is really a dissimilarity matrix => we use dissimilarity() as in the
 # {cluster} package, i.e., class is c("dissimilarity", "dist")
@@ -257,23 +257,24 @@ augment.cluster <- function(x, data, k = NULL, h = NULL, ...) {
 # circular), see http://www.sthda.com/english/wiki
 # /beautiful-dendrogram-visualizations-in-r-5-must-known-methods
 # -unsupervised-machine-learning
-plot.cluster <- function(x, y, hang = -1, check = TRUE, type = "vertical",
-  lab = "Height", ...) {
+plot.cluster <- function(x, y, labels = TRUE, hang = -1, check = TRUE,
+  type = "vertical", lab = "Height", ...) {
   type <- match.arg(type[1], c("vertical", "horizontal", "circular"))
   # type == "circular" is special because we need to transform as ape::phylo
   if (type == "circular") {
     if (!missing(hang))
       warning("'hang' is not used with a circular dendrogram")
     phylo <- ape::as.phylo(x)
-    plot(phylo, type = "fan", font = 1, ...)
+    plot(phylo, type = "fan", font = 1, show.tip.label = labels, ...)
   } else {# Use plot.dendrogram() instead
     # We first convert into dendrogram objet, then we plot it
     # (better that plot.hclust())
+    if (isTRUE(labels)) leaflab <- "perpendicular" else leaflab <- "none"
     dendro <- as.dendrogram(x, hang = hang, check = check)
     if (type == "horizontal") {
-      plot(dendro, horiz = TRUE, xlab = lab, ...)
+      plot(dendro, horiz = TRUE, leaflab = leaflab, xlab = lab, ...)
     } else {
-      plot(dendro, horiz = FALSE, ylab = lab, ...) # note: label different axe
+      plot(dendro, horiz = FALSE, leaflab = leaflab, ylab = lab, ...)
     }
   }
 }
@@ -285,8 +286,8 @@ circle <- function(x = 0, y = 0, d = 1, col = 0, lwd = 1, lty = 1, ...)
     inches = FALSE, add = TRUE, ...)
 
 # TODO: make sure the dendrogram is correct with different ggplot themes
-autoplot.cluster <- function(object, type = "vertical", circ.text.size = 3,
-  theme = theme_sciviews(), xlab = "", ylab = "Height", ...) {
+autoplot.cluster <- function(object, labels = TRUE, type = "vertical",
+  circ.text.size = 3, theme = theme_sciviews(), xlab = "", ylab = "Height", ...) {
   if (is.null(type))
     type <- "vertical"
   type <- match.arg(type[1], c("vertical", "horizontal", "circular"))
@@ -298,24 +299,29 @@ autoplot.cluster <- function(object, type = "vertical", circ.text.size = 3,
     theme + xlab(xlab) + ylab(ylab)
 
   if (type == "circular") {
-    # Get labels (need one more to avoid last = first!)
-    label_df <- tibble::tibble(labels = c(labels(object)[object$order], ""))
-    xmax <- nobs(object) + 1
-    label_df$id <- 1:xmax
-    angle <-  360 * (label_df$id - 0.5) / xmax
-    # Left or right?
-    label_df$hjust <- ifelse(angle < 270 & angle > 90, 1, 0)
-    # Angle for more readable text
-    label_df$angle <- ifelse(angle < 270 & angle > 90, angle + 180, angle)
+    if (isTRUE(labels)) {
+      # Get labels (need one more to avoid last = first!)
+      label_df <- tibble::tibble(labels = c(labels(object)[object$order], ""))
+      xmax <- nobs(object) + 1
+      label_df$id <- 1:xmax
+      angle <-  360 * (label_df$id - 0.5) / xmax
+      # Left or right?
+      label_df$hjust <- ifelse(angle < 270 & angle > 90, 1, 0)
+      # Angle for more readable text
+      label_df$angle <- ifelse(angle < 270 & angle > 90, angle + 180, angle)
+    }
 
     # Make the dendrogram circular
     dendro <- dendro +
       scale_x_reverse() +
       scale_y_reverse() +
-      coord_polar(start = pi/2) +
+      coord_polar(start = pi/2)
+    if (isTRUE(labels))
+      dendro <- dendro +
       geom_text(data = label_df,
         aes(x = id, y = -0.02, label = labels, hjust = hjust),
-        size = circ.text.size, angle = label_df$angle, inherit.aes = FALSE) +
+        size = circ.text.size, angle = label_df$angle, inherit.aes = FALSE)
+    dendro <- dendro +
       theme(panel.border = element_blank(),
         axis.text = element_blank(),
         axis.line = element_blank(),
@@ -332,6 +338,9 @@ autoplot.cluster <- function(object, type = "vertical", circ.text.size = 3,
         axis.line.x = element_blank(),
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(angle = 90, hjust = 0.5))
+    if (!isTRUE(labels))
+      dendro <- dendro +
+        theme(axis.text.x = element_blank())
 
   } else {# Horizontal dendrogram
     dendro <- dendro +
@@ -342,6 +351,9 @@ autoplot.cluster <- function(object, type = "vertical", circ.text.size = 3,
       theme(panel.border = element_blank(),
         axis.line.y = element_blank(),
         axis.ticks.y = element_blank())
+    if (!isTRUE(labels))
+      dendro <- dendro +
+        theme(axis.text.y = element_blank())
   }
   dendro
 }
