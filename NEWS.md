@@ -1,5 +1,9 @@
 # BioDataScience2 News
 
+## Changes in version 2020.4.1
+
+- A bug in learnr that cannot run chart$horizontal() in B05LA_cah is eliminated.
+
 ## Changes in version 2020.4.0
 
 - "Tutorial" B99La_avis added to get a quick feedback from the students.
