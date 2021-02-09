@@ -1,7 +1,8 @@
-learndown::learndownShinyVersion("0.0.9000")
+learndown::learndownShinyVersion("0.1.0")
 conf <- BioDataScience::config()
 
 library(shiny)
+library(shinyjs)
 library(learndown)
 library(BioDataScience2)
 library(dplyr)
@@ -12,8 +13,8 @@ library(chart)
 # add news functions ----
 ## This function move to a package
 
-# CAH for SciViews, version 1.1.1
-# Copyright (c) 2021, Philippe Grosjean (phgrsojean@sciviews.org)
+# CAH for SciViews, version 1.2.0
+# Copyright (c) 2021, Philippe Grosjean (phgrosjean@sciviews.org)
 
 # dist is really a dissimilarity matrix => we use dissimilarity() as in the
 # {cluster} package, i.e., class is c("dissimilarity", "dist")
@@ -117,7 +118,7 @@ as.dissimilarity.matrix <- function(x, ...) {
 
 # We want to print only the first few rows and columns
 print.dissimilarity <- function(x, digits.d = 3L, rownames.lab = "labels",
-  ...) {
+...) {
   mat <- as.matrix(x)
   mat <- format(round(mat, digits.d))
   diag(mat) <- ""
@@ -157,14 +158,14 @@ nobs.dissimilarity <- function(object, ...)
 # TODO: `[` by first transforming into a matrix with as.matrix()
 
 autoplot.dissimilarity <- function(object, order = TRUE, show.labels = TRUE,
-  lab.size = NULL, gradient = list(low = "red", mid = "white", high = "blue"),
-  ...) {
+lab.size = NULL, gradient = list(low = "red", mid = "white", high = "blue"),
+...) {
   factoextra::fviz_dist(object, order = order, show_labels = show.labels,
     lab_size = lab.size, gradient = gradient)
 }
 
 chart.dissimilarity <- function(data, ...,
-  type = NULL, env = parent.frame())
+type = NULL, env = parent.frame())
   autoplot(data, type = type, ...)
 
 # cluster object (inheriting from hclust)
@@ -257,23 +258,24 @@ augment.cluster <- function(x, data, k = NULL, h = NULL, ...) {
 # circular), see http://www.sthda.com/english/wiki
 # /beautiful-dendrogram-visualizations-in-r-5-must-known-methods
 # -unsupervised-machine-learning
-plot.cluster <- function(x, y, hang = -1, check = TRUE, type = "vertical",
-  lab = "Height", ...) {
+plot.cluster <- function(x, y, labels = TRUE, hang = -1, check = TRUE,
+type = "vertical", lab = "Height", ...) {
   type <- match.arg(type[1], c("vertical", "horizontal", "circular"))
   # type == "circular" is special because we need to transform as ape::phylo
   if (type == "circular") {
     if (!missing(hang))
       warning("'hang' is not used with a circular dendrogram")
     phylo <- ape::as.phylo(x)
-    plot(phylo, type = "fan", font = 1, ...)
+    plot(phylo, type = "fan", font = 1, show.tip.label = labels, ...)
   } else {# Use plot.dendrogram() instead
     # We first convert into dendrogram objet, then we plot it
     # (better that plot.hclust())
+    if (isTRUE(labels)) leaflab <- "perpendicular" else leaflab <- "none"
     dendro <- as.dendrogram(x, hang = hang, check = check)
     if (type == "horizontal") {
-      plot(dendro, horiz = TRUE, xlab = lab, ...)
+      plot(dendro, horiz = TRUE, leaflab = leaflab, xlab = lab, ...)
     } else {
-      plot(dendro, horiz = FALSE, ylab = lab, ...) # note: label different axe
+      plot(dendro, horiz = FALSE, leaflab = leaflab, ylab = lab, ...)
     }
   }
 }
@@ -285,8 +287,8 @@ circle <- function(x = 0, y = 0, d = 1, col = 0, lwd = 1, lty = 1, ...)
     inches = FALSE, add = TRUE, ...)
 
 # TODO: make sure the dendrogram is correct with different ggplot themes
-autoplot.cluster <- function(object, type = "vertical", circ.text.size = 3,
-  theme = theme_sciviews(), xlab = "", ylab = "Height", ...) {
+autoplot.cluster <- function(object, labels = TRUE, type = "vertical",
+circ.text.size = 3, theme = theme_sciviews(), xlab = "", ylab = "Height", ...) {
   if (is.null(type))
     type <- "vertical"
   type <- match.arg(type[1], c("vertical", "horizontal", "circular"))
@@ -298,24 +300,29 @@ autoplot.cluster <- function(object, type = "vertical", circ.text.size = 3,
     theme + xlab(xlab) + ylab(ylab)
 
   if (type == "circular") {
-    # Get labels (need one more to avoid last = first!)
-    label_df <- tibble::tibble(labels = c(labels(object)[object$order], ""))
-    xmax <- nobs(object) + 1
-    label_df$id <- 1:xmax
-    angle <-  360 * (label_df$id - 0.5) / xmax
-    # Left or right?
-    label_df$hjust <- ifelse(angle < 270 & angle > 90, 1, 0)
-    # Angle for more readable text
-    label_df$angle <- ifelse(angle < 270 & angle > 90, angle + 180, angle)
+    if (isTRUE(labels)) {
+      # Get labels (need one more to avoid last = first!)
+      label_df <- tibble::tibble(labels = c(labels(object)[object$order], ""))
+      xmax <- nobs(object) + 1
+      label_df$id <- 1:xmax
+      angle <-  360 * (label_df$id - 0.5) / xmax
+      # Left or right?
+      label_df$hjust <- ifelse(angle < 270 & angle > 90, 1, 0)
+      # Angle for more readable text
+      label_df$angle <- ifelse(angle < 270 & angle > 90, angle + 180, angle)
+    }
 
     # Make the dendrogram circular
     dendro <- dendro +
       scale_x_reverse() +
       scale_y_reverse() +
-      coord_polar(start = pi/2) +
-      geom_text(data = label_df,
-        aes(x = id, y = -0.02, label = labels, hjust = hjust),
-        size = circ.text.size, angle = label_df$angle, inherit.aes = FALSE) +
+      coord_polar(start = pi/2)
+    if (isTRUE(labels))
+      dendro <- dendro +
+        geom_text(data = label_df,
+          aes(x = id, y = -0.02, label = labels, hjust = hjust),
+          size = circ.text.size, angle = label_df$angle, inherit.aes = FALSE)
+    dendro <- dendro +
       theme(panel.border = element_blank(),
         axis.text = element_blank(),
         axis.line = element_blank(),
@@ -332,6 +339,9 @@ autoplot.cluster <- function(object, type = "vertical", circ.text.size = 3,
         axis.line.x = element_blank(),
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(angle = 90, hjust = 0.5))
+    if (!isTRUE(labels))
+      dendro <- dendro +
+        theme(axis.text.x = element_blank())
 
   } else {# Horizontal dendrogram
     dendro <- dendro +
@@ -342,6 +352,9 @@ autoplot.cluster <- function(object, type = "vertical", circ.text.size = 3,
       theme(panel.border = element_blank(),
         axis.line.y = element_blank(),
         axis.ticks.y = element_blank())
+    if (!isTRUE(labels))
+      dendro <- dendro +
+        theme(axis.text.y = element_blank())
   }
   dendro
 }
@@ -370,43 +383,41 @@ peng %>.%
 
 # specific Function ----
 
-score_cah <- function(x, reference = peng$species, digits = 5) {
+score_cah <- function(x, reference = peng_m$species) {
   tab <- table(reference, x)
-  max_gr <- apply(tab, 1, which.max)
-  tab[ , ]
+  k <-  length(unique(x))
+  prop  <- prop.table(tab,margin = 2)
+  res <- sum(apply(prop, 2, max)) / k
 
-  if (length(unique(max_gr)) < 3)
-    res <- "Votre CAH ne permet pas de retrouver les 3 groupes. Un ou plusieurs groupes sont confondus."
-
-  if (length(unique(max_gr)) == 3) {
-    tot <- apply(tab, 1, max) / rowSums(tab)
-    res <- paste0("Votre CAH permet de discerner 3 groupes avec une précision de ", round((100*sum(tot)/nlevels(reference)),digits = digits ), "%.")
-  }
   res
 }
 
 # UI -----
 
 ui <- fluidPage(
+  useShinyjs(),
   learndownShiny("Classification hiérarchique ascendante sur des mesures de manchots d'antarctique."),
 
   sidebarLayout(
     sidebarPanel(
       p("Vous avez à disposition des mesures sur 342 manchots de 3 espèces différentes. Trouvez les meilleurs paramètres pour votre CAH afin d'optimiser votre regroupement."),
-      p("Les variables mesurées sont les suivantes : la longueur du bec (mm), la largeur du bec (mm), la longueur de la nageoire (mm) et la masse (g)."),
       selectInput("method_dist", "Métrique de distance", choices = c("euclidean", "bray", "canberra", "manhattan")),
       selectInput("scale", "Standardisation", choices = c(FALSE, TRUE)),
       selectInput("method_clust", "Méthode de CAH",
         choices = c("complete", "single", "average", "ward.D2")),
+      numericInput("k", "Nombre de groupes", min = 3, max = 6, step = 1, value = 3),
       hr(),
       submitQuitButtons()
     ),
 
     mainPanel(
+      p("Les variables mesurées sont les suivantes : la longueur du bec (mm), la largeur du bec (mm), la longueur de la nageoire (mm) et la masse (g)."),
       plotOutput("dendrogram"),
-      tableOutput("tab_res"),
       hr(),
-      textOutput("scores_res")
+
+      hidden(
+        textInput("scores", "Score")
+      )
     )
   )
 )
@@ -422,31 +433,35 @@ server <- function(input, output, session) {
 
   output$dendrogram <- renderPlot({
     cah <- cah()
-    chart(cah) +
-      ylab("Hauteur")
-  })
 
-  output$tab_res <- renderTable({
-    cah <- cah()
-
-    table(peng$species, predict(cah, k = 3)) %>.%
-      as.data.frame(.) %>.%
-      pivot_wider(. , names_from = Var2, values_from = Freq) %>.%
-      rename(., "Especes" = Var1)
+    plot(cah, lab = "Hauteur", labels = FALSE)
+    rect.hclust(cah, k = input$k)
   })
 
   output$scores_res <- renderText({
     cah <- cah()
-    score_cah(predict(cah, k = 3), reference = peng$species)
+    score_cah(predict(cah, k = input$k), reference = peng$species)
+  })
+
+  observe({
+    input$method_dist
+    input$method_clust
+    input$scale
+
+    cah <- cah()
+    res <- score_cah(predict(cah, k = input$k), reference = peng$species)
+
+    updateTextInput(session, "scores",
+      value = as.character(res))
   })
 
 
   trackEvents(session, input, output,
     sign_in.fun = BioDataScience::sign_in, config = conf)
-  trackSubmit(session, input, output, max_score = 3, solution =
-      list(method_dist = "euclidean", scale = "TRUE", method_clust = "ward.D2"),
+  trackSubmit(session, input, output, max_score = 4, solution =
+      list(scores = c(min = 0.97, max = 1)),
     comment = "",
-    message.success = "Correct, c'est la meilleur solution. La CAH obtient un score très bon de plus de 94 % de correspondance",
+    message.success = "Correct, La CAH obtient un score très bon de plus de 97 % de correspondance.",
     message.error = "Incorrect, un meilleur choix des paramètres est possible.")
   trackQuit(session, input, output, delay = 20)
 }
