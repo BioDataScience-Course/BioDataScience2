@@ -459,7 +459,7 @@ server <- function(input, output, session) {
   trackEvents(session, input, output,
     sign_in.fun = BioDataScience::sign_in, config = conf)
   trackSubmit(session, input, output, max_score = 4, solution =
-      list(scores = c(min = 0.97, max = 1)),
+      list(scores = c(min = 0.96, max = 1)),
     comment = "",
     message.success = "Correct, La CAH obtient un score très bon de plus de 97 % de correspondance.",
     message.error = "Incorrect, un meilleur choix des paramètres est possible.")
