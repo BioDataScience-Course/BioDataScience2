@@ -259,7 +259,11 @@ augment.cluster <- function(x, data, k = NULL, h = NULL, ...) {
 # /beautiful-dendrogram-visualizations-in-r-5-must-known-methods
 # -unsupervised-machine-learning
 plot.cluster <- function(x, y, labels = TRUE, hang = -1, check = TRUE,
+<<<<<<< HEAD
 type = "vertical", lab = "Height", ...) {
+=======
+  type = "vertical", lab = "Height", ...) {
+>>>>>>> ebb9c87cd48f988294806dbc756d2a5f4357ea1c
   type <- match.arg(type[1], c("vertical", "horizontal", "circular"))
   # type == "circular" is special because we need to transform as ape::phylo
   if (type == "circular") {
@@ -288,7 +292,11 @@ circle <- function(x = 0, y = 0, d = 1, col = 0, lwd = 1, lty = 1, ...)
 
 # TODO: make sure the dendrogram is correct with different ggplot themes
 autoplot.cluster <- function(object, labels = TRUE, type = "vertical",
+<<<<<<< HEAD
 circ.text.size = 3, theme = theme_sciviews(), xlab = "", ylab = "Height", ...) {
+=======
+  circ.text.size = 3, theme = theme_sciviews(), xlab = "", ylab = "Height", ...) {
+>>>>>>> ebb9c87cd48f988294806dbc756d2a5f4357ea1c
   if (is.null(type))
     type <- "vertical"
   type <- match.arg(type[1], c("vertical", "horizontal", "circular"))
@@ -319,9 +327,15 @@ circ.text.size = 3, theme = theme_sciviews(), xlab = "", ylab = "Height", ...) {
       coord_polar(start = pi/2)
     if (isTRUE(labels))
       dendro <- dendro +
+<<<<<<< HEAD
         geom_text(data = label_df,
           aes(x = id, y = -0.02, label = labels, hjust = hjust),
           size = circ.text.size, angle = label_df$angle, inherit.aes = FALSE)
+=======
+      geom_text(data = label_df,
+        aes(x = id, y = -0.02, label = labels, hjust = hjust),
+        size = circ.text.size, angle = label_df$angle, inherit.aes = FALSE)
+>>>>>>> ebb9c87cd48f988294806dbc756d2a5f4357ea1c
     dendro <- dendro +
       theme(panel.border = element_blank(),
         axis.text = element_blank(),
