@@ -1,8 +1,12 @@
 # BioDataScience2 News
 
+## Changes in version 2020.5.0
+
+- Tutorial B06La_kmeans migrated to version 2.
+
 ## Changes in version 2020.4.1
 
-- A bug in learnr that cannot run chart$horizontal() in B05LA_cah is eliminated.
+- A bug in learnr that cannot run chart$horizontal() in B05La_cah is eliminated.
 
 ## Changes in version 2020.4.0
 
