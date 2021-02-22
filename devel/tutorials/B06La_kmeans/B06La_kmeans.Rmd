@@ -1,6 +1,6 @@
 ---
-title: "K-moyenne"
-author: "Guyliann Engels & Philippe Grosjean"
+title: "K-moyennes"
+author: "Guyliann Engels, Raphael Conotte & Philippe Grosjean"
 description: "**SDD II Module 6** Regroupement par les K-moyennes"
 tutorial:
   id: "B06La_kmeans"
@@ -23,8 +23,7 @@ library(ade4)
 
 # Preparation dataset ------
 data("doubs", package = "ade4")
-enviro <- doubs$env
-
+enviro <- as_tibble(doubs$env)
 ```
 
 ```{r, echo=FALSE}
@@ -39,16 +38,22 @@ BioDataScience2::learnr_server(input, output, session)
 
 ## Objectifs
 
-- Vérifier que vous avez bien compris les différentes étapes de la classification par les k-moyennes : choix du nombre de groupes, classification par les k-moyennes, récupération des coordonnées des centres et représentation graphique.
-- Vous préparer à analyser et interpréter de manière autonome un jeu de données multivariées à l'aide des k-moyennes
+Les k-moyennes sont une méthode qui permet de réaliser des regroupements d'individus en partant d'un tableau multivarié. Cette méthode a le même objectif que la classification hiérarchique ascendante que vous avez découverte dans le module précédent. Cette méthode a l'avantage par rapport à la classification hiérarchique d'être moins gourmande en temps de calcul et en mémoire vive. Elle sera donc à privilégier lorsque vous vous retrouvez confronté à un grand jeu de données.
 
-Vous devez avoir compris le contenu du [module 6](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/k-moyenne-mds-som.html) du cours et en particulier la [section 6.1](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/k-moyennes.html). Assurez-vous d'avoir réalisé les exercices H5P qui s'y trouvent avant de vous lancer dans ce tutoriel Learnr.
+Dans ce learnr, vous allez pouvoir auto-évaluer votre capacité à\ :
+
+- comprendre les différentes étapes de la classification par les k-moyennes : choix du nombre de groupes, classification par les k-moyennes, récupération des coordonnées des centres et représentation graphique.
+- analyser et interpréter de manière autonome un jeu de données multivariées à l'aide des k-moyennes
+
+N'entamer ce tutoriel qu'après avoir compris le principe des k-moyennes proposé dans le [module 6](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/k-moyenne-mds-som.html) du cours et en particulier la [section 6.1](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/k-moyennes.html). 
+
+Assurez-vous d'avoir réalisé les exercices H5P qui s'y trouvent avant de vous lancer dans ce tutoriel learnr.
 
 ## Données environnementales du Doubs
 
 Lors d'une étude visant à analyser l'abondance de 27 espèces de poissons sur 30 stations le long du Doubs, une rivière qui serpente entre la France et la Suisse pour se jeter finalement dans la Saône, les chercheurs y ont également mesuré des variables environnementales.
 
-![Carte du Doubs, d'après OpenStreetMap.](images/doubs.jpg) 
+![Carte du Doubs, d'après OpenStreetMap.](images/doubs.jpg){width='60%'} 
 
 Ces données environnementales peuvent notamment servir à classer les micro-habitats selon des critères différents. C'est ce que nous allons essayer de faire avec l'aide de la classification par les k-moyennes. Voici le détail des onze variables mesurées. Notez que les auteurs ont décidé d'appliquer des coefficients multiplicateurs ici pour homogénéiser les données : 
 
@@ -76,26 +81,27 @@ head(enviro)
 
 Le regroupement par les K-moyennes est une méthode simple d'analyse multivariée considérée comme moins efficace que le CAH. Néanmoins, cette méthode permet de réaliser des regroupements plus rapidement sur des gros jeu de données, là où la CAH nécessiterait trop de temps de calcul et de mémoire vive. 
 
-L'un des inconvénients de cette méthode est que vous devez proposer le nombre de groupes *k* que vous souhaitez réaliser. Il vous faut donc le fixer par vous même.
+L'un des inconvénients de cette méthode est que vous devez proposer le nombre de groupes *k* que vous souhaitez utiliser avant de pouvoir calculer vos regroupements grâce aux k-moyennes. Pour vous aider dans ce choix, le package `factoextra` propose avec la fonction `fviz_nbclust()`, un outil graphique permettant de donner une indication sur le nombre de groupes *k* optimal. 
 
-Pour vous aidez dans ce choix, le package `factoextra` propose avec la fonction `fviz_nbclust()`, un outil graphique permettant de donner une indication sur le nombre de groupes *k* optimal. 
+Il existe plusieurs méthodes pour déterminer le nombre de groupes optimal. Nous vous proposons d'utiliser la méthode `wss` (total within sum of square). Cette méthode va de calculer la somme des carrés des distances intra-groupes en fonction du nombre de centres *k*. Plus le nombre de *k* va augmenter, plus la somme des carrés des distances intra-groupes va tendre à diminuer. On va devoir déterminer le nombre de groupes le plus approprié. L'objectif est de choisir le *k* le plus élevé qui permet d'avoir une forte diminution de la somme des carrés distances intra-groupes par rapport au *k* inférieur. Par contre lorsque l'ajout d'un groupe ne permet plus de diminuer fortement la valeur de *k*, c'est que nous avons trouvé la valeur de *k* optimal.
+
+**Soyez toujours vigilant ! Le nombre de groupes proposé par factoextra::fviz_nbclust() n’est qu’indicatif !**
 
 Sur base du jeu de données `enviro`, réalisez un graphique permettant d'estimer le nombre de groupes à employer dans la méthode des k-moyennes. Les variables mesurées ayant des unités différentes, n'oubliez pas de **standardiser** vos données en utilisant la fonction `scale()` et assigné les ensuite à `enviro_scale`. Ce n'est pas le cas pour ce jeu de données, mais pensez à éliminer les colonnes non numériques à l’aide de `select()` si vous en avez dans votre tableau de départ. 
 
 ```{r nbclust_h2, exercise=TRUE}
-enviro_scale <- as_tibble(___(___))
-___(___, kmeans, method = "wss")
+enviro_scale <- ___(___)
+___::___(___, kmeans, method = "wss")
 ```
 
 ```{r nbclust_h2-hint-1}
-enviro_scale <- as_tibble(___(enviro))
+enviro_scale <- ___(enviro)
 factoextra::___(enviro_scale, kmeans, method = "wss")
-
 #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r nbclust_h2-solution}
-enviro_scale <- as_tibble(scale(enviro))
+enviro_scale <- scale(enviro)
 factoextra::fviz_nbclust(enviro_scale, kmeans, method = "wss")
 ```
 
@@ -162,7 +168,6 @@ Réaliser un graphique des nitrates en fonction de l'oxygène dissout. Regrouper
 
 ```{r graphe_prep}
 enviro_scale <- as_tibble(scale(enviro))
-
 set.seed(210219) 
 enviro_kmeans <- kmeans(enviro_scale, centers = 4, nstart = 25)
 ```
@@ -173,11 +178,11 @@ broom::___(___, ___) %>.%
   rename(., cluster = ___) -> enviro2
 
 # Créer le tableau des centres
-(enviro_centers <- broom::(___, col.names = names(___)))
+(enviro_centers <- broom::___(___, col.names = names(___)))
 
 # Graphique 
-chart(data = ,  ~___) +
-  ___()+
+chart(data = ___ ,  ___ ~___) +
+  ___() +
   # Représentation des centres 
   ___(data = ___, size = 5, shape = 17)
 ```
@@ -192,7 +197,7 @@ broom::___(OBJ_KMEANS, ___) %>.%
 
 # Graphique 
 chart(data = enviro2, ___ ~ ___ %col=% ___) +
-  geom_point()+
+  geom_point() +
   # Représentation des centres 
   geom_point(data = ___, size = 5, shape = 17)
 ```
@@ -224,7 +229,7 @@ broom::augment(enviro_kmeans, enviro_scale) %>.%
 
 # Graphique 
 chart(data = enviro2, nit ~ oxy %col=% cluster) +
-  geom_point()+
+  geom_point() +
   # Représentation des centres 
   geom_point(data = enviro_centers, size = 5, shape = 17)
 ```
