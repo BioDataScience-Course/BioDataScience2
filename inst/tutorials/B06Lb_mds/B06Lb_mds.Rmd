@@ -309,7 +309,9 @@ BioDataScience2::learnr_server(input, output, session)
 
 ## Objectifs
 
-- Vérifier que vous avez bien compris les différentes étapes pour la réalisation des MDS : calcul de la matrice de distance, calcul du positionnement des points, réalisation de la carte et vérification de sa validité.
+Ce tutoriel consacré au positionnement multidimensionnel (MDS) vise à\ :
+
+- Vérifier que vous avez bien compris les différentes étapes pour la réalisation d'une MDS : calcul de la matrice de distance, calcul du positionnement des points, réalisation de la carte et vérification de sa validité, choix entre MDS métrique ou non métrique.
 - Vous préparer à analyser et interpréter de manière autonome un jeu de données multivariées à l'aide des MDS.
 
 Vous devez avoir compris le contenu du [module 6](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/k-moyenne-mds-som.html) du cours et en particulier la [section 6.2](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/positionnement-multidimensionnel-mds.html). Assurez-vous d'avoir réalisé les exercices H5P qui s'y trouvent avant de vous lancer dans ce tutoriel Learnr et de bien maîtriser les notions sur les matrices de distances vue dans le [module 5](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/distance-entre-individus.html). 
@@ -320,7 +322,7 @@ Barro Colorado est une île artificielle située sur le lac Gatùn, au centre du
 
 ![Ile de Barro Colorado](images/bci_carte.png)
 
-Une surface permanente de 50 hectares a été définie par l'Institut de recherche tropicale Smithsonian et l'Université de Princeton pour étudier la dynamique de la végétation. Cette surface est divisée en 50 parcelles de 1 ha, qui s'alignent les unes sur les autres. Dans chaque parcelle, le dénombrement de toutes les espèces forestières a été enregistré (seuls les plantes avec un DHP >= 10 cm [Diamètre mesuré à plus ou moins 1,3m] sont disponibles dans cet ensemble de données) et plusieurs variables environnementales ont également été mesurées. Au total, 225 espèces différentes ont été observées.
+Une surface permanente de 50 hectares a été définie par l'Institut de recherche tropicale Smithsonian et l'Université de Princeton pour étudier la dynamique de la végétation. Cette surface est divisée en 50 parcelles de 1 ha, qui s'alignent les unes sur les autres. Dans chaque parcelle, le dénombrement de toutes les espèces forestières a été enregistré (seules les plantes avec un DHP >= 10 cm [Diamètre mesuré à plus ou moins 1,3m] sont disponibles dans cet ensemble de données). Au total, 225 espèces différentes ont été observées.
 
 ![Foret tropicale de l'ile de Barro Colorado](images/bci_forest.jpg) 
 
@@ -335,7 +337,7 @@ Toutes les variables du tableau représentent des espèces (il n'y a pas ici une
 
 <!-- TODO: il manque une partie description des données et éventuellement une transformation, cf espèces rares, mais le graphique boxplot parallèle est inutilisable avec 225 espèces!!! -->
 
-## Matrice de distance
+### Matrice de distance
 
 Lors de la réalisation d'une MDS, la première étape nécessite de construire une matrice de distances entre les stations ou entre les espèces comme vous l'aviez fait lors de la CAH. Pour cela, nous utiliserons la fonction `dissimilarity()` que vous connaissez déjà. Rappelez-vous que vous devrez commencer par sélectionner une métrique adaptée à votre jeu de données pour calculer votre matrice. Pour rappel, vous explorez l'aide en ligne de `?vegan::vegdist` pour déterminer les arguments à utiliser dans `dissimilarity()`.
 
@@ -356,10 +358,10 @@ bci_dist <- dissimilarity(bci, method = "bray")
 ```
 
 ```{r dist_h2-check}
-grade_code("Vous n'avez pas oublié comment l'on fait pour calculer une matrice de distances avec la fonction dissimilatity(). C'est maintenant que cela devient intéressant.")
+grade_code("Vous n'avez pas oublié comment on fait pour calculer une matrice de distances avec la fonction dissimilatity(). C'est maintenant que cela devient intéressant...")
 ```
 
-### Analyse en coordonnées principales (ou MDS métrique)
+## MDS métrique (ou PCoA)
 
 Lorsque votre matrice de distance `bci_dist` est calculée, vous allez pouvoir visualiser son contenu en réalisant une MDS métrique ou analyse en coordonnées principales (PCoA). L'objectif est de *"projeter"* le nuage de points initial à *p* dimensions (les *p* variables) dans un espace réduit à deux dimensions. Afin de calculer votre MDS métrique vous utilisez la fonction `mds$metric()` et `chart()` permet de visualiser votre ordination en deux dimensions (nommez simplement vos stations de 1 à 50 dans l'ordre d'apparition dans le tableau).
 
@@ -489,28 +491,20 @@ grade_code("Analysez maintenat ces mesures et répondez à la question ci-dessou
 
 ```{r qu_nmds}
 question("Considérez vous que cette MDS non métrique est de qualité ?",
-  answer("oui, sur base de la valeur du R^2 linéaire élevée, 
-                   nous pouvons considérer que la MDS non métrique 
-                   exprime une grande part de la variance"),
-  answer("oui, sur base des valeurs de R^2 linéaire basse et de R^2
-                   non métrique élevée, nous pouvons considérer que la
-                   MDS non métrique est de qualité"),
-  answer("oui, sur base de la valeur du R^2 non métrique élevée,
-                  nous pouvons considérer que la MDS non métrique 
-                  est de qualité", correct = TRUE),
-  answer("non, sur base des valeurs R^2 linéaire et de R^2
-                   non métrique élevées, nous pouvons considérer 
-                   que la MDS non métrique n'est pas optimale."),
+  answer("Oui, car le R^2 non métrique est plus élevé que le R^2 linéaire."),
+  answer("Oui, les R^2 sont excellents, même si la linearité de la transformation est un peu en dessous.", correct = TRUE),
+  answer("Non, le R^2 nion métrique est excellent, mais le R^2 linéaire un cran en dessous révèle un problème."),
+  answer("Non, il y a trop de différences entre les deux R^2."),
   allow_retry = TRUE,
-  correct = "Bravo, vous avez trouvé la bonne réponse. L'indicateur R2 linéaire correspond au coefficient de corrélation linéaire de Pearson entre les distances ajustées et les distances sur la carte au carré. Il permet d'évaluer de combien les distances sont distordues. Au plus on est proche de 1, au moins la distortion est forte. Avec la valeur de 0.86 que l'on observe, notre distortion n'est pas trop forte. L'indicateur R2 non métrique indique si l’ordre des points respecte l’ordre des distances partout sur le graphique. Plus vous serez proche de 1, plus cet ordre sera respecté. La valeur de 0.97 que l'on observe ici est vraiment très bonne.",
-  incorrect = "Retentez votre chance. Plus la valeur se rapproche de 1, mieux ce sera.")
+  correct = "Dans la MDS non métrique, c'est le R^2 non métrique qui importe le plus. Un R^2 linéaire très élevé est un plus, mais n'est pas indispensable. D'ailleurs s'il est également très élevé, une MDS métrique pourrait convenir également et est plus rapide à calculer.",
+  incorrect = "Pas tout à fait. Plus la valeur du R^2 se rapproche de 1, mieux c'est, mais les deux R^2 n'ont pas la même importance ici.")
 ```
 
 ### Diagramme de Shepard
 
 Le diagramme de Shepard (fonction `shepard()` pour le calculer puis `chart()` pour l'afficher) visualise la distorsion introduite par notre MDS non métrique. Une différence importante entre le R^2^ linéaire et le R^2^ non linéaire est une première indication d'un stress important. La fonction `shepard()` demande d'une part la matrice de distance de départ et d'autre part, l'objet nmds pour pouvoir réaliser le calcul.
 
-Sur le diagramme des dissimilarités de la matrice *versus* distances sur la carte, le trait rouge matérialise la fonction de stress. Plus les points sont proches de ce trait, mieux c'est en mode non linéaire. De plus, si ce trait se rapproche d'une droite, alors la linéarité est d'autant mieux respectée également. C'est donc une analyse en deux étapes que l'on fait ici par observation du diagramme\ : d'abord, une fidélité pour des distances similaires, ert en secodn lieu comme bonus éventuellement, un respect des distances relatives les unes par rapprot aux autres.
+Sur le diagramme des dissimilarités de la matrice *versus* distances sur la carte, le trait rouge matérialise la fonction de stress. Plus les points sont proches de ce trait, mieux c'est en mode non linéaire. De plus, si ce trait se rapproche d'une droite, alors la linéarité est d'autant mieux respectée également. C'est donc une analyse en deux étapes que l'on fait ici par observation du diagramme\ : d'abord, une fidélité pour des distances similaires, ert en second lieu comme bonus éventuellement, un respect des distances relatives les unes par rapport aux autres.
 
 Réaliser le diagramme de Shepard pour votre MDS non métrique.
 

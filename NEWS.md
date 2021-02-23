@@ -1,5 +1,9 @@
 # BioDataScience2 News
 
+## Changes in version 2020.6.0
+
+- Tutorial B06Lb_mds migrated to version 2.
+
 ## Changes in version 2020.5.0
 
 - Tutorial B06La_kmeans migrated to version 2.
