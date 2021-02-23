@@ -13,43 +13,38 @@ runtime: shiny_prerendered
 
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
-SciViews::R()
-library(BioDataScience)
-library(ade4)
 
-# Preparation dataset ------
-bci <- read("BCI", package = "vegan")
-
-# sciviews functions ---------------
+# mds for SciViews, version 1.0.0
+# Copyright (c) 2020-2021, Philippe Grosjean (phgrosjean@sciviews.org)
 
 SciViews::R()
 library(broom)
 
-# function mds for several multidimensionnal scaling functions ------
+# function mds for several multidimensional scaling functions ------
 mds <- function(dist, k = 2, type = c("metric", "nonmetric", "cmdscale",
-                                      "wcmdscale", "sammon", "isoMDS", "monoMDS", "metaMDS"), p = 2, ...) {
+"wcmdscale", "sammon", "isoMDS", "monoMDS", "metaMDS"), p = 2, ...) {
   type <- match.arg(type)
   res <- switch(type,
-                metric = ,
-                wcmdscale = structure(vegan::wcmdscale(d = dist, k = k, eig = TRUE, ...),
-                                      class = c("wcmdscale", "mds", "list")),
-                cmdscale = structure(stats::cmdscale(d = dist, k = k, eig = TRUE, ...),
-                                     class = c("cmdscale", "mds", "list")),
-                nonmetric = ,
-                metaMDS = structure(vegan::metaMDS(comm = dist, k = k, ...),
-                                    class = c("metaMDS", "monoMDS", "mds", "list")),
-                isoMDS = structure(MASS::isoMDS(d = dist, k = k, ...),
-                                   class = c("isoMDS", "mds", "list")),
-                monoMDS = structure(vegan::monoMDS(dist = dist, k = k, ...),
-                                    class = c("monoMDS", "mds", "list")),
-                sammon = structure(MASS::sammon(d = dist, k = k, ...),
-                                   class = c("sammon", "mds", "list")),
-                stop("Unknown 'mds' type ", type)
+    metric = ,
+    wcmdscale = structure(vegan::wcmdscale(d = dist, k = k, eig = TRUE, ...),
+      class = c("wcmdscale", "mds", "list")),
+    cmdscale = structure(stats::cmdscale(d = dist, k = k, eig = TRUE, ...),
+      class = c("cmdscale", "mds", "list")),
+    nonmetric = ,
+    metaMDS = structure(vegan::metaMDS(comm = dist, k = k, ...),
+      class = c("metaMDS", "monoMDS", "mds", "list")),
+    isoMDS = structure(MASS::isoMDS(d = dist, k = k, ...),
+      class = c("isoMDS", "mds", "list")),
+    monoMDS = structure(vegan::monoMDS(dist = dist, k = k, ...),
+      class = c("monoMDS", "mds", "list")),
+    sammon = structure(MASS::sammon(d = dist, k = k, ...),
+      class = c("sammon", "mds", "list")),
+    stop("Unknown 'mds' type ", type)
   )
   # For non-metric MDS, we add also data required for the Shepard plot
   if (type %in% c("nonmetric", "sammon", "isoMDS", "monoMDS", "metaMDS"))
     res$Shepard <- MASS::Shepard(d = dist, x = res$points, p = p)
-  res
+    res
 }
 class(mds) <- c("function", "subsettable_type")
 
@@ -61,14 +56,14 @@ plot.mds <- function(x, y, ...) {
   plot(data = points, mds2 ~ mds1,...)
 }
 
-autoplot.mds <- function(object,  labels, ...) {
+autoplot.mds <- function(object, labels, ...) {
   points <- tibble::as_tibble(object$points, .name_repair = "minimal")
   colnames(points) <- paste0("mds", 1:ncol(points))
   
   if (!missing(labels)) {
     if (length(labels) != nrow(points))
       stop("You must provide a character vector of length ", nrow(points),
-           " for 'labels'")
+        " for 'labels'")
     points$.labels <- labels
     chart::chart(points, mds2 ~ mds1 %label=% .labels, ...) +
       geom_point() +
@@ -81,20 +76,23 @@ autoplot.mds <- function(object,  labels, ...) {
   }
 }
 
+chart.mds <- function(data, labels, ..., type = NULL, env = parent.frame())
+  autoplot(data, labels = labels, type = type, ...)
+
 shepard <- function(dist, mds, p = 2)
   structure(MASS::Shepard(d = dist, x = mds$points, p = p),
-            class = c("shepard", "list"))
+    class = c("shepard", "list"))
 
 plot.shepard <- function(x, y, l.col = "red", l.lwd = 1,
-                         xlab = "Observed Dissimilarity", ylab = "Ordination Distance", ...) {
+xlab = "Observed Dissimilarity", ylab = "Ordination Distance", ...) {
   she <- tibble::as_tibble(x, .name_repair = "minimal")
   
   plot(data = she, y ~ x, xlab = xlab, ylab = ylab, ...)
   lines(data = she, yf ~ x, type = "S", col = l.col, lwd = l.lwd)
 }
 
-autoplot.shepard <- function(object,  alpha = 0.5, l.col = "red", l.lwd = 1,
-                             xlab = "Observed Dissimilarity", ylab = "Ordination Distance", ...) {
+autoplot.shepard <- function(object, alpha = 0.5, l.col = "red", l.lwd = 1,
+xlab = "Observed Dissimilarity", ylab = "Ordination Distance", ...) {
   she <- tibble::as_tibble(object)
   
   chart(data = she, y ~ x) +
@@ -102,6 +100,12 @@ autoplot.shepard <- function(object,  alpha = 0.5, l.col = "red", l.lwd = 1,
     geom_step(chart::f_aes(yf ~ x), direction = "vh", col = l.col, lwd = l.lwd) +
     labs(x = xlab, y = ylab)
 }
+
+chart.shepard <- function(data, alpha = 0.5, l.col = "red", l.lwd = 1,
+xlab = "Observed Dissimilarity", ylab = "Ordination Distance", ..., type = NULL,
+env = parent.frame())
+  autoplot(data, alpha = alpha, l.col = l.col, l.lwd = l.lwd,
+    xlab = xlab, ylab = ylab, type = type, ...)
 
 # augment.mds -------------------------------------------
 augment.mds <- function(x, data, ...){
@@ -276,6 +280,21 @@ autoplot.dissimilarity <- function(object, order = TRUE, show.labels = TRUE,
 chart.dissimilarity <- function(data, ...,
   type = NULL, env = parent.frame())
   autoplot(data, type = type, ...)
+
+# A hack to get fun$type() working in learnr
+#mds <- list(
+#  metric = function(dist, k = 2, p = 2, ...) mds(dist, k = k, p = p, type = "metric", ...),
+#  nonmetric = function(dist, k = 2, p = 2, ...) mds(dist, k = k, p = p, type = "nonmetric", ...),
+#  cmdscale = function(dist, k = 2, p = 2, ...) mds(dist, k = k, p = p, type = "cmdscale", ...),
+#  wcmdscale = function(dist, k = 2, p = 2, ...) mds(dist, k = k, p = p, type = "wcmdscale", ...),
+#  sammon = function(dist, k = 2, p = 2, ...) mds(dist, k = k, p = p, type = "sammon", ...),
+#  isoMDS = function(dist, k = 2, p = 2, ...) mds(dist, k = k, p = p, type = "isoMDS", ...),
+#  monoMDS = function(dist, k = 2, p = 2, ...) mds(dist, k = k, p = p, type = "monoMDS", ...),
+#  metaMDS = function(dist, k = 2, p = 2, ...) mds(dist, k = k, p = p, type = "metaMDS", ...)
+#)
+
+# Chargement du jeu de données
+bci <- read("BCI", package = "vegan")
 ```
 
 ```{r, echo=FALSE}
@@ -293,31 +312,34 @@ BioDataScience2::learnr_server(input, output, session)
 - Vérifier que vous avez bien compris les différentes étapes pour la réalisation des MDS : calcul de la matrice de distance, calcul du positionnement des points, réalisation de la carte et vérification de sa validité.
 - Vous préparer à analyser et interpréter de manière autonome un jeu de données multivariées à l'aide des MDS.
 
-Vous devez avoir compris le contenu du [module 6](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/k-moyenne-mds-som.html) du cours et en particulier la [section 6.2](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/positionnement-multidimensionnel-mds.html). Assurez-vous d'avoir réalisé les exercices H5P qui se trouvent avant de vous lancer dans ce tutoriel Learnr et de bien maitriser les notions sur les matrices de distancse vue dans le [module 5](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/distance-entre-individus.html). 
+Vous devez avoir compris le contenu du [module 6](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/k-moyenne-mds-som.html) du cours et en particulier la [section 6.2](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/positionnement-multidimensionnel-mds.html). Assurez-vous d'avoir réalisé les exercices H5P qui s'y trouvent avant de vous lancer dans ce tutoriel Learnr et de bien maîtriser les notions sur les matrices de distances vue dans le [module 5](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/distance-entre-individus.html). 
 
+## Barro Colorado Island
 
-## Barro Colorado Island 
-
-L'île Barro Colorado est une ile artificielle située sur le lac Gatùn, au centre du Panama. Elle représente un lieu de recherche scientifique intensive axée sur l'écologie de la forêt tropicale. 
+Barro Colorado est une île artificielle située sur le lac Gatùn, au centre du Panama. Elle représente un lieu de recherche scientifique intensive axée sur l'écologie de la forêt tropicale. 
 
 ![Ile de Barro Colorado](images/bci_carte.png)
 
-Une surface permanente de 50 hectares a été défine par l'Institut de recherche tropicale Smithsonian et l'Université de Princeton pour étudier la dynamique de la végétation. Cette surface est divisée en 50 parcelles de 1 ha, qui s'alignent les unes sur les autres. Dans chaque parcelle, le dénombrement de toutes les espèces forestières a été enregistré (seuls les individus avec un DHP > 10 cm [Diamètre mesuré à plus ou moins 1,3m] sont disponibles dans cet ensemble de données) et plusieurs variables environnementales ont égamelement été mesurées. Au total, ils ont observé 225 espèces différentes.
+Une surface permanente de 50 hectares a été définie par l'Institut de recherche tropicale Smithsonian et l'Université de Princeton pour étudier la dynamique de la végétation. Cette surface est divisée en 50 parcelles de 1 ha, qui s'alignent les unes sur les autres. Dans chaque parcelle, le dénombrement de toutes les espèces forestières a été enregistré (seuls les plantes avec un DHP >= 10 cm [Diamètre mesuré à plus ou moins 1,3m] sont disponibles dans cet ensemble de données) et plusieurs variables environnementales ont également été mesurées. Au total, 225 espèces différentes ont été observées.
 
 ![Foret tropicale de l'ile de Barro Colorado](images/bci_forest.jpg) 
 
-Les données provenant du package `vegan` se trouve dans `bci` et se présente comme ceci (seules les 6 premières lignes sont imprimées) :
+Les données peuvent être chargées à partir de `"BCI"` dans le package {vegan} et se présentent comme ceci\ :
 
-```{r, echo = TRUE}
-
-head(bci)
+```{r, echo=TRUE}
+bci <- read("BCI", package = "vegan")
+bci
 ```
 
-### Matrice de distance
+Toutes les variables du tableau représentent des espèces (il n'y a pas ici une variable qui spécifie la station, par exemple). Elles sont donc toutes utilisables pour notre analyse.
 
-Lors de la réalisation d'une MDS, la première étape nécessite de construire une matrice de distances entre les stations comme vous l'aviez fait lors de la CAH. Pour cela, nous utiliserons la fonction `dissimilarity()` que vous connaissez déjà. Rappelez-vous que vous devrez commencer par sélectionner une méthode adaptée à vrotre jeu de données pour calculer votre matrice. Pour rappel, vous explorez l'aide en ligne de `?vegan::vegdist` pour déterminer les arguments à utiliser dans `dissimilarity()`.
+<!-- TODO: il manque une partie description des données et éventuellement une transformation, cf espèces rares, mais le graphique boxplot parallèle est inutilisable avec 225 espèces!!! -->
 
-A partir du jeu de données `bci`, calculez la matrice de distances entre stations en utilisant l'indice de Bray-Curtis et `dissimilarity()`,
+## Matrice de distance
+
+Lors de la réalisation d'une MDS, la première étape nécessite de construire une matrice de distances entre les stations ou entre les espèces comme vous l'aviez fait lors de la CAH. Pour cela, nous utiliserons la fonction `dissimilarity()` que vous connaissez déjà. Rappelez-vous que vous devrez commencer par sélectionner une métrique adaptée à votre jeu de données pour calculer votre matrice. Pour rappel, vous explorez l'aide en ligne de `?vegan::vegdist` pour déterminer les arguments à utiliser dans `dissimilarity()`.
+
+A partir du jeu de données `bci`, calculez la matrice de distances entre stations en utilisant l'indice de Bray-Curtis sans transformation des données afin de privilégier les espèces les plus abondantes dans votre analyse (choix au départ).
 
 ```{r dist_h2, exercise=TRUE}
 bci_dist <- ___(___, ___)
@@ -334,16 +356,12 @@ bci_dist <- dissimilarity(bci, method = "bray")
 ```
 
 ```{r dist_h2-check}
-grade_code("Parfait ! Vous n'avez pas oublié comment l'on fait pour calculer une matrice de distances avec la fonction `dissimilatity()`.")
+grade_code("Vous n'avez pas oublié comment l'on fait pour calculer une matrice de distances avec la fonction dissimilatity(). C'est maintenant que cela devient intéressant.")
 ```
 
 ### Analyse en coordonnées principales (ou MDS métrique)
 
-Afin de simplifier la réalisation des mds, différentes fonctions sont mises à votre disposition dans ce learnr . 
-
-Lorsque votre matrice de distance est calculée, vous allez pouvoir visualier son contenu en réalisant une MDS métrique ou analyse en coordonnées principales (PCoA). L'objectif est de *"projetter"* le nuage de points à *p* dimensions dans un espace réduit à 2 dimensions, un peu comme pour une ombre chinoise où vous projettez un objet tridimensionnel sur une surface à deux dimensions. Afin de calculer votre MDS métrique vous utilisez la fonction `mds$metric()`. Vous aurez à lui renseigner une matrice de distance. 
-
-Vous avez à disposition la matrice de distance `bci_dist` sur laquelle vous allez réaliser votre PCoA. Utilisez ensuite la fonction `autoplot()` pour réaliser la carte permettant de visualiser les distances entre les stations. 
+Lorsque votre matrice de distance `bci_dist` est calculée, vous allez pouvoir visualiser son contenu en réalisant une MDS métrique ou analyse en coordonnées principales (PCoA). L'objectif est de *"projeter"* le nuage de points initial à *p* dimensions (les *p* variables) dans un espace réduit à deux dimensions. Afin de calculer votre MDS métrique vous utilisez la fonction `mds$metric()` et `chart()` permet de visualiser votre ordination en deux dimensions (nommez simplement vos stations de 1 à 50 dans l'ordre d'apparition dans le tableau).
 
 ```{r metric_prep}
 bci_dist <- dissimilarity(bci, method = "bray")
@@ -351,30 +369,28 @@ bci_dist <- dissimilarity(bci, method = "bray")
 
 ```{r metric_h2, exercise=TRUE, exercise.setup="metric_prep"}
 bci_mds <- ___(___)
-___(___)
+___(___, labels = 1:50)
 ```
 
 ```{r metric_h2-hint-1}
 bci_mds <- ___$___(bci_dist)
-___(bci_mds)
+___(bci_mds, labels = 1:50)
 
 #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r metric_h2-solution}
 bci_mds <- mds$metric(bci_dist)
-autoplot(bci_mds)
+chart(bci_mds, labels = 1:50)
 ```
 
 ```{r metric_h2-check}
-grade_code("Félicitation ! Vous venez de réaliser votre première mds métrique. Sur ce graphique, les stations qui sont proches les unes des autres ont un indice de dissimilarité faible. Les espèces forestières présentes devraient donc être semblables. Par contre, plus elles sont éloignées, plus leur indice de dissimilarité est élevé. Notez bien que ni l’orientation des axes, ni les valeurs absolues sur ces axes n’ont de significations particulières. Sur ce graphique, vous pouvez voir qu'un petit groupe d'une douzaine de parcelle forme un petit groupe plus ou moins homogène à gauche du graphique.") 
+grade_code("Vous venez de réaliser votre première MDS métrique. Sur ce graphique, les stations qui sont proches les unes des autres ont un indice de dissimilarité faible et se ressemblent du point de vue de la composition en végétaux. Notez bien que ni l’orientation des axes, ni les valeurs absolues sur ces axes n’ont de significations particulières. Sur ce graphique, vous pouvez voir qu'un petit groupe d'une douzaine de parcelles se détache à gauche du graphique. Un autre groupe s'individualise dans le bas... mais avant d'interpréter, nous devons vérifier le GOF pour déterminer si la représentation reste suffisamment fidèle à la réalité.") 
 ```
 
 ### “Goodness-of-fit”
 
-Lorsque vous projettez votre MDS métrique en deux dimensions, rien ne garantit que celle-ci soit bien représentative des données dans leur ensemble. Assurez-vous de toujours contrôler les indicateurs de "Goodness-of-fit" (GOF) qui vous donneront une idée de la qualité d'ajustement. Pour les obtenir, vous devez utiliser la fonction `glance()` en lui renseignant votre objet MDS. 
-
-Analyser les indicateurs de l'objet `bci_mds` que vous venez de créer et répondez à la question ci-desssous. 
+Vérifiez toujours les indicateurs de "Goodness-of-fit" (GOF anvec `glance()`) qui vous donneront une idée de la qualité de la projection MDS.
 
 ```{r gof_prep}
 bci_dist <- dissimilarity(bci, method = "bray")
@@ -396,29 +412,26 @@ glance(bci_mds)
 ```
 
 ```{r gof_h2-check}
-grade_code("Bon travail! Tentez maintenant de répondre à la question qui vous est proposée ci-dessous.") 
+grade_code("Tentez maintenant de répondre à la question qui vous est proposée ci-dessous.") 
 ```
 
 ```{r qu_mds}
 question("Considérez vous que cette PCoA est une bonne PCoA ?",
-           answer("oui, sur base des valeurs de goodness-of-fit, 
-                   nous pouvons observer que le PCoA exprime une 
-                   grande part de la variance"),
-           answer("non, sur base des valeurs de goodness-of-fit, 
-                   nous pouvons observer que le PCoA n'exprime pas 
-                   une grande part de la variance. Il est préférable 
-                   de réaliser une MDS non métrique.", 
-                  correct = TRUE),
-          allow_retry = TRUE,
-         correct = "Bravo, vous avez trouvé la bonne réponse. L'indicateur GOF1 correspond à la somme des valeurs propres obtenues lors du calcul et donne une mesure de la part de variance du jeu de données initial qui a pu être représentée. L'indicateur GOF2 quant à lui correspond à la somme des valeurs propres positives uniquement. Dans notre cas, les valeurs de GOF ne sont pas très élevées, on peut donc considérer que la carte n'est pas très représentative.",
-         incorrect = "Retentez votre chance. Plus la valeur se rapproche de 1, mieux ce sera. Mais des valeur supérieur à 0.7 ou 0.8 sont déjà acceptables.")
+  answer("oui, sur base du goodness-of-fit, la PCoA est fidèle aux distances"),
+  answer("non, le goodness-of-fit est trop faible, nous devons tenter une MDS non métrique", 
+  correct = TRUE),
+  allow_retry = TRUE,
+  correct = "Ces valeurs sont trop faibles. L'indicateur GOF1 donne une mesure de la part de variance du jeu de données initial qui a pu être représentée. L'indicateur GOF2 quant à lui correspond à la somme des valeurs propres positives uniquement. Dans notre cas, les valeurs de GOF ne sont pas très élevées, nous devons donc considérer que la carte n'est pas très représentative.",
+  incorrect = "Corrigez votre réponse. Plus la valeur se rapproche de 1, mieux ce sera. Des valeurs inférieures à 0.7 sont déjà limites.")
 ```
 
-### MDS non métrique
+## MDS non métrique
 
-Tout comme la MDS métrique, la MDS non métrique utilise une matrice de distance pour réaliser une carte mais en autorisant des écarts entre les individus plus flexibles. On pourra donc forcer une dissimilarité donnée à être “compressée”, tant que l’ordre des points est gardé intact dans la distorsion (on ne peut pas avoir une dissimilarité plus grande être représentée par une distance plus petite sur la carte). Cette distorsion introduite est appelée un stress. Pour pouvoir la calculer vous utiliserez cette fois la fonction `mds$nonmetric()`. Le calcul réalisé est itératif, et comme il n'est pas garanti de converger, vous vérifierez qu'une solution à bien été trouvée (indication `*** Solution reached` à la fin). Pour les détails et les paramètres de cet algorithme, référez-vous à l’aide en ligne de la fonction `?vegan::metaMDS`.
+Tout comme la MDS métrique, la MDS non métrique, obtenue grâce à `mds$nonmetric()`, utilise une matrice de distances pour réaliser une carte mais en autorisant des écarts entre les individus plus flexibles. On pourra donc forcer la carte à être littéralement écrasée, tant que l’ordre des points est gardé intact dans la distorsion (une dissimilarité plus grande ne peut pas être représentée par une distance plus petite sur la carte). Cette distorsion est appelée un stress.
 
-Vous avez toujours à disposition la matrice de distance `bci_dist` sur laquelle vous allez réaliser votre MDS non métrique. Utilisez ensuite la fonction `autoplot()` pour réaliser la carte permettant de visualiser les distances entre les stations. 
+Le calcul réalisé est itératif, et comme il n'est pas garanti de converger, vous vérifierez qu'une solution à bien été trouvée (indication `*** Solution reached` à la fin). Pour les détails et les paramètres de cet algorithme, référez-vous à l’aide en ligne de la fonction `?vegan::metaMDS`.
+
+Vous avez toujours à disposition la matrice de distance `bci_dist` sur laquelle vous allez réaliser votre MDS non métrique. Utilisez ensuite `chart()` pour réaliser la carte permettant de visualiser les distances entre les stations (que vous numérotez de 1 à 50 dans l'ordre d'apparition). 
 
 ```{r nonmetric_prep}
 bci_dist <- dissimilarity(bci, method = "bray")
@@ -426,28 +439,28 @@ bci_dist <- dissimilarity(bci, method = "bray")
 
 ```{r nonmetric_h2, exercise=TRUE, exercise.setup="nonmetric_prep"}
 bci_nmds <- ___(___)
-___(___)
+___(___, labels = 1:50)
 ```
 
 ```{r nonmetric_h2-hint-1}
 bci_nmds <- ___$___(bci_dist)
-___(bci_nmds)
+___(bci_nmds, labels = 1:50)
 
 #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r nonmetric_h2-solution}
 bci_nmds <- mds$nonmetric(bci_dist)
-autoplot(bci_nmds, labels = 1:50)
+chart(bci_nmds, labels = 1:50)
 ```
 
 ```{r nonmetric_h2-check}
-grade_code("Félicitation ! La représentation que nous obtenons est assez différente de celle de la MDS métrique. On retrouve deux groupes plus ou moins séparés à gauche et au centre du graphique et puis 2 stations isolées vers la droite et le haut du graphique.") 
+grade_code("La représentation que nous obtenons est assez différente de celle de la MDS métrique. On retrouve deux groupes plus ou moins séparés à gauche et au centre du graphique et puis deux stations isolées vers la droite et le haut du graphique.") 
 ```
 
 ### Qualité de l'ajustement
 
-La MDS non métrique a aussi des indicateurs permettant d'évaluer d'une part la qualité de l'ajustement et d'autre part la fonction de stress appliquée. Comme pour la PCoA, vous pouvez les obtenir, en utilisant la fonction `glance()` appliquée à votre objet MDS. 
+La MDS non métrique est assortie d'indicateurs permettant d'évaluer d'une part la qualité de l'ajustement et d'autre part la fonction de stress appliquée. Comme pour la PCoA, vous pouvez utiliser la fonction `glance()` pour obtenir une mesure de l'ajustement global de la MDS. 
 
 Analyser les indicateurs de l'objet `bci_nmds` que vous venez de créer et répondez à la question ci-dessous. 
 
@@ -471,36 +484,35 @@ glance(bci_nmds)
 ```
 
 ```{r ajust_h2-check}
-grade_code("Très bien. Tentez maintenant de répondre à la question ci-dessous.") 
+grade_code("Analysez maintenat ces mesures et répondez à la question ci-dessous.") 
 ```
 
 ```{r qu_nmds}
-question("Considérez vous que cette MDS non métrique est une 
-          MDS non métrique de qualité?",
-           answer("oui, sur base de la valeur du R^2 linéaire élevée, 
+question("Considérez vous que cette MDS non métrique est de qualité ?",
+  answer("oui, sur base de la valeur du R^2 linéaire élevée, 
                    nous pouvons considérer que la MDS non métrique 
                    exprime une grande part de la variance"),
-           answer("oui, sur base des valeurs de R^2 linéaire basse et de R^2
+  answer("oui, sur base des valeurs de R^2 linéaire basse et de R^2
                    non métrique élevée, nous pouvons considérer que la
                    MDS non métrique est de qualité"),
-          answer("oui, sur base de la valeur du R^2 non métrique élevée,
+  answer("oui, sur base de la valeur du R^2 non métrique élevée,
                   nous pouvons considérer que la MDS non métrique 
                   est de qualité", correct = TRUE),
-           answer("non, sur base des valeurs R^2 linéaire et de R^2
+  answer("non, sur base des valeurs R^2 linéaire et de R^2
                    non métrique élevées, nous pouvons considérer 
                    que la MDS non métrique n'est pas optimale."),
-          allow_retry = TRUE,
-         correct = "Bravo, vous avez trouvé la bonne réponse. L'indicateur R2 linéaire correspond au coefficient de corrélation linéaire de Pearson entre les distances ajustées et les distances sur la carte au carré. Il permet d'évaluer de combien les distances sont distordues. Au plus on est proche de 1, au moins la distortion est forte. Avec la valeur de 0.86 que l'on observe, notre distortion n'est pas trop forte. L'indicateur R2 non métrique indique si l’ordre des points respecte l’ordre des distances partout sur le graphique. Plus vous serez proche de 1, plus cet ordre sera respecté. La valeur de 0.97 que l'on observe ici est vraiment très bonne.",
-         incorrect = "Retentez votre chance. Plus la valeur se rapproche de 1, mieux ce sera.")
+  allow_retry = TRUE,
+  correct = "Bravo, vous avez trouvé la bonne réponse. L'indicateur R2 linéaire correspond au coefficient de corrélation linéaire de Pearson entre les distances ajustées et les distances sur la carte au carré. Il permet d'évaluer de combien les distances sont distordues. Au plus on est proche de 1, au moins la distortion est forte. Avec la valeur de 0.86 que l'on observe, notre distortion n'est pas trop forte. L'indicateur R2 non métrique indique si l’ordre des points respecte l’ordre des distances partout sur le graphique. Plus vous serez proche de 1, plus cet ordre sera respecté. La valeur de 0.97 que l'on observe ici est vraiment très bonne.",
+  incorrect = "Retentez votre chance. Plus la valeur se rapproche de 1, mieux ce sera.")
 ```
 
 ### Diagramme de Shepard
 
-Une manière simple de visualiser la distortion introduite pour la réalisation de la carte à deux dimensions est d'utiliser le diagramme de Shepard. Vous pouvez le réaliser facilement en utilisant la fonction `shepard()` et en lui renseignant dans d'une part la matrice de distance de départ et ensuite votre objet nmds. Utiliser ensuite la fonction `autoplot()` pour le visualiser.
+Le diagramme de Shepard (fonction `shepard()` pour le calculer puis `chart()` pour l'afficher) visualise la distorsion introduite par notre MDS non métrique. Une différence importante entre le R^2^ linéaire et le R^2^ non linéaire est une première indication d'un stress important. La fonction `shepard()` demande d'une part la matrice de distance de départ et d'autre part, l'objet nmds pour pouvoir réaliser le calcul.
 
-Le graphique que vous obtiendrez réprésentera les valeurs de dissimilarité de la matrice de distances sur l'axe des abscisses et les distances de l’ordination sur l’axe des ordonnées. Le trait en escalier rouge matérialise la fonction monotone croissante utilisée pour distordre les distances. Il correspond donc à votre fonction de stress.
+Sur le diagramme des dissimilarités de la matrice *versus* distances sur la carte, le trait rouge matérialise la fonction de stress. Plus les points sont proches de ce trait, mieux c'est en mode non linéaire. De plus, si ce trait se rapproche d'une droite, alors la linéarité est d'autant mieux respectée également. C'est donc une analyse en deux étapes que l'on fait ici par observation du diagramme\ : d'abord, une fidélité pour des distances similaires, ert en secodn lieu comme bonus éventuellement, un respect des distances relatives les unes par rapprot aux autres.
 
-Réaliser le graphique de shepard sur la MDS non metrique que vous venez de calculer. Vous avez à dispositon l'objet `bci_nmds` et la matrice de distance `bci_dist`. 
+Réaliser le diagramme de Shepard pour votre MDS non métrique.
 
 ```{r shepard_prep}
 bci_dist <- dissimilarity(bci, method = "bray")
@@ -521,16 +533,16 @@ ___(bci_sh)
 
 ```{r shepard_h2-solution}
 bci_sh <- shepard(bci_dist, bci_nmds)
-autoplot(bci_sh)
+chart(bci_sh)
 ```
 
 ```{r shepard_h2-check}
-grade_code("Comme vous le voyez, les points sont relativement proches de la fonction de stress utilisée. Et plus ils seront proches, mieux ce sera. De plus, au plus les points seront proches de cette fonction de stress, plus votre R2 non métrique sera élevé.") 
+grade_code("Comme vous le voyez, les points sont relativement proches de la fonction de stress. Et plus ils seront proches, mieux ce sera. Par contre la forme de la fonction de stress n'est pas très linaire. Nous pouvions nous y attendre, car si cela avait été le cas, la MDS métrique aurait aussi bien fonctionné sur ces données.") 
 ```
 
 ## Conclusion
 
-Félicitation ! Vous venez de terminer votre auto-évaluation relative au ositionnement multidimensionnel. Vous maitrisez maintenant les fonctions nécessaire pour la réalisation ce type d'analyse. 
+Félicitation ! Vous venez de terminer votre auto-évaluation relative au positionnement multidimensionnel. Vous maîtrisez maintenant les notions et fonctions nécessaires pour la réalisation ce type d'analyse. 
 
 ```{r comm_noscore, echo=FALSE}
 question_text(
