@@ -1,0 +1,338 @@
+---
+title: "Analyse en composantes principales"
+author: "Guyliann Engels & Philippe Grosjean"
+description: "**SDD II Module 7** : Analyse en Composantes Principales (ACP)"
+tutorial:
+  id: "B07La_pca"
+  version: 0.0.9999/___
+output: 
+  learnr::tutorial:
+    progressive: true
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+BioDataScience2::learnr_setup()
+# Package utile
+SciViews::R()
+# Preparation of the dataset ------
+penguins <- read("penguins", package = "palmerpenguins", lang = "fr")
+
+# Functions utiles 
+# pca for SciViews, version 1.0.0
+# Copyright (c) 2020, Philippe Grosjean (phgrosjean@sciviews.org)
+library(broom)
+
+# broom implements only methods for prcomp objects, not princomp, while pcomp
+# is compatible with princomp... but prcomp is simpler. So, conversion is easy
+as.prcomp <- function(x, ...)
+  UseMethod("as.prcomp")
+
+as.prcomp.default <- function(x, ...)
+  stop("No method to convert this object into a 'prcomp'")
+
+as.prcomp.prcomp <- function(x, ...)
+  x
+
+as.prcomp.princomp <- function(x, ...)
+  structure(list(sdev = as.numeric(x$sdev), rotation = unclass(x$loadings),
+    center = x$center, scale = x$scale, x = as.matrix(x$scores)),
+    class = "prcomp")
+
+# Comparison of pcomp() -> as.prcomp() with prcomp() directly
+# Almost the same, only no rownames for x (is it important?)
+#iris_prcomp_pcomp <- as.prcomp(pcomp(iris[, -5], scale = TRUE))
+#iris_prcomp <- prcomp(iris[, -5], scale = TRUE)
+
+# Now, broom methods can be defined simply by converting into prcomp objects
+augment.princomp <- function(x, data = NULL, newdata, ...)
+  if (missing(newdata)) {
+  augment(as.prcomp(x), data = data, ...)
+  } else {
+    augment(as.prcomp(x), data = data, newdata = newdata, ...)
+  }
+
+tidy.princomp <- function(x, matrix = "u", ...)
+  tidy(as.prcomp(x), matrix = matrix, ...)
+
+# There is no glance.prcomp() method
+
+# There is a problem with pcomp() that returns a data.frame in scores,
+# while it is a matrix in the original princomp object. pca() corrects this
+pca <- function(x, ...) {
+  res <- SciViews::pcomp(x, ...)
+  # Change scores into a matrix
+  res$scores <- as.matrix(res$scores)
+  res
+}
+
+scale_axes <- function(data, aspect.ratio = 1) {
+  range_x <- range(data[, 1])
+  span_x <- abs(max(range_x) - min(range_x))
+  range_y <- range(data[, 2])
+  span_y <- abs(max(range_y) - min(range_y))
+  if ((span_y / aspect.ratio) > span_x) {
+    # Adjust range_x
+    span_x_2 <- span_y / aspect.ratio / 2
+    range_x_mid <- sum(range_x) / 2
+    range_x <- c(range_x_mid - span_x_2, range_x_mid + span_x_2)
+  } else {
+    # Adjust range_y
+    span_y_2 <- span_x * aspect.ratio / 2
+    range_y_mid <- sum(range_y) / 2
+    range_y <- c(range_y_mid - span_y_2, range_y_mid + span_y_2)
+  }
+  list(x = range_x, y = range_y)
+}
+
+autoplot.pcomp <- function(object,
+type = c("screeplot", "altscreeplot", "loadings", "correlations", "scores", "biplot"),
+choices = 1L:2L, name = deparse(substitute(object)), ar.length = 0.1,
+circle.col = "gray", col = "black", fill = "gray", scale = 1, aspect.ratio = 1,
+repel = FALSE, labels, title, xlab, ylab, ...) {
+  type = match.arg(type)
+
+  if (missing(title))
+    title <- paste(name, type, sep = " - ")
+
+  contribs <- paste0(names(object$sdev), " (",
+    round((object$sdev^2/object$totdev^2) * 100, digits = 1), "%)")[choices]
+
+  scores <- as.data.frame(object$scores[, choices])
+  names(scores) <- c("x", "y")
+  if (!missing(labels)) {
+    if (length(labels) != nrow(scores))
+      stop("You must provide a character vector of length ", nrow(scores),
+        " for 'labels'")
+    scores$labels <- labels
+  } else {# Default labels are row numbers
+    scores$labels <- 1:nrow(scores)
+  }
+
+  lims <- scale_axes(scores, aspect.ratio = aspect.ratio)
+
+  if (!missing(col)) {
+    if (length(col) != nrow(scores))
+      stop("You must provide a vector of length ", nrow(scores), " for 'col'")
+    scores$color <- col
+    scores_formula <- y ~ x %col=% color %label=% labels
+  } else {
+    if (missing(labels)) {
+      scores_formula <- y ~ x %label=% labels
+    } else {
+      scores_formula <- y ~ x %col=% labels %label=% labels
+    }
+  }
+
+  res <- switch(type,
+    screeplot = object %>.% # Classical screeplot
+      tidy(., "pcs") %>.%
+      chart(data = ., std.dev^2 ~ PC) +
+      geom_col(col = col, fill = fill) +
+      labs(y = "Variances", title = title),
+
+    altscreeplot = object %>.% # screeplot represented by dots and lines
+      tidy(., "pcs") %>.%
+      chart(data = ., std.dev^2 ~ PC) +
+      geom_line(col = col) +
+      geom_point(col = "white", fill = col, size = 2, shape = 21, stroke = 3) +
+      labs(y = "Variances", title = title),
+
+    loadings = object %>.% # Plots of the variables
+      tidy(., "variables") %>.%
+      spread(., key = PC, value = value) %>.%
+      #rename_if(., is.numeric, function(x) paste0("PC", x)) %>.%
+      select(., c(1, choices + 1)) %>.%
+      set_names(., c("labels", "x", "y")) %>.%
+      chart(data = ., y ~ x %xend=% 0 %yend=% 0 %label=% labels) +
+        annotate("path", col = circle.col,
+          x = cos(seq(0, 2*pi, length.out = 100)),
+          y = sin(seq(0, 2*pi, length.out = 100))) +
+        geom_hline(yintercept = 0, col = circle.col) +
+        geom_vline(xintercept = 0, col = circle.col) +
+        geom_segment(arrow = arrow(length = unit(ar.length, "inches"),
+          ends = "first")) +
+        ggrepel::geom_text_repel(hjust = "outward", vjust = "outward") +
+        coord_fixed(ratio = 1) +
+        labs(x = contribs[1], y = contribs[2], title = title),
+
+    correlations = object %>.% # Correlations plot
+      Correlation(.) %>.%
+      as_tibble(., rownames = "labels") %>.%
+      select(., c(1, choices + 1)) %>.%
+      set_names(., c("labels", "x", "y")) %>.%
+      chart(data = ., y ~ x %xend=% 0 %yend=% 0 %label=% labels) +
+      annotate("path", col = circle.col,
+        x = cos(seq(0, 2*pi, length.out = 100)),
+        y = sin(seq(0, 2*pi, length.out = 100))) +
+      geom_hline(yintercept = 0, col = circle.col) +
+      geom_vline(xintercept = 0, col = circle.col) +
+      geom_segment(arrow = arrow(length = unit(ar.length, "inches"),
+        ends = "first")) +
+      ggrepel::geom_text_repel(hjust = "outward", vjust = "outward") +
+      coord_fixed(ratio = 1) +
+      labs(x = contribs[1], y = contribs[2], title = title),
+
+    scores = scores %>.% # Plot of the individuals
+      chart(data = ., scores_formula) +
+      geom_hline(yintercept = 0, col = circle.col) +
+      geom_vline(xintercept = 0, col = circle.col) +
+      coord_fixed(ratio = 1, xlim = lims$x, ylim = lims$y, expand = TRUE) +
+      labs(x = contribs[1], y = contribs[2], title = title) +
+      theme(legend.position = "none"),
+
+    biplot = object %>.% # Biplot using ggfortify function
+      as.prcomp(.) %>.%
+      ggfortify:::autoplot.prcomp(., x = choices[1], y = choices[2],
+        scale = scale, size = -1, label = TRUE, loadings = TRUE,
+        loadings.label = TRUE) +
+      geom_hline(yintercept = 0, col = circle.col) +
+      geom_vline(xintercept = 0, col = circle.col) +
+      theme_sciviews() +
+      labs(x = contribs[1], y = contribs[2], title = title),
+
+    stop("Unrecognized type, must be 'screeplot', 'altscreeplot', loadings', 'correlations', 'scores' or 'biplot'")
+  )
+
+  if (type == "scores") {
+    if (isTRUE(repel)) {
+      res <- res + geom_point() + ggrepel::geom_text_repel()
+    } else {# Use text
+      res <- res + geom_text()
+    }
+  }
+
+  if (!missing(xlab))
+    res <- res + xlab(xlab)
+  if (!missing(ylab))
+    res <- res + ylab(ylab)
+  res
+}
+
+chart.pcomp <- function(data, choices = 1L:2L, name = deparse(substitute(data)),
+..., type = NULL, env = parent.frame())
+  autoplot.pcomp(data, choices = choices, name = name, ..., type = type, env = env)
+class(chart.pcomp) <- c("function", "subsettable_type")
+
+
+```
+
+```{r, echo=FALSE}
+BioDataScience2::learnr_banner()
+```
+
+```{r, context="server"}
+BioDataScience2::learnr_server(input, output, session)
+```
+
+----
+
+## Objectif 
+
+L'Analyse en Composantes Principales (ACP) est une méthode des statistiques exploratoires très utilisée dans le domaine de la biologie et de l'écologie. Il est donc primordial de comprendre cette analyse. 
+
+Le tutoriel learnr sur l'analyse en composantes principales que vous vous apprêtez à réaliser vous permettra de\ : 
+
+- ___
+
+Avant toute chose, assurez vous d'avoir bien compris le contenu du [module 7](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/acp-afc.html) du cours et en particulier la [section 7.1](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/analyse-en-composantes-principales.html).
+
+##  Manchôts de l'Antarctique
+
+```{r}
+penguins <- read("penguins", package = "palmerpenguins") # importation des données
+skimr::skim(penguins)
+```
+
+```{r}
+naniar::vis_miss(penguins) # Visualisation des données
+penguins <- drop_na(penguins) # Eliminer les lignes vides
+```
+
+```{r corplot_h2, exercise=TRUE}
+peng_corr <- ___(penguins[___:___])
+plot(___)
+```
+
+```{r corplot_h2-hint-1}
+peng_corr <- correlation(penguins[___:___])
+plot(peng_corr)
+
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r corplot_h2-solution}
+peng_corr <- correlation(penguins[3:6])
+plot(peng_corr)
+```
+
+```{r corplot_h2-check}
+grade_code("Ce graphique est très intéressant pour visualiser les corrélations entre les différentes variables numériques. Par défaut, la fonction utilise la méthode de Pearson qui met en avant les corrélations linéaires.") 
+```
+
+```{r pca_h2, exercise=TRUE}
+___ %>.%
+  ___(., ___:___) %>.%
+  pca(., scale = ___) -> penguins_pca
+summary(penguins_pca)
+```
+
+```{r pca_h2-hint-1}
+___ %>.%
+  select(., ___:___) %>.%
+  pca(., scale = TRUE) -> penguins_pca
+summary(penguins_pca)
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r pca_h2-solution}
+penguins %>.%
+  select(., 3:6) %>.%
+  pca(., scale = TRUE) -> penguins_pca
+summary(penguins_pca)
+```
+
+```{r pca_h2-check}
+grade_code("Ce graphique est très intéressant pour visualiser les corrélations entre les différentes variables numériques. Par défaut, la fonction utilise la méthode de Pearson qui met en avant les corrélations linéaires.") 
+```
+
+```{r variante_quiz}
+question("Quelle est la proportion cumulée de la variance des deux premières composantes principales de cette analyse en composante principale ?",
+  answer("0.686"),
+  answer("0.0922"),
+  answer("0.881", correct = TRUE),
+  allow_retry = TRUE,
+  correct = "C'est exact ! La variance cumulée des deux premiers axes correspond à 0.881. Ces deux premiers axes proposent une bonne part de la variance.",
+  incorrect = "La proportion de la variance et la proportion de la variance cumulée se trouve dans le tableau `Importance of components`."
+  )
+```
+
+```{r, eval=FALSE, echo = TRUE}
+chart$scree(penguins_pca)
+chart$loadings(penguins_pca, choices = c(1, 2))
+chart$scores(penguins_pca, choices = c(1, 2))
+
+chart$scores(peng_pca, choices = c(1, 2), labels = peng$species) +
+  stat_ellipse()
+
+chart$scores(peng_pca, choices = c(2, 3), labels = peng$species) +
+  stat_ellipse()
+```
+
+
+## Interprétation de l'ACP
+
+
+## Conclusion
+
+Vous êtes arrivé à la fin de auto-évaluation relative aux cartes auto-adaptative. Vous avez acquis de nouveaux outils vous permettant l'analyse et l'interprétation d'un jeu de données multivariées. Essayez maintenant d'appliquer ces techniques dans une assignation GitHub.
+
+```{r comm_noscore, echo=FALSE}
+question_text(
+  "Laissez-nous vos impressions sur cet outil pédagogique",
+  answer("", TRUE, message = "Pas de commentaires... C'est bien aussi."),
+  incorrect = "Vos commentaires sont enregistrés.",
+  placeholder = "Entrez vos commentaires ici...",
+  allow_retry = TRUE
+)
+```
