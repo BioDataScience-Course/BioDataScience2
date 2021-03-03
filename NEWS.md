@@ -1,5 +1,9 @@
 # BioDataScience2 News
 
+## Changes in version 2020.8.0
+
+- New tutorial B07La_pca in version 2.
+
 ## Changes in version 2020.7.0
 
 - Tutorial B06Lc_som migrated to version 2.
