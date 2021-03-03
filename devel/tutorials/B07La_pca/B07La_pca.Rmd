@@ -244,9 +244,9 @@ Le tutoriel learnr sur l'analyse en composantes principales que vous vous apprê
 
 Avant toute chose, assurez vous d'avoir bien compris le contenu du [module 7](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/acp-afc.html) du cours et en particulier la [section 7.1](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/analyse-en-composantes-principales.html).
 
-##  Manchôts de l'Antarctique
+##  Manchots de l'Antarctique
 
-Trois espèces de manchots ont été étudié sur en Antarctique entre 2007 et 2009 par le Docteur Kristen Gorman de la base antarctique Palmer. Les manchots ont été étudié sur l'île du Rêve (`Dream`), sur l'île de Torgersen (`Torgersen`) et sur îles Biscoe (`Biscoe`). Les espèces étudiées sont les manchots Papou (*Pygoscelis papua* (Forster, 1781), `Gentoo`),  les manchots Adélie (*Pygoscelis adlidae* (Hombron & Jacquinot, 1841), `Adelie`) et les manchots à jugulaire (Pygoscelis antarcticus (Forster, 1781), `Chinstrap`).
+Trois espèces de manchots ont été étudié en Antarctique entre 2007 et 2009 par le Docteur Kristen Gorman de la base antarctique Palmer. Les manchots ont été étudié sur l'île du Rêve (`Dream`), sur l'île de Torgersen (`Torgersen`) et sur île Biscoe (`Biscoe`). Les espèces étudiées sont les manchots Papou (*Pygoscelis papua* (Forster, 1781), `Gentoo`),  les manchots Adélie (*Pygoscelis adlidae* (Hombron & Jacquinot, 1841), `Adelie`) et les manchots à jugulaire (Pygoscelis antarcticus (Forster, 1781), `Chinstrap`).
 
 
 ```{r}
@@ -254,7 +254,7 @@ penguins <- read("penguins", package = "palmerpenguins") # importation des donn�
 skimr::skim(penguins)
 ```
 
-On dénombre les 3 variables facteurs concernant les espèces étudiées, les îles étudiées et le sexe des individus. On dénombre 4 variables biométriques la longueur du bec (mm), la hauteur du bec (mm), la longueur de la nageoire (mm) et la masse (g). Les années de mesures sont recensées dans la variable `year`.
+On dénombre 3 variables facteurs concernant les espèces étudiées, les îles étudiées et le sexe des individus. On dénombre 4 variables biométriques la longueur du bec (mm), la hauteur du bec (mm), la longueur de la nageoire (mm) et la masse (g). Les années de mesures sont recensées dans la variable `year`.
 
 ```{r}
 naniar::vis_miss(penguins) # Visualisation des données
@@ -265,7 +265,7 @@ Le graphique met en avant les variables qui comprennent des valeurs manquantes. 
 
 ### Matrice de la corrélation de Pearson
 
-Débutez par réaliser un graphique de la matrice de corrélation de Pearson. Vous devez donc sélectionner uniquement les variables numériques. Vous avez donc à disposition le jeu de données `penguins`.
+Débutez par réaliser un graphique de la matrice de corrélation de Pearson. Affichez cette matrice sous la forme d'un graphique. Vous devez donc sélectionner uniquement les variables numériques. Vous avez donc à disposition le jeu de données `penguins`.
 
 ```{r corplot_h2, exercise=TRUE}
 peng_corr <- ___(penguins[___:___])
@@ -324,11 +324,11 @@ grade_code("La fonction summary() sur un objet `pca` permet de prendre connaissa
 
 ```{r variante_quiz}
 question("Quelle est la proportion cumulée de la variance des deux premières composantes principales de cette analyse en composante principale ?",
-  answer("0.686"),
-  answer("0.0922"),
-  answer("0.881", correct = TRUE),
+  answer("0.69"),
+  answer("0.09"),
+  answer("0.88", correct = TRUE),
   allow_retry = TRUE,
-  correct = "C'est exact ! La variance cumulée des deux premiers axes correspond à 0.881. Ces deux premiers axes proposent une bonne part de la variance. La première composante comprend plus de 0.69% de la variance.",
+  correct = "C'est exact ! La variance cumulée des deux premiers axes correspond à 0.88. Ces deux premiers axes proposent une bonne part de la variance. La première composante comprend plus de 0.69% de la variance.",
   incorrect = "La proportion de la variance et la proportion de la variance cumulée se trouve dans le tableau `Importance of components`."
   )
 ```
