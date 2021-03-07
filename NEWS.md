@@ -1,5 +1,9 @@
 # BioDataScience2 News
 
+## Changes in version 2020.8.1
+
+- A bug in learnr that cannot start the B07La_pca tutorial.
+
 ## Changes in version 2020.8.0
 
 - New tutorial B07La_pca in version 2.
