@@ -4,6 +4,8 @@
 
 - New tutorial B07La_pca in version 2.
 
+- Praise sentences in English are eliminated from result outputs of {gradethis}.
+
 ## Changes in version 2020.7.0
 
 - Tutorial B06Lc_som migrated to version 2.
