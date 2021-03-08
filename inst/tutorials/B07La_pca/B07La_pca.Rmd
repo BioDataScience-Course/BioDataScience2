@@ -212,6 +212,16 @@ chart.pcomp <- function(data, choices = 1L:2L, name = deparse(substitute(data)),
   autoplot.pcomp(data, choices = choices, name = name, ..., type = type, env = env)
 class(chart.pcomp) <- c("function", "subsettable_type")
 
+# A hack to get fun$type() working in learnr
+chart <- list(
+  screeplot = function(data, type, ...) chart(data, type = "screeplot", ...),
+  altscreeplot = function(data, type, ...) chart(data, type = "altscreeplot", ...),
+  loadings = function(data, type, ...) chart(data, type = "loadings", ...),
+  correlations = function(data, type, ...) chart(data, type = "correlations", ...),
+  scores = function(data, type, ...) chart(data, type = "scores", ...),
+  biplot = function(data, type, ...) chart(data, type = "biplot", ...)
+)
+
 # Preparation of the dataset ------
 penguins <- read("penguins", package = "palmerpenguins", lang = "fr") %>.%
   drop_na(., bill_length_mm)

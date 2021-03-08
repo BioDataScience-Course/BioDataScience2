@@ -1,8 +1,13 @@
 # BioDataScience2 News
 
+## Changes in version 2020.8.2
+
+- In the B07La_pca tutorial, chart$<type>() does not work properly in specific cases. A work-around is introduced.
+
+
 ## Changes in version 2020.8.1
 
-- A bug in learnr that cannot start the B07La_pca tutorial.
+- In the B07La_pca tutorial, chart$<type>() does not work properly in specific cases. This is an attempt to fix it.
 
 ## Changes in version 2020.8.0
 
