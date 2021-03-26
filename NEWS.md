@@ -1,9 +1,12 @@
 # BioDataScience2 News
 
+## Changes in version 2020.9.0
+
+- A new tutorial B08La_mfa is added.
+
 ## Changes in version 2020.8.2
 
 - In the B07La_pca tutorial, chart$<type>() does not work properly in specific cases. A work-around is introduced.
-
 
 ## Changes in version 2020.8.1
 
