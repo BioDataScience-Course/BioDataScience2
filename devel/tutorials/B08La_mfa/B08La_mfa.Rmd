@@ -214,7 +214,7 @@ BioDataScience2::learnr_server(input, output, session)
 
 ## Objectif 
 
-L'Analyse Factorielle Multiple (AFM) est une méthode statistique exploratoire qui permet de travailler avec plusieurs tableaux de données. Cette méthode permet également de faire le lien entre l'analyse en composantes principales (ACP) et l'Analyse factorielle des correspondances (AFC). La première méthode permet de travailler uniquement sur des variables quantitatives et la seconde uniquement sur des variables qualitatives. L'AFM est capable de traiter les deux types de variables. Cette méthode est par exemple employée en écologie. Sur une station un ensemble de mesures physico-chimiques peuvent être réalisé ainsi qu'un relevé de la faune et/ou de la flore.
+L'Analyse Factorielle Multiple (AFM) est une méthode statistique exploratoire qui permet de travailler avec plusieurs tableaux de données. Cette méthode permet également de faire le lien entre l'analyse en composantes principales (ACP) et l'Analyse factorielle des correspondances (AFC). La première méthode permet de travailler uniquement sur des variables quantitatives et la seconde uniquement sur des variables qualitatives. L'AFM est capable de traiter les deux types de variables. Cette méthode est par exemple employée en écologie. Sur une station un ensemble de mesures physico-chimiques peuvent être réaliseé ainsi qu'un relevé de la faune et/ou de la flore.
 
 Il est donc utile  de comprendre la logique et l'usage de cette analyse. Ce tutoriel vous permettra de\ : 
 
@@ -259,7 +259,7 @@ read("varechem", package = "vegan") %>.%
 head(envir)
 ```
 
-Les scientifiques ont également réalisé un relevé floristique (en excluant *Pinus sylvestris* du relevé). On y observe une couverture en pourcent pour chaque station et 44 espèces étudiées. Ces données sont également disponible depuis `"varespec"` dans le package {vegan}.
+Les scientifiques ont également réalisé un relevé floristique (en excluant *Pinus sylvestris* du relevé). On y observe une couverture en pourcent pour chaque station de chacune des 44 espèces étudiées. Ces données sont également disponible depuis `"varespec"` dans le package {vegan}.
 
 ```{r, echo=TRUE}
 read("varespec", package = "vegan") %>.%
@@ -271,7 +271,7 @@ Les données mise à disposition proviennent de l'étude suivante [Väre, H., Oh
 
 ## Préparation du tableau de données
 
-La première étape consiste dans la réalisation d'un tableau de données unique. Vous allez donc combiner le tableau `envir` avec le tableau `spec` grâce à la colonne similaire entre ces deux tableaux qu'est la variable `station`. Affichez ensuite les premières lignes du tableau `vare` avec la fonction `head()`
+La première étape consiste dans la réalisation d'un tableau de données unique. Vous allez donc combiner le tableau `envir` avec le tableau `spec` grâce à la colonne similaire entre ces deux tableaux qu'est la variable `station`. Affichez ensuite les premières lignes du tableau `vare` avec la fonction `head()`.
 
 ```{r join}
 data.io::read("varechem", package = "vegan") %>.%
@@ -301,7 +301,7 @@ head(vare)
 ```
 
 ```{r join_h2-check}
-grade_code("Maintenant que vous avez assemblé vos deux tableaux, vous allez pouvoir réalsier votre MFA.")
+grade_code("Maintenant que vous avez assemblé vos deux tableaux, vous allez pouvoir réalsier votre MFA. Il reste encore une petite étape avant cela.")
 ```
 
 Ensuite, convertissez la variable `station` en nom de ligne grâce à la fonction `column_to_rownames()`. Les numéros de stations seront utilisés par la suite sur la représentation dans l'espace de vos stations.
@@ -334,27 +334,27 @@ rownames(vare)
 ```
 
 ```{r rowname_h2-check}
-grade_code("Bravo ! Vous venez de convertir la colonne station en nom de lignes. Cette astuce peut être utile dans certain cas. Il y a également la fonction opposée rownames_to_column(). Vous allez pouvoir réalsier votre MFA à présent.")
+grade_code("Bravo ! Vous venez de convertir la colonne station en nom de lignes. Cette astuce peut être utile dans certain cas. Il y a également la fonction opposée rownames_to_column(). Vous être prêt pour réaliser votre AFM à présent.")
 ```
 
-## Réalisation de la MFA
+## Réalisation de la AFM
 
-La MFA peut s'obtenir grâce à la fonction `mfa()`. Cette dernière requiert l'utilisation d'une formule avec une syntaxe un peu particulière. Votre formule commence par un `~` puis elle est composé de bloc qui doit contenir 3 élements 
+L'AFM peut s'obtenir grâce à la fonction `mfa()`. Cette dernière requiert l'utilisation d'une formule avec une syntaxe un peu particulière. Votre formule commence par un `~` puis elle est composé de bloc qui doit contenir 3 élements 
 
 - 1. Le nombre **n** de colonnes constituant le groupe
 - 2. Le type des variables qui composent le groupe. Vous avez 4 possibilités : 
     + **s** : Ce sont des variables quantitatives que l'on souhaite standardiser et les traiter par une ACP.
     + **c** : Ce sont des variables quantitatives que l'on ne souhaite pas standardiser et les traiter par une ACP.
-    + **f** : Ce sont des variables qualitatives associée à des tableaux de contingences.quantitatives que l'on ne souhaite pas standardiser et les traiter par une AFC.
+    + **f** : Ce sont des variables qualitatives associées à des tableaux de contingences qu'on traite par une AFC.
     + **n** : Ce sont des variables qualitatives classiques qu'on traite par une AFC.
 - 3. Le nom de groupe de variable
 
-Le tableau `vare` est composé de 14 variables associées à des mesures physicochimiques et 44 variables lié à des relevés floristiques. Votre formule doit comprendre les éléments suivants : 
+Le tableau `vare` est composé de 14 variables associées à des mesures physicochimiques et 44 variables liées à des relevés floristiques. Votre formule doit comprendre les éléments suivants : 
 
-- Le premier bloc doit se nommer **physico**, être traité par une ACP et les variable doivent être standardisées.
-- Le second bloc doit se nommer **flore**, être traité par une ACP et les variailes ne doivent pas être standardisées.
+- Le premier bloc doit se nommer **physico**, être traité par une ACP et les variables doivent être standardisées.
+- Le second bloc doit se nommer **flore**, être traité par une ACP et les variables ne doivent pas être standardisées.
 
-Réalisez la AFM demandée en utilisant le tableau `vare` puis affichez un résume de l'objet `vare_mfa` avec la fonction `summary()`
+Réalisez l'AFM demandée en utilisant le tableau `vare` puis affichez un résume de l'objet `vare_mfa` avec la fonction `summary()`
 
 ```{r varemfa}
 data.io::read("varechem", package = "vegan") %>.%
@@ -397,7 +397,7 @@ question("Quelle est la proportion de la variance cumulée des deux premiers axe
   answer("58%", correct = TRUE),
   answer("23%"),
   answer("34%"), 
-  correct = "Bien joué ! Les deux premiers axes de l'AFM expriment 58% de la variance. Il serait donc plus intéressant de considérer les 3 premiers axes pour exprimer 68% de la variance.",
+  correct = "Bien joué ! Les deux premiers axes de l'AFM expriment 58% de la variance. Gardez à l'esprit que cette valeur est assez faible. Il serait donc plus intéressant de considérer les 3 premiers axes pour exprimer 68% de la variance.",
   incorrect = "Oups, ce n'est pas la bonne réponse. Afin de trouver la bonne réponse, interessez vous au tableau `Eigenvalues`",
   allow_retry = TRUE
     )
@@ -434,7 +434,7 @@ chart$scree(vare_mfa)
 ```
 
 ```{r scree_h2-check}
-grade_code("Vous venez de réaliser le graphique des éboulis associé à votre AFM. Ce graphique permet de voir la part de variance exprimée par chaque composante principale. Nous voyons bien que le premier axe reprend une très grande part de variance. On observe après un saut pour pour le troisième axe est une diminution progressive de la variance exprmiée sur les axes suivants.")
+grade_code("Vous venez de réaliser le graphique des éboulis associé à votre AFM. Ce graphique permet de voir la part de variance exprimée par chaque composante principale. Nous voyons bien que le premier axe reprend une très grande part de variance. On observe après un saut p pour le troisième axe est une diminution progressive de la variance exprimée sur les axes suivants.")
 ```
 
 ### Représentation des variables
@@ -456,7 +456,7 @@ chart$loadings(vare_mfa, choices = c(1, 2))
 ```
 
 ```{r loadings_h2-check}
-grade_code("Ce graphique  est assez chargé vu qu'il combine les vecteurs du groupe physico et du groupe flore. CE graphique s'analyse comme avec pour une ACP. Ce graphique permet de visualiser l'importance des variables intiales dans le plan de l'AFM sous forme de vecteurs. Il est indispensable pour interpréter le graphique suivant qui répartit les observations dans le même plan. La norme (longueur) du vecteur indique si la variable est bien représentée dans ce plan ou non. Plus la norme du vecteur se rapproche de un, matérialisé par le cercle, mieux c'est. Celles aux normes trop faibles ne sont pas considérées dans l'analyse pour ce plan-là en tous cas. Ensuite, les variables qui pointent dans la même direction sont corrélées positivement. Les variables qui pointent dans le sens opposé sont inversément corrélées (il n'y en a pas ici). Les vecteurs orthogonaux correspondent à des variables non ou très faiblement corrélées entre elles")
+grade_code("Ce graphique  est assez chargé vu qu'il combine les vecteurs du groupe physico et du groupe flore. Ce graphique s'analyse comme pour une ACP. Ce graphique permet de visualiser l'importance des variables intiales dans le plan de l'AFM sous forme de vecteurs. Il est indispensable pour interpréter le graphique suivant qui répartit les observations dans le même plan. La norme (longueur) du vecteur indique si la variable est bien représentée dans ce plan ou non. Plus la norme du vecteur se rapproche de un, matérialisé par le cercle, mieux c'est. Celles aux normes trop faibles ne sont pas considérées dans l'analyse pour ce plan-là en tous cas. Ensuite, les variables qui pointent dans la même direction sont corrélées positivement. Les variables qui pointent dans le sens opposé sont inversément corrélées. Les vecteurs orthogonaux correspondent à des variables non ou très faiblement corrélées entre elles")
 ```
 
 ### Représentation des plans des ACP
@@ -478,7 +478,7 @@ chart$axes(vare_mfa, choices = c(1, 2))
 ```
 
 ```{r axes_h2-check}
-grade_code("Ce graphique est similaire au précédent. Il s'interprète de la même façon. Cependant, on ne s'intéresse plus à la projection de chaque variable initiale mais desaxes des ACP pour chaque groupe de variables. Le premier axes du groupe flore pointe dans la meme direction que  la seconde dimension du groupe physico. Il y a donc un forte corrélation ave ces deux plans. On obtient le même résultat pour le premier axe de physico et du secon axe de flore. Les normes des vecteurs sont proche de 1 pour chacune des ACP. Les deux ACP sont représentées correctement au sein de l'AFM.")
+grade_code("Ce graphique est similaire au précédent. Il s'interprète de la même façon. Cependant, on ne s'intéresse plus à la projection de chaque variable initiale mais des plans des ACP pour chaque groupe de variables. La première dimension du groupe flore pointe dans la meme direction que  la seconde dimension du groupe physico. Il y a donc un forte corrélation entre ces deux plans. On obtient le même résultat pour le premier axe de physico et du second axe de flore. Les normes des vecteurs sont proche de 1 pour chacune des ACP. Les deux ACP sont représentées correctement au sein de l'AFM.")
 ```
 
 ### Représentation des individus
@@ -505,7 +505,7 @@ grade_code("La forme du nuage de points et surtout des sous-groupes sont à rech
 
 ## Interprétation de l'AFM
 
-La représentation des variables ainsi que la représentation de stations sont deux graphiques complémentaires afin d'interpréter l'AFM. Gardez à l'esprit que la part de variance exprimé par les deux premiers axes restent assez faible avec 57%. 
+La représentation des variables ainsi que la représentation de stations sont deux graphiques complémentaires afin d'interpréter l'AFM. Gardez à l'esprit que la part de variance exprimée par les deux premiers axes restent assez faible avec 57%. 
 
 
 ```{r}
