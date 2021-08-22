@@ -1,9 +1,9 @@
-learndown::learndownShinyVersion("0.1.0")
+learnitdown::learnitdownShinyVersion("0.1.0")
 conf <- BioDataScience::config()
 
 library(shiny)
 library(shinyjs)
-library(learndown)
+library(learnitdown)
 library(BioDataScience2)
 library(dplyr)
 library(tidyr)
@@ -396,7 +396,7 @@ score_cah <- function(x, reference = peng_m$species) {
 
 ui <- fluidPage(
   useShinyjs(),
-  learndownShiny("Classification hiérarchique ascendante sur des mesures de manchots d'antarctique."),
+  learnitdownShiny("Classification hiérarchique ascendante sur des mesures de manchots d'antarctique."),
 
   sidebarLayout(
     sidebarPanel(

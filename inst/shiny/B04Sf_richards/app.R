@@ -1,8 +1,8 @@
-learndown::learndownShinyVersion("1.1.0")
+learnitdown::learnitdownShinyVersion("1.1.0")
 conf <- BioDataScience::config()
 
 library(shiny)
-library(learndown)
+library(learnitdown)
 library(BioDataScience2)
 
 asym_init <- 3
@@ -26,7 +26,7 @@ graph <- chart::chart(model_data, y ~ x) +
   ggplot2::ylab("y")
 
 ui <- fluidPage(
-  learndownShiny("Ajustement manuel d'un modèle : modèle de Richards"),
+  learnitdownShiny("Ajustement manuel d'un modèle : modèle de Richards"),
 
   sidebarLayout(
     sidebarPanel(

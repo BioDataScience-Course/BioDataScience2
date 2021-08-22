@@ -1,8 +1,8 @@
-learndown::learndownShinyVersion("1.0.0")
+learnitdown::learnitdownShinyVersion("1.0.0")
 conf <- BioDataScience::config()
 
 library(shiny)
-library(learndown)
+library(learnitdown)
 library(BioDataScience2)
 
 a_init <- -1.5
@@ -19,7 +19,7 @@ model_data <- tibble::tibble(
     rnorm(n = length(x), sd = error_sd))
 
 ui <- fluidPage(
-  learndownShiny("Ajustement manuel d'un modèle : régression linéaire"),
+  learnitdownShiny("Ajustement manuel d'un modèle : régression linéaire"),
 
   sidebarLayout(
     sidebarPanel(

@@ -1,8 +1,8 @@
-learndown::learndownShinyVersion("1.2.0")
+learnitdown::learnitdownShinyVersion("1.2.0")
 conf <- BioDataScience::config()
 
 library(shiny)
-library(learndown)
+library(learnitdown)
 library(BioDataScience2)
 
 b_init <- 8
@@ -24,7 +24,7 @@ graph <- chart::chart(model_data, y ~ x) +
   ggplot2::ylab("y")
 
 ui <- fluidPage(
-  learndownShiny("Ajustement manuel d'un modèle : modèle logistique généralisé"),
+  learnitdownShiny("Ajustement manuel d'un modèle : modèle logistique généralisé"),
 
   sidebarLayout(
     sidebarPanel(
