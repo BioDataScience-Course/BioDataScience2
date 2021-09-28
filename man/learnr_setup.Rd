@@ -27,5 +27,5 @@ environment variables \code{LEARNITDOWN_DEBUG} is not \code{0}).}
 \item{session}{The Shiny session.}
 }
 \description{
-These functions add recording functionalities through the learnitdown approach.
+These functions add recording features through the learnitdown approach.
 }
