@@ -4,7 +4,7 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II Module1** Régression linéaire simple."
 tutorial:
   id: "B01Lb_reglin1"
-  version: 2.1.1/10
+  version: 2.1.2/10
 output: 
   learnr::tutorial:
     progressive: true
@@ -168,7 +168,7 @@ plot(correlation(df[, 2:4], use = "complete.obs", method = "pearson"), type = "u
 ```
 
 ```{r corr3_h3, exercise=TRUE, exercise.lines=2, exercise.setup="correlation-prep"}
-correlation(___[,___:___], use = ___, method = ___)
+___(correlation(___[,___:___], use = ___, method = ___), ___ = ___)
 ```
 
 ```{r corr3_h3-hint-1}
@@ -280,12 +280,12 @@ quiz(
     answer(sprintf("%.2f", lm_result$statistic[2])),
     answer(sprintf("%.2f", lm_param$r.squared[1])),
     allow_retry = TRUE, random_answer_order = TRUE),
-  question(text = "Est ce que la valeur de l'ordonnée à l'origne est significativement différente de zéro ?",
+  question(text = "Est ce que la valeur de l'ordonnée à l'origne est significativement différente de zéro au seuil alpha de 5% ?",
     answer("oui", correct = TRUE),
     answer("non"),
     allow_retry = TRUE),
   question(
-    text = "Est ce que la valeur de la pente est significativement différente de zéro ?",
+    text = "Est ce que la valeur de la pente est significativement différente de zéro au seuil alpha de 5% ?",
     answer("oui", correct = TRUE),
     answer("non"),
     allow_retry = TRUE)

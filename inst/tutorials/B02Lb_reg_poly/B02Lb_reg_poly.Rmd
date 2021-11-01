@@ -137,7 +137,7 @@ quiz(
     answer(sprintf("%.2f", lm_poly_param$r.squared[1])),
     allow_retry = TRUE, random_answer_order = TRUE
     ),
-  question(text = "Quelle est la valeur de **x** ?",
+  question(text = "Quelle est la valeur du paramètre associé à **x** ?",
     answer(sprintf("%.2f", lm_poly_coef$estimate[1])),
     answer(sprintf("%.2f", lm_poly_coef$estimate[2]), correct = TRUE),
     answer(sprintf("%.2f", lm_poly_coef$std.error[1])),
@@ -270,14 +270,14 @@ quiz(
   question(text = "Quelle est la valeur du critère d'Akaike de la régression polynomiale ?",
            answer(sprintf("%.2f", lm_lp_param$AIC), correct = TRUE),
            answer(sprintf("%.2f", lm_lp_param$BIC)),
-           answer(sprintf("%.2f", lm_lp_param$sigma)),
+           answer(sprintf("%.2f", lm_ls_param$AIC)),
            answer(sprintf("%.2f", lm_lp_param$deviance)),
            allow_retry = TRUE, random_answer_order = TRUE
            ),
   question(text = "Quelle est la valeur du critère d'Akaike de la régression linéaire simple ?",
            answer(sprintf("%.2f", lm_ls_param$AIC), correct = TRUE),
            answer(sprintf("%.2f", lm_ls_param$BIC)),
-           answer(sprintf("%.2f", lm_ls_param$sigma)),
+           answer(sprintf("%.2f", lm_lp_param$AIC)),
            answer(sprintf("%.2f", lm_ls_param$deviance)),
            allow_retry = TRUE, random_answer_order = TRUE
            ),

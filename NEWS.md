@@ -1,5 +1,13 @@
 # BioDataScience2 News
 
+## Changes in version 2021.0.2
+
+- Correction of one quiz that had several answers set to `NA` in `B02La_reg_multi`.
+
+## Changes in version 2021.0.1
+
+-   Minor change in the template for an exercise in `B01Lb_reglin1`: it was not clear that `plot(correlation(....))` should be used because the template was just `correlation(....)`. Students had to look at hints to understand that.
+
 ## Changes in version 2021.0.0
 
 -   Start of 2021 series.
