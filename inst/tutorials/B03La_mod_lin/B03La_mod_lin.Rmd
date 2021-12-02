@@ -173,20 +173,22 @@ summary(lm. <- lm(data = ___, ___))
 ```
 
 ```{r mais2_h4-hint-1}
-# chunk
-summary(lm. <- lm(data = DF, FORMULA))
+summary(lm. <- lm(data = DF, VAR1 ~ VAR2___))
 ```
 
 ```{r mais2_h4-hint-2}
-# chunk
-summary(lm. <- lm(data = DF, VAR1 ~ VAR2*VAR3))
-# ou encore
+summary(lm. <- lm(data = DF, VAR1 ~ VAR2 + VAR3))
+# ou
+summary(lm. <- lm(data = DF, VAR1 ~ VAR2 + VAR2:VAR3))
+# ou
 summary(lm. <- lm(data = DF, VAR1 ~ VAR2 + VAR3 + VAR2:VAR3))
 ```
 
 ```{r mais2_h4-hint-3}
-summary(lm. <- lm(data = mais2, value ~ x * area))
+summary(lm. <- lm(data = mais2, value ~ x + area))
 # ou 
+summary(lm. <- lm(data = mais2, value ~ x + x:area))
+# ou
 summary(lm. <- lm(data = mais2, value ~ x + area + x:area))
 
 #### ATTENTION: Hint suivant = solution !####
@@ -269,19 +271,21 @@ summary(lm. <- lm(data = ___, ___))
 ```
 
 ```{r mais3_h4-hint-1}
-# chunk
-summary(lm. <- lm(data = DF, FORMULA))
+summary(lm. <- lm(data = DF, VAR1 ~VAR2___))
 ```
 
 ```{r mais3_h4-hint-2}
-# chunk
-summary(lm. <- lm(data = DF, VAR1 ~ VAR2*VAR3))
-# ou encore
+summary(lm. <- lm(data = DF, VAR1 ~ VAR2 + VAR3))
+# ou
+summary(lm. <- lm(data = DF, VAR1 ~ VAR2 + VAR2:VAR3))
+# ou
 summary(lm. <- lm(data = DF, VAR1 ~ VAR2 + VAR3 + VAR2:VAR3))
 ```
 
 ```{r mais3_h4-hint-3}
-summary(lm. <- lm(data = mais2, value ~ x * area))
+summary(lm. <- lm(data = mais2, value ~ x + area))
+# ou 
+summary(lm. <- lm(data = mais2, value ~ x + x:area))
 # ou 
 summary(lm. <- lm(data = mais2, value ~ x + area + x:area))
 
@@ -293,7 +297,7 @@ summary(lm. <- lm(data = mais3, value ~ x + area))
 ```
 
 ```{r mais3_h4-check}
-grade_code("Continue comme ca. C'est excellent !")
+grade_code("Continue comme cela. C'est excellent !")
 ```
 
 ```{r qu_mais3}
@@ -367,20 +371,15 @@ summary(lm. <- lm(data = ___, ___))
 
 ```{r mais4_h4-hint-1}
 # chunk
-summary(lm. <- lm(data = DF, FORMULA))
+summary(lm. <- lm(data = DF, VAR1 ~ Var2___))
 ```
 
 ```{r mais4_h4-hint-2}
-# chunk
-summary(lm. <- lm(data = DF, VAR1 ~ VAR2*VAR3))
-# ou encore
-summary(lm. <- lm(data = DF, VAR1 ~ VAR2 + VAR3 + VAR2:VAR3))
+summary(lm. <- lm(data = DF, VAR1 ~ VAR2 + VAR2:VAR3 ___))
 ```
 
 ```{r mais4_h4-hint-3}
-summary(lm. <- lm(data = mais2, value ~ x * area))
-# ou 
-summary(lm. <- lm(data = mais2, value ~ x + area + x:area))
+summary(lm. <- lm(data = mais2, value ~ x + x:area___))
 
 #### ATTENTION: Hint suivant = solution !####
 ```
