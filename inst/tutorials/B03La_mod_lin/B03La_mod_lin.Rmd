@@ -92,7 +92,7 @@ summary(lm. <- lm(data = DF, FORMULA))
 
 ```{r mais1_h3-hint-2}
 # chunk
-summary(lm. <- lm(data = DF, VAR1 ~ VAR2*VAR3))
+summary(lm. <- lm(data = DF, VAR1 ~ VAR2 * VAR3))
 
 #### ATTENTION: Hint suivant = solution !####
 ```

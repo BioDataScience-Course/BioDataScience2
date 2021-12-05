@@ -1,5 +1,9 @@
 # BioDataScience2 News
 
+## Changes in version 2021.0.3
+
+- Better hints in B03La_mod_lin.
+
 ## Changes in version 2021.0.2
 
 - Correction of one quiz that had several answers set to `NA` in `B02La_reg_multi`.
