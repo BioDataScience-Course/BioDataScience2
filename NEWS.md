@@ -1,12 +1,16 @@
 # BioDataScience2 News
 
+## Changes in version 2022.0.0
+
+-   New version for the academic year 2022-2023.
+
 ## Changes in version 2021.0.3
 
-- Better hints in B03La_mod_lin.
+-   Better hints in B03La_mod_lin.
 
 ## Changes in version 2021.0.2
 
-- Correction of one quiz that had several answers set to `NA` in `B02La_reg_multi`.
+-   Correction of one quiz that had several answers set to `NA` in `B02La_reg_multi`.
 
 ## Changes in version 2021.0.1
 
