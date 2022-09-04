@@ -25,50 +25,47 @@ BioDataScience2::learnr_banner()
 BioDataScience2::learnr_server(input, output, session)
 ```
 
-----
+------------------------------------------------------------------------
 
 ## Objectifs
 
-- Revoir la corrélation et les indices de Pearson et Spearman
-- Maîtriser la régression linéaire dans R, en particulier la fonction `lm()`.
+-   Revoir la corrélation et les indices de Pearson et Spearman
+-   Maîtriser la régression linéaire dans R, en particulier la fonction `lm()`.
 
-## Corrélation 
+## Corrélation
 
 ```{r correlation-init}
 set.seed(43)
-# duplicated chunk : correlation-init
 min <- 5
 max <- 15
 
-df <- tibble(
-  x = seq(from = min, to = max, by = 0.25),
-  y = x*2 + rnorm(sd= 0.5, n = length(x)),
-  z = 2^x + rnorm(sd= 50, n = length(x)),
-  a = sin(x) + rnorm(sd = 0.25,  n = length(x)),
+df <- dtx(
+  x  = seq(from = min, to = max, by = 0.25),
+  y  = x*2 + rnorm(length(x), sd = 0.5),
+  z  = 2^x + rnorm(length(x), sd = 50),
+  a  = sin(x) + rnorm(length(x), sd = 0.25),
   id = paste0("A", 1:length(x))
 )
 ```
 
-Vous avez à disposition le jeu de données `df` qui comprend les `r length(names(df))` variables suivantes\ : `r names(df)`. 
+Vous avez à disposition le jeu de données `df` qui comprend les `r length(names(df))` variables suivantes : `r names(df)`.
 
 ```{r}
 summary(df)
 ```
 
-
-- Réalisez une matrice de corrélation avec l'indice de Pearson.
+-   Réalisez une matrice de corrélation avec l'indice de Pearson.
 
 ```{r correlation-prep}
 set.seed(43)
-# duplicated chunk : correlation-init
 min <- 5
 max <- 15
 
-df <- tibble(
-  x = seq(from = min, to = max, by = 0.25),
-  y = x*2 + rnorm(sd= 0.5, n = length(x)),
-  z = 2^x + rnorm(sd= 50, n = length(x)),
-  a = sin(x) + rnorm(sd = 0.25,  n = length(x)),
+df <- dtx(
+  x  = seq(from = min, to = max, by = 0.25),
+  y  = x*2 + rnorm(length(x), sd = 0.5),
+  z  = 2^x + rnorm(length(x), sd = 50),
+  a  = sin(x) + rnorm(length(x), sd = 0.25),
   id = paste0("A", 1:length(x))
 )
 
@@ -117,7 +114,7 @@ question("Quelles sont les combinaisons de variables les plus corrélées ?",
   allow_retry = TRUE, random_answer_order = TRUE)
 ```
 
-- Réalisez une matrice de corrélation avec la méthode de Spearman.
+-   Réalisez une matrice de corrélation avec la méthode de Spearman.
 
 💬 **Un snippet peut vous aider à réaliser cet exercice.**
 
@@ -127,13 +124,13 @@ correlation(___[, ___:___], use = ___, method = ___)
 
 ```{r corr2_h3-hint-1}
 ##Snippet utile ## .escor: correlation matrix (enhanced) [SciViews]
-correlation(DF[, INDEX_EXPRESSION], use = "complete.obs", method = "pearson")
+correlation(DF[, INDEX_EXPRESSION], use = "complete.obs", method = "___")
 
 # Relisez le chapitre 12 du livre science des données 1 <https://wp.sciviewg/sdd-umons/>
 ```
 
 ```{r corr2_h3-hint-2}
-correlation(df[, ___:___], use = "complete.obs", method = "spearman")
+correlation(df[, 1:4], use = "complete.obs", method = "___")
 
 #### ATTENTION: Hint suivant = solution !####
 ```
@@ -147,7 +144,7 @@ correlation(df[, 1:4], use = "complete.obs", method = "spearman")
 grade_code("C'est cela. Rappelez-vous bien la différence entre Spearman (corrélation non linéaire) et Pearson (corrélation linéaire).")
 ```
 
-Répondez à la question ci-dessous
+Répondez à la question ci-dessous.
 
 ```{r qu_corr2}
 question("Quelles sont les combinaisons de variables les moins corrélées ?",
@@ -161,7 +158,7 @@ question("Quelles sont les combinaisons de variables les moins corrélées ?",
   )
 ```
 
-- Reproduisez le graphique ci-dessous en vous basant sur vos matrices réalisées précédemment
+-   Reproduisez le graphique ci-dessous en vous basant sur vos matrices réalisées précédemment?
 
 ```{r, echo=FALSE}
 plot(correlation(df[, 2:4], use = "complete.obs", method = "pearson"), type = "upper")
@@ -197,19 +194,18 @@ x <- seq(from = 5, to = 15, by = 0.25)
 a <- x * 1.0 + 3 + rnorm(sd = 0.5, n = length(x))
 b <- x * 1.1 + 3 + rnorm(sd = 0.5, n = length(x))
 c <- x * 1.2 + 3 + rnorm(sd = 0.5, n = length(x))
-
 area <- as.factor(rep(c("a", "b", "c"), each = length(x)))
 
-maize <- tibble(
-  x = c(x, x, x),
+maize <- dtx(
+  x     = c(x, x, x),
   value = c(a, b, c),
-  area = area
+  area  = area
 )
 
 lm_reg <- lm(data = maize, value ~ x)
 
-lm_param <- broom::glance(lm_reg)
-lm_result <- broom::tidy(lm_reg)
+lm_param <- glance(lm_reg)
+lm_result <- tidy(lm_reg)
 ```
 
 Réalisez la régression linéaire de `value` en fonction de `x` sur le jeu de données `maize` (des données dont il n'est pas important de connaître l'origine ni la signification pour l'exercice, et mesurées sur des plans de maïs). Le graphique en nuage de points permet de visualiser les données.
@@ -222,17 +218,15 @@ chart(data = maize, value ~ x) +
 ```{r reglin1-prep}
 set.seed(42)
 x <- seq(from = 5, to = 15, by = 0.25)
-  
-a <- x*1 + 3 + rnorm(sd = 0.5, n = length(x))
-b <- x*1.1 + 3 + rnorm(sd = 0.5, n = length(x))
-c <- x*1.2 + 3 + rnorm(sd = 0.5, n = length(x))
-
+a <- x * 1.0 + 3 + rnorm(sd = 0.5, n = length(x))
+b <- x * 1.1 + 3 + rnorm(sd = 0.5, n = length(x))
+c <- x * 1.2 + 3 + rnorm(sd = 0.5, n = length(x))
 area <- as.factor(rep(c("a", "b", "c"), each = length(x)))
 
-maize <- tibble(
-  x = c(x, x, x),
+maize <- dtx(
+  x     = c(x, x, x),
   value = c(a, b, c),
-  area = area
+  area  = area
 )
 ```
 
@@ -250,15 +244,15 @@ summary(lm. <- lm(data = DF, FORMULA))
 ```
 
 ```{r reglin1_h2-solution}
-##Solution##
+## Solution ##
 summary(lm. <- lm(data = maize, value ~ x))
 ```
 
 ```{r reglin1_h2-check}
-grade_code("Vous avez réalisé votre premier modèle linéaire.")
+grade_code("Vous avez réalisé votre première régression linéaire.")
 ```
 
-Suite à votre analyse répondez aux questions suivantes\ :
+Suite à votre analyse répondez aux questions suivantes :
 
 ```{r qu_reglin1}
 quiz(

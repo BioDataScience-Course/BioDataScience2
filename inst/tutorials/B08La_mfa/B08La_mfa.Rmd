@@ -4,7 +4,7 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II Module 8** : Analyse factorielle multiple (AFM)"
 tutorial:
   id: "B08La_mfa"
-  version: 2.0.0/8
+  version: 2.0.1/8
 output: 
   learnr::tutorial:
     progressive: true
@@ -199,7 +199,6 @@ chart <- list(
   scores = function(data, type, ...) chart(data, type = "scores", ...),
   axes = function(data, type,...) chart(data, type = "axes",...)
 )
-
 ```
 
 ```{r, echo=FALSE}
@@ -210,23 +209,23 @@ BioDataScience2::learnr_banner()
 BioDataScience2::learnr_server(input, output, session)
 ```
 
-----
+------------------------------------------------------------------------
 
-## Objectif 
+## Objectif
 
 L'Analyse Factorielle Multiple (AFM) est une méthode statistique exploratoire qui permet de travailler avec plusieurs tableaux de données. Cette méthode permet également de faire le lien entre l'analyse en composantes principales (ACP) et l'Analyse factorielle des correspondances (AFC). La première méthode permet de travailler uniquement sur des variables quantitatives et la seconde uniquement sur des variables qualitatives. L'AFM est capable de traiter les deux types de variables simultanément. Cette méthode est par exemple employée en écologie. Sur une station un ensemble de mesures physico-chimiques peuvent être réalisée ainsi qu'un relevé de la faune et/ou de la flore.
 
-Il est donc utile  de comprendre la logique et l'usage de cette analyse. Ce tutoriel vous permettra de\ : 
+Il est donc utile de comprendre la logique et l'usage de cette analyse. Ce tutoriel vous permettra de :
 
-- Réaliser de manière guidée une AFM
+-   Réaliser de manière guidée une AFM
 
-- Effectuer les graphiques associées à cette analyse
+-   Effectuer les graphiques associées à cette analyse
 
-- Vous préparer à interpréter par vous-même les résultats de vos AFM
+-   Vous préparer à interpréter par vous-même les résultats de vos AFM
 
 Avant toute chose, assurez vous d'avoir bien compris le contenu de la [section 8.1](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/analyse-factorielle-multiple-afm.html) du cours de SDD II.
 
-##  Étude de composition floristique
+## Étude de composition floristique
 
 Des chercheurs ont étudié la composition floristique et les variables environnementales dans des forêts de pins sylvestres (*Pinus sylvestris*) dans l'est de la Fennoscandie, une région située au nord de l'Europe constituée de la Finlande, de la péninsule Scandinave, de la Carélie et de la péninsule de Kola.
 
@@ -234,69 +233,71 @@ Des chercheurs ont étudié la composition floristique et les variables environn
 
 Les 24 sites sélectionnés pour cette étude sont situés dans le nord de la Finlande et dans la péninsule de Kola. Quatorze variables environnementales ont été mesurées sur les différents sites de l'étude, dont onze permettant d'évaluer la quantité de nutriments présentant dans la matière organique (MO). Les différentes variables mesurées sont présentées dans le tableau ci-dessous.
 
-| label        | description                    | unités     |
+|    label     | description                    | unités     |
 |:------------:|:-------------------------------|:-----------|
-| **N**        | azote                          | mg/g de MO |
-| **P**        | phosphore                      | µg/g de MO |
-| **K**        | potassium                      | µg/g de MO |
-| **Ca**       | calcium                        | µg/g de MO |
-| **Mg**       | magnésium                      | µg/g de MO |
-| **S**        | soufre                         | µg/g de MO |
-| **Al**       | aluminium                      | µg/g de MO |
-| **Fe**       | fer                            | µg/g de MO |
-| **Mn**       | manganèse                      | µg/g de MO |
-| **Zn**       | zinc                           | µg/g de MO |
-| **Mo**       | molybdène                      | µg/g de MO |
-| **Baresoil** | surface estimée de sol nu      | %          |
+|    **N**     | azote                          | mg/g de MO |
+|    **P**     | phosphore                      | µg/g de MO |
+|    **K**     | potassium                      | µg/g de MO |
+|    **Ca**    | calcium                        | µg/g de MO |
+|    **Mg**    | magnésium                      | µg/g de MO |
+|    **S**     | soufre                         | µg/g de MO |
+|    **Al**    | aluminium                      | µg/g de MO |
+|    **Fe**    | fer                            | µg/g de MO |
+|    **Mn**    | manganèse                      | µg/g de MO |
+|    **Zn**    | zinc                           | µg/g de MO |
+|    **Mo**    | molybdène                      | µg/g de MO |
+| **Baresoil** | surface estimée de sol nu      | \%         |
 | **Humdepth** | épaisseur de la couche d'humus | cm         |
-| **pH**       | pH du sol                      | -          |
+|    **pH**    | pH du sol                      | \-         |
 
-Ces données sont disponible depuis `varechem` dans le package {vegan}.
+Ces données sont disponible depuis `varechem` dans le package {vegan} et nous en réaliserons un tableau nommé `envir`.
 
 ```{r, echo=TRUE}
 read("varechem", package = "vegan") %>.%
-  rename(., station = rownames) -> envir
+  rename(., station = .rownames) %->%
+  envir
 head(envir)
 ```
 
-Les scientifiques ont également réalisé un relevé floristique (en excluant *Pinus sylvestris* du relevé). On y observe une couverture en pourcentage pour chaque station de chacune des 44 espèces étudiées. Ces données sont également disponible depuis `varespec` dans le package {vegan}.
+Les scientifiques ont également réalisé un relevé floristique (en excluant *Pinus sylvestris* du relevé). On y observe une couverture en pourcentage pour chaque station de chacune des 44 espèces étudiées. Ces données sont également disponible depuis `varespec` dans le package {vegan} que nous lirons dans la variable `spec`.
 
 ```{r, echo=TRUE}
 read("varespec", package = "vegan") %>.%
-  rename(., station = rownames) -> spec
+  rename(., station = .rownames) %->%
+  spec
 head(spec)
 ```
 
-Les données mises à disposition proviennent de l'étude suivante [Väre, H., Ohtonen, R. and Oksanen, J. (1995) Effects of reindeer grazing on understorey vegetation in dry Pinus sylvestris forests. Journal of Vegetation Science 6, 523–530](https://www.researchgate.net/publication/227830523_Effects_of_reindeer_grazing_on_vegetation_in_dry_Pinus_sylvestris_forests).
+Les données mises à disposition proviennent de l'étude suivante [Väre, H., Ohtonen, R. and Oksanen, J. (1995) Effects of reindeer grazing on understorey vegetation in dry Pinus sylvestris forests. Journal of Vegetation Science 6, 523--530](https://www.researchgate.net/publication/227830523_Effects_of_reindeer_grazing_on_vegetation_in_dry_Pinus_sylvestris_forests).
 
 ## Préparation du tableau de données
 
-La première étape consiste dans la réalisation d'un tableau de données unique. Vous allez donc combiner le tableau `envir` avec le tableau `spec` grâce à la colonne similaire entre ces deux tableaux qu'est la variable `station`. Affichez ensuite les premières lignes du tableau `vare` avec la fonction `head()`.
+La première étape consiste dans la réalisation d'un tableau de données unique. Vous allez donc combiner le tableau `envir` avec le tableau `spec` en un seul objet nommé `vare` en spécifiant la colonne similaire entre ces deux tableaux qui est la variable `station` et qui servira de point de référence à la fusion. Affichez ensuite les premières lignes du tableau `vare` avec la fonction `head()`.
 
 ```{r join}
-data.io::read("varechem", package = "vegan") %>.%
-  rename(., station = rownames) -> envir
-data.io::read("varespec", package = "vegan") %>.%
-  rename(., station = rownames) -> spec
+read("varechem", package = "vegan") %>.%
+  rename(., station = .rownames) %->%
+  envir
+read("varespec", package = "vegan") %>.%
+  rename(., station = .rownames) %->%
+  spec
 ```
 
 ```{r join_h2, exercise=TRUE, exercise.setup="join"}
-vare <- left_join(___ , ___, by = "___")
-# Affichez les premières lignes du tableau
+vare %<-% left_join(___ , ___, by = "___")
 head(___)
 ```
 
 ```{r join_h2-hint-1}
-vare <- left_join(envir , spec, by = "___")
-# Affichez les premières lignes du tableau
+vare %<-% left_join(envir , spec, by = "___")
 head(___)
 
 #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r join_h2-solution}
-vare <- left_join(envir , spec, by = "station")
-# Affichez les premières lignes du tableau
+## Solution ##
+vare %<-% left_join(envir , spec, by = "station")
 head(vare)
 ```
 
@@ -304,15 +305,17 @@ head(vare)
 grade_code("Maintenant que vous avez assemblé vos deux tableaux, vous allez pouvoir réaliser votre MFA. Il reste toutefois encore une petite étape avant cela.")
 ```
 
-Ensuite, convertissez la variable `station` en nom de ligne grâce à la fonction `column_to_rownames()`. Les numéros de stations seront utilisés par la suite sur la représentation dans l'espace de vos stations.
+Il va encore falloir convertir la variable `station` en nom de ligne grâce à la fonction `column_to_rownames()`. Les numéros de stations seront utilisés par la suite sur la représentation dans l'espace de vos stations.
 
 ```{r rowname}
-data.io::read("varechem", package = "vegan") %>.%
-  rename(., station = rownames) -> envir
-data.io::read("varespec", package = "vegan") %>.%
-  rename(., station = rownames) -> spec
+read("varechem", package = "vegan") %>.%
+  rename(., station = .rownames) %->%
+  envir
+read("varespec", package = "vegan") %>.%
+  rename(., station = .rownames) %->%
+  spec
 
-vare <- dplyr::left_join(envir , spec, by = "station")
+vare %<-% left_join(envir , spec, by = "station")
 ```
 
 ```{r rowname_h2, exercise=TRUE, exercise.setup="rowname"}
@@ -323,51 +326,58 @@ rownames(___)
 
 ```{r rowname_h2-hint-1}
 vare <- column_to_rownames(vare, var = "___")
+# Vérification des noms des lignes avec rownames()
 rownames(vare)
 
 #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r rowname_h2-solution}
+## Solution ##
 vare <- column_to_rownames(vare, var = "station")
+# Vérification des noms des lignes avec rownames()
 rownames(vare)
 ```
 
 ```{r rowname_h2-check}
-grade_code("Bravo ! Vous venez de convertir la colonne station en nom de lignes. Cette astuce peut être utile dans certain cas. Il y a également la fonction opposée rownames_to_column(). Tout est prêt pour réaliser l'AFM à présent.")
+grade_code("Bravo ! Vous venez de convertir la colonne station en nom de lignes. Cette astuce peut être utile dans certain cas. Il y a également la fonction opposée `rownames_to_column()`. Tout est prêt pour réaliser l'AFM à présent.")
 ```
 
 ## Réalisation de la AFM
 
-L'AFM peut s'obtenir grâce à la fonction `mfa()`. Cette dernière requiert l'utilisation d'une formule avec une syntaxe un peu particulière. Votre formule commence par un `~` puis elle est composée de blocs qui doivent contenir trois éléments\ : 
+L'AFM peut s'obtenir grâce à la fonction `mfa()`. Cette dernière requiert l'utilisation d'une formule avec une syntaxe un peu particulière. Votre formule commence par un `~` puis elle est composée de blocs qui doivent contenir trois éléments :
 
-- 1. Le nombre **n** de colonnes constituant le groupe
-- 2. Le type des variables qui composent le groupe. Vous avez quatre possibilités\ : 
-    + **s**\ : Ce sont des variables quantitatives que l'on souhaite standardiser et les traiter par une ACP.
-    + **c**\ : Ce sont des variables quantitatives continues que l'on ne souhaite pas standardiser et les traiter par une ACP.
-    + **f**\ : Ce sont des variables qualitatives facteurs associées à des tableaux de contingences qu'on traite par une AFC.
-    + **n**\ : Ce sont des variables qualitatives de type dénombrements qu'on traite par une AFC.
-- 3. Le nom à donner au groupe
+1.  Le nombre **n** de colonnes constituant le groupe
+2.  Le type des variables qui composent le groupe. Vous avez quatre possibilités :
+    -   **s** : Ce sont des variables quantitatives que l'on souhaite standardiser et les traiter par une ACP.
 
-Le tableau `vare` est composé de quatorze variables associées à des mesures physico-chimiques et 44 variables liées à des relevés floristiques. Votre formule doit comprendre les éléments suivants pour que votre analyse soit la plus proche possible de celle que les auteurs ont réalisée dans la publication\ : 
+    -   **c** : Ce sont des variables quantitatives continues que l'on ne souhaite pas standardiser et les traiter par une ACP.
 
-- Le premier bloc doit se nommer **physico**, être traité par une ACP et les variables doivent être standardisées.
-- Le second bloc doit se nommer **flore**, être traité par une ACP et les variables ne doivent pas être standardisées.
+    -   **f** : Ce sont des variables qualitatives facteurs associées à des tableaux de contingences qu'on traite par une AFC.
+
+    -   **n** : Ce sont des variables qualitatives de type dénombrements qu'on traite par une AFC.
+3.  Le nom à donner au groupe
+
+Le tableau `vare` est composé de quatorze variables associées à des mesures physico-chimiques et 44 variables liées à des relevés floristiques. Votre formule doit comprendre les éléments suivants pour que votre analyse soit la plus proche possible de celle que les auteurs ont réalisée dans la publication :
+
+-   Le premier bloc doit se nommer **physico**, être traité par une ACP et les variables doivent être standardisées.
+-   Le second bloc doit se nommer **flore**, être traité par une ACP et les variables ne doivent pas être standardisées.
 
 Réalisez l'AFM demandée en utilisant le tableau `vare` puis affichez un résume de l'objet `vare_mfa` obtenu avec la fonction `summary()`
 
 ```{r varemfa}
-data.io::read("varechem", package = "vegan") %>.%
-  rename(., station = rownames) -> envir
-data.io::read("varespec", package = "vegan") %>.%
-  rename(., station = rownames) -> spec
-vare <- dplyr::left_join(envir , spec, by = "station")
+read("varechem", package = "vegan") %>.%
+  rename(., station = .rownames) %->%
+  envir
+read("varespec", package = "vegan") %>.%
+  rename(., station = .rownames) %->%
+  spec
+vare %<-% left_join(envir , spec, by = "station")
 vare <- column_to_rownames(vare, var = "station")
 ```
 
 ```{r mfa_h3, exercise=TRUE, exercise.setup="varemfa"}
 vare_mfa <- mfa(data = ___, ~ ___*___ %as% ___ + ___*___ %as% ___)
-# Affichez une résumé de l'objet
 summary(___)
 ```
 
@@ -384,6 +394,7 @@ summary(vare_mfa)
 ```
 
 ```{r mfa_h3-solution}
+## Solution ##
 vare_mfa <- mfa(data = vare, ~ 14*s %as% physico + 44*c %as% flore)
 summary(vare_mfa)
 ```
@@ -408,12 +419,14 @@ question("Quelle est la proportion de la variance cumulée sur les deux premiers
 Réalisez un graphique des éboulis sur l'objet `vare_mfa` que vous avez réalisé précédemment.
 
 ```{r vare_mfa}
-data.io::read("varechem", package = "vegan") %>.%
-  rename(., station = rownames) -> envir
-data.io::read("varespec", package = "vegan") %>.%
-  rename(., station = rownames) -> spec
+read("varechem", package = "vegan") %>.%
+  rename(., station = .rownames) %->%
+  envir
+read("varespec", package = "vegan") %>.%
+  rename(., station = .rownames) %->%
+  spec
 
-vare <- dplyr::left_join(envir , spec, by = "station")
+vare %<-% left_join(envir , spec, by = "station")
 vare <- column_to_rownames(vare, var = "station")
 
 vare_mfa <- mfa(data = vare, ~ 14*s %as% physico + 44*c %as% flore)
@@ -430,6 +443,7 @@ chart$___(vare_mfa)
 ```
 
 ```{r scree_h2-solution}
+## Solution ##
 chart$scree(vare_mfa)
 ```
 
@@ -452,6 +466,7 @@ chart$___(vare_mfa, choices = c(___, ___))
 ```
 
 ```{r loadings_h2-solution}
+## Solution ##
 chart$loadings(vare_mfa, choices = c(1, 2))
 ```
 
@@ -474,6 +489,7 @@ chart$___(vare_mfa, choices = c(___, ___))
 ```
 
 ```{r axes_h2-solution}
+## Solution ##
 chart$axes(vare_mfa, choices = c(1, 2))
 ```
 
@@ -496,6 +512,7 @@ chart$___(vare_mfa, choices = c(___, ___))
 ```
 
 ```{r scores_h2-solution}
+## Solution ##
 chart$scores(vare_mfa, choices = c(1, 2))
 ```
 
@@ -507,18 +524,18 @@ grade_code("La forme du nuage de points et surtout des clusters sont à recherch
 
 La représentation des variables ainsi que la représentation de stations sont deux graphiques complémentaires afin d'interpréter l'AFM. Gardez à l'esprit que la part de variance exprimée par les deux premiers axes reste relativement faible avec 58%.
 
-
 ```{r}
-data.io::read("varechem", package = "vegan") %>.%
-  rename(., station = rownames) -> envir
-data.io::read("varespec", package = "vegan") %>.%
-  rename(., station = rownames) -> spec
+read("varechem", package = "vegan") %>.%
+  rename(., station = .rownames) %->%
+  envir
+read("varespec", package = "vegan") %>.%
+  rename(., station = .rownames) %->%
+  spec
 
-vare <- dplyr::left_join(envir , spec, by = "station")
+vare %<-% left_join(envir , spec, by = "station")
 vare <- column_to_rownames(vare, var = "station")
 
 vare_mfa <- mfa(data = vare, ~ 14*s %as% physico + 44*c %as% flore)
-#summary(var_mfa)
 
 chart$scores(vare_mfa, choices = c(1, 2))
 ```
@@ -527,7 +544,7 @@ chart$scores(vare_mfa, choices = c(1, 2))
 chart$loadings(vare_mfa, choices = c(1, 2))
 ```
 
-Les stations 2, 3, 4, 9, 10, 11 et 12 sont des stations particulières qui ne sont pas des zones de pâturages. On retrouve dans ces stations une dominance de  *Cladina stellaris* alors que cet espèce est très peu présente dans les zones de pâturages. Les zones de pâturages sont caractérisée par une haute concentration en azote. Les stations 5, 6 et 7 sont des zones de pâturages avec une forte teneur en azote et une présence massive de *Cladina arbuscala*.
+Les stations 2, 3, 4, 9, 10, 11 et 12 sont des stations particulières qui ne sont pas des zones de pâturages. On retrouve dans ces stations une dominance de *Cladina stellaris* alors que cet espèce est très peu présente dans les zones de pâturages. Les zones de pâturages sont caractérisée par une haute concentration en azote. Les stations 5, 6 et 7 sont des zones de pâturages avec une forte teneur en azote et une présence massive de *Cladina arbuscala*.
 
 Nous n'irons pas plus loin dans l'interprétation de cette AFM et vous laissons la possibilité de lire la publication liée à cette étude. Les scientifiques ont réalisé une NMDS en fait, pas une AFM, mais les résultats obtenus sont assez proches.
 

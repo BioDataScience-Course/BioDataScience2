@@ -393,20 +393,20 @@ BioDataScience2::learnr_banner()
 BioDataScience2::learnr_server(input, output, session)
 ```
 
-----
+------------------------------------------------------------------------
 
 ## Objectifs
 
-- Vérifier que vous avez bien compris la logique et les différentes étapes de réalisation d'un drendrogramme\ : matrice de distance, classification ascendante hiérarchique (CAH), représentation graphique et coupure du dendrogramme pour obtenir des groupes.
-- Vous préparer à analyser et interpréter de manière autonome un jeu de données multivariées à l'aide de la CAH
+-   Vérifier que vous avez bien compris la logique et les différentes étapes de réalisation d'un drendrogramme : matrice de distance, classification ascendante hiérarchique (CAH), représentation graphique et coupure du dendrogramme pour obtenir des groupes.
+-   Vous préparer à analyser et interpréter de manière autonome un jeu de données multivariées à l'aide de la CAH
 
-Vous devez avoir étudié le contenu du [module 5](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/hierarchique.html){target='_blank'} du cours et réalisé les exercices H5P qui s'y trouvent avant de vous lancer dans ce tutoriel Learnr.
+Vous devez avoir étudié le contenu du [module 5](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/hierarchique.html){target="_blank"} du cours et réalisé les exercices H5P qui s'y trouvent avant de vous lancer dans ce tutoriel Learnr.
 
 ## Communautés piscicoles de rivière
 
 ![Photo domaine public par Dom Gould.](images/river.jpg)
 
-Le [Doubs](http://www.cosmovisions.com/Doubs.htm){target='_blank'} (prononcez "dou") est une rivière qui serpente entre la France et la Suisse pour se jeter finalement dans la Saône près de Chalon-sur-Saône (point noir sur la carte ci-dessous) après avoir parcouru près de 450\ km.
+Le [Doubs](http://www.cosmovisions.com/Doubs.htm){target="_blank"} (prononcez "dou") est une rivière qui serpente entre la France et la Suisse pour se jeter finalement dans la Saône près de Chalon-sur-Saône (point noir sur la carte ci-dessous) après avoir parcouru près de 450 km.
 
 ![Carte du Doubs, d'après OpenStreetMap.](images/doubs.jpg)
 
@@ -414,12 +414,12 @@ La distribution des poissons est étudiée dans cette rivière (Verneaux 1973). 
 
 ```{r, echo=FALSE}
 doubs$xy %>.%
-  mutate(., station = 1:30) %>.%
+  fmutate(., station = 1:30) %>.%
   chart(., y ~ x %label=% station) +
-  geom_path() +
-  geom_point() +
-  ggrepel::geom_label_repel() +
-  theme_void()
+    geom_path() +
+    geom_point() +
+    ggrepel::geom_label_repel() +
+    theme_void()
 ```
 
 À chaque station, les hommes de terrain ont effectué une collecte des poissons présents et les ont dénombrés. Au total, ils ont observé 27 espèces reprises dans la table suivante.
@@ -428,14 +428,15 @@ doubs$xy %>.%
 doubs$species %>.%
   select(., -English) %>.%
   mutate(., Scientific = paste0("*", Scientific, "*")) %>.%
-  rename(., `Nom Scientifique`= Scientific, `Nom français` = French,
+  rename(., `Nom Scientifique` = Scientific, `Nom français` = French,
     Code = code) %>.%
+  collect_dtx(.) %>.%
   knitr::kable(.)
 ```
 
 ![Le vairon *Phoxinus phoxinus*, une des espèces les plus abondantes dans le Doubs. Domaine public, photo de Adrien Pinot.](images/vairon.jpg)
 
-Le tableau de données, dans `fish` se présente comme ceci (seules les 6 premières lignes sont imprimées)\ :
+Le tableau de données, dans `fish` se présente comme ceci (seules les 6 premières lignes sont imprimées) :
 
 ```{r, echo=TRUE}
 head(fish)
@@ -445,7 +446,7 @@ Vous vous doutez bien que plusieurs micro-habitats différents peuvent exister t
 
 **Référence**
 
-Verneaux, J. (1973) Cours d'eau de Franche-Comté (Massif du Jura). Recherches écologiques sur le réseau hydrographique du Doubs. Essai de biotypologie. Thèse d'état, Besançon. 1–257.
+Verneaux, J. (1973) Cours d'eau de Franche-Comté (Massif du Jura). Recherches écologiques sur le réseau hydrographique du Doubs. Essai de biotypologie. Thèse d'état, Besançon. 1--257.
 
 ## Étape 1 : transformation des données
 
@@ -460,7 +461,7 @@ Comme à notre habitude, nous commençons par décrire nos données. La fonction
 skimr::skim(fish)
 ```
 
-Nous n'avons pas de valeurs manquantes et les valeurs sont toutes bornées entre 0 et 5. Il s'agit en fait de **classes d'abondance**, avec 0 = absence et 5 = abondance maximale, voir [ce descriptif complet](http://pbil.univ-lyon1.fr/R/pdf/pps047.pdf){target='_blank'}. Nous voyons sur les mini-barplots que la valeur zéro domine, et c'est aussi la médiane (`p50`) pour bon nombre d'espèces, indiquant ainsi qu'elles sont absentes dans plus de la moitié des stations. Par contre, la valeur maximale (`P100`) est pratiquement toujours 5. Puisque les classes d'abondance ont été définies par rapport à l'abondance maximale de chaque espèce dans le jeu de données, ce n'est pas surprenant. Nous n'avons pas 5 partout car le jeu de données initial reprend aussi les effluents de la Doubs, donc plus du double de stations, non reprises ici.
+Nous n'avons pas de valeurs manquantes et les valeurs sont toutes bornées entre 0 et 5. Il s'agit en fait de **classes d'abondance**, avec 0 = absence et 5 = abondance maximale, voir [ce descriptif complet](http://pbil.univ-lyon1.fr/R/pdf/pps047.pdf){target="_blank"}. Nous voyons sur les mini-barplots que la valeur zéro domine, et c'est aussi la médiane (`p50`) pour bon nombre d'espèces, indiquant ainsi qu'elles sont absentes dans plus de la moitié des stations. Par contre, la valeur maximale (`P100`) est pratiquement toujours 5. Puisque les classes d'abondance ont été définies par rapport à l'abondance maximale de chaque espèce dans le jeu de données, ce n'est pas surprenant. Nous n'avons pas 5 partout car le jeu de données initial reprend aussi les effluents de la Doubs, donc plus du double de stations, non reprises ici.
 
 ```{r qu_transfo_fish}
 question("À partir des données du tableau et de la description ci-dessus, quelles transformations ou remaniements des données seraient judiceuses ici ? (plusieurs réponses peuvent être sélectionnées)",
@@ -477,7 +478,7 @@ question("À partir des données du tableau et de la description ci-dessus, quel
 
 ## Étape 2 : matrice de distances
 
-Nous réalisons ensuite une matrice des distances entre stations. Des dizaines d'indices différents existent. Lequel ou lesquelles choisiriez-vous ici, si nous nous cantonnons aux quatre indices principaux détaillés dans le cours (pour une présentation vraiment beaucoup plus complète des indices, voyez la [présentation de P. Legendre](http://biol09.biol.umontreal.ca/PLcourses/Dissimilarity_and_transformations.pdf){target='_blank'}, un des grands spécialistes de ce domaine)\ ?
+Nous réalisons ensuite une matrice des distances entre stations. Des dizaines d'indices différents existent. Lequel ou lesquelles choisiriez-vous ici, si nous nous cantonnons aux quatre indices principaux détaillés dans le cours (pour une présentation vraiment beaucoup plus complète des indices, voyez la [présentation de P. Legendre](http://biol09.biol.umontreal.ca/PLcourses/Dissimilarity_and_transformations.pdf){target="_blank"}, un des grands spécialistes de ce domaine) ?
 
 ```{r qu_indice_fish}
 question("À partir des données du tableau `fish`, vous souhaitez réaliser un matrice de distances avec l'indice le plus adapté. Quel indice pourriez-vous choisir ? (plusieurs réponses peuvent être sélectionnées)",
@@ -505,6 +506,7 @@ print(fish_dist <- dissimilarity(___, method = "___"))
 ```
 
 ```{r fish_bray_h2-solution}
+## Solution ##
 print(fish_dist <- dissimilarity(fish, method = "bray"))
 ```
 
@@ -520,21 +522,21 @@ Si nous avions voulu comparer les espèces (colonnes) plutôt que les stations (
 
 ## Données environnementales
 
-En plus des données sur l'abondance de 27 espèces de poissons, les chercheurs ont mesuré onze variables environnementales en chacune des 30 stations. Avoir des données quantifiées sur l'habitat est évidemment indispensable pour pouvoir comprendre et expliquer la distribution de nos poissons dans la rivière. Ces données environnementales peuvent également servir à classer les micro-habitats selon un critère différents. Nous utiliserons encore une fois la CAH ici pour ce faire. Voici le détail des onze variables mesurées. Notez que les auteurs ont décidé d'appliquer des coefficients multiplicateurs ici pour homogénéiser les données\ :
+En plus des données sur l'abondance de 27 espèces de poissons, les chercheurs ont mesuré onze variables environnementales en chacune des 30 stations. Avoir des données quantifiées sur l'habitat est évidemment indispensable pour pouvoir comprendre et expliquer la distribution de nos poissons dans la rivière. Ces données environnementales peuvent également servir à classer les micro-habitats selon un critère différents. Nous utiliserons encore une fois la CAH ici pour ce faire. Voici le détail des onze variables mesurées. Notez que les auteurs ont décidé d'appliquer des coefficients multiplicateurs ici pour homogénéiser les données :
 
-| label   | description                      | unités * coef |
-|:-------:|:---------------------------------|:--------------|
-| **dfs** | distance depuis la source        | km * 10       |
-| **alt** | altitude                         | m             |
-| **slo** | pente des berges en `log(x + 1)` | ‰ * 100       |
-| **flo** | flux moyen minimum               | m^3^/s * 100  |
-| **pH**  | pH de l'eau                      | - * 10        |
-| **har** | dureté totale de l'eau           | mg Ca^++^/L   | 
-| **pho** | phosphates                       | mg/L * 100    |
-| **nit** | nitrates                         | mg/L * 100    |
-| **amm** | azote ammoniacal                 | mg/L * 100    |
-| **oxy** | oxygène dissout                  | mg/L * 10     |
-| **bdo** | demande biologique en oxygène    | mg/L * 10     |
+|  label  | description                      | unités \* coef |
+|:-------:|:---------------------------------|:---------------|
+| **dfs** | distance depuis la source        | km \* 10       |
+| **alt** | altitude                         | m              |
+| **slo** | pente des berges en `log(x + 1)` | ‰ \* 100       |
+| **flo** | flux moyen minimum               | m^3^/s \* 100  |
+| **pH**  | pH de l'eau                      | \- \* 10       |
+| **har** | dureté totale de l'eau           | mg Ca^++^/L    |
+| **pho** | phosphates                       | mg/L \* 100    |
+| **nit** | nitrates                         | mg/L \* 100    |
+| **amm** | azote ammoniacal                 | mg/L \* 100    |
+| **oxy** | oxygène dissout                  | mg/L \* 10     |
+| **bdo** | demande biologique en oxygène    | mg/L \* 10     |
 
 Voici les premières lignes du tableau `envir` qui contient ces données.
 
@@ -553,8 +555,7 @@ Nos commençons par décrire ces données. Nous nous limitons ici à utiliser `s
 skimr::skim(envir)
 ```
 
-Il n'y a aucune donnée manquante. Toutes les variables sont numériques continues. Les unités sont différentes, mais les auteurs ont pris soin de les multiplier par des puissances de 10 sans doute pour limiter les différences trop importantes d'échelles entre elles. Aucune donnée n'est négative, mais il y a des valeurs nulles pour l'ammonium (`p0` et `p25`). La première question à nous poser est\ : un remaniement ou une transformation de ces données sont-ils nécessaire/ ?
-
+Il n'y a aucune donnée manquante. Toutes les variables sont numériques continues. Les unités sont différentes, mais les auteurs ont pris soin de les multiplier par des puissances de 10 sans doute pour limiter les différences trop importantes d'échelles entre elles. Aucune donnée n'est négative, mais il y a des valeurs nulles pour l'ammonium (`p0` et `p25`). La première question à nous poser est : un remaniement ou une transformation de ces données sont-ils nécessaire/ ?
 
 ```{r qu_transfo_envir}
 question("À partir des données du tableau et de la description ci-dessus, quelles transformations ou remainement des données seraient judiceuses ici ? (plusieurs réponses peuvent être sélectionnées)",
@@ -597,6 +598,7 @@ print(envir_dist <- ___(___, method = "___"))
 ```
 
 ```{r euclidean1_h2-solution}
+## Solution ##
 print(envir_dist <- dissimilarity(envir, method = "euclidean"))
 ```
 
@@ -623,6 +625,7 @@ print(envir_dist <- dissimilarity(___, method = "euclidean", ___ = TRUE))
 ```
 
 ```{r euclidean2_h3-solution}
+## Solution ##
 print(envir_dist <- dissimilarity(envir, method = "euclidean", scale = TRUE))
 ```
 
@@ -655,6 +658,7 @@ chart(___)
 ```
 
 ```{r hclust1_h2-solution}
+## Solution ##
 envir_clust <- cluster(envir_dist)
 chart(envir_clust)
 ```
@@ -685,6 +689,7 @@ chart$circular(___)
 ```
 
 ```{r hclust2_h3-solution}
+## Solution ##
 envir_clust <- cluster(envir_dist, method = "ward.D2")
 chart$circular(envir_clust)
 ```
@@ -717,6 +722,7 @@ chart$___(___) +
 ```
 
 ```{r hclust3_h2-solution}
+## Solution ##
 chart$horizontal(envir_clust) +
   geom_dendroline(h = 7, color = "red")
 ```
@@ -732,15 +738,13 @@ envir_dist <- dissimilarity(envir, method = "euclidean", scale = TRUE)
 envir_clust <- cluster(envir_dist, method = "ward.D2")
 ```
 
-
 ```{r, echo=TRUE}
 str(envir_clust, max.level = 5)
 ```
 
-
 ## Interprétation
 
-Une fois le dendrogramme réalisé et le niveau de coupure choisi, nous devons récupérer les groupes ainsi constitués afin de les interpréter. Vous utilisez `predict()` pour récupérer un vecteur nommé (nom des stations de 1 à 30 au dessus, groupes de 1 à 4 en dessous)\ :
+Une fois le dendrogramme réalisé et le niveau de coupure choisi, nous devons récupérer les groupes ainsi constitués afin de les interpréter. Vous utilisez `predict()` pour récupérer un vecteur nommé (nom des stations de 1 à 30 au dessus, groupes de 1 à 4 en dessous) :
 
 ```{r}
 # We need to repeat this because the preparation to the exercice is erased once
@@ -748,7 +752,6 @@ Une fois le dendrogramme réalisé et le niveau de coupure choisi, nous devons r
 envir_dist <- dissimilarity(envir, method = "euclidean", scale = TRUE)
 envir_clust <- cluster(envir_dist, method = "ward.D2")
 ```
-
 
 ```{r, echo=TRUE}
 (envir_groups <- predict(envir_clust, h = 7))
@@ -758,7 +761,7 @@ Un premier critère pour déterminer si notre regroupement à un sens ici est de
 
 ### Comparaison à `fish`
 
-Un second critère utilisable dans notre cas consiste à comparer des regroupements effectués sur base de jeux de données différents. Nous avions également les communautés piscicoles à disposition dans `fish`, présentées tout au début de ce tutoriel. Nous pouvons donc effectuer notre CAH avec Ward D2 sur des dissimilarités de Bay-Curtis comme ceci (analyse complète en cinq lignes de code)\ :
+Un second critère utilisable dans notre cas consiste à comparer des regroupements effectués sur base de jeux de données différents. Nous avions également les communautés piscicoles à disposition dans `fish`, présentées tout au début de ce tutoriel. Nous pouvons donc effectuer notre CAH avec Ward D2 sur des dissimilarités de Bay-Curtis comme ceci (analyse complète en cinq lignes de code) :
 
 ```{r, echo=TRUE}
 fish_dist <- dissimilarity(fish, method = "bray")
@@ -768,12 +771,12 @@ chart$horizontal(fish_clust) +
 (fish_groups <- predict(fish_clust, h = 1.05)) # Extrait les 5 groupes
 ```
 
-Avec les poissons, nous avons deux niveaux de coupure qui se dégagent\ :
+Avec les poissons, nous avons deux niveaux de coupure qui se dégagent :
 
-- Deux groupes pour une coupure à, par exemple, h = 2. Ces deux-là sont particulièrement bien différenciés.
-- Quatre à cinq groupes avec une coupure entre h = 1 et h = 1.4. Le cinquième groupe est constitué de la station 8 isolée. Rappelons-nous qu'elle n'est pas représentative puisqu'aucun poisson n'y a été dénombrée. Donc, nous préférons couper à cinq groupes et ignorer ce singleton de la station 8 pour nous concentrer sur les quatre groupes restants.
+-   Deux groupes pour une coupure à, par exemple, h = 2. Ces deux-là sont particulièrement bien différenciés.
+-   Quatre à cinq groupes avec une coupure entre h = 1 et h = 1.4. Le cinquième groupe est constitué de la station 8 isolée. Rappelons-nous qu'elle n'est pas représentative puisqu'aucun poisson n'y a été dénombrée. Donc, nous préférons couper à cinq groupes et ignorer ce singleton de la station 8 pour nous concentrer sur les quatre groupes restants.
 
-Si nous pouvons montrer une certaine cohérence entre le regroupement selon l'habitat et selon la communauté piscicole, nous aurons un second argument pour conforter notre découpage de la rivière en quatre micro-habitats distincts. Le plus simple pour faire cette comparaison est de réaliser un **tableau de contingence à double entrée**\ :
+Si nous pouvons montrer une certaine cohérence entre le regroupement selon l'habitat et selon la communauté piscicole, nous aurons un second argument pour conforter notre découpage de la rivière en quatre micro-habitats distincts. Le plus simple pour faire cette comparaison est de réaliser un **tableau de contingence à double entrée** :
 
 ```{r, echo=TRUE}
 table(fish = fish_groups, envir = envir_groups)
@@ -781,24 +784,24 @@ table(fish = fish_groups, envir = envir_groups)
 
 La première colonne avec les nombres de 1 à 5 sont les numéros de groupes pour `fish`. La première ligne avec les nombres de 1 à 4 sont les numéros des groupes d'`envir`. Le reste est la table de contingence proprement dite. Par exemple, nous avons 7 stations simultanément dans les deux groupes n°1. Nous avons 4 stations dans le groupe 1 de `fish` et le groupe 2 d' `envir`. Par contre en dessous, deux stations sont dans le groupe n°1 d'`envir` et en même temps dans le groupe n°2 de `fish`, et 5 stations sont simultanément dans les deux groupes n°2, et ainsi de suite.
 
-Notre singleton est le groupe n°3 de `fish` que nous ignorons. Pour les groupes n°1 et 2 nous avons un maximum de stations sur la diagonale (7 pour 1/1 et 5 pour 2/2) montrant ainsi une bonne concordance. Le groupe n°4 de `fish` correspond à 5 stations dans le groupe 4 d'`envir` et 3 stations dans son groupe 2. Enfin, 2 des 3 stations du groupe `fish` 5 correspondent au groupe `envir` 3. Mais notez ceci (allez revoir les sorties de `predict()` plus haut)\ : le groupe 5 de `fish` contient les stations 23, 24 et 25. Le groupe 3 d'`envir` contient les stations 23 et 25, alors que la station 24 est placée dans le groupe 4 pour `envir`. Par conséquent, il est fort probable que le dendrogramme d'`envir` ait mal classé cette station 24 et donc, que la correspondance `fish` 5 = `envir` 3 soit excellente.
+Notre singleton est le groupe n°3 de `fish` que nous ignorons. Pour les groupes n°1 et 2 nous avons un maximum de stations sur la diagonale (7 pour 1/1 et 5 pour 2/2) montrant ainsi une bonne concordance. Le groupe n°4 de `fish` correspond à 5 stations dans le groupe 4 d'`envir` et 3 stations dans son groupe 2. Enfin, 2 des 3 stations du groupe `fish` 5 correspondent au groupe `envir` 3. Mais notez ceci (allez revoir les sorties de `predict()` plus haut) : le groupe 5 de `fish` contient les stations 23, 24 et 25. Le groupe 3 d'`envir` contient les stations 23 et 25, alors que la station 24 est placée dans le groupe 4 pour `envir`. Par conséquent, il est fort probable que le dendrogramme d'`envir` ait mal classé cette station 24 et donc, que la correspondance `fish` 5 = `envir` 3 soit excellente.
 
-Ce genre de résultat est assez caractéristique de données biologiques\ : la concordance n'est pas parfaite, mais une belle tendance se dégage avec les correspondances qui peuvent être résumées finalement comme suit\ :
+Ce genre de résultat est assez caractéristique de données biologiques : la concordance n'est pas parfaite, mais une belle tendance se dégage avec les correspondances qui peuvent être résumées finalement comme suit :
 
-- `fish` 1 = `envir` 1, stations de 1 jusqu'à 10-14
-- `fish` 2 = `envir` 2, stations depuis 10-14 jusqu'à 19-22
-- `fish` 5 = `envir` 3, stations 23 à 25
-- `fish` 4 = `envir` 4, stations 26 à 30, mais peut-être aussi 20-22
+-   `fish` 1 = `envir` 1, stations de 1 jusqu'à 10-14
+-   `fish` 2 = `envir` 2, stations depuis 10-14 jusqu'à 19-22
+-   `fish` 5 = `envir` 3, stations 23 à 25
+-   `fish` 4 = `envir` 4, stations 26 à 30, mais peut-être aussi 20-22
 
 Ceci identifie assez clairement quatre tronçons successifs le long du trajet de la rivière. **L'obtention de résultats clairs et cohérents est le critère qui nous permet de déterminer que notre regroupement CAH est un succès.**
 
-Notez encore quelques petites astuces supplémentaires\ :
+Notez encore quelques petites astuces supplémentaires :
 
-- En plus de `predict()`, vous pouvez utiliser `fish2 <- augment(data = fish, fish_clust, h = 1.05)` pour rajouter directement le regroupement dans le tableau `fish`. Le nouveau tableau `fish2` contient ce regroupement dans une nouvelle colonne nommée `.fitted`.
-- Tant dans `predict()` que dans `augment()`, vous pouvez aussi spécifier directement le nombre de groupes souhaités à l'aide de `k =` à la place du niveau de coupure du dendrogramme avec `h =`. C'est pratique quand on connaît au départ le nombre de groupes souhaité.
-- Si le dendrogramme contient vraiment beaucoup d'items, la version circulaire sera la moins encombrée. La taille des labels peut être ajustée dans cette version du graphique à l'aide de l'argument `circ.text.size =`, qui prend la valeur 3 par défaut.
-- Il est possible aussi de **regrouper les espèces/les habitats en fonction des stations** au lieu des stations en fonction des espèces ou de l'habitat en effectuant l'analyse sur le **tableau transposé**. Pour cela, il suffit d'indiquer `transpose = TRUE` dans l'appel de la fonction `dissimilarity()`. C'est alors les colonnes du tableau de départ qui sont regroupées, au lieu de ses lignes.
-- D'autres paramètres sont aussi possibles. Par exemple, une variation progressive d'une station à l'autre serait bien mieux représentée par une CAH avec `methode = "single"`. Si cela pique votre curiosité, vous pouvez le tester de manière tout-à-fait optionnelle dans le zone de code ci-dessous, voir observer le résultat d'autres méthodes encore, ou l'effet d'une standardisation ou non des données, ou de la transposition du tableau, ...
+-   En plus de `predict()`, vous pouvez utiliser `fish2 <- augment(data = fish, fish_clust, h = 1.05)` pour rajouter directement le regroupement dans le tableau `fish`. Le nouveau tableau `fish2` contient ce regroupement dans une nouvelle colonne nommée `.fitted`.
+-   Tant dans `predict()` que dans `augment()`, vous pouvez aussi spécifier directement le nombre de groupes souhaités à l'aide de `k =` à la place du niveau de coupure du dendrogramme avec `h =`. C'est pratique quand on connaît au départ le nombre de groupes souhaité.
+-   Si le dendrogramme contient vraiment beaucoup d'items, la version circulaire sera la moins encombrée. La taille des labels peut être ajustée dans cette version du graphique à l'aide de l'argument `circ.text.size =`, qui prend la valeur 3 par défaut.
+-   Il est possible aussi de **regrouper les espèces/les habitats en fonction des stations** au lieu des stations en fonction des espèces ou de l'habitat en effectuant l'analyse sur le **tableau transposé**. Pour cela, il suffit d'indiquer `transpose = TRUE` dans l'appel de la fonction `dissimilarity()`. C'est alors les colonnes du tableau de départ qui sont regroupées, au lieu de ses lignes.
+-   D'autres paramètres sont aussi possibles. Par exemple, une variation progressive d'une station à l'autre serait bien mieux représentée par une CAH avec `methode = "single"`. Si cela pique votre curiosité, vous pouvez le tester de manière tout-à-fait optionnelle dans le zone de code ci-dessous, voir observer le résultat d'autres méthodes encore, ou l'effet d'une standardisation ou non des données, ou de la transposition du tableau, ...
 
 ```{r cah_envir_noscore, exercise=TRUE, exercise.lines=5}
 envir_dist <- dissimilarity(envir, method = "euclidean",
@@ -810,7 +813,7 @@ chart$horizontal(envir_clust) # Essayez circular avec circ.text.size = ...
 
 ### Conclusion
 
-Bravo\ ! Vous venez de terminer votre auto-évaluation relative aux matrices de distances et à la classification ascendante hiérarchique. Avec cette première analyse guidée vous développez les automatismes nécessaires pour réaliser une CAH, et vous commencez à comprendre la façon d'analyser et d'interpréter ce regroupement.
+Bravo ! Vous venez de terminer votre auto-évaluation relative aux matrices de distances et à la classification ascendante hiérarchique. Avec cette première analyse guidée vous développez les automatismes nécessaires pour réaliser une CAH, et vous commencez à comprendre la façon d'analyser et d'interpréter ce regroupement.
 
 ```{r comm_noscore, echo=FALSE}
 question_text(

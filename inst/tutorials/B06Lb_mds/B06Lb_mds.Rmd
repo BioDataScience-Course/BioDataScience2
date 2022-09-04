@@ -4,10 +4,10 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II Module 6** Positionnement multidimensionnel (MDS)."
 tutorial:
   id: "B06Lb_mds"
-  version: 2.0.0/8
-output: 
+  version: 2.0.1/8
+output:
   learnr::tutorial:
-    progressive: true
+  progressive: true
 runtime: shiny_prerendered
 ---
 
@@ -305,28 +305,28 @@ BioDataScience2::learnr_banner()
 BioDataScience2::learnr_server(input, output, session)
 ```
 
-----
+------------------------------------------------------------------------
 
 ## Objectifs
 
-Ce tutoriel consacré au positionnement multidimensionnel (MDS) vise à\ :
+Ce tutoriel consacré au positionnement multidimensionnel (MDS) vise à :
 
-- Vérifier que vous avez bien compris les différentes étapes pour la réalisation d'une MDS : calcul de la matrice de distance, calcul du positionnement des points, réalisation de la carte et vérification de sa validité, choix entre MDS métrique ou non métrique.
-- Vous préparer à analyser et interpréter de manière autonome un jeu de données multivariées à l'aide des MDS.
+-   Vérifier que vous avez bien compris les différentes étapes pour la réalisation d'une MDS : calcul de la matrice de distance, calcul du positionnement des points, réalisation de la carte et vérification de sa validité, choix entre MDS métrique ou non métrique.
+-   Vous préparer à analyser et interpréter de manière autonome un jeu de données multivariées à l'aide des MDS.
 
-Vous devez avoir compris le contenu du [module 6](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/k-moyenne-mds-som.html) du cours et en particulier la [section 6.2](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/positionnement-multidimensionnel-mds.html). Assurez-vous d'avoir réalisé les exercices H5P qui s'y trouvent avant de vous lancer dans ce tutoriel Learnr et de bien maîtriser les notions sur les matrices de distances vue dans le [module 5](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/distance-entre-individus.html). 
+Vous devez avoir compris le contenu du [module 6](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/k-moyenne-mds-som.html) du cours et en particulier la [section 6.2](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/positionnement-multidimensionnel-mds.html). Assurez-vous d'avoir réalisé les exercices H5P qui s'y trouvent avant de vous lancer dans ce tutoriel Learnr et de bien maîtriser les notions sur les matrices de distances vue dans le [module 5](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/distance-entre-individus.html).
 
 ## Barro Colorado Island
 
-Barro Colorado est une île artificielle située sur le lac Gatùn, au centre du Panama. Elle représente un lieu de recherche scientifique intensive axée sur l'écologie de la forêt tropicale. 
+Barro Colorado est une île artificielle située sur le lac Gatùn, au centre du Panama. Elle représente un lieu de recherche scientifique intensive axée sur l'écologie de la forêt tropicale.
 
 ![Ile de Barro Colorado](images/bci_carte.png)
 
-Une surface permanente de 50 hectares a été définie par l'Institut de recherche tropicale Smithsonian et l'Université de Princeton pour étudier la dynamique de la végétation. Cette surface est divisée en 50 parcelles de 1 ha, qui s'alignent les unes sur les autres. Dans chaque parcelle, le dénombrement de toutes les espèces forestières a été enregistré (seules les plantes avec un DHP >= 10 cm [Diamètre mesuré à plus ou moins 1,3m] sont disponibles dans cet ensemble de données). Au total, 225 espèces différentes ont été observées.
+Une surface permanente de 50 hectares a été définie par l'Institut de recherche tropicale Smithsonian et l'Université de Princeton pour étudier la dynamique de la végétation. Cette surface est divisée en 50 parcelles de 1 ha, qui s'alignent les unes sur les autres. Dans chaque parcelle, le dénombrement de toutes les espèces forestières a été enregistré (seules les plantes avec un DHP \>= 10 cm [Diamètre mesuré à plus ou moins 1,3m] sont disponibles dans cet ensemble de données). Au total, 225 espèces différentes ont été observées.
 
-![Foret tropicale de l'ile de Barro Colorado](images/bci_forest.jpg) 
+![Foret tropicale de l'ile de Barro Colorado](images/bci_forest.jpg)
 
-Les données peuvent être chargées à partir de `"BCI"` dans le package {vegan} et se présentent comme ceci\ :
+Les données peuvent être chargées à partir de `"BCI"` dans le package {vegan} et se présentent comme ceci :
 
 ```{r, echo=TRUE}
 bci <- read("BCI", package = "vegan")
@@ -354,11 +354,12 @@ bci_dist <- ___(___, method = "___")
 ```
 
 ```{r dist_h2-solution}
+## Solution ##
 bci_dist <- dissimilarity(bci, method = "bray")
 ```
 
 ```{r dist_h2-check}
-grade_code("Vous n'avez pas oublié comment on fait pour calculer une matrice de distances avec la fonction dissimilatity(). C'est maintenant que cela devient intéressant...")
+grade_code("Vous n'avez pas oublié comment on fait pour calculer une matrice de distances avec la fonction `dissimilatity()`. C'est maintenant que cela devient intéressant...")
 ```
 
 ## MDS métrique (ou PCoA)
@@ -382,6 +383,7 @@ ___(bci_mds, labels = 1:50)
 ```
 
 ```{r metric_h2-solution}
+## Solution ##
 bci_mds <- mds$metric(bci_dist)
 chart(bci_mds, labels = 1:50)
 ```
@@ -390,9 +392,9 @@ chart(bci_mds, labels = 1:50)
 grade_code("Vous venez de réaliser votre première MDS métrique. Sur ce graphique, les stations qui sont proches les unes des autres ont un indice de dissimilarité faible et se ressemblent du point de vue de la composition en végétaux. Notez bien que ni l’orientation des axes, ni les valeurs absolues sur ces axes n’ont de significations particulières. Sur ce graphique, vous pouvez voir qu'un petit groupe d'une douzaine de parcelles se détache à gauche du graphique. Un autre groupe s'individualise dans le bas... mais avant d'interpréter, nous devons vérifier le GOF pour déterminer si la représentation reste suffisamment fidèle à la réalité.") 
 ```
 
-### “Goodness-of-fit”
+### "Goodness-of-fit"
 
-Vérifiez toujours les indicateurs de "Goodness-of-fit" (GOF anvec `glance()`) qui vous donneront une idée de la qualité de la projection MDS.
+Vérifiez toujours les indicateurs de "Goodness-of-fit" (GOF avec `glance()`) qui vous donneront une idée de la qualité de la projection MDS.
 
 ```{r gof_prep}
 bci_dist <- dissimilarity(bci, method = "bray")
@@ -410,6 +412,7 @@ ___(bci_mds)
 ```
 
 ```{r gof_h2-solution}
+## Solution ##
 glance(bci_mds)
 ```
 
@@ -429,11 +432,11 @@ question("Considérez vous que cette PCoA est une bonne PCoA ?",
 
 ## MDS non métrique
 
-Tout comme la MDS métrique, la MDS non métrique, obtenue grâce à `mds$nonmetric()`, utilise une matrice de distances pour réaliser une carte mais en autorisant des écarts entre les individus plus flexibles. On pourra donc forcer la carte à être littéralement écrasée, tant que l’ordre des points est gardé intact dans la distorsion (une dissimilarité plus grande ne peut pas être représentée par une distance plus petite sur la carte). Cette distorsion est appelée un stress.
+Tout comme la MDS métrique, la MDS non métrique, obtenue grâce à `mds$nonmetric()`, utilise une matrice de distances pour réaliser une carte mais en autorisant des écarts entre les individus plus flexibles. On pourra donc forcer la carte à être littéralement écrasée, tant que l'ordre des points est gardé intact dans la distorsion (une dissimilarité plus grande ne peut pas être représentée par une distance plus petite sur la carte). Cette distorsion est appelée un stress.
 
-Le calcul réalisé est itératif, et comme il n'est pas garanti de converger, vous vérifierez qu'une solution à bien été trouvée (indication `*** Solution reached` à la fin). Pour les détails et les paramètres de cet algorithme, référez-vous à l’aide en ligne de la fonction `?vegan::metaMDS`.
+Le calcul réalisé est itératif, et comme il n'est pas garanti de converger, vous vérifierez qu'une solution à bien été trouvée (indication `*** Solution reached` à la fin). Pour les détails et les paramètres de cet algorithme, référez-vous à l'aide en ligne de la fonction `?vegan::metaMDS`.
 
-Vous avez toujours à disposition la matrice de distance `bci_dist` sur laquelle vous allez réaliser votre MDS non métrique. Utilisez ensuite `chart()` pour réaliser la carte permettant de visualiser les distances entre les stations (que vous numérotez de 1 à 50 dans l'ordre d'apparition). 
+Vous avez toujours à disposition la matrice de distance `bci_dist` sur laquelle vous allez réaliser votre MDS non métrique. Utilisez ensuite `chart()` pour réaliser la carte permettant de visualiser les distances entre les stations (que vous numérotez de 1 à 50 dans l'ordre d'apparition).
 
 ```{r nonmetric_prep}
 bci_dist <- dissimilarity(bci, method = "bray")
@@ -452,6 +455,7 @@ ___(bci_nmds, labels = 1:50)
 ```
 
 ```{r nonmetric_h2-solution}
+## Solution ##
 bci_nmds <- mds$nonmetric(bci_dist)
 chart(bci_nmds, labels = 1:50)
 ```
@@ -462,9 +466,9 @@ grade_code("La représentation que nous obtenons est assez différente de celle 
 
 ### Qualité de l'ajustement
 
-La MDS non métrique est assortie d'indicateurs permettant d'évaluer d'une part la qualité de l'ajustement et d'autre part la fonction de stress appliquée. Comme pour la PCoA, vous pouvez utiliser la fonction `glance()` pour obtenir une mesure de l'ajustement global de la MDS. 
+La MDS non métrique est assortie d'indicateurs permettant d'évaluer d'une part la qualité de l'ajustement et d'autre part la fonction de stress appliquée. Comme pour la PCoA, vous pouvez utiliser la fonction `glance()` pour obtenir une mesure de l'ajustement global de la MDS.
 
-Analyser les indicateurs de l'objet `bci_nmds` que vous venez de créer et répondez à la question ci-dessous. 
+Analyser les indicateurs de l'objet `bci_nmds` que vous venez de créer et répondez à la question ci-dessous.
 
 ```{r ajust_prep}
 bci_dist <- dissimilarity(bci, method = "bray")
@@ -482,11 +486,12 @@ ___(bci_nmds)
 ```
 
 ```{r ajust_h2-solution}
+## Solution ##
 glance(bci_nmds)
 ```
 
 ```{r ajust_h2-check}
-grade_code("Analysez maintenat ces mesures et répondez à la question ci-dessous.") 
+grade_code("Bon, on commence à s'habituer à l'usage simple de `glance()`. Analysez maintenant ces mesures et répondez à la question ci-dessous.") 
 ```
 
 ```{r qu_nmds}
@@ -504,7 +509,7 @@ question("Considérez vous que cette MDS non métrique est de qualité ?",
 
 Le diagramme de Shepard (fonction `shepard()` pour le calculer puis `chart()` pour l'afficher) visualise la distorsion introduite par notre MDS non métrique. Une différence importante entre le R^2^ linéaire et le R^2^ non linéaire est une première indication d'un stress important. La fonction `shepard()` demande d'une part la matrice de distance de départ et d'autre part, l'objet nmds pour pouvoir réaliser le calcul.
 
-Sur le diagramme des dissimilarités de la matrice *versus* distances sur la carte, le trait rouge matérialise la fonction de stress. Plus les points sont proches de ce trait, mieux c'est en mode non linéaire. De plus, si ce trait se rapproche d'une droite, alors la linéarité est d'autant mieux respectée également. C'est donc une analyse en deux étapes que l'on fait ici par observation du diagramme\ : d'abord, une fidélité pour des distances similaires, ert en second lieu comme bonus éventuellement, un respect des distances relatives les unes par rapport aux autres.
+Sur le diagramme des dissimilarités de la matrice *versus* distances sur la carte, le trait rouge matérialise la fonction de stress. Plus les points sont proches de ce trait, mieux c'est en mode non linéaire. De plus, si ce trait se rapproche d'une droite, alors la linéarité est d'autant mieux respectée également. C'est donc une analyse en deux étapes que l'on fait ici par observation du diagramme : d'abord, une fidélité pour des distances similaires, ert en second lieu comme bonus éventuellement, un respect des distances relatives les unes par rapport aux autres.
 
 Réaliser le diagramme de Shepard pour votre MDS non métrique.
 
@@ -526,6 +531,7 @@ ___(bci_sh)
 ```
 
 ```{r shepard_h2-solution}
+## Solution ##
 bci_sh <- shepard(bci_dist, bci_nmds)
 chart(bci_sh)
 ```
@@ -536,7 +542,7 @@ grade_code("Comme vous le voyez, les points sont relativement proches de la fonc
 
 ## Conclusion
 
-Félicitation ! Vous venez de terminer votre auto-évaluation relative au positionnement multidimensionnel. Vous maîtrisez maintenant les notions et fonctions nécessaires pour la réalisation ce type d'analyse. 
+Félicitation ! Vous venez de terminer votre auto-évaluation relative au positionnement multidimensionnel. Vous maîtrisez maintenant les notions et fonctions de base nécessaires pour la réalisation ce type d'analyse et vous pouvez vous lancer dans le projet relatif à cette matière.
 
 ```{r comm_noscore, echo=FALSE}
 question_text(

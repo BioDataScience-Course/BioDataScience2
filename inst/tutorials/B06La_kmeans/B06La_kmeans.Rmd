@@ -110,7 +110,7 @@ chart.k_means <- function(data, ..., type = NULL, env = parent.frame())
 
 # Preparation dataset
 data("doubs", package = "ade4")
-envir <- as_tibble(doubs$env)
+envir <- as_dtx(doubs$env)
 ```
 
 ```{r, echo=FALSE}
@@ -121,16 +121,16 @@ BioDataScience2::learnr_banner()
 BioDataScience2::learnr_server(input, output, session)
 ```
 
-----
+------------------------------------------------------------------------
 
 ## Objectifs
 
 La méthode des k-moyennes ("k-means" en anglais) permet de réaliser des regroupements d'individus en partant d'un tableau multivarié. Elle a donc le même objectif que la classification hiérarchique ascendante (CAH) que vous avez découverte dans le module précédent. La méthode des k-moyennes a l'avantage, par rapport à la classification ascendante hiérarchique, d'être moins gourmande en temps de calcul et en mémoire vive. Elle sera donc à privilégier lorsque vous vous retrouvez confronté à un grand jeu de données. Par contre, elle est souvent moins efficace que la CAH.
 
-Dans ce tutoriel, vous allez pouvoir auto-évaluer votre capacité à\ :
+Dans ce tutoriel, vous allez pouvoir auto-évaluer votre capacité à :
 
-- comprendre les différentes étapes de la classification par les k-moyennes\ : choix du nombre de groupes, classification par les k-moyennes, récupération des coordonnées des centres et représentation graphique.
-- analyser et interpréter de manière autonome un jeu de données multivariées à l'aide des k-moyennes
+-   comprendre les différentes étapes de la classification par les k-moyennes : choix du nombre de groupes, classification par les k-moyennes, récupération des coordonnées des centres et représentation graphique.
+-   analyser et interpréter de manière autonome un jeu de données multivariées à l'aide des k-moyennes
 
 N'entamez ce tutoriel qu'après avoir compris le principe des k-moyennes proposé dans le [module 6](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/k-moyenne-mds-som.html) du cours et en particulier la [section 6.1](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/k-moyennes.html). Assurez-vous d'avoir réalisé les exercices H5P qui s'y trouvent avant de vous lancer dans ce tutoriel-ci.
 
@@ -138,23 +138,23 @@ N'entamez ce tutoriel qu'après avoir compris le principe des k-moyennes propos�
 
 Nous utilisons ici le même jeu de données concernant les variables environnementales mesurées à 30 stations le long du Doubs, une rivière qui serpente entre la France et la Suisse. Il ne s'agit pas d'un gros jeu de données, et vous avez pu constater que la CAH s'y applique facilement. Néanmoins, nous le conservons à des fins de comparaison entre les deux techniques k-moyennes et CAH.
 
-![Carte du Doubs, d'après OpenStreetMap.](images/doubs.jpg){width='60%'} 
+![Carte du Doubs, d'après OpenStreetMap.](images/doubs.jpg){width="60%"}
 
-Pour rappel, le tableau suivant reprend les onze variables mesurées. Rappelez-vous que les auteurs de l'étude d'où sont issues ces données ont décidé d'appliquer des coefficients multiplicateurs pour homogénéiser les données\ : 
+Pour rappel, le tableau suivant reprend les onze variables mesurées. Rappelez-vous que les auteurs de l'étude d'où sont issues ces données ont décidé d'appliquer des coefficients multiplicateurs pour homogénéiser les données :
 
-| label   | description                      | unités * coef |
-|:-------:|:---------------------------------|:--------------|
-| **dfs** | distance depuis la source        | km * 10       |
-| **alt** | altitude                         | m             |
-| **slo** | pente des berges en `log(x + 1)` | ‰ * 100       |
-| **flo** | flux moyen minimum               | m^3^/s * 100  |
-| **pH**  | pH de l'eau                      | - * 10        |
-| **har** | dureté totale de l'eau           | mg Ca^++^/L   | 
-| **pho** | phosphates                       | mg/L * 100    |
-| **nit** | nitrates                         | mg/L * 100    |
-| **amm** | azote ammoniacal                 | mg/L * 100    |
-| **oxy** | oxygène dissout                  | mg/L * 10     |
-| **bdo** | demande biologique en oxygène    | mg/L * 10     |
+|  label  | description                      | unités \* coef |
+|:-------:|:---------------------------------|:---------------|
+| **dfs** | distance depuis la source        | km \* 10       |
+| **alt** | altitude                         | m              |
+| **slo** | pente des berges en `log(x + 1)` | ‰ \* 100       |
+| **flo** | flux moyen minimum               | m^3^/s \* 100  |
+| **pH**  | pH de l'eau                      | \- \* 10       |
+| **har** | dureté totale de l'eau           | mg Ca^++^/L    |
+| **pho** | phosphates                       | mg/L \* 100    |
+| **nit** | nitrates                         | mg/L \* 100    |
+| **amm** | azote ammoniacal                 | mg/L \* 100    |
+| **oxy** | oxygène dissout                  | mg/L \* 10     |
+| **bdo** | demande biologique en oxygène    | mg/L \* 10     |
 
 Voici les premières lignes du tableau `envir` qui contient ces données.
 
@@ -166,7 +166,7 @@ head(envir)
 
 Avec la méthode des k-moyennes, vous devez spécifier le nombre de groupes que vous souhaitez réaliser à l'avance. Souvent, à ce stade de l'analyse, il est inconnu. Vous pouvez utiliser `profile_k()` pour vous aider à choisir la valeur de *k* qui diminuera le plus la somme des carrés des distances intra-groupes, comme indicateur de la qualité de votre regroupement.
 
-Sur base du jeu de données `envir`, réalisez un graphique permettant d'estimer le nombre de groupes à employer dans la méthode des k-moyennes. Les variables mesurées ayant des unités différentes, n'oubliez pas de **standardiser** vos données en utilisant la fonction `scale()` et assignez les ensuite à `envir_scale`. Ce n'est pas le cas pour ce jeu de données, mais pensez aussi à éliminer les colonnes non numériques à l’aide de `select()` si vous en avez dans votre tableau de départ.
+Sur base du jeu de données `envir`, réalisez un graphique permettant d'estimer le nombre de groupes à employer dans la méthode des k-moyennes. Les variables mesurées ayant des unités différentes, n'oubliez pas de **standardiser** vos données en utilisant la fonction `scale()` et assignez les ensuite à `envir_scale`. Ce n'est pas le cas pour ce jeu de données, mais pensez aussi à éliminer les colonnes non numériques à l'aide de `select()` si vous en avez dans votre tableau de départ.
 
 ```{r nbclust_h2, exercise=TRUE}
 envir_scale <- ___(___)
@@ -181,6 +181,7 @@ ___(envir_scale)
 ```
 
 ```{r nbclust_h2-solution}
+## Solution ##
 envir_scale <- scale(envir)
 profile_k(envir_scale)
 ```
@@ -206,28 +207,29 @@ question("Sur base du graphique que vous avez réalisé, quelle valeur de k util
 
 Maintenant que vous avez défini la valeur de *k* que vous allez utiliser, vous pouvez procéder au calcul des k-moyennes en utilisant la fonction `k_means()`. Vous lui fournirez le tableau de départ contenant uniquement des valeurs numériques éventuellement *standardisées* et spécifierez le nombre `k =` de groupes souhaités.
 
-La position initiale des k centres est déterminée aléatoirement. Le résultat final peut donc varier et ne pas être optimal. Pour éviter cela, nous pouvons utiliser l’argument `nstart =` qui testera différentes situations de départ pour conserver le meilleur résultat. Par défaut, une seule situation aléatoire de départ `nstart = 1` est considérée. Avec une valeur plus importante de `nstart =`, votre analyse sera plus robuste… mais cela augmentera le temps de calcul.
+La position initiale des k centres est déterminée aléatoirement. Le résultat final peut donc varier et ne pas être optimal. Pour éviter cela, nous pouvons utiliser l'argument `nstart =` qui testera différentes situations de départ pour conserver le meilleur résultat. Par défaut, une seule situation aléatoire de départ `nstart = 1` est considérée. Avec une valeur plus importante de `nstart =`, votre analyse sera plus robuste... mais cela augmentera le temps de calcul.
 
-En utilisant le tableau standardisé mis à votre disposition et enregistré sous `envir_scale`, réalisez un regroupement avec la fonction `k_means()`. Utilisez pour cela une valeur *k* de 4 et 25 positions de départ différentes. 
+En utilisant le tableau standardisé mis à votre disposition et enregistré sous `envir_scale`, réalisez un regroupement avec la fonction `k_means()`. Utilisez pour cela une valeur *k* de 4 et 25 positions de départ différentes.
 
 ```{r kmeans_prep}
-envir_scale <- as_tibble(scale(envir))
+envir_scale <- as_dtx(scale(envir))
 ```
 
 ```{r kmeans_h2, exercise=TRUE, exercise.setup="kmeans_prep"}
-set.seed(210219) # Point de départ du générateur pseudo-aléatoire
+set.seed(210219)
 (envir_kmn <- ___(___, ___ = ___, nstart = ___))
 ```
 
 ```{r kmeans_h2-hint-1}
-set.seed(210219) # Point de départ du générateur pseudo-aléatoire
+set.seed(210219)
 (envir_kmn <- ___(envir_scale, ___ = 4, nstart = 25))
 
 #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r kmeans_h2-solution}
-set.seed(210219) # Point de départ du générateur pseudo-aléatoire
+## Solution ##
+set.seed(210219)
 (envir_kmn <- k_means(envir_scale, k = 4, nstart = 25))
 ```
 
@@ -240,7 +242,7 @@ grade_code("Vous venez de réaliser votre première classification par les k moy
 Réaliser un graphique des nitrates `nit` en fonction de l'oxygène dissout `oxy`. Regrouper les stations par de la couleur en utilisant les groupes que vous avez calculé et représentez les centres sur votre graphique.
 
 ```{r graphe_prep}
-envir_scale <- as_tibble(scale(envir))
+envir_scale <- as_dtx(scale(envir))
 set.seed(210219) 
 envir_kmn <- k_means(envir_scale, k = 4, nstart = 25)
 ```
@@ -260,6 +262,7 @@ chart(___, choices = c("___", "___"))
 ```
 
 ```{r graphe_h3-solution}
+## Solution ##
 chart(envir_kmn, choices = c("oxy", "nit"))
 ```
 

@@ -4,7 +4,7 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II Module 2** Régression linéaire polynomiale."
 tutorial:
   id: "B02Lb_reg_poly"
-  version: 2.0.0/7
+  version: 2.0.1/7
 output: 
   learnr::tutorial:
     progressive: true
@@ -25,39 +25,37 @@ BioDataScience2::learnr_banner()
 BioDataScience2::learnr_server(input, output, session)
 ```
 
-----
+------------------------------------------------------------------------
 
 ## Objectifs
 
-- Maîtriser la régression linéaire polynomiale dans R avec la fonction `lm()`.
-- Utiliser le **critère d'Akaike** pour comparer deux modèles.
+-   Maîtriser la régression linéaire polynomiale dans R avec la fonction `lm()`.
+-   Utiliser le **critère d'Akaike** pour comparer deux modèles.
 
 ## Régression linéaire polynomiale
 
 ```{r regpoly-init}
-# edition de l'exercice 
 set.seed(42)
 
 x <- seq(from = 1, to = 10, by = 0.25)
-x1 <- x + rnorm(n = length(x))
-
+x1 <- x + rnorm(length(x))
 
 mod_poly2 <- function(x1, alpha1, alpha2, intercept, random_effect){
   y <- intercept + (alpha1 * x1) + (alpha2 * (x1^2)) 
   y + rnorm(n = length(x1), sd = random_effect)
 }
 
-df <- tibble(
+df <- dtx(
   x = x1,
   y = mod_poly2(x1 = x1, alpha1 = 2, alpha2 = 2.5, intercept = 55, random_effect = 10)
 )
 
 lm_poly <- lm(df, formula = y ~ x + I(x^2))
-lm_poly_coef <- broom::tidy(lm_poly)
-lm_poly_param <- broom::glance(lm_poly)
+lm_poly_coef <- tidy(lm_poly)
+lm_poly_param <- glance(lm_poly)
 ```
 
-Réalisez la **régression linéaire polynomiale d'ordre 2** de la variable `y` en fonction de la variable `x` sur le jeu de données `df`. Vous avez à votre dispositon un nuage de points et un résumé des données pour prendre connaissance des données.
+Réalisez la **régression linéaire polynomiale d'ordre 2** de la variable `y` en fonction de la variable `x` sur le jeu de données `df` et représentez-la graphiquement. Vous avez à votre disposition un nuage de points et un résumé des données pour en connaissance.
 
 ```{r}
 chart(df, y ~ x) +
@@ -65,20 +63,17 @@ chart(df, y ~ x) +
 ```
 
 ```{r regpoly-prep}
-# copie du chunk regpoly-init
-# edition de l'exercice 
 set.seed(42)
 
 x <- seq(from = 1, to = 10, by = 0.25)
-x1 <- x + rnorm(n = length(x))
-
+x1 <- x + rnorm(length(x))
 
 mod_poly2 <- function(x1, alpha1, alpha2, intercept, random_effect){
   y <- intercept + (alpha1 * x1) + (alpha2 * (x1^2)) 
   y + rnorm(n = length(x1), sd = random_effect)
 }
 
-df <- tibble(
+df <- dtx(
   x = x1,
   y = mod_poly2(x1 = x1, alpha1 = 2, alpha2 = 2.5, intercept = 55, random_effect = 10)
 )
@@ -87,20 +82,19 @@ df <- tibble(
 💬 **Un snippet peut vous aider à réaliser cet exercice.**
 
 ```{r regpoly_h2, exercise = TRUE, exercise.setup = "regpoly-prep"}
-# Résumé des données
-summary(df)
-# Regression lineaire polynomiale
 summary(lm. <- lm(data = ___, ___ ~ ___))
-lm. %>.% (function (lm, model = lm[["model"]], vars = names(model))
+
+lm. %>.% (function(lm, model = lm[["model"]], vars = names(model))
   chart(model, aes_string(x = vars[2], y = vars[1])) +
   geom_point() +
   stat_smooth(method = "lm", formula = y ~ x + I(x^2)))(.)
 ```
 
 ```{r regpoly_h2-hint}
-#snippet
+# Voyez les snippets, vous y trouverez ceci :
 summary(lm. <- lm(data = DF, YNUM ~  XNUM + I(XNUM^2)))
-lm. %>.% (function (lm, model = lm[["model"]], vars = names(model))
+
+lm. %>.% (function(lm, model = lm[["model"]], vars = names(model))
   chart(model, aes_string(x = vars[2], y = vars[1])) +
   geom_point() +
   stat_smooth(method = "lm", formula = y ~ x + I(x^2)))(.)
@@ -109,11 +103,10 @@ lm. %>.% (function (lm, model = lm[["model"]], vars = names(model))
 ```
 
 ```{r regpoly_h2-solution}
-# Résumé des données
-summary(df)
-# Regression lineaire polynomiale
+## Solution ##
 summary(lm. <- lm(data = df, y ~ x + I(x^2)))
-lm. %>.% (function (lm, model = lm[["model"]], vars = names(model))
+
+lm. %>.% (function(lm, model = lm[["model"]], vars = names(model))
   chart(model, aes_string(x = vars[2], y = vars[1])) +
   geom_point() +
   stat_smooth(method = "lm", formula = y ~ x + I(x^2)))(.)
@@ -123,7 +116,7 @@ lm. %>.% (function (lm, model = lm[["model"]], vars = names(model))
 grade_code("Magnifique première régression polynomiale !")
 ```
 
-Suite à votre analyse répondez aux questions suivantes : 
+Suite à votre analyse répondez aux questions suivantes :
 
 ```{r qu_regpoly}
 quiz(
@@ -153,70 +146,65 @@ quiz(
 ## Régression linéaire simple ou polynomiale
 
 ```{r regpoly_simp-init}
-# edition de l'exercice 
 set.seed(42)
 
 x <- seq(from = 1, to = 10, by = 0.25)
-x1 <- x + rnorm(n = length(x))
+x1 <- x + rnorm(length(x))
 
 mod_poly2 <- function(x1, alpha1, alpha2, intercept, random_effect){
   y <- intercept + (alpha1 * x1) + (alpha2 * (x1^2)) 
   y + rnorm(n = length(x1), sd = random_effect)
 }
 
-df <- tibble(
+df <- dtx(
   x = x1,
   y = mod_poly2(x1 = x1, alpha1 = 2, alpha2 = 2.5, intercept = 55, random_effect = 10)
 )
 
 lm_lin_simp <- lm(df, formula = y ~ x )
-lm_ls_coef <- broom::tidy(lm_lin_simp)
-lm_ls_param <- broom::glance(lm_lin_simp)
+lm_ls_coef <- tidy(lm_lin_simp)
+lm_ls_param <- glance(lm_lin_simp)
 
 lm_lin_poly <- lm(df, formula = y ~ x + I(x^2))
-lm_lp_coef <- broom::tidy(lm_poly)
-lm_lp_param <- broom::glance(lm_poly)
+lm_lp_coef <- tidy(lm_poly)
+lm_lp_param <- glance(lm_poly)
 ```
 
-Réalisez une régression **linéaire simple** et une régression **linéaire polynomiale d'ordre 2** de la variable `y` en fonction de la variable `x` sur le jeu de données `df`. Utilisez le critère d'Akaike afin de déterminer le meilleur modèle. Vous avez à votre dispositon un nuage de points et un résumé des données pour prendre connaissance des données.
+Réalisez une régression **linéaire simple** et une régression **linéaire polynomiale d'ordre 2** de la variable `y` en fonction de la variable `x` dans le jeu de données `df`. Utilisez le critère d'Akaike afin de déterminer quel est le meilleur modèle. Vous avez à votre disposition un nuage de points et un résumé des données pour en prendre connaissance.
 
 ```{r}
 chart(df, y ~ x) +
   geom_point()
 ```
 
-
 ```{r regpoly_simp-prep}
-# edition de l'exercice 
 set.seed(42)
 
 x <- seq(from = 1, to = 10, by = 0.25)
-x1 <- x + rnorm(n = length(x))
+x1 <- x + rnorm(length(x))
 
 mod_poly2 <- function(x1, alpha1, alpha2, intercept, random_effect){
   y <- intercept + (alpha1 * x1) + (alpha2 * (x1^2)) 
   y + rnorm(n = length(x1), sd = random_effect)
 }
 
-df <- tibble(
+df <- dtx(
   x = x1,
   y = mod_poly2(x1 = x1, alpha1 = 2, alpha2 = 2.5, intercept = 55, random_effect = 10)
 )
 
 lm_lin_simp <- lm(df, formula = y ~ x )
-lm_ls_coef <- broom::tidy(lm_lin_simp)
-lm_ls_param <- broom::glance(lm_lin_simp)
+lm_ls_coef <- tidy(lm_lin_simp)
+lm_ls_param <- glance(lm_lin_simp)
 
 lm_lin_poly <- lm(df, formula = y ~ x + I(x^2))
-lm_lp_coef <- broom::tidy(lm_lin_poly)
-lm_lp_param <- broom::glance(lm_lin_poly)
+lm_lp_coef <- tidy(lm_lin_poly)
+lm_lp_param <- glance(lm_lin_poly)
 ```
 
 💬 **Un snippet peut vous aider à réaliser cet exercice.**
 
 ```{r regpoly_simp_h3, exercise = TRUE, exercise.setup = "regpoly_simp-prep"}
-# résumé 
-summary(df)
 # régression linéaire simple
 summary(lm_lin_simp <- lm(data = ___, ___ ~  ___ ))
 # régression linéaire polynomiale
@@ -226,31 +214,17 @@ ___(lm_lin_simp, lm_lin_poly)
 ```
 
 ```{r regpoly_simp_h3-hint-1}
-# snippet 1
+# régression linéaire simple (snippet 1)
 summary(lm. <- lm(data = DF, YNUM ~ XNUM))
-lm. %>.% (function (lm, model = lm[["model"]], vars = names(model))
-  chart(model, aes_string(x = vars[2], y = vars[1])) +
-  geom_point() +
-  stat_smooth(method = "lm", formula = y ~ x))(.)
-
-# snippet 2
+# régression linéaire polynomiale (snippet 2)
 summary(lm. <- lm(data = DF, YNUM ~  XNUM + I(XNUM^2)))
-lm. %>.% (function (lm, model = lm[["model"]], vars = names(model))
-  chart(model, aes_string(x = vars[2], y = vars[1])) +
-  geom_point() +
-  stat_smooth(method = "lm", formula = y ~ x + I(x^2)))(.)
-```
-
-```{r regpoly_simp_h3-hint-2}
-# snippet (suite)
-AIC(lm.)
+# comparaison des 2 modèles
+___(lm_lin_simp, lm_lin_poly)
 
 #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r regpoly_simp_h3-solution}
-# résumé 
-summary(df)
 # régression linéaire simple
 summary(lm_lin_simp <- lm(data = df, y ~ x ))
 # régression linéaire polynomiale
@@ -263,29 +237,26 @@ AIC(lm_lin_simp, lm_lin_poly)
 grade_code("Vous venez de réaliser votre première comparaison de modèle. Lequel est le meilleur ?")
 ```
 
-Suite à votre analyse répondez aux questions suivantes : 
+Suite à votre analyse répondez aux questions suivantes :
 
 ```{r qu_regpoly_simp}
 quiz(
   question(text = "Quelle est la valeur du critère d'Akaike de la régression polynomiale ?",
-           answer(sprintf("%.2f", lm_lp_param$AIC), correct = TRUE),
-           answer(sprintf("%.2f", lm_lp_param$BIC)),
-           answer(sprintf("%.2f", lm_ls_param$AIC)),
-           answer(sprintf("%.2f", lm_lp_param$deviance)),
-           allow_retry = TRUE, random_answer_order = TRUE
-           ),
+    answer(sprintf("%.2f", lm_lp_param$AIC), correct = TRUE),
+    answer(sprintf("%.2f", lm_lp_param$BIC)),
+    answer(sprintf("%.2f", lm_ls_param$AIC)),
+    answer(sprintf("%.2f", lm_lp_param$deviance)),
+    allow_retry = TRUE, random_answer_order = TRUE),
   question(text = "Quelle est la valeur du critère d'Akaike de la régression linéaire simple ?",
-           answer(sprintf("%.2f", lm_ls_param$AIC), correct = TRUE),
-           answer(sprintf("%.2f", lm_ls_param$BIC)),
-           answer(sprintf("%.2f", lm_lp_param$AIC)),
-           answer(sprintf("%.2f", lm_ls_param$deviance)),
-           allow_retry = TRUE, random_answer_order = TRUE
-           ),
+    answer(sprintf("%.2f", lm_ls_param$AIC), correct = TRUE),
+    answer(sprintf("%.2f", lm_ls_param$BIC)),
+    answer(sprintf("%.2f", lm_lp_param$AIC)),
+    answer(sprintf("%.2f", lm_ls_param$deviance)),
+    allow_retry = TRUE, random_answer_order = TRUE),
   question(text = "Quel est le meilleur modèle selon le critère d'Akaike",
-           answer("modèle linéaire polynomiale", correct = TRUE),
-           answer("modèle linéaire simple"),
-           allow_retry = TRUE
-           )
+    answer("modèle linéaire polynomiale", correct = TRUE),
+    answer("modèle linéaire simple"),
+    allow_retry = TRUE)
 )
 ```
 

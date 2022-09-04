@@ -4,7 +4,7 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II Module 6** Cartes auto-adaptatives (SOM)"
 tutorial:
   id: "B06Lc_som"
-  version: 2.0.0/5
+  version: 2.0.1/5
 output: 
   learnr::tutorial:
     progressive: true
@@ -18,7 +18,8 @@ library(kohonen)
 
 # Preparation of the dataset ------
 read("varechem", package = "vegan") %>.%
-  rename(., station = rownames) -> envir
+  rename(., station = .rownames) %->%
+  envir
 ```
 
 ```{r, echo=FALSE}
@@ -29,51 +30,52 @@ BioDataScience2::learnr_banner()
 BioDataScience2::learnr_server(input, output, session)
 ```
 
-----
+------------------------------------------------------------------------
 
-## Objectif 
+## Objectif
 
-Le tutoriel learnr sur les cartes auto-adaptatives (SOM) que vous vous apprêtez à réaliser vous permettra de\ : 
+Le tutoriel learnr sur les cartes auto-adaptatives (SOM) que vous vous apprêtez à réaliser vous permettra de :
 
-- comprendre comment réaliser les différentes étapes de la SOM\ : transformation du jeu de données en matrice, calcul de la SOM et représentation sous forme de différents graphiques
-- acquérir les outils nécessaires à l'analyse et l'interprétation d'un jeu de données multivariées grâce à la SOM
+-   comprendre comment réaliser les différentes étapes de la SOM : transformation du jeu de données en matrice, calcul de la SOM et représentation sous forme de différents graphiques
+-   acquérir les outils nécessaires à l'analyse et l'interprétation d'un jeu de données multivariées grâce à la SOM
 
 Avant toute chose, assurez vous d'avoir bien compris le contenu du [module 6](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/k-moyenne-mds-som.html) du cours et en particulier la [section 6.3](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/cartes-auto-adaptatives-som.html). N'oubliez pas de réaliser les exercices H5P qui figurent dans cette section avant de vous lancer dans ce tutoriel.
 
 ## Données environnementales
 
-Des chercheurs ont étudié la composition floristique et les variables environnementales dans des forêts de pins oligotropes (*Pinus sylvestris*) dans l'est de la Fennoscandie, une région située au nord de l'Europe constituée de la Finlande, de la péninsule Scandinave, de la Carélie et de la péninsule de Kola. 
+Des chercheurs ont étudié la composition floristique et les variables environnementales dans des forêts de pins oligotropes (*Pinus sylvestris*) dans l'est de la Fennoscandie, une région située au nord de l'Europe constituée de la Finlande, de la péninsule Scandinave, de la Carélie et de la péninsule de Kola.
 
 ![Fénoscandie](images/Fennoscandia.jpg)
 
 Les 24 sites sélectionnés pour cette étude sont situés dans le nord de la Finlande et dans la péninsule de Kola. Quatorze variables environnementales ont été mesurées sur les différents sites d'étude dont onze permettant d'évaluer la quantité de nutriments présentant dans la matière organique (MO). Les différentes variables mesurées sont présentées dans le tableau ci-dessous.
 
-| label        | description                    | unités     |
+|    label     | description                    | unités     |
 |:------------:|:-------------------------------|:-----------|
-| **N**        | azote                          | mg/g de MO |
-| **P**        | phosphore                      | µg/g de MO |
-| **K**        | potassium                      | µg/g de MO |
-| **Ca**       | calcium                        | µg/g de MO |
-| **Mg**       | magnésium                      | µg/g de MO |
-| **S**        | soufre                         | µg/g de MO |
-| **Al**       | aluminium                      | µg/g de MO |
-| **Fe**       | fer                            | µg/g de MO |
-| **Mn**       | manganèse                      | µg/g de MO |
-| **Zn**       | zinc                           | µg/g de MO |
-| **Mo**       | molybdène                      | µg/g de MO |
-| **Baresoil** | surface estimée de sol nu      | %          |
+|    **N**     | azote                          | mg/g de MO |
+|    **P**     | phosphore                      | µg/g de MO |
+|    **K**     | potassium                      | µg/g de MO |
+|    **Ca**    | calcium                        | µg/g de MO |
+|    **Mg**    | magnésium                      | µg/g de MO |
+|    **S**     | soufre                         | µg/g de MO |
+|    **Al**    | aluminium                      | µg/g de MO |
+|    **Fe**    | fer                            | µg/g de MO |
+|    **Mn**    | manganèse                      | µg/g de MO |
+|    **Zn**    | zinc                           | µg/g de MO |
+|    **Mo**    | molybdène                      | µg/g de MO |
+| **Baresoil** | surface estimée de sol nu      | \%         |
 | **Humdepth** | épaisseur de la couche d'humus | cm         |
-| **pH**       | pH du sol                      | -          |
+|    **pH**    | pH du sol                      | \-         |
 
 Vous pouvez facilement télécharger ces données depuis `"varechem"` dans le package {vegan} et en visualiser les premières lignes.
 
 ```{r}
 read("varechem", package = "vegan") %>.%
-  rename(., station = rownames) -> envir
+  rename(., station = .rownames) %->%
+  envir
 head(envir)
 ```
 
-Pour avoir une idée globale du jeu de données, vous pouvez commencer par utiliser `skim()`.
+Pour avoir une idée globale du jeu de données, vous pouvez commencer par utiliser `skimr::skim()`.
 
 ```{r}
 skimr::skim(envir)
@@ -88,24 +90,34 @@ Transformez votre jeu de données `envir` en matrice. N'oubliez pas de commencer
 ```{r matrix_h2, exercise=TRUE, exercice.lines=4}
 ___ %>.%
   ___(., -station) %>.%  # Éliminer station
+  collect_dtx(.) %>.%    # Get a data frame
   ___(.) %>.%            # Standardiser
-  ___(.) -> envir_mat    # Transformer en objet matrix
+  ___(.) %->%            # Transformer en objet matrix
+  envir_mat
+head(envir_mat)
 ```
 
 ```{r matrix_h2-hint-1}
 ___ %>.%
   select(., -station) %>.%  # Éliminer station
+    collect_dtx(.) %>.%     # Get a data frame
   ___(.) %>.%               # Standardiser
-  as.___(.) -> envir_mat    # Transformer en objet matrix
+  as.___(.) %->%            # Transformer en objet matrix
+  envir_mat
+head(envir_mat)
 
 #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r matrix_h2-solution}
+## Solution ##
 envir %>.%
   select(., -station) %>.%  # Éliminer station
+  collect_dtx(.) %>.%       # Get a data frame
   scale(.) %>.%             # Standardiser
-  as.matrix(.) -> envir_mat # Transformer en objet matrix
+  as.matrix(.) %->%         # Transformer en objet matrix
+  envir_mat
+head(envir_mat)
 ```
 
 ```{r matrix_h2-check}
@@ -116,31 +128,33 @@ grade_code("Maintenant que vous avez transformé votre jeu de données en matric
 
 Pour réalisez le calcul de votre carte auto-adaptative ou SOM, vous allez devoir utiliser la fonction `som()` du package {kohonen}. Avant de faire le calcul, il est important de noter que l'analyse fait intervenir le générateur pseudo-aléatoire. Il peut-être donc intéressant de le fixer en déterminant un point de départ avec `set.seed()` si vous souhaitez rendre votre analyse reproductible.
 
-Pour utiliser la fonction `som()`, vous devrez lui renseigner une matrice et utiliser l'argument `grid =` avec la fonction `somgrid()` pour lui préciser la topologie de la carte. Cette fonction `somgrid()` nécessite au minimum trois arguments\ : le nombre de cellules en x, en y (les dimensions de notre grille) et la topologie (grille rectangulaire ou grille hexagonale) spécifiée par l'argument `topo =` avec pour valeur `"rectangular"` et `"hexagonal"`, respectivement.
+Pour utiliser la fonction `som()`, vous devrez lui renseigner une matrice et utiliser l'argument `grid =` avec la fonction `somgrid()` pour lui préciser la topologie de la carte. Cette fonction `somgrid()` nécessite au minimum trois arguments : le nombre de cellules en x, en y (les dimensions de notre grille) et la topologie (grille rectangulaire ou grille hexagonale) spécifiée par l'argument `topo =` avec pour valeur `"rectangular"` et `"hexagonal"`, respectivement.
 
 À partir de votre matrice `envir_mat`, calculez la SOM pour une grille hexagonale de 3 par 3. Affichez le résumer de votre analyse avec `summary()`.
 
 ```{r mat_prep}
 envir %>.%
   select(., -station) %>.%
+  collect_dtx(.) %>.%
   scale(.) %>.%
-  as.matrix(.) -> envir_mat
+  as.matrix(.) %->%
+  envir_mat
 ```
 
 ```{r som_h3, exercise=TRUE, exercise.setup="mat_prep"}
-set.seed(198) # fixe le générateur pseudo-aléatoire
+set.seed(198)
 envir_som <- ___(___, ___ = ___(___, ___, ___))
 ___(___)
 ```
 
 ```{r som_h3-hint-1}
-set.seed(198) # fixe le générateur pseudo-aléatoire
+set.seed(198)
 envir_som <- ___(envir_mat, grid = ___(3, ___, ___ = ___))
 ___(___)
 ```
 
 ```{r som_h3-hint-2}
-set.seed(198) # fixe le générateur pseudo-aléatoire
+set.seed(198)
 envir_som <- ___(envir_mat, grid = ___(3, ___, topo = "___"))
 ___(envir_som)
 
@@ -148,7 +162,8 @@ ___(envir_som)
 ```
 
 ```{r som_h3-solution}
-set.seed(198) # fixe le générateur pseudo-aléatoire
+## Solution ##
+set.seed(198)
 envir_som <- som(envir_mat, grid = somgrid(3, 3, topo = "hexagonal"))
 summary(envir_som)
 ```
@@ -162,15 +177,18 @@ grade_code("Et voilà ... vous venez de réaliser votre première SOM ! Comme vo
 ```{r carte_prep}
 envir %>.%
   select(., -station) %>.%
+  collect_dtx(.) %>.%
   scale(.) %>.%
-  as.matrix(.) -> envir_mat
-set.seed(198) # fixe le générateur pseudo-aléatoire. 
+  as.matrix(.) %->%
+  envir_mat
+
+set.seed(198)
 envir_som <- som(envir_mat, grid = somgrid(3, 3, topo = "hexagonal"))
 ```
 
-Vous réalisez vos graphiques à partir de l"objet "SOM3 à l'aide de la fonction `plot()`. Il existe plusieurs types de graphiques disponibles, vous pouvez dès lors consulter l'aide en ligne `?kohonen::plot.kohonen` pour en savoir plus. 
+Vous réalisez vos graphiques à partir de l"objet "SOM3 à l'aide de la fonction `plot()`. Il existe plusieurs types de graphiques disponibles, vous pouvez dès lors consulter l'aide en ligne `?kohonen::plot.kohonen` pour en savoir plus.
 
-Commencez par visualiser l'évolution de l'apprentissage en utilisant l'argument `type = "changes"`. Vous avez à disposition l'objet `envir_som`. 
+Commencez par visualiser l'évolution de l'apprentissage en utilisant l'argument `type = "changes"`. Vous avez à disposition l'objet `envir_som`.
 
 ```{r changes_h2, exercise=TRUE, exercise.setup="carte_prep"}
 ___(___, ___)
@@ -183,6 +201,7 @@ ___(envir_som, ___ = "changes")
 ```
 
 ```{r changes_h2-solution}
+## Solution ##
 plot(envir_som, type = "changes")
 ```
 
@@ -207,6 +226,7 @@ ___(envir_som, type = ___, shape = ___, labels = envir$station)
 ```
 
 ```{r mapping_h2-solution}
+## Solution ##
 plot(envir_som, type = "mapping", shape = "straight", labels = envir$station)
 ```
 
@@ -216,9 +236,7 @@ grade_code("Le graphique que vous venez d'obtenir permet de voir comment les sta
 
 ### Représentation des variables
 
-Les cellules représentent des stations présentants des compositions différentes. La carte SOM étant orientée, il est possible de lui associer des informations relatives aux variables. Le graphique obtenu avec l'argument `type = "codes"` permet la visualisation de ces différences de façon générale. 
-
-Représentez ce graphique pour `envir_som` dans une grille hexagonale et en utilisant l'argument `codeRendering = "segments"` pour représenter les variables. 
+Les cellules représentent des stations présentants des compositions différentes. La carte SOM étant orientée, il est possible de lui associer des informations relatives aux variables. Le graphique obtenu avec l'argument `type = "codes"` permet la visualisation de ces différences de façon générale. Représentez ce graphique pour `envir_som` dans une grille hexagonale et en utilisant l'argument `codeRendering = "segments"` pour représenter les variables.
 
 ```{r codes_h2, exercise=TRUE, exercise.setup="carte_prep"}
 ___(___, type = ___, codeRendering = ___, shape = ___)
@@ -231,6 +249,7 @@ ___(envir_som, type = "codes", codeRendering = ___, shape = ___)
 ```
 
 ```{r codes_h2-solution}
+## Solution ##
 plot(envir_som, type = "codes", codeRendering = "segments", shape = "straight")
 ```
 

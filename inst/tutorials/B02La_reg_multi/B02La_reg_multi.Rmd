@@ -25,39 +25,37 @@ BioDataScience2::learnr_banner()
 BioDataScience2::learnr_server(input, output, session)
 ```
 
-----
+------------------------------------------------------------------------
 
 ## Objectifs
 
-- Être capable de lire la sortie renvoyée par `summary()` lorsqu'il est appliqué à un objet `lm`.
-- Maîtriser la régression linéaire multiple dans R avec la fonction `lm()`.
+-   Être capable de lire la sortie renvoyée par `summary()` lorsqu'il est appliqué à un objet **lm**.
+-   Maîtriser la régression linéaire multiple dans R avec la fonction `lm()`.
 
 ## Régression linéaire
 
-Réalisez une régression linéaire simple sur le jeu de données `df1` de la variable `y` en fonction de la variable `x`. 
+Réalisez une régression linéaire simple sur le jeu de données `df1` de la variable `y` en fonction de la variable `x`.
 
 ```{r reglin-init}
-# Edition de l'exercice 
 set.seed(42)
 
 reg_lin <- function(x, a, b)
   a * x + b
 
 v1 <- seq(from = 5, to = 20, by = 0.25)
-n_v1 <- length(v1)
-v2 <- v1 + rnorm(sd = 0.5, n = n_v1)
+v2 <- v1 + rnorm(length(v1), sd = 0.5)
 
-df1 <- tibble(
+df1 <- dtx(
   x = v2,
-  y = reg_lin(v2, 0.5, 0.001) + rnorm(sd = 0.5, n = n_v1)
+  y = reg_lin(v2, 0.5, 0.001) + rnorm(length(v1), sd = 0.5)
 )
 
 lm_lin <- lm(data = df1, y ~ x)
-lm_lin_param <- broom::glance(lm_lin)
-lm_lin_result <- broom::tidy(lm_lin)
+lm_lin_param <- glance(lm_lin)
+lm_lin_result <- tidy(lm_lin)
 ```
 
-Vous avez à votre disposition le graphique suivant pour visualiser les données\ :
+Vous avez à votre disposition le graphique suivant pour visualiser les données :
 
 ```{r}
 chart(data = df1, y ~ x) +
@@ -65,23 +63,22 @@ chart(data = df1, y ~ x) +
 ```
 
 ```{r reglin-prep}
-# Edition de l'exercice 
 set.seed(42)
 
 reg_lin <- function(x, a, b)
   a * x + b
 
 v1 <- seq(from = 5, to = 20, by = 0.25)
-n_v1 <- length(v1)
-v2 <- v1 + rnorm(sd = 0.5, n = n_v1)
+v2 <- v1 + rnorm(length(v1), sd = 0.5)
 
-df1 <- tibble(
+df1 <- dtx(
   x = v2,
-  y = reg_lin(v2, 0.5, 0.001) + rnorm(sd = 0.5, n = n_v1)
+  y = reg_lin(v2, 0.5, 0.001) + rnorm(length(v1), sd = 0.5)
 )
+
 lm_lin <- lm(data = df1, y ~ x)
-lm_lin_param <- broom::glance(lm_lin)
-lm_lin_result <- broom::tidy(lm_lin)
+lm_lin_param <- glance(lm_lin)
+lm_lin_result <- tidy(lm_lin)
 ```
 
 💬 **Un snippet peut vous aider à réaliser cet exercice.**
@@ -102,10 +99,10 @@ summary(lm. <- lm(data = df1, y ~ x))
 ```
 
 ```{r reglin_h2-check}
-grade_code("D'accord, on a maintenant un modèle linéaire simple comme point de départ.")
+grade_code("D'accord, on a maintenant une régression linéaire simple comme point de départ.")
 ```
 
-Suite à votre analyse répondez aux questions suivantes\ : 
+Suite à votre analyse répondez aux questions suivantes :
 
 ```{r qu_reglin}
 quiz(
@@ -138,62 +135,57 @@ quiz(
 ## Régression linéaire multiple
 
 ```{r regmulti-init}
-# Edition de l'exercice 
 set.seed(381)
 
 v <- seq(from = 1, to = 15, by = .2) 
-n_v <- length(v)
-x <- v + rnorm(sd = 3, n = n_v)
+x <- v + rnorm(length(v), sd = 3)
 
 reg_lin_rand <- function(x, a, b, random = 0.5)
-  a * x + b + rnorm(sd = random, n = n_v)
+  a * x + b + rnorm(length(v), sd = random)
   
 reg_mutli3_rand <- function(x1, a1, x2, a2, x3, a3, b, random = 5)
-  a1 * x1 + a2 * x2 + a3 * x3 + b + rnorm(sd = random, n = length(x1))
+  a1 * x1 + a2 * x2 + a3 * x3 + b + rnorm(length(x1), sd = random)
 
-df2 <- tibble::tibble(
-  x = x,
+df2 <- dtx(
+  x  = x,
   x0 = reg_lin_rand(x = x, a = 1.26, b = 2, random = 3.5),
   x1 = reg_lin_rand(x = x, a = 1.5, b = 1, random = 10),
-  y = reg_mutli3_rand(x1 = x, x2 = x0,  x3 = x1,
-                      a1 = 0.2, a2 = 0.3, a3 = 1.1, b = 2))
+  y  = reg_mutli3_rand(x1 = x, x2 = x0,  x3 = x1,
+    a1 = 0.2, a2 = 0.3, a3 = 1.1, b = 2))
 
 lm_mult <- lm(data = df2, y  ~ x + x1)
-lm_mult_coef <- broom::tidy(lm_mult)
-lm_mult_param <- broom::glance(lm_mult)
+lm_mult_coef <- tidy(lm_mult)
+lm_mult_param <- glance(lm_mult)
 ```
 
 ```{r}
 summary(df2)
 ```
 
-
 Réalisez une régression linéaire simple sur le jeu de données `df2` de la variable `y` en fonction de la variable `x` et `x1`.
 
 ```{r regmulti-prep}
-# Edition de l'exercice 
 set.seed(381)
 
 v <- seq(from = 1, to = 15, by = .2) 
-n_v <- length(v)
-x <- v + rnorm(sd = 3, n = n_v)
+x <- v + rnorm(length(v), sd = 3)
 
 reg_lin_rand <- function(x, a, b, random = 0.5)
-  a * x + b + rnorm(sd = random, n = n_v)
+  a * x + b + rnorm(length(v), sd = random)
   
 reg_mutli3_rand <- function(x1, a1, x2, a2, x3, a3, b, random = 5)
-  a1 * x1 + a2 * x2 + a3 * x3 + b + rnorm(sd = random, n = length(x1))
+  a1 * x1 + a2 * x2 + a3 * x3 + b + rnorm(length(x1), sd = random)
 
-df2 <- tibble::tibble(
-  x = x,
+df2 <- dtx(
+  x  = x,
   x0 = reg_lin_rand(x = x, a = 1.26, b = 2, random = 3.5),
   x1 = reg_lin_rand(x = x, a = 1.5, b = 1, random = 10),
-  y = reg_mutli3_rand(x1 = x, x2 = x0,  x3 = x1,
-                      a1 = 0.2, a2 = 0.3, a3 = 1.1, b = 2))
+  y  = reg_mutli3_rand(x1 = x, x2 = x0,  x3 = x1,
+    a1 = 0.2, a2 = 0.3, a3 = 1.1, b = 2))
 
 lm_mult <- lm(data = df2, y  ~ x + x1)
-lm_mult_coef <- broom::tidy(lm_mult)
-lm_mult_param <- broom::glance(lm_mult)
+lm_mult_coef <- tidy(lm_mult)
+lm_mult_param <- glance(lm_mult)
 ```
 
 💬 **Un snippet peut vous aider à réaliser cet exercice.**
@@ -205,10 +197,12 @@ summary(lm. <- lm(data = ___, ___ ~ ___))
 
 ```{r regmulti_h2-hint}
 summary(lm. <- lm(data = DF, Y  ~ VAR1 + VAR2))
+
+#### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r regmulti_h2-solution}
-# régression multiple 
+## Solution ## 
 summary(lm. <- lm(data = df2, y ~ x + x1))
 ```
 
@@ -216,7 +210,7 @@ summary(lm. <- lm(data = df2, y ~ x + x1))
 grade_code("Vous venez de réaliser votre première régression linéaire multiple. Elles n'auront bientôt plus de secrets pour vous !")
 ```
 
-Suite à votre analyse répondez aux questions suivantes\ : 
+Suite à votre analyse répondez aux questions suivantes :
 
 ```{r qu_regmulti}
 quiz(

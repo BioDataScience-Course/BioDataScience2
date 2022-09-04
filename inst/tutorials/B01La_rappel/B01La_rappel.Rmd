@@ -4,7 +4,7 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II Module 1** Rappel du cours de sdd1."
 tutorial:
   id: "B01La_rappel"
-  version: 2.1.3/22
+  version: 2.2.0/22
 output: 
   learnr::tutorial:
     progressive: true
@@ -25,13 +25,13 @@ BioDataScience2::learnr_banner()
 BioDataScience2::learnr_server(input, output, session)
 ```
 
-----
+------------------------------------------------------------------------
 
 ## Objectifs
 
-- Réviser les notions du cours de Science des Données I.
+-   Réviser les notions du cours de Science des Données I.
 
-## Logiciels 
+## Logiciels
 
 Répondez aux questions ci-dessous.
 
@@ -87,7 +87,7 @@ Au cours de Science des Données, nous utilisons abondamment Git et GitHub. Assu
 
 ### Situation 1
 
-Deux chercheurs distants de plusieurs centaines de kilomètres, collaborent sur un projet commun. Ils ont pour cela décidé d'employer un outil de gestion de version et d'héberger ce projet sur un système web dédié pour cela. 
+Deux chercheurs distants de plusieurs centaines de kilomètres, collaborent sur un projet commun. Ils ont pour cela décidé d'employer un outil de gestion de version et d'héberger ce projet sur un système web dédié pour cela.
 
 Sur base du schéma ci-dessous où chaque cercle de couleur correspond à un état du système de gestion de version de la situation expliquée, répondez aux questions suivantes.
 
@@ -169,7 +169,6 @@ Le chercheur 2 vient d'intégrer le projet que le chercheur 1 réalisait seul. I
 
 ![](images/clone.png)
 
-
 ```{r qu_git3}
 quiz(
   question("Qualifiez l'action **A**",
@@ -204,21 +203,21 @@ quiz(
 
 ## Biométrie d'oursins
 
-Sur base des données qui sont mises à votre disposition, reproduisez le graphique ci-dessous\ : 
+Sur base des données qui sont mises à votre disposition, reproduisez le graphique ci-dessous :
 
 ```{r}
-urchin <- data.io::read("urchin_bio", package = "data.io", lang = "FR")
+urchin <- read("urchin_bio", package = "data.io", lang = "FR")
 
 # Graphique à reproduire
 chart(urchin, height ~ weight %col=% origin) +
   geom_point()
 ```
 
-Le jeu des données mis à votre disposition est `urchin_bio` du package `data.io` qui comprend les variables suivantes\ : `r names(urchin)`.
+Le jeu des données mis à votre disposition est `urchin_bio` du package `data.io` qui comprend les variables suivantes : `r names(urchin)`.
 
 ```{r qu_np_h3, exercise=TRUE, exercise.lines=7}
 # Importation des données 
-urchin <- data.io::read(___, package = ___, lang = "FR")
+urchin <- read(___, package = ___, lang = "FR")
 
 # Votre graphique
 chart(___, ___ ~ ___ %col=% ___) +
@@ -227,7 +226,7 @@ chart(___, ___ ~ ___ %col=% ___) +
 
 ```{r qu_np_h3-hint-1}
 # Importation des données 
-urchin <- data.io::read("urchin_bio", package = "data.io", lang = "FR")
+urchin <- read("urchin_bio", package = "data.io", lang = "FR")
 
 # Votre graphique
 chart(___, ___ ~ ___ %col=% ___) +
@@ -238,7 +237,7 @@ chart(___, ___ ~ ___ %col=% ___) +
 
 ```{r qu_np_h3-hint-2}
 # Importation des données 
-urchin <- data.io::read("urchin_bio", package = "data.io", lang = "FR")
+urchin <- read("urchin_bio", package = "data.io", lang = "FR")
 
 # Votre graphique
 chart(urchin, ___ ~ ___ %col=% ___) +
@@ -250,7 +249,7 @@ chart(urchin, ___ ~ ___ %col=% ___) +
 ```{r qu_np_h3-solution}
 ## Solution ##
 # Importation des données 
-urchin <- data.io::read("urchin_bio", package = "data.io", lang = "FR")
+urchin <- read("urchin_bio", package = "data.io", lang = "FR")
 
 # Votre graphique
 chart(urchin, height ~ weight %col=% origin) +
@@ -263,39 +262,30 @@ grade_code("Vous vous souvenez comment réaliser un nuage de points.")
 
 ## Croissance de dents
 
-Sur base des données qui sont mises à votre disposition reproduisez le graphique ci-dessous à l'identique \ : 
+Sur base des données qui sont mises à votre disposition reproduisez le graphique ci-dessous à l'identique  :
 
 ```{r}
-# Importation des données
-tooth_growth <- read("ToothGrowth", package = "datasets") %>.%
-  mutate(., dose = as.factor(dose))
-
-tooth_growth <- labelise(
-  tooth_growth,
-  label = list(len = "Longueur des dents",
-               supp = "Supplémentation",
-               dose = "Dose"),
-  units = list(len = "mm"))
+read("ToothGrowth", package = "datasets") %>.%
+  fmutate(., dose = as.factor(dose)) %>.%
+  labelise(.,
+    label = list(len  = "Longueur des dents", supp = "Supplémentation", dose = "Dose"),
+    units = list(len  = "mm")) ->
+  tooth_growth
 
 # Graphique à reproduire
 chart(data = tooth_growth, len ~ supp %fill=% dose) +
   geom_boxplot()
 ```
 
-Le jeu des données mis à votre disposition est `ToothGrowth` du package `datasets` qui comprend les variables suivantes\ : `r names(ToothGrowth)`. 
+Le jeu des données mis à votre disposition est `ToothGrowth` du package `datasets` qui comprend les variables suivantes : `r names(ToothGrowth)`.
 
 ```{r qu_bp_h5, exercise=TRUE, exercise.lines=15}
-# Importation des données
-tooth_growth <- read("ToothGrowth", package = "datasets") %>.%
-  mutate(., dose = as.factor(dose))
-
-# Vos labels
-tooth_growth <- labelise(
-  tooth_growth,
-  label = list(len = ___,
-               supp = ___,
-               dose = "Dose"),
-  units = list(len = "mm"))
+read("ToothGrowth", package = "datasets") %>.%
+  fmutate(., dose = as.factor(dose)) %>.%
+  labelise(.,
+    label = list(len  = ___, supp = __, dose = "Dose"),
+    units = list(len  = "mm")) ->
+  tooth_growth
 
 # Votre graphique
 chart(___, ___) +
@@ -305,17 +295,12 @@ chart(___, ___) +
 ```{r qu_bp_h5-hint-1}
 # Relisez le chapitre 2 du livre Science des Données 1 <https://wp.sciviewg/sdd-umons/>
 
-# Importation des données
-tooth_growth <- read("ToothGrowth", package = "datasets") %>.%
-  mutate(., dose = as.factor(dose))
-
-# Vos labels
-tooth_growth <- labelise(
-  tooth_growth,
-  label = list(len = ___,
-               supp = ___,
-               dose = "Dose"),
-  units = list(len = "mm"))
+read("ToothGrowth", package = "datasets") %>.%
+  fmutate(., dose = as.factor(dose)) %>.%
+  labelise(.,
+    label = list(len  = "Longueur des dents", supp = ___, dose = "Dose"),
+    units = list(len  = "mm")) ->
+  tooth_growth
 
 # Votre graphique
 chart(___, ___) +
@@ -323,53 +308,25 @@ chart(___, ___) +
 ```
 
 ```{r qu_bp_h5-hint-2}
-# Importation des données
-tooth_growth <- read("ToothGrowth", package = "datasets") %>.%
-  mutate(., dose = as.factor(dose))
-
-# Vos labels
-tooth_growth <- labelise(
-  tooth_growth,
-  label = list(len = "Longueur des dents",
-               supp = ___,
-               dose = "Dose"),
-  units = list(len = "mm"))
-
-# Votre graphique
-chart(___, ___ ~ ___) +
-  ___()
-```
-
-```{r qu_bp_h5-hint-3}
-# Importation des données
-tooth_growth <- read("ToothGrowth", package = "datasets") %>.%
-  mutate(., dose = as.factor(dose))
-
-# Vos labels
-tooth_growth <- labelise(
-  tooth_growth,
-  label = list(len = "Longueur des dents",
-               supp = ___,
-               dose = "Dose"),
-  units = list(len = "mm"))
+read("ToothGrowth", package = "datasets") %>.%
+  fmutate(., dose = as.factor(dose)) %>.%
+  labelise(.,
+    label = list(len  = "Longueur des dents", supp = ___, dose = "Dose"),
+    units = list(len  = "mm")) ->
+  tooth_growth
 
 # Votre graphique
 chart(data = tooth_growth, ___ ~ ___ %fill=% ___) +
   geom_boxplot()
 ```
 
-```{r qu_bp_h5-hint-4}
-# Importation des données
-tooth_growth <- read("ToothGrowth", package = "datasets") %>.%
-  mutate(., dose = as.factor(dose))
-
-# Vos labels 
-tooth_growth <- labelise(
-  tooth_growth,
-  label = list(len = "Longueur des dents",
-               supp = "Supplémentation",
-               dose = "Dose"),
-  units = list(len = "mm"))
+```{r qu_bp_h5-hint-3}
+read("ToothGrowth", package = "datasets") %>.%
+  fmutate(., dose = as.factor(dose)) %>.%
+  labelise(.,
+    label = list(len  = "Longueur des dents", supp = "Supplémentation", dose = "Dose"),
+    units = list(len  = "mm")) ->
+  tooth_growth
 
 # Votre graphique
 chart(data = tooth_growth, len ~ supp %fill=% ___) +
@@ -380,17 +337,12 @@ chart(data = tooth_growth, len ~ supp %fill=% ___) +
 
 ```{r qu_bp_h5-solution}
 ## Solution ##
-# Importation des données
-tooth_growth <- read("ToothGrowth", package = "datasets") %>.%
-  mutate(., dose = as.factor(dose))
-
-# Vos labels 
-tooth_growth <- labelise(
-  tooth_growth,
-  label = list(len = "Longueur des dents",
-               supp = "Supplémentation",
-               dose = "Dose"),
-  units = list(len = "mm"))
+read("ToothGrowth", package = "datasets") %>.%
+  fmutate(., dose = as.factor(dose)) %>.%
+  labelise(.,
+    label = list(len  = "Longueur des dents", supp = "Supplémentation", dose = "Dose"),
+    units = list(len  = "mm")) ->
+  tooth_growth
 
 # Votre graphique
 chart(data = tooth_growth, len ~ supp %fill=% dose) +
@@ -401,13 +353,11 @@ chart(data = tooth_growth, len ~ supp %fill=% dose) +
 grade_code("Vous vous souvenez comment réaliser une boite de dispersion.")
 ```
 
-
 ## Biométrie humaine 1
 
-Sur base de données relatives à de la biométrie humaine, reproduisez le graphique ci-dessous\ : 
+Sur base de données relatives à de la biométrie humaine, reproduisez le graphique ci-dessous :
 
 ```{r, warning=FALSE}
-# Importation des données
 biometry <- read("biometry", package = "BioDataScience", lang = "FR")
 
 # Graphique à reproduire 
@@ -416,10 +366,9 @@ chart(biometry, ~ weight | gender) +
   ylab("Dénombrement")
 ```
 
-Le jeu des données mis à votre disposition est `biometry` du package `BioDataScience` qui comprend les variables suivantes\ : `r names(biometry)`.
+Le jeu des données mis à votre disposition est `biometry` du package `BioDataScience` qui comprend les variables suivantes : `r names(biometry)`.
 
 ```{r qu_facette_h4, exercise=TRUE, exercise.lines=8}
-# Importation des données
 biometry <- read("biometry", package = "BioDataScience", lang = "FR")
 
 # Votre graphique 
@@ -431,27 +380,15 @@ chart(___, ___) +
 ```{r qu_facette_h4-hint-1}
 # Relisez le chapitre 3 du livre Science des Données 1 <https://wp.sciviewg/sdd-umons/>
 
-# Importation des données
 biometry <- read("biometry", package = "BioDataScience", lang = "FR")
 
 # Votre graphique 
-chart(___, ___) +
+chart(biometry, ___) +
   ___() +
   ylab(___)
 ```
 
 ```{r qu_facette_h4-hint-2}
-# Importation des données
-biometry <- read("biometry", package = "BioDataScience", lang = "FR")
-
-# Votre graphique 
-chart(biometry, ~ ___) +
-  geom_histogram() +
-  ylab(___)
-```
-
-```{r qu_facette_h4-hint-3}
-# Importation des données
 biometry <- read("biometry", package = "BioDataScience", lang = "FR")
 
 # Votre graphique 
@@ -464,7 +401,6 @@ chart(biometry, ~ ___ | ___) +
 
 ```{r qu_facette_h4-solution}
 ## Solution ##
-# Importation des données
 biometry <- read("biometry", package = "BioDataScience", lang = "FR")
 
 # Votre graphique 
@@ -479,85 +415,67 @@ grade_code("Vous vous souvenez de la façon d'utiliser les facettes dans un grap
 
 ## Biométrie humaine 2
 
-Calculer l'indice de masse corporelle imc (variable `bmi` en anglais) qui correspond à la formule suivante\ :
+Calculer l'indice de masse corporelle imc (variable `bmi` en anglais) qui correspond à la formule suivante :
 
-$$bmi = mass\ [kg]/height [m]^2$$
-Vous travaillez toujours sur le jeu des données `biometry` du package `BioDataScience` qui comprend, pour rappel, les variables suivantes\ : `r names(biometry)`.
+$$bmi = mass\ [kg]/height [m]^2$$ Vous travaillez toujours sur le jeu des données `biometry` du package {BioDataScience} qui comprend, pour rappel, les variables suivantes : `r names(biometry)`.
 
 ```{r qu_mutate_h2, exercise=TRUE, exercise.lines=10}
-# Importation des données
 biometry <- read("biometry", package = "BioDataScience", lang = "FR")
 # Calcul du bmi
-biometry <- mutate(___,
-  height_m = ___/100, 
-  bmi = ___/___^2)
-# résumé de jeu de données
+biometry <- fmutate(___, height_m = ___/100, bmi = ___/___^2)
+# Résumé de jeu de données
 summary(biometry)
 ```
 
 ```{r qu_mutate_h2-hint-1}
-# Importation des données
 biometry <- read("biometry", package = "BioDataScience", lang = "FR")
 # Calcul du bmi
-biometry <- mutate(biometry,
-  height_m = ___/100, 
-  bmi = ___/height_m^2)
-# résumé de jeu de données
+biometry <- fmutate(biometry, height_m = ___/100, bmi = ___/height_m^2)
+# Résumé de jeu de données
 summary(biometry)
 
 #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r qu_mutate_h2-solution}
-# Importation des données
 biometry <- read("biometry", package = "BioDataScience", lang = "FR")
 # Calcul du bmi
-biometry <- mutate(biometry,
-  height_m = height/100, 
-  bmi = weight/height_m^2)
-# résumé de jeu de données
+biometry <- fmutate(biometry, height_m = height/100, bmi = weight/height_m^2)
+# Résumé de jeu de données
 summary(biometry)
 ```
 
 ```{r qu_mutate_h2-check}
-grade_code("Vous êtes toujours capable d'utiliser la fonction mutate().")
+grade_code("Vous êtes capable d'utiliser la fonction fmutate().")
 ```
 
 ## Rendement de patates
 
-Des scientifiques belges s'intéressent aux rendements de deux variétés de pomme de terre\ : la bintje et la fontane. Après 110 jours, ils réalisent des prélèvements sur différentes parcelles en Belgique dont ils quantifient la production, exprimée en tonnes par hectare. 
+Des agronomes belges s'intéressent aux rendements de deux variétés de pomme de terre : la bintje et la fontane. Après 110 jours, ils réalisent des prélèvements sur différentes parcelles en Belgique dont ils quantifient la production, exprimée en tonnes par hectare.
 
 ```{r, warning=FALSE, message=FALSE}
 set.seed(42)
-pdt <- tibble(
-  rendement = c(
-    rnorm(n = 18, mean = 33.6, sd = 4),
-    rnorm(n = 28, mean = 39.5, sd = 4)), 
-  variete = c(
-    rep("bintje", times = 18),
-    rep("fontane", times = 28))
+pdt <- dtx(
+  rendement = c(rnorm(18L, mean = 33.6, sd = 4), rnorm(28L, mean = 39.5, sd = 4)), 
+  variete   = c(rep("bintje", times = 18L), rep("fontane", times = 28L))
 )
 ```
 
-Reproduisez le tableau ci-dessous, le jeu de données mis à votre disposition se nomme `pdt` et les variables sont les suivantes\ : `r names(pdt)`. La fonction de mise en forme du tableau est `kable()` du package `knitr`.
+Reproduisez le tableau ci-dessous, le jeu de données mis à votre disposition se nomme `pdt` et les variables sont les suivantes : `r names(pdt)`. La fonction de mise en forme du tableau est `knitr::kable()`.
 
 ```{r}
 pdt %>.%
   group_by(., variete) %>.%
   summarise(., mean = mean(rendement), count = n()) %>.%
-  knitr::kable(., col.names =
-    c("Variété" ,"Rendement moyen [t/ha]", "Nombre de parcelles"))
+  collect_dtx(.) %>.%
+  knitr::kable(., col.names = c("Variété" ,"Rendement moyen [t/ha]", "Nombre de parcelles"))
 ```
 
 ```{r qu_group-prep}
 set.seed(42)
-pdt <- tibble(
-  rendement = c(
-    rnorm(n = 18, mean = 33.6, sd = 4),
-    rnorm(n = 28, mean = 39.5, sd = 4)), 
-  variete = c(
-    rep("bintje", times = 18),
-    rep("fontane", times = 28))
+pdt <- dtx(
+  rendement = c(rnorm(18L, mean = 33.6, sd = 4), rnorm(28L, mean = 39.5, sd = 4)), 
+  variete   = c(rep("bintje", times = 18L), rep("fontane", times = 28L))
 )
 ```
 
@@ -565,6 +483,7 @@ pdt <- tibble(
 pdt %>.%
   group_by(., ___) %>.%
   summarise(., mean = ___(___), count = ___()) %>.%
+  collect_dtx(.) %>.%
   knitr::kable(., ___)
 ```
 
@@ -572,6 +491,7 @@ pdt %>.%
 pdt %>.%
   group_by(., ) %>.%
   summarise(., mean = ___(___), count = ___()) %>.%
+  collect_dtx(.) %>.%
   knitr::kable(., col.names = c(___,___,___))
 ```
 
@@ -579,15 +499,18 @@ pdt %>.%
 pdt %>.%
   group_by(., ) %>.%
   summarise(., mean = mean(rendement), count = n()) %>.%
+  collect_dtx(.) %>.%
   knitr::kable(., col.names = c(___,___,___))
 
 #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r qu_group_h3-solution}
+## Solution ##
 pdt %>.%
   group_by(., variete) %>.%
   summarise(., mean = mean(rendement), count = n()) %>.%
+  collect_dtx(.) %>.%
   knitr::kable(., col.names = c("Variété" ,"Rendement moyen [t/ha]", "Nombre de parcelles"))
 ```
 
@@ -595,96 +518,94 @@ pdt %>.%
 grade_code("Vous savez uiliser correctement les fonctions de résumé de tableau dans R.")
 ```
 
-Cet exercice s'inspire des observations relayé sur le site du sillon Belge de d'un [article consulté le 3 septembre 2019](https://www.sillonbelge.be/4731/article/2019-08-28/bintje-et-fontane-apres-110-115-jours-faute-de-casser-la-baraque-ces-deux).
+Cet exercice s'inspire des observations relayé sur le site du sillon belge de d'un [article consulté le 3 septembre 2019](https://www.sillonbelge.be/4731/article/2019-08-28/bintje-et-fontane-apres-110-115-jours-faute-de-casser-la-baraque-ces-deux).
 
 ## Taureaux d'élevage
 
 ```{r, warning=FALSE, message=FALSE, results='hide'}
-beef <- data.io::read(file = system.file("extdata", "belgianblue.xlsx",
-  package = "BioDataScience2"), type = "xlsx")
-
-beef <- labelise(
-  beef,
-  label = list(weight = "Masse", age = "Age", variety = "Variété"),
-  unit = list(weight = "kg", age = "mois"))
+read(file = system.file("extdata", "belgianblue.xlsx",
+  package = "BioDataScience2"), type = "xlsx") %>.%
+  labelise(.,
+    label = list(weight = "Masse", age = "Age", variety = "Variété"),
+    unit = list(weight = "kg", age = "mois")) ->
+  bull
 ```
 
-L'association wallonne de l'élevage dispose de plusieurs centres d'insémination. Ils ont un recensement des différents taureaux reproducteurs. Réalisez par vous-même le graphique ci-dessous. Notez bien que ce dernier ne montre que les individus âgés de 20 à 55 mois. Vous avez à votre disposition le jeu de données `beef` qui comprend les variables suivantes\ : `r names(beef)`.
+L'association wallonne de l'élevage dispose de plusieurs centres d'insémination. Ils ont un recensement des différents taureaux reproducteurs. Réalisez par vous-même le graphique ci-dessous. Notez bien que ce dernier ne montre que les individus âgés de 20 à 55 mois. Vous avez à votre disposition le jeu de données `bull` qui comprend les variables suivantes : `r names(bull)`.
 
 ```{r}
-beef %>.%
-  filter(., age >= 20 & age <= 55) %>.%
+bull %>.%
+  fsubset(., age >= 20 & age <= 55) %>.%
   chart(., weight ~ age %col=% variety) +
-  geom_point()
+    geom_point()
 ```
 
 Voici quelques informations utiles sur ce jeu de données.
 
 ```{r, echo=TRUE}
-summary(beef)
+summary(bull)
 ```
 
 ```{r, qu_filter_h4-prep}
-beef <- read(file = system.file("extdata", "belgianblue.xlsx",
-  package = "BioDataScience2"), type = "xlsx")
-
-beef <- labelise(
-  beef,
-  label = list(weight = "Masse", age = "Age", variety = "Variété"),
-  unit = list(weight = "kg", age = "mois"))
+read(file = system.file("extdata", "belgianblue.xlsx",
+  package = "BioDataScience2"), type = "xlsx") %>.%
+  labelise(.,
+    label = list(weight = "Masse", age = "Age", variety = "Variété"),
+    unit = list(weight = "kg", age = "mois")) ->
+  bull
 ```
 
 ```{r qu_filter_h4, exercise=TRUE, exercise.lines=8, exercise.setup="qu_filter_h4-prep"}
-# Le jeu de données beef est déjà chargé en mémoire
+# Le jeu de données bull est déjà chargé en mémoire
 # Réalisez votre graphique
-beef %>.%
+bull %>.%
   ___(., ___ & ___) %>.%
   chart(., ___) +
-  ___()
+    ___()
 ```
 
 ```{r qu_filter_h4-hint-1}
-# Le jeu de données beef est déjà chargé en mémoire
+# Le jeu de données bull est déjà chargé en mémoire
 # Réalisez votre graphique
-beef %>.%
-  filter(., ___ & ___) %>.%
+bull %>.%
+  fsubset(., ___ & ___) %>.%
   chart(., ___) +
-  ___() 
+    ___() 
 
-# La fonction pour filtrer des lignes d'un tableau selon une ou plusieurs conditions est filter()
+# La fonction pour filtrer des lignes d'un tableau selon une ou plusieurs conditions est fsubset()
 ```
 
 ```{r qu_filter_h4-hint-2}
-# Le jeu de données beef est déjà chargé en mémoire
+# Le jeu de données bull est déjà chargé en mémoire
 # Réalisez votre graphique
-beef %>.%
-  filter(., ___ & ___) %>.%
+bull %>.%
+  fsubset(., ___ & ___) %>.%
   chart(., ___) +
-  ___() 
+    ___() 
 
-# Les conditions au sein de la fonction filter() s'écrivent avec des opérateurs logique >, >=, <=, <, == ou !=
+# Les conditions au sein de la fonction fsubset() s'écrivent avec des opérateurs logique >, >=, <=, <, == ou !=
 # et se combinent avec & (et) et | (ou)
 ```
 
 ```{r qu_filter_h4-hint-3}
-# Le jeu de données beef est déjà chargé en mémoire
+# Le jeu de données bull est déjà chargé en mémoire
 # Réalisez votre graphique
-beef %>.%
-  filter(., age >= 20 & age <= 55) %>.%
+bull %>.%
+  fsubset(., age >= 20 & age <= 55) %>.%
   chart(., ___) +
-  ___()
+    ___()
 
  #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r qu_filter_h4-solution}
 ## Solution ##
-# Le jeu de données beef est déjà chargé en mémoire
+# Le jeu de données bull est déjà chargé en mémoire
 # Réalisez votre graphique
-beef %>.%
-  filter(., age >= 20 & age <= 55) %>.%
+bull %>.%
+  fsubset(., age >= 20 & age <= 55) %>.%
   chart(., weight ~ age %col=% variety) +
-  geom_point()
+    geom_point()
 ```
 
 ```{r qu_filter_h4-check}
@@ -695,16 +616,13 @@ grade_code("Vous vous souvenez de l'utilisation des filtres sur les tableaux.")
 
 ```{r}
 set.seed(43)
-weight <- tibble::tibble(
-  weight = c(
-    rnorm(n = 15, mean = 100, sd = 5), 
-    rnorm(n = 15, mean = 102, sd = 5)), 
-  area = rep(c("a", "b"), each = 15)
+weight <- dtx(
+  weight = c(rnorm(15L, mean = 100, sd = 5), rnorm(15L, mean = 102, sd = 5)), 
+  area   = factor(rep(c("a", "b"), each = 15L))
 )
-weight$area <- as.factor(weight$area)
 ```
 
-Vous avez à votre disposition le jeu de données `weight` dont voici quelques informations\ :
+Vous avez à votre disposition le jeu de données `weight` dont voici quelques informations :
 
 ```{r, echo=TRUE}
 # Nom des variables du jeu de données
@@ -717,13 +635,10 @@ Réalisez un test de Student bilatéral avec un seuil $\alpha$ de 0.05 et de var
 
 ```{r qu_student_prepa}
 set.seed(43)
-weight <- tibble::tibble(
-  weight = c(
-    rnorm(n = 15, mean = 100, sd = 5), 
-    rnorm(n = 15, mean = 102, sd = 5)), 
-  area = rep(c("a", "b"), each = 15)
+weight <- dtx(
+  weight = c(rnorm(15L, mean = 100, sd = 5), rnorm(15L, mean = 102, sd = 5)), 
+  area   = factor(rep(c("a", "b"), each = 15L))
 )
-weight$area <- as.factor(weight$area)
 ```
 
 ```{r qu_student_h3, exercise=TRUE, exercise.lines=3, exercise.setup="qu_student_prepa"}
@@ -744,7 +659,7 @@ t.test(data = ___, ___ ~ ___,
 ```
 
 ```{r qu_student_h3-solution}
-##Solutions##
+## Solution ##
 t.test(data = weight, weight ~ area,
   alternative = "two.sided", conf.level = 0.95, var.equal = FALSE)
 ```
