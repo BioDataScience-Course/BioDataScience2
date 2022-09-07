@@ -2,6 +2,8 @@
 
 -   All learnr exercices adapted and tested with svbox2022.
 
+-   Reorganization of learnrs and additio, of new ones (course 8 modules -\> 10 modules).
+
 # BioDataScience2 2022.0.0
 
 -   New version for the academic year 2022-2023.

@@ -4,7 +4,7 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II** Vos commentaires et suggestions..."
 tutorial:
   id: "B99La_avis"
-  version: 2.0.0/0
+  version: 2.1.0/0
 output:
   learnr::tutorial:
     progressive: true
@@ -24,23 +24,25 @@ BioDataScience2::learnr_banner()
 BioDataScience2::learnr_server(input, output, session)
 ```
 
-----
+------------------------------------------------------------------------
 
 ## Donnez-nous votre avis sur SDD II...
 
-Ceci est un bref formulaire visant à améliorer le cours de science des données. Donnez-nous vos impressions positives et négatives. Soyez concis et constructif\ ! Vous pouvez aussi nous donner une note sur 20 si vous le souhaitez.
+Ceci est un bref formulaire visant à améliorer le cours de science des données. Donnez-nous vos impressions positives et négatives. Soyez concis et constructif ! Vous pouvez aussi nous donner une note sur 20 si vous le souhaitez.
 
 ```{r feedback_topic_noscore}
 question("Quelle partie du cours évaluez-vous ?",
   answer("Module 1 : Régression linéaire I", correct = TRUE),
   answer("Module 2 : Régression linéaire II", correct = TRUE),
   answer("Module 3 : Modèle linéaire", correct = TRUE),
-  answer("Module 4 : Régression non linéaire", correct = TRUE),
-  answer("**AA modélisation (Q1, modules 1-4)**", correct = TRUE),
-  answer("Module 5 : Classification hiérarchique", correct = TRUE),
-  answer("Module 6 : K-moyenne, MDS & SOM", correct = TRUE),
+  answer("Module 4 : Modèle linéaire généralisé", correct = TRUE),
+  answer("Module 5 : Régression non linéaire", correct = TRUE),
+  answer("**AA modélisation (Q1, modules 1-5)**", correct = TRUE),
+  answer("Module 6 : Bases de données 1 & MDS", correct = TRUE),
   answer("Module 7 : ACP & AFC", correct = TRUE),
-  answer("Module 8 : AFM, biodiversité et Open Data", correct = TRUE),
+  answer("Module 8 : Bases de données 2 & AFM", correct = TRUE),
+  answer("Module 9 : CAH & K-moyenne", correct = TRUE),
+  answer("Module 10 : SOM & diversité", correct = TRUE),
   answer("**AA analyse (Q2, modules 5-8)**", correct = TRUE),
   answer("**Tout le cours**", correct = TRUE),
   allow_retry = TRUE,

@@ -1,0 +1,39 @@
+---
+title: "Analyse des résidus d'une régression"
+author: "Guyliann Engels & Philippe Grosjean"
+description: "**SDD II Module 1** Analyse des résidus d'une régression."
+tutorial:
+  id: "B01Lb_residus"
+version: 2.0.0/0
+output:
+  learnr::tutorial:
+  progressive: true
+allow_skip: true
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+BioDataScience3::learnr_setup()
+SciViews::R()
+library(pastecs)
+
+# ...
+```
+
+```{r, echo=FALSE}
+BioDataScience3::learnr_banner()
+```
+
+```{r, context="server"}
+BioDataScience3::learnr_server(input, output, session)
+```
+
+------------------------------------------------------------------------
+
+## Objectifs
+
+-   ...
+
+## Analyse des résidus
+
+TODO: ce tutoriel doit encore être écrit. Vous devez probablement penser à installer une version plus récente du package qui contient les exercices finalisés !

@@ -1,7 +1,7 @@
 ---
-title: "Analyse en composantes principales"
+title: "Analyse en composantes principales (ACP)"
 author: "Guyliann Engels & Philippe Grosjean"
-description: "**SDD II Module 7** : Analyse en Composantes Principales (ACP)"
+description: "**SDD II Module 7** : Analyse en Composantes Principales (ACP)."
 tutorial:
   id: "B07La_pca"
   version: 2.0.2/6
