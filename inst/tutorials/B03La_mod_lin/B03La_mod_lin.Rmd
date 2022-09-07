@@ -1,7 +1,7 @@
 ---
 title: "Modèle linéaire"
 author: "Guyliann Engels & Philippe Grosjean"
-description: "**SDD II Module 3** Modèle linéaire."
+description: "**SDD II Module 3** Comprendre le modèle linéaire et les matrices de contraste."
 tutorial:
   id: "B03La_mod_lin"
   version: 2.1.1/8

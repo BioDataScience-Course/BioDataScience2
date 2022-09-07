@@ -1,9 +1,9 @@
 ---
 title: "Rappel de SDD I"
 author: "Guyliann Engels & Philippe Grosjean"
-description: "**SDD II** Rappel de SDD I."
+description: "**SDD II** Rappel des notions importantes du cours de SDD I."
 tutorial:
-  id: "B00La_rappel"
+  id: "B00La_refresh"
   version: 2.2.0/22
 output: 
   learnr::tutorial:

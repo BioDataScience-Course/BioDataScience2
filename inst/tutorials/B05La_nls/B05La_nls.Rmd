@@ -1,7 +1,7 @@
 ---
 title: "Régression non linéaire"
 author: "Guyliann Engels & Philippe Grosjean"
-description: "**SDD II Module 5** Régression non linéaire."
+description: "**SDD II Module 5** Régression non linéaire et modèles non linéaires principaux en biologie."
 tutorial:
   id: "B05La_nls"
   version: 2.0.0/5

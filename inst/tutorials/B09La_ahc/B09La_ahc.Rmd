@@ -1,7 +1,7 @@
 ---
 title: "Classification hiérarchique (CAH)"
 author: "Guyliann Engels, Raphael Conotte & Philippe Grosjean"
-description: "**SDD II Module 9** Classification hiérarchique (CAH)."
+description: "**SDD II Module 9** Classification hiérarchique ascendante et interprétation du dendrogramme."
 tutorial:
   id: "B09La_ahc"
   version: 2.0.1/10

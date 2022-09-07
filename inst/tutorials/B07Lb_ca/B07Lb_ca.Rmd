@@ -1,7 +1,7 @@
 ---
 title: "Analyse factorielle des correspondances (AFC)"
 author: "Guyliann Engels & Philippe Grosjean"
-description: "**SDD II Module 7** Analyse factorielle des correspondances (AFC)."
+description: "**SDD II Module 7** Comprendre et utiliser l'analyse factorielle des correspondances."
 tutorial:
   id: "B07Lb_ca"
 version: 2.0.0/0

@@ -1,7 +1,7 @@
 ---
 title: "Positionnement multidimensionnel (MDS)"
 author: "Guyliann Engels & Philippe Grosjean"
-description: "**SDD II Module 6** Positionnement multidimensionnel (MDS)."
+description: "**SDD II Module 6** Réaliser et analyser un positionnement multidimensionnel (MDS)."
 tutorial:
   id: "B06Lb_mds"
   version: 2.0.1/8

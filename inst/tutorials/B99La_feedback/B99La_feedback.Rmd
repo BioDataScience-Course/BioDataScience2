@@ -3,7 +3,7 @@ title: "Avis SDD II"
 author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II** Vos commentaires et suggestions..."
 tutorial:
-  id: "B99La_avis"
+  id: "B99La_feedback"
   version: 2.1.0/0
 output:
   learnr::tutorial:

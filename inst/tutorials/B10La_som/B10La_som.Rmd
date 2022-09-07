@@ -1,7 +1,7 @@
 ---
 title: "Cartes auto-adaptatives (SOM)"
 author: "Guyliann Engels & Philippe Grosjean"
-description: "**SDD II Module 10** Cartes auto-adaptatives (SOM)"
+description: "**SDD II Module 10** Réalisation de cartes auto-adaptatives."
 tutorial:
   id: "B10La_som"
   version: 2.0.1/5
