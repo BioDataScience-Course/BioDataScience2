@@ -213,6 +213,8 @@ question_text(
   answer("", TRUE, message = "Pas de commentaires... C'est bien aussi."),
   incorrect = "Vos commentaires sont enregistrés.",
   placeholder = "Entrez vos commentaires ici...",
-  allow_retry = TRUE
+  allow_retry = TRUE,
+  submit_button = "Soumettre une réponse", 
+  try_again_button = "Resoumettre une réponse"
 )
 ```
