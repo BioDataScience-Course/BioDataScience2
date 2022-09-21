@@ -15,17 +15,17 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
 SciViews::R("model", lang = "fr")
-# datasets ----
-## crabs
+
+# crabs
 crabs <- read("crabs", package = "MASS")
 
-## bull
+# bull
 read(file = system.file("extdata", "belgianblue.xlsx",
   package = "BioDataScience2"), type = "xlsx") %>.%
   #labelise(.,
   #  label = list(weight = "Masse", age = "Age", variety = "Variété"),
   #  unit = list(weight = "kg", age = "mois")) %>.%
-  sfilter(., age <= 40) ->
+  sfilter(., age <= 40) %->%
   bull
 
 bull_lm <- lm(data = bull, weight ~ age)
@@ -45,45 +45,51 @@ BioDataScience2::learnr_server(input, output, session)
 
 ## Objectifs
 
-Ce tutoriel s'intéresse à la régression linéaire. Il débute par un rappel sur la corrélation et les corrélogrammes. Cette matière est détaillée dans le module 12 de [science des données I](https://wp.sciviews.org/sdd-umons). Les objectifs de ce tutoriel sont :
+Ce tutoriel sur la régression linéaire débute par un rappel sur la corrélation et les corrélogrammes. Cette matière est détaillée dans le [module 12 de science des données I](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2022/correlation.html). Les objectifs de ce tutoriel sont :
 
 -   Revoir la corrélation et les indices de Pearson et Spearman
 
 -   Maîtriser la régression linéaire dans R, en particulier la fonction `lm()`.
 
+<!-- TODO: paramétriser un modèle, c'est super-important! -->
+
 ## Biométrie des crabes
 
-Cinq mesures morphologiques ont été étudiées sur 200 crabes. On retrouve quatre groupes composés de 50 individus. On retrouve les crabes bleu mâles et femelles et les crabes orange mâles et femelles.
+Cinq mesures morphologiques ont été étudiées sur 200 crabes. On retrouve quatre groupes composés de 50 individus, soit des crabes bleu mâles et femelles et des crabes orange mâles et femelles.
 
 ```{r, echo = TRUE}
 crabs <- read("crabs", package = "MASS")
 skimr::skim(crabs)
 ```
 
-La fonction `skim()` vous permet d'obtenir de nombreuses informations sur le tableau `crabs`. N'hésitez pas à consulter la page d'aide du jeu de données pour en apprendre davantage.
+La fonction `skimr::skim()` vous permet d'obtenir de nombreuses informations sur le tableau `crabs`. N'hésitez pas à consulter la page d'aide du jeu de données pour en apprendre davantage.
 
-C'est à vous de jouer ! Réalisez une matrice de corrélation avec l'indice de Pearson. N'utilisez que les variables pertinentes. Sélectionnez ces variables sur base de leur nom. Affichez un corrélogramme avec la partie supérieure uniquement (`upper`).
+C'est à vous de jouer ! Réalisez une matrice de corrélation avec l'indice de Pearson. N'utilisez que les variables pertinentes. Sélectionnez ces variables sur base de leur nom. Affichez un corrélogramme avec la partie supérieure uniquement (`upper`).
 
 ```{r corr1_h3, exercise=TRUE, exercise.lines=2}
-crabs_corr <- correlation(sselect(___, ___:___), use = ___, method = ___)
+crabs_corr <- correlation(sselect(___, ___:___),
+  use = ___, method = ___)
 plot(crabs_corr, ___ = ___)
 ```
 
 ```{r corr1_h3-hint-1}
-crabs_corr <- correlation(sselect(___, ___:___), use = "complete.obs", method = "pearson")
+crabs_corr <- correlation(sselect(___, ___:___),
+  use = "complete.obs", method = "pearson")
 plot(crabs_corr, type = ___)
 # Relisez le chapitre 12 du livre science des données 1 <https://wp.sciviewg/sdd-umons/>
 ```
 
 ```{r corr1_h3-hint-2}
-correlation(sselect(crabs, ___:___), use = "complete.obs", method = "pearson")
+correlation(sselect(crabs, ___:___),
+  use = "complete.obs", method = "pearson")
 plot(crabs_corr, type = "upper")
 #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r corr1_h3-solution}
 ## Solution ##
-crabs_corr <- correlation(sselect(crabs, front:depth), use = "complete.obs", method = "pearson")
+crabs_corr <- correlation(sselect(crabs, front:depth),
+  use = "complete.obs", method = "pearson")
 plot(crabs_corr, type = "upper")
 ```
 
@@ -94,12 +100,12 @@ grade_code("Vous avez compris comment réaliser une matrice de corrélation et u
 Répondez à la question ci-dessous.
 
 ```{r qu_corr}
-question("Quelles sont les combinaisons de variables les plus corrélées ? (sélectionnez donc les deux variables)",
-  answer("front", correct = TRUE),
-  answer("width"),
-  answer("depth", correct = TRUE),
+question("Quelles sont les combinaisons de variables les plus corrélées ? (sélectionnez les deux variables)",
+  answer("front"),
+  answer("width", correct = TRUE),
+  answer("depth"),
   answer("rear"),
-  answer("lenght"),
+  answer("lenght", correct = TRUE),
   type = "multiple",
   allow_retry = TRUE, random_answer_order = TRUE, 
   submit_button = "Soumettre une réponse", 
@@ -125,14 +131,13 @@ chart(data = ___, ___ ___ ___) +
 ```
 
 ```{r  bull_np_h2-solution}
+## Solution ##
 chart(data = bull, weight ~ age) +
   geom_point()
-
-#### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r bull_np_h2-check}
-grade_code("Bravo ! Vous avez réalisez le nuage de points souhaité.")
+grade_code("Bravo ! Vous avez réalisé le nuage de points souhaité.")
 ```
 
 Complétez à présent les instructions ci-dessous afin de réaliser une régression linéaire de la masse en fonction de l'âge.
@@ -142,8 +147,7 @@ summary(lm. <- lm(data = ___, ___ ~ ___))
 ```
 
 ```{r bull_lm_h2-hint-1}
-##Snippet utile ## .mlin: linear model
-summary(lm. <- lm(data = DF, FORMULA))
+summary(lm. <- lm(data = ___, ___ ~ age))
 
 #### ATTENTION: Hint suivant = solution !####
 ```
@@ -183,8 +187,8 @@ quiz(
     answer(sprintf("%.2f", lm_result$statistic[2])),
     answer(sprintf("%.2f", lm_param$r.squared[1])),
     allow_retry = TRUE, random_answer_order = TRUE,
-    correct = "Bien joué ! Vous savez analyser le tableau des résultats.",
-    incorrect = "Oups, il semble que vous avez mal lu le tableau résumé de la régression linéaire.",
+    correct = "Oui, vous avez compris.",
+    incorrect = "Ce n'est pas correct. Regardez plus attentivement vos résultats.",
     submit_button = "Soumettre une réponse", 
     try_again_button = "Resoumettre une réponse"),
   question(text = "Est ce que la valeur de l'ordonnée à l'origne est significativement différente de zéro au seuil alpha de 5% ?",

@@ -1,3 +1,11 @@
+# BioDataScience2 2022.1.1
+
+-   Learnrs B00 and B01 revised
+
+-   Dataser `rice` added
+
+-   All images are compressed
+
 # BioDataScience2 2022.1.0
 
 -   All learnr exercices adapted and tested with svbox2022.
