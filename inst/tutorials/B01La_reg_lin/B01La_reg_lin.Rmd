@@ -30,7 +30,7 @@ read(file = system.file("extdata", "belgianblue.xlsx",
 
 bull_lm <- lm(data = bull, weight ~ age)
 lm_result <- tidy(bull_lm)
-lm_param<- glance(bull_lm)
+lm_param <- glance(bull_lm)
 ```
 
 ```{r, echo=FALSE}
@@ -154,7 +154,7 @@ summary(lm. <- lm(data = bull, weight ~ age))
 ```
 
 ```{r bull_lm_h2-check}
-grade_code("Vous avez réalisé votre première régression linéaire. Analysez le résumé de ce model et répondez aux questions ci-dessous.")
+grade_code("Vous avez réalisé votre première régression linéaire. Analysez le résumé de ce modèle et répondez aux questions ci-dessous.")
 ```
 
 Suite à votre analyse, répondez aux questions suivantes :

@@ -18,29 +18,40 @@ SciViews::R("model", lang = "fr")
 # datasets
 ## crabs
 crabs <- read("crabs", package = "MASS")
-## potatos : données générées sur base d'un article 
+
+## potatoes : données générées sur base d'un article 
 set.seed(42)
-potatos <- dtx(
-  id = paste0(letters, sample.int(46, replace = FALSE)),
-  yield = c(rnorm(18L, mean = 33.6, sd = 4), rnorm(28L, mean = 39.5, sd = 4)), 
+potatoes <- dtx(
+  id       = paste0(letters, sample.int(46, replace = FALSE)),
+  yield    = c(rnorm(18L, mean = 33.6, sd = 4),
+               rnorm(28L, mean = 39.5, sd = 4)), 
   cultivar = c(rep("bintje", times = 18L), rep("fontane", times = 28L))
 )
-potatos <- labelise(potatos, 
-  label = list(id = "Code d'identification", yield = "Rendement", cultivar = "Variété"), 
+potatoes <- labelise(potatoes,
+  label = list(
+    id       = "Code d'identification",
+    yield    = "Rendement",
+    cultivar = "Variété"), 
   units = list(yield = "t/ha"))
+
 ## bull
 read(file = system.file("extdata", "belgianblue.xlsx",
   package = "BioDataScience2"), type = "xlsx") %>.%
   labelise(.,
-    label = list(weight = "Masse", age = "Age", variety = "Variété"),
-    unit = list(weight = "kg", age = "mois")) ->
+    label = list(
+      weight  = "Masse",
+      age     = "Age",
+      variety = "Variété"),
+    unit = list(
+      weight   = "kg",
+      age      = "mois")) %->%
   bull
 
 bull %>.%
   sfilter(., age <= 50) %>.%
-  smutate(., weight_std = labelise(weight/age, label = "Masse standardisée", units = NA)) ->
+  smutate(., weight_std = labelise(weight/age,
+    label = "Masse standardisée", units = NA)) %->%
   bull_red
-
 ```
 
 ```{r, echo=FALSE}
@@ -58,15 +69,15 @@ BioDataScience2::learnr_server(input, output, session)
 Ce cours de [Science des données II : analyse et modélisation](https://wp.sciviews.org/sdd-umons2/) fait suite au cours de [Science des données I : visualisation et inférence](https://wp.sciviews.org/sdd-umons/). Ce tutoriel vise à :
 
 -   Réviser les notions essentielles du cours de Science des données I
--   Découvrir quelques notions liées à la SciViews Box 2020
+-   Découvrir quelques notions liées à la SciViews Box 2022
 
-Le cours de Science des données I se divise en deux parties. La première partie traite principalement de la réalisation de graphiques et du remaniement des données. La seconde partie s'intéresse aux probabilités, aux distributions statistiques les plus courantes en biologie ainsi qu'aux tests d'inférences (test t de Student, test de Wilcoxon, ANOVA, test de Kruskal-Wallis,...).
+Le cours de Science des données I se divise en deux parties. La première partie traite principalement de la réalisation de graphiques et du remaniement des données. La seconde partie s'intéresse aux probabilités, aux distributions statistiques les plus courantes en biologie ainsi qu'aux tests d'inférence (test *t* de Student, test de Wilcoxon, ANOVA, test de Kruskal-Wallis,...).
 
-Ce tutoriel ne peut s'attarder sur chaque élément des 12 modules du cours précédent. Nous vous proposons une synthèse dans ce tutoriel. N'hésitez pas à réviser ces modules, si vous en ressentez le besoin.
+La matière est bien trop vaste pour revoir tous les concepts du premier cours en un seul tutoriel (il est déjà très conséquent). Il se veut une synthèse des éléments principaux afin de vous donner une idée de votre niveau aujourd'hui. N'hésitez pas à réviser les parties du cours 1, si vous en ressentez le besoin.
 
 ## Logiciels
 
-Commencez par vous assurer que vous maitrisez les outils logiciels que nous allons employer dans le cadre de ce cours. Si vous avez des doutes sur votre maitrise des logiciels employés dans le cadre des cours de Sciences des données, consultez le premier module de cours de [science des données 1](https://wp.sciviews.org/sdd-umons/). Répondez aux questions ci-dessous.
+Commencez par vous assurer que vous maîtrisez les outils logiciels que nous allons employer dans le cadre de ce cours. Si vous avez des doutes à ce sujet, consultez le premier module de cours de [science des données 1](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2022/d%25C3%25A9couverte-des-outils.html). Répondez aux questions ci-dessous.
 
 ```{r qu_intro}
 quiz(
@@ -87,8 +98,8 @@ quiz(
     answer("Un service web d'hébergement de projet"),
     answer("Un langage avec une syntaxe facile à lire et à écrire"),
     answer("Aucune des réponses proposées n'est correcte"),
-    correct = "Bravo ! Vous avez trouvé la bonne réponse. Git est un gestionnaire de version très employé par les *data scientist*.",
-    incorrect = "Attention, Ce n'est pas la bonne réponse. Ces outils sont présentés dans le premier module du cours de SDD I.",
+    correct = "Excellent ! Git est un gestionnaire de version très employé par les *data scientist*.",
+    incorrect = "Attention, ce n'est pas la bonne réponse. Ces outils sont présentés dans le premier module du cours de SDD I.",
     allow_retry = TRUE, random_answer_order = TRUE,
     submit_button = "Soumettre une réponse",
     try_again_button = "Resoumettre une réponse"),
@@ -98,8 +109,8 @@ quiz(
     answer("Un service web d'hébergement de projet", correct = TRUE),
     answer("Un langage avec une syntaxe facile à lire et à écrire"),
     answer("Aucune des réponses proposées n'est correcte"),
-    correct = "Bravo ! Vous avez trouvé la bonne réponse. GitHub est un réseau social centré sur un gestionnaire de versions de projet.",
-    incorrect = "Attention, Ce n'est pas la bonne réponse. Ces outils sont présentés dans le premier module du cours de SDD I.",
+    correct = "Mais oui bien sûr. GitHub est un réseau social centré sur un gestionnaire de versions de projet.",
+    incorrect = "Pas vraiment, allez, réfléchissez bien...",
     allow_retry = TRUE, random_answer_order = TRUE,
     submit_button = "Soumettre une réponse",
     try_again_button = "Resoumettre une réponse"),
@@ -107,10 +118,10 @@ quiz(
     answer("Un environnement de développement intégré"),
     answer("Un logiciel de gestion de versions"),
     answer("Un service web d'hébergement de projet"),
-    answer("Un langage avec une syntaxe facile à lire et à écrire", correct = TRUE),
+    answer("Un système de balisage de texte", correct = TRUE),
     answer("Aucune des réponses proposées n'est correcte"),
-    correct = "Bravo ! Vous avez trouvé la bonne réponse. Markdown est un language basé sur le HTML. Il permet de s'intéresser uniquement au fond et pas à la forme. Cela permet d'augmenter grandement votre productivité. Ce langage est également utilisé dans les issues sur GitHub.",
-    incorrect = "Attention, Ce n'est pas la bonne réponse. Ces outils sont présentés dans le premier module du cours de SDD I.",
+    correct = "Impeccable. Markdown est bien un système qui permet le formattage de texte via des balises. Sa syntaxe est facile à lire et à écrire. Il permet de s'intéresser uniquement au fond et pas à la forme. Cela permet d'augmenter grandement votre productivité. Ce langage est également utilisé dans les issues GitHub.",
+    incorrect = "Cela est incorrect, désolé !",
     allow_retry = TRUE, random_answer_order = TRUE,
     submit_button = "Soumettre une réponse",
     try_again_button = "Resoumettre une réponse")
@@ -119,7 +130,7 @@ quiz(
 
 ## Git et GitHub
 
-Au cours de Science des données, nous utilisons abondamment Git et GitHub. Assurez-vous d'avoir bien retenu la terminologie spécifique associée à ces outils de gestion de version. La terminologie est présentée dans le premier module du cours de [science des données 1](https://wp.sciviews.org/sdd-umons/).
+Au cours de Science des données, nous utilisons abondamment Git et GitHub. Assurez-vous d'avoir bien retenu la terminologie spécifique associée à ces outils de gestion de version. La terminologie est présentée dans le premier module du cours de [science des données 1](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2022/d%25C3%25A9couverte-des-outils.html).
 
 ### Situation 1
 
@@ -131,7 +142,7 @@ Sur base du schéma ci-dessous où chaque cercle de couleur correspond à un ét
 
 ```{r qu_git1}
 quiz(
-  question("Qualifiez la situation **A**",
+  question("Qualifiez l'action **A**",
     answer("commit", correct = TRUE, message = "Un commit permet d'enregistrer une version du projet."),
     answer("clone", message = "Un *clone* permet de créer un double local d’un dépôt GitHub."),
     answer("push", message = "Un *push* permet d'envoyer ses modifications locales vers le dépôt GitHub."),
@@ -140,12 +151,12 @@ quiz(
     answer("fork", message = "Un *fork* permet de faire une copie dans notre propre compte GitHub d'un dépôt sur GitHub."),
     answer("pull request", message = "Un *pull request* permet de suggérer à l’auteur du dépôt d'orgine que vous avez fait des modifications qui pourraient l’intéresser. L'auteur peut accepter ou refuser ces modifications."),
     allow_retry = TRUE, random_answer_order = TRUE,
-    correct = "Bravo ! Vous avez trouvé la bonne réponse.",
+    correct = "Bien vu. Le commit sert à enregistrer une nouvelle version de votre dépôt GitHub",
     incorrect = "Attention, Ce n'est pas la bonne réponse. Toutes ces notions ne sont pas simples. Prennez le temps de réviser la section sur Git et sur GitHub",
     submit_button = "Soumettre une réponse",
     try_again_button = "Resoumettre une réponse"
     ),
-  question("Qualifiez la situation **B**",
+  question("Qualifiez l'action **B**",
     answer("commit", message = "Un *commit* permet d'enregistrer une version du projet."),
     answer("clone", message = "Un *clone* permet de créer un double local d’un dépôt GitHub."),
     answer("push", correct = TRUE, message = "Un *push* permet d'envoyer ses modifications locales vers le dépôt GitHub."),
@@ -154,12 +165,12 @@ quiz(
     answer("fork", message = "Un *fork* permet de faire une copie dans notre propre compte GitHub d'un dépôt sur GitHub."),
     answer("pull request", message = "Un *pull request* permet de suggérer à l’auteur du dépôt d'orgine que vous avez fait des modifications qui pourraient l’intéresser. L'auteur peut accepter ou refuser ces modifications."),
     allow_retry = TRUE, random_answer_order = TRUE,
-    correct = "Bravo ! Vous avez trouvé la bonne réponse.",
-    incorrect = "Attention, Ce n'est pas la bonne réponse. Toutes ces notions ne sont pas simples. Prennez le temps de réviser la section sur Git et sur GitHub",
+    correct = "Excellent ! Le push (pousser) correspond à l'envoi des modifications locales dans le dépôt GitHub pour le synchroniser.",
+    incorrect = "Et bien non, désolé. Une petite révision de la section sur Git et sur GitHub du cours 1 s'impose peut-être ?",
     submit_button = "Soumettre une réponse",
     try_again_button = "Resoumettre une réponse"
     ),
-  question("Qualifiez la situation **C**",
+  question("Qualifiez l'action **C**",
     answer("commit", message = "Un *commit* permet d'enregistrer une version du projet."),
     answer("clone", message = "Un *clone* permet de créer un double local d’un dépôt GitHub."),
     answer("push", message = "Un *push* permet d'envoyer ses modifications locales vers le dépôt GitHub."),
@@ -168,8 +179,8 @@ quiz(
     answer("fork", message = "Un *fork* permet de faire une copie dans notre propre compte GitHub d'un dépôt sur GitHub."),
     answer("pull request", message = "Un *pull request* permet de suggérer à l’auteur du dépôt d'orgine que vous avez fait des modifications qui pourraient l’intéresser. L'auteur peut accepter ou refuser ces modifications."),
     allow_retry = TRUE, random_answer_order = TRUE,
-    correct = "Bravo ! Vous avez trouvé la bonne réponse.",
-    incorrect = "Attention, Ce n'est pas la bonne réponse. Toutes ces notions ne sont pas simples. Prennez le temps de réviser la section sur Git et sur GitHub",
+    correct = "Très bien. Le pull (tirer) est l'action inverse du push : la récupération dans la version locale des modifications qui se trouvent dans le dépôt GitHub. Faites un pull (dabord) et un push ensuite pour synchroniser complètement votre version locale avec celle sur GitHub.",
+    incorrect = "Non, désolé. Git et sur GitHub, c'est important, revoyez la matière...",
     submit_button = "Soumettre une réponse",
     try_again_button = "Resoumettre une réponse"
     )
@@ -193,7 +204,7 @@ quiz(
     answer("fork", message = "Un *fork* permet de faire une copie dans notre propre compte GitHub d'un dépôt sur GitHub."),
     answer("pull request", message = "Un *pull request* permet de suggérer à l’auteur du dépôt d'orgine que vous avez fait des modifications qui pourraient l’intéresser. L'auteur peut accepter ou refuser ces modifications."),
     allow_retry = TRUE, random_answer_order = TRUE,
-    correct = "Bravo ! Vous avez trouvé la bonne réponse.",
+    correct = "Impeccable. Vous clonez un dépôt lorsque vous créez pour la première fois une image de ce dépôt depuis GitHub vers votre machine locale. Avec RStudio, vous le faites généralement lors de la création d'un nouveau projet à partir du lien copié depuis GitHub.",
     incorrect = "Attention, Ce n'est pas la bonne réponse. Toutes ces notions ne sont pas simples. Prennez le temps de réviser la section sur Git et sur GitHub du cours de SDD I.",
     submit_button = "Soumettre une réponse",
     try_again_button = "Resoumettre une réponse"
@@ -207,8 +218,8 @@ quiz(
     answer("fork", message = "Un *fork* permet de faire une copie dans notre propre compte GitHub d'un dépôt sur GitHub."),
     answer("pull request", message = "Un *pull request* permet de suggérer à l’auteur du dépôt d'orgine que vous avez fait des modifications qui pourraient l’intéresser. L'auteur peut accepter ou refuser ces modifications."),
     allow_retry = TRUE, random_answer_order = TRUE,
-    correct = "Bravo ! Vous avez trouvé la bonne réponse.",
-    incorrect = "Attention, Ce n'est pas la bonne réponse. Toutes ces notions ne sont pas simples. Prennez le temps de réviser la section sur Git et sur GitHub",
+    correct = "Oui, à nouveau un commit ici.",
+    incorrect = "Non, désolé. Revoyez le vocabulaire associé à Git et GitHub dans le module 1 du premier cours.",
     submit_button = "Soumettre une réponse",
     try_again_button = "Resoumettre une réponse"
     ),
@@ -221,8 +232,8 @@ quiz(
     answer("fork", message = "Un *fork* permet de faire une copie dans notre propre compte GitHub d'un dépôt sur GitHub."),
     answer("pull request", message = "Un *pull request* permet de suggérer à l’auteur du dépôt d'orgine que vous avez fait des modifications qui pourraient l’intéresser. L'auteur peut accepter ou refuser ces modifications."),
     allow_retry = TRUE, random_answer_order = TRUE,
-    correct = "Bravo ! Vous avez trouvé la bonne réponse.",
-    incorrect = "Attention, Ce n'est pas la bonne réponse. Toutes ces notions ne sont pas simples. Prennez le temps de réviser la section sur Git et sur GitHub",
+    correct = "Et oui, c'est un push, effectivement.",
+    incorrect = "Incorrect, malheureusement, Une révision de la section sur Git et sur GitHub s'impose.",
     submit_button = "Soumettre une réponse",
     try_again_button = "Resoumettre une réponse"
     )
@@ -231,11 +242,11 @@ quiz(
 
 ## Chargement des packages
 
-La fonction`SciViews::R()` est employée afin de charger une série de packages cohérents. Nous l'utilisons en début de script R ou encore dans le premier chunk d'un rapport d'analyse au format R Markdown.
+La fonction`SciViews::R()` est employée afin de charger une série de packages qui forme le "dialecte" SciViews-R. Nous l'utilisons en début de script R ou encore dans le premier chunk d'un rapport d'analyse au format R Markdown.
 
-Les packages chargés sont un ensemble cohérent qui permet d'importer, remanier et visualiser à l'aide de graphiques sans devoir employer en plus la fonction `library()`pour charger des packages en plus.
+Les packages chargés permettent d'importer, remanier et visualiser à l'aide de graphiques en limitant le recours à la fonction `library()` pour charger des packages R supplémentaires (mais vous pourriez être amené à le faire occasionnellement).
 
-Exécutez l'instruction `SciViews::R()` suivie de l'instruction `SciViews::SciViews_packages()` dans la console R ci-dessous et analysez le résultat proposé. Pour exécuter et tester votre code vous pouvez sélectionner le bouton `Run Code` et pour le soumettre, employez `Submit`.
+Exécutez l'instruction `SciViews::R()` suivie de l'instruction `SciViews_packages()` dans la console R ci-dessous et analysez le résultat proposé. Pour rappel, vous exécutez et testez votre code via le bouton `Run Code` et vous soumettez votre réponse avec le bouton `Submit`. Utilisez autant de fois que nécessaire `Run Code` sans pénalité, mais n'oubliez surtout pas de soumettre à la fin avec `Submit`.
 
 ```{r sciviews, exercise = TRUE}
 
@@ -243,11 +254,11 @@ Exécutez l'instruction `SciViews::R()` suivie de l'instruction `SciViews::SciVi
 
 ```{r sciviews-solution}
 SciViews::R()
-SciViews::SciViews_packages()
+SciViews_packages()
 ```
 
 ```{r sciviews-check}
-grade_code("Parfait ! Pour tester votre code vous pouvez employez `Run Code`et pour le soumettre, vous pouvez employez `Submit`")
+grade_code("Voilà effectivement un exercice simple clôturé grâce à `Submit`.")
 ```
 
 ```{r qu_sciviews}
@@ -259,26 +270,24 @@ question("Sélectionnez parmi les propositions suivantes les packages chargés a
   answer("collapse", correct = TRUE),
   allow_retry = TRUE, random_answer_order = TRUE,
   correct = "Bravo ! C'était une petite question d'échauffement liée à la lecture de sortie R.",
-  incorrect = "Attention, relisez attentivement la sortie proposée par la fonction SciViews::SciViews_packages(). Plusieurs éléments sont à sélectionner.",
+  incorrect = "Attention, relisez attentivement le résultat renvoyé par `SciViews_packages()`. Plusieurs éléments sont à sélectionner.",
   submit_button = "Soumettre une réponse", try_again_button = "Resoumettre une réponse"
     )
 ```
 
 ![](images/breaking_news.jpg){width="30%"}
 
-Des packages supplémentaires peuvent être chargés grâce à la fonction R() du package SciViews. Ces packages en plus vont être regroupés pour des tâches spécifiques comme`model` pour la modélisation. On peut également ajouter une langue par défaut.
+Nouveauté dans la SciViews Box 2022 : des packages supplémentaires peuvent être chargés grâce à `SciViews::R()`. Ils correspondent à des sections complémentaires qui ne sont pas chargées de base, par exemple, `"model"` pour la modélisation. Il est également possible à présent de définir le langage par défaut pour l'importation de données qui supportent plusieurs langages et pour les labels automatiques des axes des graphiques via l'argument `lang=`.
 
 ```{r, echo = TRUE, eval = FALSE}
 SciViews::R("model", lang = "fr")
 ```
 
-Nous attirons votre attention sur les objets par défaut pour les tableaux de données (*data frame*). Nous avons décidé de travailler avec des objets de type data.table par défaut. Il existe plusieurs types d'objets pour les tableaux de données dont `data.frame`, `tibble` ou `data.table`. La vitesse de traitements et la gestion en mémoire des data.table en font le choix idéal dans la gestion de large tableau de données. Ce changement de type d'objets aura des effets que nous découvrirons par la suite.
-
 ## Importation des données
 
-Dans le SciViews-verse, nous vous proposons d'employer le package {data.io} afin d'importer vos tableaux de données dans R. Il faut retenir une seule fonction : `read()`. Elle permet de lire des données sur votre disque, depuis une URL ou encore d'un package. La fonction read() comprend de nombreux arguments. Consultez la page d'aide de la fonction pour connaitre le rôle de chaque argument.
+Dans SciViews-R, la fonction `read()` se charge de l'importation de données depuis les packages R (argument `package=`), depuis le disque dur, ou depuis Internet. Consultez la page d'aide de cette fonction pour en découvrir d'autres arguments utiles avec `?read`.
 
-Importez le tableau nommé `crabs` qui provient du package {`MASS`}. \*\*note : Ne complétez que les zones demandées (\_\_\_). Les outils d'autocorrection sont très sensibles.\*\*
+Importez le tableau nommé `crabs` qui provient du package {MASS}. \*\*note : lorsqu'un exercice comporte du code avec des zones à remplacer (\_\_\_), ne faites rien d'autre que complétez ces zones. Les outils d'autocorrection sont très sensibles et n'apprécieraient pas autrement.\*\*
 
 ```{r read_h2, exercise = TRUE}
 crabs <- read(___, package = ___)
@@ -288,8 +297,6 @@ crabs
 ```{r read_h2-hint-1}
 # Consultez la page d'aide de read(). 
 # Elle est disponible en exécutant l'instruction `?` ou encore `.?` dans la console R.
-# Par exemple, vous pouvez essayer `?read()`
-#  Vous trouverez des exemples explicites sur la tableau iris ou encore trees.
 
  #### ATTENTION: Hint suivant = solution !####
 ```
@@ -300,10 +307,10 @@ crabs
 ```
 
 ```{r read_h2-check}
-grade_code("Bravo ! Vous avez importé le tableau de données", "Il semble que la réponse n'est pas la bonne. Ne complètez que les élèments manquants marqués ___. Consulte ensuite bien la page d'aide de la fonction.")
+grade_code("Vous venez d'importer un tableau de données", "La réponse n'est pas correcte. Ne complètez que les élèments manquants marqués ___. Lisez bien l'énoncé.")
 ```
 
-La fonction `read()` permet d'importer tous les formats suivants. Avec l'instruction suivante, vous pouvez retrouver tous les formats supportés par la fonction `read()` et `write()`.
+La fonction `read()` permet d'importer un nombre important de formats de fichiers. Avec l'instruction suivante, vous pouvez retrouver tous les formats supportés par la fonction `read()` (et par son pendant pour exporter vos données, la fonction `write()`).
 
 ```{r, echo=TRUE}
 getOption("read_write")
@@ -311,7 +318,7 @@ getOption("read_write")
 
 Vous venez d'importer un tableau de données provenant d'un package. Serez-vous à présent capable d'importer un tableau de données présent sur votre disque ?
 
-Analysez l'organisation des fichiers ci-dessous. Le dossier `sharks-GuyliannEngels` comprend tous les documents employés afin de réaliser une analyse sur le recensement des attaques de requins en Australie. Il s'agit d'un [projet RStudio](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2022/rs.html). Ce projet doit absolument être portable. Il faut donc employer uniquement des [chemins relatifs](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2022/rs.html). Par exemple, le document `sharks_report.Rmd` se trouve dans le dossier `docs/`.
+Analysez l'organisation des fichiers ci-dessous. Le dossier `sharks-GuyliannEngels` comprend tous les documents employés afin de réaliser une analyse sur le recensement des attaques de requins en Australie. Il s'agit d'un [projet RStudio](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2022/rs.html). Ce projet doit absolument être portable. Il faut donc employer uniquement des **chemins relatifs**. Par exemple, le document `sharks_report.Rmd` se trouve dans le dossier `docs`.
 
     /home
       /sv
@@ -329,7 +336,7 @@ Analysez l'organisation des fichiers ci-dessous. Le dossier `sharks-GuyliannEnge
 
 ```{r qu_read}
 quiz(
-  question("Depuis le fichier sharks_report.Rmd, Sélectionnez l'insruction R correcte afin de lire le tableau `sharks.csv`.",
+  question("Depuis le fichier sharks_report.Rmd, Sélectionnez l'instruction R correcte afin de lire le tableau `sharks.csv`.",
     answer("sharks <- read(\"../data/sharks.csv\")", correct = TRUE),
     answer("sharks <- read(\"sharks.csv\")"),
     answer("sharks <- read(\"data/sharks.csv\")"),
@@ -337,10 +344,10 @@ quiz(
     answer("sharks <- read(\"../data/sharks_import.R\")"),
     allow_retry = TRUE, random_answer_order = TRUE,
     submit_button = "Soumettre une réponse", try_again_button = "Resoumettre une réponse",
-    correct = "Bravo ! Ce n'est pas évident de déterminer le chemin d'accès correct.",
+    correct = "Bravo ! Ce n'est pas évident de déterminer le chemin d'accès correct. Le chemin est relatif par rapport au dossier qui contient le document .Rmd cible.",
     incorrect = "Attention, les chemins d'accès ce n'est pas simple. Nous te conseillons de réviser l'annexe proposés ci-dessous."
     ),
-  question("Depuis le fichier sharks_import.R, Sélectionnez l'insruction R correcte afin de lire le tableau `sharks.csv`.",
+  question("Depuis le fichier sharks_import.R, Sélectionnez l'instruction R correcte afin de lire le tableau `sharks.csv`.",
     answer("sharks <- read(\"../data/sharks.csv\")"),
     answer("sharks <- read(\"sharks.csv\")"),
     answer("sharks <- read(\"data/sharks.csv\")", correct = TRUE),
@@ -348,19 +355,17 @@ quiz(
     answer("sharks <- read(\"../data/sharks_import.R\")"),
     allow_retry = TRUE, random_answer_order = TRUE,
     submit_button = "Soumettre une réponse", try_again_button = "Resoumettre une réponse",
-    correct = "Bravo ! Ce n'est pas évident de déterminer le chemin d'accès correct. Le script R utilise comme point de départ le projet RStudio alors que le Rmd est son propre point de départ",
-  incorrect = "Attention, les chemins d'accès ce n'est pas simple. Nous te conseillons de réviser l'annexe proposés ci-dessous."
+    correct = "Très bien. Le script R utilise comme point de départ le dossier de base du projet RStudio, contrairement au fichier Rmd qui part du dossier qui le contient.",
+  incorrect = "Ce n'est pas juste. Révisez les chemins relatifs dans le projets RStudio."
     )
   )
 ```
 
-La section 5.1 du cours de [SDD I](https://wp.sciviews.org/sdd-umons/) traite de l'importation des données dans R. Consultez cette dernière au besoin.
+La [section 5.1 du cours de SDD I](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2022/importation-des-donn%25C3%25A9es.html) traite de l'importation des données dans R. Consultez cette dernière au besoin.
 
 ## Visualisation des données
 
-La réalisation de graphiques dans R peut être réalisée à l'aide de plusieurs moteurs graphiques dans R comme avec le package {ggplot2}, le package {lattice} ou encore en utilisant les graphiques de base. Une comparaison des moteurs graphiques est réalisée dans la section 5.1 du cours de [SDD I](https://wp.sciviews.org/sdd-umons/)
-
-Dans le SciViews-verse, nous vous proposons d'employer le package {chart} afin de produire des graphiques scientifiques. La fonction centrale pour réaliser des graphiques est `chart()` à laquelle on va ajouter une série de couches avec un `+` comme explicité ci-dessous.
+Les graphiques dans R peuvent être de différents type : des graphiques R de base, {lattice} ou {ggplot2}. Une comparaison des moteurs graphiques est réalisée dans la [section 4.5 du cours de SDD I](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2022/diff%25C3%25A9rents-moteurs-graphiques.html). Dans SciViews-R, nous vous proposons d'employer la fonction `chart()` qui permet de réaliser un graphique dans chacun de ces trois moteurs. Cependant, par défaut, il s'agit d'un graphique {ggplot2} auquel nous ajoutons une série de couches avec l'opérateur `+`.
 
 ```{r, echo = TRUE}
 # Importation des données
@@ -372,14 +377,14 @@ chart(data = crabs, length ~ width %col=% sex | species) +
 
 ![](images/breaking_news.jpg){width="30%"}
 
-Il n'est pas aisé de se souvenir du nom de chaque fonction que l'on peut employer avec chart() ou avec ggplot(). Nous te proposons pour ce faire une syntaxe alternative. La fonction `gg$` associée au pipe natif de R `|>` permet d'obtenir une liste de toutes les fonctions disponibles que l'on peut ajouter au graphique. Le pipe `|>` va remplacer le `+` et on ajoute avant `geom_point()` l'instruction. `gg$`
+Il n'est pas aisé de se souvenir du nom de chaque fonction que l'on peut employer avec `chart()` ou `ggplot()`. Nous vous proposons pour ce faire une syntaxe alternative. La fonction `gg$` associée au pipe natif de R `|>` permet d'obtenir une liste de toutes les fonctions disponibles que l'on peut ajouter au graphique. Le pipe `|>` va remplacer le `+` que l'on suit par `gg$` et une liste de complétion apparaît. Il s'agit des fonctions habituelles comme `geom_point()` par exemple.
 
 ```{r, echo = TRUE}
 chart(data = crabs, length ~ width %col=% sex | species) |>
   gg$geom_point()
 ```
 
-Attention, il n'est pas possible d'intervertir le `+` et `|>` dans chaque situation. Le pipe natif de R `|>` se combine uniquement avec `gg`.
+**Attention !** Il n'est pas possible d'intervertir le `+` et `|>` dans chaque situation. Le pipe natif de R `|>` se combine uniquement avec `gg$`.
 
 ```{r, echo = TRUE, eval=FALSE}
 # Mauvaise forme 
@@ -397,7 +402,7 @@ chart(data = crabs, length ~ sex %fill=% species) +
   geom_boxplot()
 ```
 
-Les variables à votre disposition sont les suivantes : `r names(crabs)`
+Les variables à votre disposition sont les suivantes : `r names(crabs)`
 
 ```{r chart_h4, exercise = TRUE}
 # Importation des données
@@ -434,6 +439,7 @@ chart(data = crabs, length ~ ___ %___=% ___ ) |>
 ```
 
 ```{r chart_h4-solution}
+## Solution ##
 # Importation des données
 crabs <- read("crabs", package = "MASS")
 # Graphique
@@ -442,7 +448,7 @@ chart(data = crabs, length ~ sex %fill=% species) |>
 ```
 
 ```{r chart_h4-check}
-grade_code("Bien joué ! Tu es capable d'employer la formule dans chart ainsi que le bon geom_* afin d'obtenir des boites de dispersion.")
+grade_code("Bien joué ! Vous êtes capable d'employer la formule dans chart ainsi que le bon geom_* afin d'obtenir des boites de dispersion.")
 ```
 
 ```{r qu_chart}
@@ -453,42 +459,47 @@ question("Sélectionnez parmi les éléments suivants, les descriptions graphiqu
   answer("Les écart-types sont similaires entre les 4 groupes."),
   allow_retry = TRUE, random_answer_order = TRUE,
   submit_button = "Soumettre une réponse", try_again_button = "Resoumettre une réponse",
-  correct = "Bravo ! Tu as sélectionné les éléments correctes. Cependant, la description n'est pas compète. Elle peut être améliorée à l'aide de valeurs numériques par exemple.",
-  incorrect = "Attention, N'auriez vous pas mélanger les descripteurs paramétriques et les descripteurs non paramétriques. La boite de dispersion présente les descripteurs non paramétriques. La section 4.3 de SDDI traite spécifiquement des boites de dispersion.")
+  correct = "Bien joué. Cependant, la description n'est pas complète. Elle peut être améliorée à l'aide de valeurs numériques par exemple.",
+  incorrect = "Attention, N'auriez vous pas mélangé les descripteurs paramétriques et les descripteurs non paramétriques. La boite de dispersion présente les descripteurs non paramétriques. La section 4.3 de SDDI traite spécifiquement des boites de dispersion.")
 ```
 
-Les modules 2, 3 et 4 du cours [SDD I](https://wp.sciviews.org/sdd-umons) traitent de la réalisation des graphiques dans R avec le package {chart}. Consultez ces modules au besoin.
+Les modules 2, 3 et 4 du cours [SDD I](https://wp.sciviews.org/sdd-umons) traitent de la réalisation des graphiques dans R avec `chart()`. Relisez cette partie si vous avez oublié comment réaliser un graphique avec SciViews-R.
 
 ## Remaniement des données
 
-Le remaniement de données est tout un art que vous devez maitriser à la perfection. Vous devez être capable de détecter les valeurs manquantes, de filtrer des observations, de sélectionner des colonnes d'intérêt, de calculer de nouvelles variables.
+Le remaniement de données est tout un art que vous devez maîtriser à la perfection. Vous devez être capable de détecter les valeurs manquantes, de filtrer des observations, de sélectionner des colonnes d'intérêt, de calculer de nouvelles variables, etc.
 
-Le changement de type d'objet pour nos tableaux de données va avoir un effet important dans le remaniement des données. Nous travaillons à présent avec un `data.table`.
+Dans la SciViews Box 2022, les tableaux de données (*data frame*) ont changé de classe d'objet. Avant c'était essentiellement les objets **data.frame** ou **tibble** qui étaient employés. Maintenant c'est bien plus souvent des **Data.table**s. La vitesse de traitement et la gestion en mémoire des **data.table**s étant bien meilleure que pour les deux autres, c'est un avantage pour la gestion de gros tableaux de données. Ce changement de classe d'objets est la plupart du temps transparent, mais quelques habitudes doivent tout de même changer...
 
-Vous allez vous intéresser aux rendements de deux variétés de pommes de terre. Des agronomes belges s'intéressent aux rendements de deux variétés de pommes de terre : la bintje et la fontane. Après 110 jours, ils réalisent des prélèvements sur différentes parcelles en Belgique dont ils quantifient la production, exprimée en tonnes par hectare. Cet exercice s'inspire des observations relayées sur le site du sillon belge d'un [article consulté le 3 septembre 2019](https://www.sillonbelge.be/4731/article/2019-08-28/bintje-et-fontane-apres-110-115-jours-faute-de-casser-la-baraque-ces-deux).
+Vous allez vous intéresser au rendement de deux variétés de pommes de terre : la bintje et la fontane. Après 110 jours, ils réalisent des prélèvements sur différentes parcelles en Belgique dont ils quantifient la production exprimée en tonnes par hectare. Cet exercice s'inspire des observations relayées sur le site du sillon belge d'un [article consulté le 3 septembre 2019](https://www.sillonbelge.be/4731/article/2019-08-28/bintje-et-fontane-apres-110-115-jours-faute-de-casser-la-baraque-ces-deux).
 
 ```{r, warning=FALSE, message=FALSE}
 set.seed(42)
-potatos <- dtx(
-  id = paste0(letters, sample.int(46, replace = FALSE)),
-  yield = c(rnorm(18L, mean = 33.6, sd = 4), rnorm(28L, mean = 39.5, sd = 4)), 
+potatoes <- dtx(
+  id       = paste0(letters, sample.int(46, replace = FALSE)),
+  yield    = c(rnorm(18L, mean = 33.6, sd = 4),
+               rnorm(28L, mean = 39.5, sd = 4)), 
   cultivar = c(rep("bintje", times = 18L), rep("fontane", times = 28L))
 )
-potatos <- labelise(potatos, 
-  label = list(id = "Code d'identification", yield = "Rendement", cultivar = "Variété"), 
-  units = list(yield = "t/ha"))
+potatoes <- labelise(potatoes, 
+  label = list(
+    id       = "Code d'identification",
+    yield    = "Rendement",
+    cultivar = "Variété"), 
+  units = list(
+    yield = "t/ha"))
 ```
 
-Le tableau de données se nomme `potatos`. Ce tableau comprend les variables `r names(potatos)`. Les premières lignes du tableau sont affichées ci-desous.
+Le tableau de données se nomme `potatoes`. Ce tableau est constitué des variables `r names(potatoes)`. Les premières lignes du tableau sont affichées ci-dessous.
 
 ```{r, echo=TRUE}
-head(potatos)
+head(potatoes)
 ```
 
-Afin de sélectionner les colonnes `yield`, `cultivar` du tableau `potatos`, nous aurions employé
+Afin de sélectionner les colonnes `yield`, `cultivar` du tableau `potatoes`, nous aurions employé dans les versions antérieures de la SciViews Box :
 
 ```{r, echo = TRUE, eval = FALSE}
-potatos1 <- select(potatos, yield, cultivar)
+potatoes1 <- select(potatoes, yield, cultivar)
 ```
 
 ![](images/breaking_news.jpg){width="30%"}
@@ -497,175 +508,178 @@ L'utilisation d'objet de type `data.table` requiert quelques modifications prés
 
 ```{r, echo = TRUE, eval = FALSE}
 # Assignation classique => la version conseillée
-potatos1 <- sselect(potatos,  yield, cultivar) 
+potatoes1 <- sselect(potatoes,  yield, cultivar) 
 # Assignation alternative
-potatos1 %<-% select(potatos,  yield, cultivar)
+potatoes1 %<-% select(potatoes,  yield, cultivar)
 #  Assignation classique avec collect_dtx()
-potatos1 <- select(potatos,  yield, cultivar) |> collect_dtx()
+select(potatoes,  yield, cultivar) |> collect_dtx() ->
+  potatoes1
 ```
 
-Vous aurez remarqué que nous employons tout d'abord la fonction sselect() qui est similaire à la fonction select().
+Vous aurez remarqué que nous employons tout d'abord la fonction `sselect()` qui est similaire à `select()`.
 
-**Les grandes familles de fonction** : Il est possible de réaliser des regroupements de fonctions dans R. Nous avons les fonctions associées au Tidyverse (que nous appellerons tidy par commodité) comme mutate(), select(), pivot_longer(),...
+Pour fixer les idées, nous pouvons décider de regrouper les fonctions de R en familles selon leur comportement. Les fonctions d'une même famille ont un comportement similaire du point de vue des arguments qu'elles acceptent, du type d'objet qu'elles utilisent et de la façon dans les résultats sont renvoyés.
 
-Enfin, nous avons les fonctions non-tidy. Nous parlerons de fonction `speedy`. Plusieurs fonctions proviennet du package {collapse}. Il propose des fonctions ressemblantes aux fonctions du Tidyverse et parfaitement compatibles avec les objets `data.table`. Elles débutent par un `f` comme `fselect()`. Pour simplifier l'identification de ces fonctions, nous les renommons `sselect()`, `smutate()`, `sgroup_by()`,... Elles sont plus rapides que les fonctions tidy.
+Le [Tidyverse](https://www.tidyverse.org) propose un ensemble de fonctions cohérentes autour des objets **tibble**s. Ce sont les fonctions comme `mutate()`, `select()`, `filter()`, `group_by()`, `summarise()`, `pivot_longer()`,... que nous utilisions jusqu'ici. Nous applerons cette famille les **fonctions tidy**.
+
+Dans la SciViewsBox 2022, nous vous présentons des fonctions jumelles aux précédentes qui se comportent de manière très proche et qui réalisent le mùeme traitement dans 95% des cas, mais qui sont nettement plus rapides. Pour cette raison, nous appellerons cette famille, les **fonctions speedy**. Leur nom est identique aux fonctions tidy, mais préfixé d'un "s" pour les différencier. Donc, l'homologue de `mutate()` est `smutate()`, `filter()` devient `sfilter()`, et ainsi de suite...
 
 ```{r, echo=TRUE}
 list_speedy_functions()
 ```
 
-En résumé, on retrouve un équivalent aux 5 fonctions principales du Tidyverse pour le remaniement de tableau dans la famille des fonctions `speedy`. Les arguments des fonctions et les résultats proposés sont très similaires :
+En résumé, on retrouve un équivalent aux cinq fonctions tidy principales pour le remaniement de tableau dans la famille des fonctions `speedy`, ainsi que pas mal d'autres. Les arguments des fonctions et les résultats proposés sont très similaires :
 
--   sélectionner des colonnes au sein d'un jeu de données avec select()/sselect()
--   filtrer des lignes dans un jeu de données avec filter()/sfilter()
--   calculer de nouvelles variables dans un jeu de données avec mutate()/smutate()
--   regrouper les données au sein d'un tableau avec group_by()/sgroup_by()
--   résumer les variables d'un jeu de données avec summarise()/ssummarise()
+-   sélectionner des colonnes au sein d'un jeu de données avec `select()`/`sselect()`
+-   filtrer des lignes dans un jeu de données avec `filter()`/`sfilter()`
+-   calculer de nouvelles variables dans un jeu de données avec `mutate()`/`smutate()`
+-   regrouper les données au sein d'un tableau avec `group_by()`/`sgroup_by()`
+-   résumer les variables d'un jeu de données avec `summarise()`/`ssummarise()`
 
-*Nous vous conseillons d'employer préférentiellement les fonctions `s...`.*
+*Nous vous conseillons d'employer préférentiellement les fonctions speedy pour un travail sur des jeux de données allant jusqu'à quelques dizaines de milliers de lignes, voire plus.*
 
-Avec les fonctions tidy, il faut prendre soin de collecter les résultats à la fin si l'on travaille avec des objets de classe `data.table` comme c'est le cas par défaut avec SciViews::R (le package {dtplyr} gère alors les calculs en interne). Dans SciViews::R, on utilisera l'assignation alternative %\<-% ou %-\>%, ou alors, on utilisera explicitement collect_dtx() pour récupérer un data frame utilisable avec les fonctions non-tidy.
+Étant donné le changement en interne du type d'objet pour les tableaux de données vers **data.table**, avec les fonctions tidy, il faut prendre soin de **collecter** les résultats à la fin. Dans SciViews-R, on utilisera l'assignation alternative `%<-%` ou `%->%`, ou alors, on utilisera explicitement `collect_dtx()` pour récupérer un data frame utilisable ensuite avec les fonctions non-tidy.
 
-**Les différents pipes** : Le pipe natif `|>` est un pipe proposée dans R de base depuis la version 4.1.0 de R. Vous connaissez déjà deux pipes que sont le pipe de {magrittr} `%>%` ou le pipe du package {flow} `%>.%`. L'objectif de ces trois pipes est le même. Ils permettent le chainage d'instruction afin de montrer de manière claire la suite des opérations. Les pipes améliorent grandement la lisibilité du code. Notez que le pipe `|>` ne requiert pas l'utilisation du `.` dans la fonction qui le suit alors que le pipe `%>.%` l'impose. Vous pouvez retrouver de plus amples informations sur le chainage dans la section 5.5 de [SDD I](https://wp.sciviews.org/sdd-umons).
+**Autre changement :** le pipe natif `|>` est apparu dans la version 4.1.0 de R. Vous connaissez déjà deux pipes que sont le pipe de {magrittr} `%>%` ou le pipe du package {svFlow} `%>.%`. Ces trois opérateurs permettent de chaîner des instructions afin de montrer de manière claire la suite des opérations. Les pipes améliorent grandement la lisibilité du code. Notez que le pipe `|>` ne requiert pas l'utilisation du `.` dans la fonction qui le suit alors que le pipe `%>.%` l'impose. Vous pouvez retrouver de plus amples informations sur le chaînage des instructions dans la [section 5.5 de SDD I](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2022/cha%25C3%25AEnage-des-instructions.html).
 
-Nous vous proposons d'employer le pipe `%>.%` lorsque le tableau initial est modifié et d'employer le pipe `|>` lorsqu'il ne l'est pas.
+Nous vous proposons de continuer à utiliser le pipe `%>.%` de SciViews-R pour relier des étapes successives de traitement des données en allant à la ligne après l'opérateur pour bien indiquer que c'est une étape suivante. Par contre, s'il s'agit de combiner deux fonctions pour obtenir une seule étape de traitements, nous suggérons de préférer le pipe de base de R `|>` et de placer le tout sur la même ligne. Une situation qui se rencontre suivant est le `group_by()` suivi d'un `summarise()`. La fonction `group_by()` ne modifie en rien le tableau. Elle le prépare pour `summarise()` en indiquant quelle(s) variable(s) vont servir au regroupent, dont `summarise()` se chharge ensuite. Donc, il nous semble opportun d'indiquer que c'est une seule et même étape en écrvant : `group_by(...) |> summarise(...)`.
 
--   Si vous souhaitez filtrer des individus puis sélectionnez des colonnes d'intérêt, le tableau initial est modifié =\> `%>.%`
-
--   Si vous réalisez un groupement (group_by() ou sgroup_by()) suivi d'un résumé des observations (summarise() ou ssummarise()), le tableau initial n'est pas modifié =\> `|>`
-
-Sélectionnez les parcelles ayant un rendement strictement supérieur à 30 tonnes par hectare et inférieur ou égale 41 tonnes par hectare. Utilisez la fonction adéquate du package {collapse} (donc une fonction non-tidy)
+Voyons tout cela sur des exemples concrets. Sélectionnez les parcelles ayant un rendement strictement supérieur à 30 tonnes par hectare et inférieur ou égal à 41 tonnes par hectare. Utilisez une fonction speedy pour ce faire.
 
 ```{r filter_h3, exercise = TRUE}
 # Réduction du tableau
-potatos_red <- ___(potatos, ___ ___ ___ & ___ <= 41)
+potatoes_red <- ___(potatoes, ___ ___ ___ & ___ <= 41)
 ```
 
 ```{r filter_h3-hint-1}
 # Réduction du tableau
-potatos_red <- sfilter(potatos, ___ ___ ___ & ___ <= 41)
+potatoes_red <- sfilter(potatoes, ___ ___ ___ & ___ <= 41)
 ```
 
 ```{r filter_h3-hint-2}
 # Réduction du tableau
-potatos_red <- sfilter(potatos, ___ ___ ___ & yield <= 41)
+potatoes_red <- sfilter(potatoes, ___ ___ ___ & yield <= 41)
 
  #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r filter_h3-solution}
+## Solution ##
 # Réduction du tableau
-potatos_red <- sfilter(potatos, yield > 30 & yield <= 41)
+potatoes_red <- sfilter(potatoes, yield > 30 & yield <= 41)
 ```
 
 ```{r filter_h3-check}
 grade_code("Parfait ! Vous avez employé correctement la fonction sfilter().", "Il semble que vous avez commis une erreur. n'hésitez pas à revoir la section 5.4.2 de SDD I.")
 ```
 
-Vous réaliserez régulièrement des tableaux de données afin de résumer l'information d'un tableau principal. Avec un tableau de données de type `data.frame` ou tibble (`tbl_df`), vous auriez pu employer les instructions suivantes.
+Nous introduisons une troisième série de fonctions : les fonctions fast. Ces fonctions réalise un résumé d'un échantillon (moyenne, écart type, médiane, ...). Dans R de base, nous avons `mean()`, `sd()` ou `median()`. Et bien nous vous présentons leurs fonctions jumelles (enfin, pas complètement, elles sont en fait à la fois bien plus rapides et ont encore d'autres qualités). Elle sont repérables à leur préfixe "f". Ainsi, `mean()` devient `fmean()`, `sd()` devient `fsd()` et aisni de suite.
+
+Sachant tout cela, voyons comment un traitement classique est transformé. Auparavant, pour résumer un tableau de données, vous utilisiez :
 
 ```{r, echo = TRUE, eval=FALSE}
-potatos %>.%
+potatoes %>.%
   group_by(., cultivar) %>.%
   summarise(., 
-    yield_mean = mean(yield), yield_sd = sd(yield), n = n()) -> potatos_red
+    yield_mean = mean(yield), yield_sd = sd(yield), n = n()) ->
+  potatoes_red
 ```
 
 ![](images/breaking_news.jpg){width="30%"}
 
-En appliquant les nouvelles conventions citées précédemment, nous vous proposons d'employer à présent l'une des deux formes suivantes (avec une préférence pour la première).
+En appliquant les nouvelles conventions expliquées plus haut, nous vous proposons d'employer à présent l'une des deux formes suivantes (avec une préférence pour la première).
 
 ```{r, echo = TRUE}
-# Utilisation des fonctions fast
-potatos %>.%
+# Utilisation des fonctions speedy
+potatoes %>.%
   sgroup_by(., cultivar) |> ssummarise( 
-    length_mean = fmean(yield), length_sd = fsd(yield), n = fn(yield)) ->
-  potatos_red
+    length_mean = fmean(yield), length_sd = fsd(yield), n = fn(yield)) %->%
+  potatoes_red
 
 # Utilisation des fonctions tidy
-potatos %>.%
+potatoes %>.%
   group_by(., cultivar) |> summarise( 
     length_mean = fmean(yield), length_sd = fsd(yield), n = fn(yield)) %->%
-  potatoss_red
+  potatoess_red
 ```
 
-Nous pouvons observer l'utilisation :
+Nous pouvons observer l'utilisation :
 
--   des fonctions `fast` du package {collapse} (essentiellement)
--   du pipe natif `|>` et du pipe de {flow}
--   de l'assignation alternative `%->%` (uniquement avec la version tidy)
+-   des fonctions fast `fmean()`, `fsd()` et `fn()`
+-   du pipe natif `|>` et du pipe `%>.%` selon le contexte
+-   de l'assignation alternative `%->%` en fin de pipeline
 
-Les fonctions en R de base peuvent être employées afin de réaliser des calculs comme la somme, la moyenne, la variance sur des vecteurs ou des matrices. Ces fonctions ont une version équivalente dans l'ensemble des fonctions `fast` du package {collapse}:
-
--   calculer la moyenne : mean()/fmean()
--   calculer l'écart-type : sd()/fsd()
--   déterminer le minimum : min()/fmin()
--   déterminer le maximum : max()/fmax()
--   calculer de la médiane : median()/fmedian()
-
-*Nous vous conseillons d'employer préférentiellement les fonctions `fast` qui sont plus rapides.*
+*Nous vous conseillons d'employer préférentiellement les fonctions fast maintenant qui sont plus rapides.*
 
 ```{r, echo=TRUE}
 list_fstat_functions()
 ```
 
-C'est à vous de jouer ! Proposez un tableau résumé proposant le rendement médian, le rendement minimal, le rendement maximal et le nombre d'observations de parcelles par variété. Utilisez les fonctions `speedy` et les fonctions `fast`. Utilisez de plus le pipe natif de R. Les variables de `potatos` à votre disposition sont : `r names(potatos)`
+C'est à vous de jouer ! Réalisez un tableau résumé reprenant le rendement médian, le rendement minimal, le rendement maximal et le nombre d'observations de parcelles par variété. Utilisez les fonctions speedy et fast. Utilisez de plus le pipe natif de R lorsque c'est judicieux. Les variables de `potatoes` à votre disposition sont : `r names(potatoes)`
 
 ```{r summarise_h3, exercise = TRUE}
-potatos %>.%
+potatoes %>.%
   ___(., ___) ___ ___(
     yield_med = ___(___), yield_min = ___(___), 
-    yield_max = ___(___), n = ___(___)) -> potatos_red
-potatos_red
+    yield_max = ___(___), n = ___(___)) %->%
+  potatoes_red
+potatoes_red
 ```
 
 ```{r summarise_h3-hint-1}
-potatos %>.%
+potatoes %>.%
   ___(., cultivar) ___ ___(
     yield_med = ___(___), yield_min = ___(___), 
-    yield_max = ___(___), n = ___(___)) -> potatos_red
-potatos_red
+    yield_max = ___(___), n = ___(___)) %->%
+  potatoes_red
+potatoes_red
 ```
 
 ```{r summarise_h3-hint-2}
-potatos %>.%
+potatoes %>.%
   sgroup_by(., cultivar) |> ssummarise(
     yield_med = fmedian(___), yield_min = ___(___), 
-    yield_max = ___(___), n = ___(___)) -> potatos_red
-potatos_red
+    yield_max = ___(___), n = ___(___)) %->%
+  potatoes_red
+potatoes_red
  #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r summarise_h3-solution}
-potatos %>.%
+## Solution ##
+potatoes %>.%
   sgroup_by(., cultivar) |> ssummarise(
     yield_med = fmedian(yield), yield_min = fmin(yield), 
-    yield_max = fmax(yield), n = fn(yield)) -> potatos_red
-potatos_red
+    yield_max = fmax(yield), n = fn(yield)) %->%
+  potatoes_red
+potatoes_red
 ```
 
 ```{r summarise_h3-check}
-grade_code("Bien joué ! Vous avez compris la nouvelle syntaxe que nous vous proposons avec l'utilisation des fonctions du package collapse et le pipe natif. Pour améliorer ce tableau, on aurait pu utiliser la fonction knitr::kable()", "Il semble que vous avez commis une erreur. Nous vous conseillons de revoir le module 5 de SDD I.")
+grade_code("Fantastique ! Vous avez compris la nouvelle syntaxe. Pour améliorer visuellement ce tableau à l'impression, on aurait pu utiliser la fonction knitr::kable()", "Il semble que vous avez commis une erreur. Nous vous conseillons de revoir le module 5 de SDD I.")
 ```
 
 ## Test d'hypothèse
 
-Dans le cours de science des données I, cinq modules ont été consacrés entièrement ou en partie à la réalisation de test d'hypothèse. Le nombre important de modules vous permet de vous rendre compte de l'importance de cette matière. L'exercice suivant traite du test de Student. Ce test permet de comparer les moyennes de deux groupes. Vous allez travailler pour ce faire sur des taureaux reproducteurs.
+Dans le cours de science des données I, cinq modules ont été consacrés entièrement ou en partie à la réalisation de test d'hypothèse. Le nombre conséquent de modules vous permet de vous rendre compte de l'importance de cette matière. L'exercice suivant traite du test *t* de Student. Ce test permet de comparer les moyennes de deux groupes. Vous allez travailler pour ce faire sur des taureaux reproducteurs.
 
-L'association wallonne de l'élevage dispose de plusieurs centres d'insémination. Ils ont un recensement des différents taureaux reproducteurs. Vous avez à votre disposition le jeu de données `bull` qui comprend les variables suivantes : `r names(bull)`. Il est évident qu'un taureau plus âgé sera plus lourd, nous allons donc standardiser la masse par l'âge et limiter notre étude aux individus de moins de 50 mois.
+L'association wallonne de l'élevage dispose de plusieurs centres d'insémination. Ils ont un recensement des différents taureaux reproducteurs. Vous avez à votre disposition le jeu de données `bull` qui reprend les variables suivantes : `r names(bull)`. Il est évident qu'un taureau plus âgé sera plus lourd, nous allons donc standardiser la masse par l'âge et limiter notre étude aux individus de moins de 50 mois.
 
 ```{r, echo = TRUE}
 bull %>.%
   sfilter(., age <= 50) %>.%
-  smutate(., weight_std = labelise(weight/age, label = "Masse standardisée", units = NA)) ->
+  smutate(., weight_std = labelise(weight/age,
+    label = "Masse standardisée", units = NA)) %->%
   bull_red
 
 bull_red %>.%
   sgroup_by(., variety) |> ssummarise(
-    wstd_mean = fmean(weight_std),  wstd_sd = fsd(weight_std), n = fn(weight_std))
+    wstd_mean = fmean(weight_std),
+    wstd_sd   = fsd(weight_std),
+    n         = fn(weight_std))
 ```
 
-Vous noterez que les centres d'insémination ont plus d'individus de la variété viande que mixte. Réalisez un test de Student bilatéral avec un seuil $\alpha$ de 0.05 et de variances inégales afin de comparer la masse standardisée en fonction de la variété.
+Vous noterez que les centres d'insémination ont plus d'individus de la variété viande que mixte. Réalisez un test *t* de Student bilatéral avec un seuil $\alpha$ de 0.05 et de variances inégales afin de comparer la masse standardisée en fonction de la variété.
 
 ```{r qu_student_h3, exercise=TRUE, exercise.lines=3}
 t.test(data = ___, ___ ~ ___,
@@ -691,30 +705,32 @@ t.test(data = bull_red, weight_std ~ variety,
 ```
 
 ```{r qu_student_h3-check}
-grade_code("Bravo ! Vous savez réalisez un test de Student.")
+grade_code("Bravo ! Vous savez réalisez un test *t* de Student.")
 ```
 
 ```{r qu_student1}
-question("Y a t'il une différence significative au seuil $\\alpha$ de 0.05 de la masse standardiséed entre les deux variétés étudiées ?",
+question("Y a t'il une différence significative au seuil $\\alpha$ de 0.05 de la masse standardisée entre les deux variétés étudiées ?",
   answer("oui"),
   answer("non", correct = TRUE), 
   random_answer_order = TRUE, allow_retry = TRUE,
-  submit_button = "Soumettre une réponse", try_again_button = "Resoumettre une réponse")
+  submit_button = "Soumettre une réponse",
+  try_again_button = "Resoumettre une réponse",
+  correct = "Avec une valeur *p* nettement supérieure au seuil alpha, nous ne rejetons pas l'hypothèse nulle..")
 ```
 
 ## Choix d'un test statistique
 
 ```{r qu_test}
 question("Indiquez quel test statistique permet de vérifier l'homogénéité des variances",
-  answer("Test de Bartlett", correct = TRUE, message = "La vérification est de l'homogénéité des varianes est très importante avant de réaliser une ANOVA par exemple."),
+  answer("Test de Bartlett", correct = TRUE, message = "La vérification de l'homogénéité des variances est très importante avant de réaliser une ANOVA, par exemple."),
   answer("Test de Shapiro-Wilk"),
   answer("Test de Friedman"),
   answer("Test de Pearson"),
   answer("Aucune des réponses proposées"),
   allow_retry = TRUE, random_answer_order = TRUE,
   submit_button = "Soumettre une réponse", try_again_button = "Resoumettre une réponse",
-  correct = "Bravo ! C'était une petite question d'échauffement liée à la lecture de sortie R.",
-  incorrect = "Attention, il semble que vous avez oublié le rôle de chaque test.")
+  correct = "Très bien.",
+  incorrect = "Attention, il semble que vous avez oublié quel test s'intéresse à l'homoscédasticité.")
 ```
 
 ## Conclusion
