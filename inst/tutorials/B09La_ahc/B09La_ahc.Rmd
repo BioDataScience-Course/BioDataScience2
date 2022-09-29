@@ -395,6 +395,8 @@ BioDataScience2::learnr_server(input, output, session)
 
 ------------------------------------------------------------------------
 
+**Ce tutoriel correspond à la version 2021-2022. Il est en cours de révision pour la version 2022-2023. Vous devez probablement penser à installer une version plus récente du package qui contient les exercices finalisés !**
+
 ## Objectifs
 
 -   Vérifier que vous avez bien compris la logique et les différentes étapes de réalisation d'un drendrogramme : matrice de distance, classification ascendante hiérarchique (CAH), représentation graphique et coupure du dendrogramme pour obtenir des groupes.

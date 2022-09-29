@@ -238,7 +238,9 @@ BioDataScience2::learnr_server(input, output, session)
 
 ------------------------------------------------------------------------
 
-## Objectif
+**Ce tutoriel correspond à la version 2021-2022. Il est en cours de révision pour la version 2022-2023. Vous devez probablement penser à installer une version plus récente du package qui contient les exercices finalisés !**
+
+## Objectifs
 
 L'Analyse en Composantes Principales (ACP) est une méthode statistique exploratoire très utilisée dans le domaine de la biologie et de l'écologie. Elle forme aussi la base de nombreuses autres techniques qui en sont dérivées. Il est donc primordial de comprendre la logique et l'usage de cette analyse. Ce tutoriel vous permettra de :
 
