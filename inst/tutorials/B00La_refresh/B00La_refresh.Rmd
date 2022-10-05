@@ -287,7 +287,7 @@ SciViews::R("model", lang = "fr")
 
 Dans SciViews-R, la fonction `read()` se charge de l'importation de données depuis les packages R (argument `package=`), depuis le disque dur, ou depuis Internet. Consultez la page d'aide de cette fonction pour en découvrir d'autres arguments utiles avec `?read`.
 
-Importez le tableau nommé `crabs` qui provient du package {MASS}. \*\*note : lorsqu'un exercice comporte du code avec des zones à remplacer (\_\_\_), ne faites rien d'autre que complétez ces zones. Les outils d'autocorrection sont très sensibles et n'apprécieraient pas autrement.\*\*
+Importez le tableau nommé `crabs` qui provient du package {MASS}. **note : lorsqu'un exercice comporte du code avec des zones à remplacer (`___`), ne faites rien d'autre que complétez ces zones. Les outils d'autocorrection sont très sensibles et n'apprécieraient pas autrement.**
 
 ```{r read_h2, exercise = TRUE}
 crabs <- read(___, package = ___)
@@ -302,6 +302,7 @@ crabs
 ```
 
 ```{r read_h2-solution}
+## Solution ##
 crabs <- read("crabs", package = "MASS")
 crabs
 ```
@@ -313,7 +314,7 @@ grade_code("Vous venez d'importer un tableau de données", "La réponse n'est pa
 La fonction `read()` permet d'importer un nombre important de formats de fichiers. Avec l'instruction suivante, vous pouvez retrouver tous les formats supportés par la fonction `read()` (et par son pendant pour exporter vos données, la fonction `write()`).
 
 ```{r, echo=TRUE}
-getOption("read_write")
+data_types(view = FALSE)
 ```
 
 Vous venez d'importer un tableau de données provenant d'un package. Serez-vous à présent capable d'importer un tableau de données présent sur votre disque ?
@@ -471,6 +472,8 @@ Le remaniement de données est tout un art que vous devez maîtriser à la perfe
 
 Dans la SciViews Box 2022, les tableaux de données (*data frame*) ont changé de classe d'objet. Avant c'était essentiellement les objets **data.frame** ou **tibble** qui étaient employés. Maintenant c'est bien plus souvent des **Data.table**s. La vitesse de traitement et la gestion en mémoire des **data.table**s étant bien meilleure que pour les deux autres, c'est un avantage pour la gestion de gros tableaux de données. Ce changement de classe d'objets est la plupart du temps transparent, mais quelques habitudes doivent tout de même changer...
 
+Suite à ce traitement différent des trois type d'objets data frame (**data.frame**, **data.table** et **tbl_df** de {tibble}), nous éviterons de créer de tels objets avec les fonctions classiques `data.frame()`, `data.table()` ou `tibble()`, mais nous préférerons utiliser `dtx()` qui va créer un data frame dans le format par défaut choisi (mais comme expliqué plus haut, nous resterons sur un **data.table** dans le cadre de ce cours). Les fonctions `dtf()`, `dtt()` et `dtbl()` créent respectivement un **data.frame**, un **data.table** et un **tbl_df** d'un manière compatible avec `dtx()`. Pour les conversions, nous utiliserons `as_dtx()`, `as_dtf()`, `as_dtt()` et `as_dtbl()`. Enfin, nous remplacerons `tribble()` par `dtx_rows()`.
+
 Vous allez vous intéresser au rendement de deux variétés de pommes de terre : la bintje et la fontane. Après 110 jours, ils réalisent des prélèvements sur différentes parcelles en Belgique dont ils quantifient la production exprimée en tonnes par hectare. Cet exercice s'inspire des observations relayées sur le site du sillon belge d'un [article consulté le 3 septembre 2019](https://www.sillonbelge.be/4731/article/2019-08-28/bintje-et-fontane-apres-110-115-jours-faute-de-casser-la-baraque-ces-deux).
 
 ```{r, warning=FALSE, message=FALSE}
@@ -504,7 +507,7 @@ potatoes1 <- select(potatoes, yield, cultivar)
 
 ![](images/breaking_news.jpg){width="30%"}
 
-L'utilisation d'objet de type `data.table` requiert quelques modifications présentées ci-dessous. Vous avez à votre disposition plusieurs alternatives.
+L'utilisation d'objet de classe **data.table** requiert quelques modifications présentées ci-dessous. Vous avez à votre disposition plusieurs alternatives.
 
 ```{r, echo = TRUE, eval = FALSE}
 # Assignation classique => la version conseillée
