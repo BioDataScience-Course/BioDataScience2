@@ -123,6 +123,8 @@ BioDataScience2::learnr_server(input, output, session)
 
 ------------------------------------------------------------------------
 
+**Ce tutoriel correspond à la version 2021-2022. Il est en cours de révision pour la version 2022-2023. Vous devez probablement penser à installer une version plus récente du package qui contient les exercices finalisés !**
+
 ## Objectifs
 
 La méthode des k-moyennes ("k-means" en anglais) permet de réaliser des regroupements d'individus en partant d'un tableau multivarié. Elle a donc le même objectif que la classification hiérarchique ascendante (CAH) que vous avez découverte dans le module précédent. La méthode des k-moyennes a l'avantage, par rapport à la classification ascendante hiérarchique, d'être moins gourmande en temps de calcul et en mémoire vive. Elle sera donc à privilégier lorsque vous vous retrouvez confronté à un grand jeu de données. Par contre, elle est souvent moins efficace que la CAH.

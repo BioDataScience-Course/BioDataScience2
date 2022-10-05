@@ -211,7 +211,9 @@ BioDataScience2::learnr_server(input, output, session)
 
 ------------------------------------------------------------------------
 
-## Objectif
+**Ce tutoriel correspond à la version 2021-2022. Il est en cours de révision pour la version 2022-2023. Vous devez probablement penser à installer une version plus récente du package qui contient les exercices finalisés !**
+
+## Objectifs
 
 L'Analyse Factorielle Multiple (AFM) est une méthode statistique exploratoire qui permet de travailler avec plusieurs tableaux de données. Cette méthode permet également de faire le lien entre l'analyse en composantes principales (ACP) et l'Analyse factorielle des correspondances (AFC). La première méthode permet de travailler uniquement sur des variables quantitatives et la seconde uniquement sur des variables qualitatives. L'AFM est capable de traiter les deux types de variables simultanément. Cette méthode est par exemple employée en écologie. Sur une station un ensemble de mesures physico-chimiques peuvent être réalisée ainsi qu'un relevé de la faune et/ou de la flore.
 

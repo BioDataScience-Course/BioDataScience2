@@ -4,7 +4,7 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II Module 2** Maîtriser la régression linéaire polynomiale."
 tutorial:
   id: "B02Lb_reg_poly"
-  version: 2.0.1/7
+  version: 2.1.0/7
 output: 
   learnr::tutorial:
     progressive: true
@@ -14,7 +14,27 @@ runtime: shiny_prerendered
 
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
-SciViews::R()
+SciViews::R("model", lang = "fr")
+
+diabetes <- read("diabetes", package = "faraway")
+diabetes <- janitor::clean_names(diabetes)
+diabetes <- smutate(diabetes, 
+  map = bp_1d + 1/3*(bp_1s-bp_1d),
+  age2 = age^2)
+
+diabetes <- labelise(diabetes, 
+  label = list(map = "Mean arterial pressure", age = "Age"), 
+  units = list(map = "mm Hg", age = "Année")
+  )
+
+map_lm_simp <- lm(data = diabetes, map ~ age)
+map_lm1 <- map_lm_simp
+
+map_lm_poly <- lm(data = diabetes, map ~ age + I(age^2))
+map_lm2 <- map_lm_poly
+
+lm_poly_coef <- tidy(map_lm_poly)
+lm_poly_param <- glance(map_lm_poly)
 ```
 
 ```{r, echo=FALSE}
@@ -27,242 +47,230 @@ BioDataScience2::learnr_server(input, output, session)
 
 ------------------------------------------------------------------------
 
+**Ce tutoriel correspond à la version 2021-2022. Il est en cours de révision pour la version 2022-2023. Vous devez probablement penser à installer une version plus récente du package qui contient les exercices finalisés !**
+
 ## Objectifs
 
 -   Maîtriser la régression linéaire polynomiale dans R avec la fonction `lm()`.
 -   Utiliser le **critère d'Akaike** pour comparer deux modèles.
 
-## Régression linéaire polynomiale
+## Description des données
 
-```{r regpoly-init}
-set.seed(42)
+Un cycle cardiaque se décompose en deux parties. La contraction cardiaque est la systole et la relaxation cardiaque est la diastole. On peut mesurer la pression de chaque phase à l'aide d'un tensiomètre en milligramme de mercure. La valeur de référence est de 140/90 mm Hg. La valeur de 140 représente la pression systolique et la valeur de 90 la pression diastolique. Une tension comprise entre 100/70 et 140/90 mmHg va être considérée comme normale.
 
-x <- seq(from = 1, to = 10, by = 0.25)
-x1 <- x + rnorm(length(x))
+On peut mesurer la pression artérielle moyenne via la formule suivante
 
-mod_poly2 <- function(x1, alpha1, alpha2, intercept, random_effect){
-  y <- intercept + (alpha1 * x1) + (alpha2 * (x1^2)) 
-  y + rnorm(n = length(x1), sd = random_effect)
-}
+$$MAP = DP + 1/3*(SP-DP)$$
 
-df <- dtx(
-  x = x1,
-  y = mod_poly2(x1 = x1, alpha1 = 2, alpha2 = 2.5, intercept = 55, random_effect = 10)
-)
+avec
 
-lm_poly <- lm(df, formula = y ~ x + I(x^2))
-lm_poly_coef <- tidy(lm_poly)
-lm_poly_param <- glance(lm_poly)
+-   MAP = pression artérielle moyenne
+-   DP = pression diastolique
+-   SP = pression systolique
+
+La tension artérielle moyenne optimale va donc être comprise entre 80 et 107. Les études ont montré que la pression artérielle augmente avec l'âge. Cette augmentation s'explique entre autres par la perte d'élasticité des artères.
+
+Le but de cette séance d'exercice est de modéliser la variation de la pression artérielle moyenne en fonction de l'âge. Vous avez le tableau suivant à votre disposition.
+
+```{r, echo = TRUE, warning=FALSE}
+# Import dataset
+diabetes <- read("diabetes", package = "faraway")
+# rename variable
+diabetes <- janitor::clean_names(diabetes)
+skimr::skim(diabetes)
 ```
 
-Réalisez la **régression linéaire polynomiale d'ordre 2** de la variable `y` en fonction de la variable `x` sur le jeu de données `df` et représentez-la graphiquement. Vous avez à votre disposition un nuage de points et un résumé des données pour en connaissance.
+Les données collectées s'intéressent au diabète, à l'obésité, aux maladies cardiaques et aux problèmes de cholestérol. Dans le cadre de cet exercice, nous allons nous limiter à quelques variables.
 
-```{r}
-chart(df, y ~ x) +
+## Pression artérielle moyenne
+
+Débutez votre étude par calculer la variable `map`.
+
+$$MAP = DP + 1/3*(SP-DP)$$
+
+avec
+
+-   MAP = pression artérielle moyenne
+-   DP = pression diastolique
+-   SP = pression systolique
+
+Proposez ensuite un nuage de points de la pression artérielle en fonction de l'âge des participants.
+
+Le tableau de données à votre disposition est `diabetes`. La pression systolique correspond à la variable (`bp_1s`), la pression diastolique correspond à la variable (`bp_1d`) et l'âge des individus correspond à la variable `age`.
+
+```{r chart_h2, exercise = TRUE}
+diabetes <- smutate(diabetes, map = labelise((___+ 1/3*(___ - ___)), label = "Mean arterial pressure", units = "mm Hg"))
+chart(data = ___, ___ ~ ___) +
+  geom____()
+```
+
+```{r chart_h2-hint-1}
+diabetes <- smutate(diabetes, map = labelise((bp_1d+1/3*(bp_1s - bp_1d)), label = "Mean arterial pressure", units = "mm Hg"))
+chart(data = ___, ___ ~ ___) +
+  geom_point()
+
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r chart_h2-solution}
+## Solution ##
+diabetes <- smutate(diabetes, map = labelise((bp_1d+1/3*(bp_1s - bp_1d)), label = "Mean arterial pressure", units = "mm Hg"))
+chart(data = diabetes, map ~ age) +
   geom_point()
 ```
 
-```{r regpoly-prep}
-set.seed(42)
-
-x <- seq(from = 1, to = 10, by = 0.25)
-x1 <- x + rnorm(length(x))
-
-mod_poly2 <- function(x1, alpha1, alpha2, intercept, random_effect){
-  y <- intercept + (alpha1 * x1) + (alpha2 * (x1^2)) 
-  y + rnorm(n = length(x1), sd = random_effect)
-}
-
-df <- dtx(
-  x = x1,
-  y = mod_poly2(x1 = x1, alpha1 = 2, alpha2 = 2.5, intercept = 55, random_effect = 10)
-)
+```{r chart_h2-check}
+grade_code("Bien joué ! Vous venez de calculer la pression artérielle moyenne.")
 ```
 
-💬 **Un snippet peut vous aider à réaliser cet exercice.**
+## Modélisation
 
-```{r regpoly_h2, exercise = TRUE, exercise.setup = "regpoly-prep"}
-summary(lm. <- lm(data = ___, ___ ~ ___))
+Réalisez tout d'abord la régression linéaire de la pression artérielle moyenne (`map`) en fonction de l'âge (`age`). Le seuil alpha fixé dans le cadre de cette recherche est de 10%.
 
-lm. %>.% (function(lm, model = lm[["model"]], vars = names(model))
-  chart(model, aes_string(x = vars[2], y = vars[1])) +
-  geom_point() +
-  stat_smooth(method = "lm", formula = y ~ x + I(x^2)))(.)
+```{r reglin_h2, exercise = TRUE}
+map_lm1 <- lm(data = ___, ___ ~ ___)
+# Résumé du modèle
+summary(___)
+# Graphique du modèle
+chart(___)
 ```
 
-```{r regpoly_h2-hint}
-# Voyez les snippets, vous y trouverez ceci :
-summary(lm. <- lm(data = DF, YNUM ~  XNUM + I(XNUM^2)))
+```{r reglin_h2-hint-1}
+map_lm1 <- lm(data = ___, ___ ~ ___)
+# Résumé du modèle
+summary(map_lm1)
+# Graphique du modèle
+chart(map_lm1)
 
-lm. %>.% (function(lm, model = lm[["model"]], vars = names(model))
-  chart(model, aes_string(x = vars[2], y = vars[1])) +
-  geom_point() +
-  stat_smooth(method = "lm", formula = y ~ x + I(x^2)))(.)
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r reglin_h2-solution}
+## Solution ##
+map_lm1 <- lm(data = diabetes, map ~ age)
+# Résumé du modèle
+summary(map_lm1)
+# Graphique du modèle
+chart(map_lm1)
+```
+
+```{r reglin_h2-check}
+grade_code("Bien joué ! Vous venez de réalisez la régression linéaire simple demandée.")
+```
+
+Réalisez ensuite une **régression linéaire polynomiale d'ordre 2** des mêmes variables.
+
+```{r regpoly_h2, exercise = TRUE}
+map_lm2 <- lm(data = ___, ___ ~ ___ + ___(___))
+# Résumé du modèle
+summary(___)
+# Graphique du modèle
+chart(___)
+```
+
+```{r regpoly_h2-hint-1}
+map_lm2 <- lm(data = ___, ___ ~ ___ + I(___))
+# résumé du modèle
+summary(map_lm2)
+# Graphique du modèle
+chart(map_lm2)
 
 #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r regpoly_h2-solution}
 ## Solution ##
-summary(lm. <- lm(data = df, y ~ x + I(x^2)))
-
-lm. %>.% (function(lm, model = lm[["model"]], vars = names(model))
-  chart(model, aes_string(x = vars[2], y = vars[1])) +
-  geom_point() +
-  stat_smooth(method = "lm", formula = y ~ x + I(x^2)))(.)
+map_lm2 <- lm(data = diabetes, map ~ age + I(age^2))
+# résumé du modèle
+summary(map_lm2)
+# Graphique du modèle
+chart(map_lm2)
 ```
 
 ```{r regpoly_h2-check}
-grade_code("Magnifique première régression polynomiale !")
+grade_code("Bien joué ! Vous venez de réalisez la régression linéaire polynomiale d'ordre 2 demandée.")
 ```
 
-Suite à votre analyse répondez aux questions suivantes :
+**N'oubliez pas de simplifier votre modèle, si nécessaire**
 
-```{r qu_regpoly}
+Analysez les résultats ci-dessus et répondez aux questions suivantes :
+
+Suite à votre analyse, répondez aux questions suivantes :
+
+```{r qu_regpoly, eval= FALSE}
 quiz(
-  question(text = "Quelle est la valeur de l'ordonnée à l'origine ?",
-    answer(sprintf("%.2f", lm_poly_coef$estimate[1]), correct = TRUE),
-    answer(sprintf("%.2f", lm_poly_coef$estimate[2])),
-    answer(sprintf("%.2f", lm_poly_coef$std.error[1])),
-    answer(sprintf("%.2f", lm_poly_coef$std.error[2])),
-    answer(sprintf("%.2f", lm_poly_coef$statistic[1])),
-    answer(sprintf("%.2f", lm_poly_coef$statistic[2])),
-    answer(sprintf("%.2f", lm_poly_param$r.squared[1])),
+  question(text = "Quelle est la valeur de l'ordonnée à l'origine  de la régression linéaire polynomiale d'ordre 2?",
+    answer(sprintf("%.4f", lm_poly_coef$estimate[1]), correct = TRUE),
+    answer(sprintf("%.4f", lm_poly_coef$estimate[2])),
+    answer(sprintf("%.4f", lm_poly_coef$std.error[1])),
+    answer(sprintf("%.4f", lm_poly_coef$std.error[2])),
+    answer(sprintf("%.4f", lm_poly_coef$statistic[1])),
+    answer(sprintf("%.4f", lm_poly_coef$statistic[2])),
+    answer(sprintf("%.4f", lm_poly_param$r.squared[1])),
     allow_retry = TRUE, random_answer_order = TRUE
     ),
-  question(text = "Quelle est la valeur du paramètre associé à **x** ?",
+  question(text = "Quelle est la part de la variance exprimée par ce modèle ? valeur du paramètre associé à **x** ?",
     answer(sprintf("%.2f", lm_poly_coef$estimate[1])),
-    answer(sprintf("%.2f", lm_poly_coef$estimate[2]), correct = TRUE),
+    answer(sprintf("%.2f", lm_poly_coef$estimate[2])),
     answer(sprintf("%.2f", lm_poly_coef$std.error[1])),
-    answer(sprintf("%.2f", lm_poly_coef$std.error[2])),
+    answer(sprintf("%.2f", lm_poly_param$r.squared[1])),
     answer(sprintf("%.2f", lm_poly_coef$statistic[1])),
     answer(sprintf("%.2f", lm_poly_coef$statistic[2])),
-    answer(sprintf("%.2f", lm_poly_param$r.squared[1])),
+    answer(sprintf("%.2f", lm_poly_param$adj.r.squared[1]), correct = TRUE),
     allow_retry = TRUE, random_answer_order = TRUE
     )
 )
 ```
 
-## Régression linéaire simple ou polynomiale
-
-```{r regpoly_simp-init}
-set.seed(42)
-
-x <- seq(from = 1, to = 10, by = 0.25)
-x1 <- x + rnorm(length(x))
-
-mod_poly2 <- function(x1, alpha1, alpha2, intercept, random_effect){
-  y <- intercept + (alpha1 * x1) + (alpha2 * (x1^2)) 
-  y + rnorm(n = length(x1), sd = random_effect)
-}
-
-df <- dtx(
-  x = x1,
-  y = mod_poly2(x1 = x1, alpha1 = 2, alpha2 = 2.5, intercept = 55, random_effect = 10)
-)
-
-lm_lin_simp <- lm(df, formula = y ~ x )
-lm_ls_coef <- tidy(lm_lin_simp)
-lm_ls_param <- glance(lm_lin_simp)
-
-lm_lin_poly <- lm(df, formula = y ~ x + I(x^2))
-lm_lp_coef <- tidy(lm_poly)
-lm_lp_param <- glance(lm_poly)
-```
-
-Réalisez une régression **linéaire simple** et une régression **linéaire polynomiale d'ordre 2** de la variable `y` en fonction de la variable `x` dans le jeu de données `df`. Utilisez le critère d'Akaike afin de déterminer quel est le meilleur modèle. Vous avez à votre disposition un nuage de points et un résumé des données pour en prendre connaissance.
+L'analyse des résidus de la régression linéaire est mise à votre disposition ci-dessous. Prenez le temps d'interpréter ces graphiques.
 
 ```{r}
-chart(df, y ~ x) +
-  geom_point()
+chart$residuals(map_lm1)
 ```
 
-```{r regpoly_simp-prep}
-set.seed(42)
+L'analyse des résidus de la régression polynomiale d'ordre 2 est mise à votre disposition ci-dessous. Prenez le temps d'interpréter ces graphiques.
 
-x <- seq(from = 1, to = 10, by = 0.25)
-x1 <- x + rnorm(length(x))
-
-mod_poly2 <- function(x1, alpha1, alpha2, intercept, random_effect){
-  y <- intercept + (alpha1 * x1) + (alpha2 * (x1^2)) 
-  y + rnorm(n = length(x1), sd = random_effect)
-}
-
-df <- dtx(
-  x = x1,
-  y = mod_poly2(x1 = x1, alpha1 = 2, alpha2 = 2.5, intercept = 55, random_effect = 10)
-)
-
-lm_lin_simp <- lm(df, formula = y ~ x )
-lm_ls_coef <- tidy(lm_lin_simp)
-lm_ls_param <- glance(lm_lin_simp)
-
-lm_lin_poly <- lm(df, formula = y ~ x + I(x^2))
-lm_lp_coef <- tidy(lm_lin_poly)
-lm_lp_param <- glance(lm_lin_poly)
+```{r}
+chart$residuals(map_lm_poly)
 ```
 
-💬 **Un snippet peut vous aider à réaliser cet exercice.**
+## Choix du meilleur modèle
 
-```{r regpoly_simp_h3, exercise = TRUE, exercise.setup = "regpoly_simp-prep"}
-# régression linéaire simple
-summary(lm_lin_simp <- lm(data = ___, ___ ~  ___ ))
-# régression linéaire polynomiale
-summary(lm_lin_poly <- lm(data = ___, ___ ~  ___ ))
-# comparaison des 2 modèles
-___(lm_lin_simp, lm_lin_poly)
+Vous avez réalisé une régression **linéaire simple** (`map_lm1`) et une régression **linéaire polynomiale d'ordre 2** (`map_lm2`) de la variable `map` en fonction de la variable `age` dans le jeu de données `diabetes`.
+
+Calculez le critère d'Akaike pour chaque modèle afin de vous aider dans le choix du meilleur modèle.
+
+```{r aic, exercise = TRUE}
+___(___, ___)
 ```
 
-```{r regpoly_simp_h3-hint-1}
-# régression linéaire simple (snippet 1)
-summary(lm. <- lm(data = DF, YNUM ~ XNUM))
-# régression linéaire polynomiale (snippet 2)
-summary(lm. <- lm(data = DF, YNUM ~  XNUM + I(XNUM^2)))
-# comparaison des 2 modèles
-___(lm_lin_simp, lm_lin_poly)
-
-#### ATTENTION: Hint suivant = solution !####
+```{r aic-solution}
+## Solution ##
+AIC(map_lm1,map_lm2)
 ```
 
-```{r regpoly_simp_h3-solution}
-# régression linéaire simple
-summary(lm_lin_simp <- lm(data = df, y ~ x ))
-# régression linéaire polynomiale
-summary(lm_lin_poly <- lm(data = df, y ~ x + I(x^2)))
-# comparaison des 2 modèles
-AIC(lm_lin_simp, lm_lin_poly)
-```
-
-```{r regpoly_simp_h3-check}
+```{r aic-check}
 grade_code("Vous venez de réaliser votre première comparaison de modèle. Lequel est le meilleur ?")
 ```
 
-Suite à votre analyse répondez aux questions suivantes :
+Suite à votre analyse, répondez aux questions suivantes :
 
-```{r qu_regpoly_simp}
-quiz(
-  question(text = "Quelle est la valeur du critère d'Akaike de la régression polynomiale ?",
-    answer(sprintf("%.2f", lm_lp_param$AIC), correct = TRUE),
-    answer(sprintf("%.2f", lm_lp_param$BIC)),
-    answer(sprintf("%.2f", lm_ls_param$AIC)),
-    answer(sprintf("%.2f", lm_lp_param$deviance)),
-    allow_retry = TRUE, random_answer_order = TRUE),
-  question(text = "Quelle est la valeur du critère d'Akaike de la régression linéaire simple ?",
-    answer(sprintf("%.2f", lm_ls_param$AIC), correct = TRUE),
-    answer(sprintf("%.2f", lm_ls_param$BIC)),
-    answer(sprintf("%.2f", lm_lp_param$AIC)),
-    answer(sprintf("%.2f", lm_ls_param$deviance)),
-    allow_retry = TRUE, random_answer_order = TRUE),
-  question(text = "Quel est le meilleur modèle selon le critère d'Akaike",
-    answer("modèle linéaire polynomiale", correct = TRUE),
-    answer("modèle linéaire simple"),
-    allow_retry = TRUE)
-)
+```{r qu_aic}
+question(text = "Quel est le meilleur modèle selon le critère d'Akaike",
+  answer("modèle linéaire polynomiale", correct = TRUE),
+  answer("modèle linéaire simple"),
+  allow_retry = TRUE,
+  incorrect = "C'est la valeur la plus faible qui indique le meilleur modèle selon le critère d'Akaike",
+  correct = "Bien joué. Le meilleur modèle est celui qui est la valeur la plus faible selon le critère d'Akaike.",
+  submit_button = "Soumettre une réponse", 
+  try_again_button = "Resoumettre une réponse")
 ```
+
+*Le critère d'Akaike vous propose une métrique pour déterminer le meilleur modèle. Rappelez-vous que cela n'est pas suffisant. Il faut étudier l'analyse des résidus ainsi que le résumé du modèle.*
 
 ## Conclusion
 
-Vous venez de terminer votre séance d'exercices.
+Vous venez de terminer votre séance d'exercices sur la régression linéaire polynomiale. Vous avez également comparé deux modèles.
 
 ```{r comm_noscore, echo=FALSE}
 question_text(
@@ -270,6 +278,8 @@ question_text(
   answer("", TRUE, message = "Pas de commentaires... C'est bien aussi."),
   incorrect = "Vos commentaires sont enregistrés.",
   placeholder = "Entrez vos commentaires ici...",
-  allow_retry = TRUE
+  allow_retry = TRUE,
+  submit_button = "Soumettre une réponse", 
+  try_again_button = "Resoumettre une réponse"
 )
 ```

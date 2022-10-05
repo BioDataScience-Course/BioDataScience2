@@ -4,7 +4,7 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II Module 2** Aborder la régression linéaire multiple dans R."
 tutorial:
   id: "B02La_reg_multi"
-  version: 2.2.1/7
+  version: 2.3.0/7
 output: 
   learnr::tutorial:
     progressive: true
@@ -14,7 +14,20 @@ runtime: shiny_prerendered
 
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
-SciViews::R()
+SciViews::R("model",lang = "fr")
+
+# dataset -----
+fat <- read("fat", package = "faraway")
+
+# lm
+densi_lm1 <- lm(data = fat, density ~ abdom)
+lm_lin_result <- tidy(densi_lm1)
+lm_lin_param <- glance(densi_lm1)
+
+# lm multi
+densi_lm2 <- lm(data = fat, density ~ abdom + hip)
+lm_mult_result <- tidy(densi_lm2)
+lm_mult_param <- glance(densi_lm2)
 ```
 
 ```{r, echo=FALSE}
@@ -27,214 +40,166 @@ BioDataScience2::learnr_server(input, output, session)
 
 ------------------------------------------------------------------------
 
+**Ce tutoriel correspond à la version 2021-2022. Il est en cours de révision pour la version 2022-2023. Vous devez probablement penser à installer une version plus récente du package qui contient les exercices finalisés !**
+
 ## Objectifs
+
+Le premier module vous a permis de vous familiariser avec la régression linéaire. Vous avez appris à interpréter une partie des résultats proposés par le résumé du modèle ainsi qu'à interpréter les graphiques d'analyses des résidus. Les objectifs de ce tutoriel sont :
 
 -   Être capable de lire la sortie renvoyée par `summary()` lorsqu'il est appliqué à un objet **lm**.
 -   Maîtriser la régression linéaire multiple dans R avec la fonction `lm()`.
 
-## Régression linéaire
+## Description des données
 
-Réalisez une régression linéaire simple sur le jeu de données `df1` de la variable `y` en fonction de la variable `x`.
+Le tableau de données `fat` traite du pourcentage de masse grasse sur 252 hommes. Les participants à cette étude ont été immergés afin de déterminer leur densité corporelle. Cette méthode bien que très fiable n'est pas des plus simples à mettre en place. Les scientifiques font donc appel à vous afin d'estimer la densité des participants à l'aide de mesures biométriques plus simples à obtenir.
 
-```{r reglin-init}
-set.seed(42)
-
-reg_lin <- function(x, a, b)
-  a * x + b
-
-v1 <- seq(from = 5, to = 20, by = 0.25)
-v2 <- v1 + rnorm(length(v1), sd = 0.5)
-
-df1 <- dtx(
-  x = v2,
-  y = reg_lin(v2, 0.5, 0.001) + rnorm(length(v1), sd = 0.5)
-)
-
-lm_lin <- lm(data = df1, y ~ x)
-lm_lin_param <- glance(lm_lin)
-lm_lin_result <- tidy(lm_lin)
+```{r, echo = TRUE}
+fat <- read("fat", package = "faraway")
+skimr::skim(fat)
 ```
 
-Vous avez à votre disposition le graphique suivant pour visualiser les données :
+## Régression linéaire simple
 
-```{r}
-chart(data = df1, y ~ x) +
+Intéressez-vous à la densité (`density`) des participants. Modélisez la densité en fonction du tour de taille (`abdom`). Le graphique ci-dessous vous présente le nuage de point associé au modèle demandé.
+
+```{r, echo=TRUE}
+chart(data = fat, density ~ abdom) +
   geom_point() 
 ```
 
-```{r reglin-prep}
-set.seed(42)
+Modélisez la densité (`density`) en fonction du tour de taille (`abdom`) sur les données du tableau `fat`.
 
-reg_lin <- function(x, a, b)
-  a * x + b
-
-v1 <- seq(from = 5, to = 20, by = 0.25)
-v2 <- v1 + rnorm(length(v1), sd = 0.5)
-
-df1 <- dtx(
-  x = v2,
-  y = reg_lin(v2, 0.5, 0.001) + rnorm(length(v1), sd = 0.5)
-)
-
-lm_lin <- lm(data = df1, y ~ x)
-lm_lin_param <- glance(lm_lin)
-lm_lin_result <- tidy(lm_lin)
-```
-
-💬 **Un snippet peut vous aider à réaliser cet exercice.**
-
-```{r reglin_h2, exercise = TRUE, exercise.setup = "reglin-prep"}
-summary(lm. <- lm(data = ___, ___ ~ ___))
+```{r reglin_h2, exercise = TRUE}
+summary(densi_lm1 <- lm(data = ___, ___ ~ ___))
 ```
 
 ```{r reglin_h2-hint}
-summary(lm. <- lm(data = DF, FORMULA))
+summary(densi_lm1 <- lm(data = DF, FORMULA))
 
 #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r reglin_h2-solution}
 ## Solution ##
-summary(lm. <- lm(data = df1, y ~ x))
+summary(densi_lm1 <- lm(data = fat, density ~ abdom))
 ```
 
 ```{r reglin_h2-check}
 grade_code("D'accord, on a maintenant une régression linéaire simple comme point de départ.")
 ```
 
-Suite à votre analyse répondez aux questions suivantes :
+Analysez le tableau des résultats et répondez aux questions suivantes :
 
 ```{r qu_reglin}
 quiz(
   question(text = "Quelle est la valeur de l'ordonnée à l'origine ?",
-    answer(sprintf("%.2f", lm_lin_result$estimate[1]), correct = TRUE),
-    answer(sprintf("%.2f", 0)),
-    answer(sprintf("%.2f", lm_lin_param$sigma[1])),
-    answer(sprintf("%.2f", lm_lin_result$estimate[2])),
-    answer(sprintf("%.2f", lm_lin_param$r.squared[1])),
+    answer(sprintf("%.4f", lm_lin_result$estimate[1]), correct = TRUE),
+    answer(sprintf("%.4f", 0)),
+    answer(sprintf("%.4f", lm_lin_param$sigma[1])),
+    answer(sprintf("%.4f", lm_lin_result$estimate[2])),
+    answer(sprintf("%.4f", lm_lin_param$r.squared[1])),
     allow_retry = TRUE, random_answer_order = TRUE
   ),
   question(text = "Quelle est la valeur de la pente ?",
-    answer(sprintf("%.2f", 0)),
-    answer(sprintf("%.2f", lm_lin_result$estimate[2]), correct = TRUE),
-    answer(sprintf("%.2f", lm_lin_param$BIC[1])),
-    answer(sprintf("%.2f", lm_lin_result$estimate[1])),
-    answer(sprintf("%.2f", lm_lin_param$r.squared[1])),
+    answer(sprintf("%.4f", 0)),
+    answer(sprintf("%.4f", lm_lin_result$estimate[2]), correct = TRUE),
+    answer(sprintf("%.4f", lm_lin_param$BIC[1])),
+    answer(sprintf("%.4f", lm_lin_result$estimate[1])),
+    answer(sprintf("%.4f", lm_lin_param$r.squared[1])),
     allow_retry = TRUE, random_answer_order = TRUE
   ),
   question(text = "Quelle est la fraction de la variance exprimée par la régression linéaire ?",
-    answer(sprintf("%.3f", lm_lin_param$r.squared), correct = TRUE),
-    answer(sprintf("%.3f", lm_lin_param$statistic)),
-    answer(sprintf("%.3f", as.numeric(lm_lin_param$df))),
-    answer(sprintf("%.3f", lm_lin_result$estimate[1])),
+    answer(sprintf("%.4f", lm_lin_param$r.squared), correct = TRUE),
+    answer(sprintf("%.4f", lm_lin_param$statistic)),
+    answer(sprintf("%.4f", as.numeric(lm_lin_param$df))),
+    answer(sprintf("%.4f", lm_lin_result$estimate[1])),
     allow_retry = TRUE, random_answer_order = TRUE
   )
 )
 ```
 
-## Régression linéaire multiple
-
-```{r regmulti-init}
-set.seed(381)
-
-v <- seq(from = 1, to = 15, by = .2) 
-x <- v + rnorm(length(v), sd = 3)
-
-reg_lin_rand <- function(x, a, b, random = 0.5)
-  a * x + b + rnorm(length(v), sd = random)
-  
-reg_mutli3_rand <- function(x1, a1, x2, a2, x3, a3, b, random = 5)
-  a1 * x1 + a2 * x2 + a3 * x3 + b + rnorm(length(x1), sd = random)
-
-df2 <- dtx(
-  x  = x,
-  x0 = reg_lin_rand(x = x, a = 1.26, b = 2, random = 3.5),
-  x1 = reg_lin_rand(x = x, a = 1.5, b = 1, random = 10),
-  y  = reg_mutli3_rand(x1 = x, x2 = x0,  x3 = x1,
-    a1 = 0.2, a2 = 0.3, a3 = 1.1, b = 2))
-
-lm_mult <- lm(data = df2, y  ~ x + x1)
-lm_mult_coef <- tidy(lm_mult)
-lm_mult_param <- glance(lm_mult)
-```
+L'analyse des résidus n'est pas l'objectif de cette séance d'exercice. Prenez cependant le temps de critiquer chaque graphique.
 
 ```{r}
-summary(df2)
+chart$residuals(densi_lm1)
 ```
 
-Réalisez une régression linéaire simple sur le jeu de données `df2` de la variable `y` en fonction de la variable `x` et `x1`.
+## Régression linéaire multiple
 
-```{r regmulti-prep}
-set.seed(381)
+Tentez de réaliser à présent une régression linéaire multiple afin d'améliorer votre modèle. Réalisez à présent un modèle de la densité (`density`) en fonction du tour de taille (`abdom`) et du tour de hanche (`hip`). Le graphique de la densité en fonction du tour de taille vous a été présenté précédemment. Vous trouverez ci-dessous le graphique de la densité en fonction du tour de hanches.
 
-v <- seq(from = 1, to = 15, by = .2) 
-x <- v + rnorm(length(v), sd = 3)
-
-reg_lin_rand <- function(x, a, b, random = 0.5)
-  a * x + b + rnorm(length(v), sd = random)
-  
-reg_mutli3_rand <- function(x1, a1, x2, a2, x3, a3, b, random = 5)
-  a1 * x1 + a2 * x2 + a3 * x3 + b + rnorm(length(x1), sd = random)
-
-df2 <- dtx(
-  x  = x,
-  x0 = reg_lin_rand(x = x, a = 1.26, b = 2, random = 3.5),
-  x1 = reg_lin_rand(x = x, a = 1.5, b = 1, random = 10),
-  y  = reg_mutli3_rand(x1 = x, x2 = x0,  x3 = x1,
-    a1 = 0.2, a2 = 0.3, a3 = 1.1, b = 2))
-
-lm_mult <- lm(data = df2, y  ~ x + x1)
-lm_mult_coef <- tidy(lm_mult)
-lm_mult_param <- glance(lm_mult)
+```{r, echo = TRUE}
+chart(data = fat, density ~ hip) +
+  geom_point()
 ```
 
-💬 **Un snippet peut vous aider à réaliser cet exercice.**
-
-```{r regmulti_h2, exercise = TRUE, exercise.setup = "regmulti-prep"}
+```{r regmulti_h2, exercise = TRUE}
 # régression multiple 
-summary(lm. <- lm(data = ___, ___ ~ ___))
+summary(densi_lm2 <- lm(data = ___, ___ ~ ___))
 ```
 
 ```{r regmulti_h2-hint}
-summary(lm. <- lm(data = DF, Y  ~ VAR1 + VAR2))
+summary(densi_lm2 <- lm(data = DF, Y  ~ VAR1 + VAR2))
 
 #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r regmulti_h2-solution}
 ## Solution ## 
-summary(lm. <- lm(data = df2, y ~ x + x1))
+summary(densi_lm2 <- lm(data = fat, density ~ abdom + hip))
 ```
 
 ```{r regmulti_h2-check}
 grade_code("Vous venez de réaliser votre première régression linéaire multiple. Elles n'auront bientôt plus de secrets pour vous !")
 ```
 
-Suite à votre analyse répondez aux questions suivantes :
+Suite à votre analyse, répondez aux questions suivantes :
 
 ```{r qu_regmulti}
 quiz(
-  question(text = "Quelle est la valeur de l'ordonnée à l'origine ?",
-    answer(sprintf("%.2f", lm_mult_coef$estimate[1]), correct = TRUE),
-    answer(sprintf("%.2f", lm_mult_coef$estimate[2])),
-    answer(sprintf("%.2f", lm_mult_coef$p.value[1])),
-    answer(sprintf("%.2f", lm_mult_param$AIC[1])),
-    answer(sprintf("%.2f", lm_mult_param$r.squared[1])),
+  question(text = "Quelle est la valeur de l'écart-type résiduel de ce modèle ?",
+    answer(sprintf("%.4f", lm_mult_param$sigma[1]), correct = TRUE),
+    answer(sprintf("%.4f", lm_mult_result$estimate[2])),
+    answer(sprintf("%.4f", lm_mult_result$p.value[1])),
+    answer(sprintf("%.4f", lm_mult_param$AIC[1])),
+    answer(sprintf("%.4f", lm_mult_param$r.squared[1])),
     allow_retry = TRUE, random_answer_order = TRUE
   ),
   question(text = "Quelle est la fraction de la variance exprimée par la régression linéaire ?",
-    answer(sprintf("%.3f", lm_mult_param$adj.r.squared), correct = TRUE),
-    answer(sprintf("%.3f", lm_mult_param$r.squared)),
-    answer(sprintf("%.3f", lm_mult_param$df)),
-    answer(sprintf("%.3f", lm_mult_coef$estimate[1])),
+    answer(sprintf("%.4f", lm_mult_param$adj.r.squared), correct = TRUE),
+    answer(sprintf("%.4f", lm_mult_param$r.squared)),
+    answer(sprintf("%.4f", lm_mult_param$df)),
+    answer(sprintf("%.4f", lm_mult_result$estimate[1])),
     allow_retry = TRUE, random_answer_order = TRUE
   )
 )
 ```
 
+L'analyse des résidus n'est pas l'objectif de cette séance d'exercice. Prenez cependant le temps de critiquer chaque graphique.
+
+```{r}
+chart$residuals(densi_lm2)
+```
+
+## Choix du meilleur modèle
+
+Vous venez de réaliser deux modèles. Il s'agit d'un cas particulier. Ces deux modèles sont imbriqués. Le premier modèle de la densité en fonction du tour de taille se nomme `densi_lm1` et le second modèle de la densité en fonction du tour de taille et du tour de hanche se nomme `densi_lm2`. Comment pourriez-vous départager ces deux modèles ? Outre l'analyse du résumé des modèles et des résidus, il existe des outils pour départager ces deux modèles. L'ANOVA ci-dessus vous permet de définir qu'il y a une différence significative entre ces deux modèles.
+
+```{r, echo = TRUE}
+anova(densi_lm1, densi_lm2)
+```
+
+Le critère d'Akaike est une métrique adaptée à la comparaison de modèles. Le meilleur modèle selon le critère d'Akaike est le modèle ayant obtenu la valeur la plus faible.
+
+```{r}
+AIC(densi_lm1, densi_lm2)
+```
+
+Suite à l'analyse des résumés des deux modèles, l'interprétation des graphiques des résidus et des valeurs du critère d'Akaike, le second modèle est plus performant afin de modéliser la densité des personnes étudiées.
+
 ## Conclusion
 
-Vous venez de terminer votre séance d'exercices relive à la régression multiple.
+Vous venez de terminer votre séance d'exercices relative à la régression multiple.
 
 ```{r comm_noscore, echo=FALSE}
 question_text(
@@ -242,6 +207,8 @@ question_text(
   answer("", TRUE, message = "Pas de commentaires... C'est bien aussi."),
   incorrect = "Vos commentaires sont enregistrés.",
   placeholder = "Entrez vos commentaires ici...",
-  allow_retry = TRUE
+  allow_retry = TRUE,
+  submit_button = "Soumettre une réponse", 
+  try_again_button = "Resoumettre une réponse"
 )
 ```
