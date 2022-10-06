@@ -1,3 +1,7 @@
+# BioDataScience2 2022.2.0
+
+-   Learnr **B02La_reg_multi** completely rewritten
+
 # BioDataScience2 2022.1.1
 
 -   Learnrs B00 and B01 revised
