@@ -19,22 +19,20 @@ SciViews::R("model", lang = "fr")
 diabetes <- read("diabetes", package = "faraway")
 diabetes <- janitor::clean_names(diabetes)
 diabetes <- smutate(diabetes, 
-  map = bp_1d + 1/3*(bp_1s-bp_1d),
+  map  = bp_1d + 1/3 * (bp_1s - bp_1d),
   age2 = age^2)
-
+is.labelled <- function(x) inherits(x, c("labelled", "haven_labelled"))
+diabetes <- smutate(diabetes, across(sapply(diabetes, is.labelled), .fns = as.numeric))
 diabetes <- labelise(diabetes, 
-  label = list(map = "Mean arterial pressure", age = "Age"), 
-  units = list(map = "mm Hg", age = "Année")
-  )
+  label = list(map = "Tension artérielle moyenne", age = "Âge"), 
+  units = list(map = "mm Hg", age = "années")
+)
 
-map_lm_simp <- lm(data = diabetes, map ~ age)
-map_lm1 <- map_lm_simp
+map_lm1 <- lm(data = diabetes, map ~ age)
 
-map_lm_poly <- lm(data = diabetes, map ~ age + I(age^2))
-map_lm2 <- map_lm_poly
-
-lm_poly_coef <- tidy(map_lm_poly)
-lm_poly_param <- glance(map_lm_poly)
+map_lm2 <- lm(data = diabetes, map ~ age + I(age^2))
+lm_poly_coef <- tidy(map_lm2)
+lm_poly_param <- glance(map_lm2)
 ```
 
 ```{r, echo=FALSE}
@@ -47,80 +45,81 @@ BioDataScience2::learnr_server(input, output, session)
 
 ------------------------------------------------------------------------
 
-**Ce tutoriel correspond à la version 2021-2022. Il est en cours de révision pour la version 2022-2023. Vous devez probablement penser à installer une version plus récente du package qui contient les exercices finalisés !**
-
 ## Objectifs
 
 -   Maîtriser la régression linéaire polynomiale dans R avec la fonction `lm()`.
--   Utiliser le **critère d'Akaike** pour comparer deux modèles.
+-   Utiliser le critère d'Akaike pour comparer deux modèles.
 
 ## Description des données
 
-Un cycle cardiaque se décompose en deux parties. La contraction cardiaque est la systole et la relaxation cardiaque est la diastole. On peut mesurer la pression de chaque phase à l'aide d'un tensiomètre en milligramme de mercure. La valeur de référence est de 140/90 mm Hg. La valeur de 140 représente la pression systolique et la valeur de 90 la pression diastolique. Une tension comprise entre 100/70 et 140/90 mmHg va être considérée comme normale.
+Un cycle cardiaque se décompose en deux parties. La contraction cardiaque est la systole et la relaxation cardiaque est la diastole. On peut mesurer la pression de chaque phase à l'aide d'un tensiomètre en millimètre de mercure. La valeur de référence est de 140/90 mm Hg. La valeur de 140 représente la pression systolique (**SP**) et la valeur de 90 la pression diastolique (**DP**). Une tension comprise entre 100/70 et 140/90 mmHg va être considérée comme normale.
 
-On peut mesurer la pression artérielle moyenne via la formule suivante
+![Mesure de la pression artérielle, photo de [Pavel Danilyuk, Pexels](https://www.pexels.com/photo/a-healthcare-worker-measuring-a-patient-s-blood-pressure-using-a-sphygmomanometer-7108344/).](images/blood_pressure.jpg)
+
+La pression artérielle moyenne (**MAP**) se détermine ensuite d'après la formule suivante :
 
 $$MAP = DP + 1/3*(SP-DP)$$
 
-avec
+La tension artérielle moyenne optimale va être comprise entre 80 et 107. Les études ont montré que la pression artérielle augmente avec l'âge. Cette augmentation s'explique entre autres par la perte d'élasticité des artères.
 
--   MAP = pression artérielle moyenne
--   DP = pression diastolique
--   SP = pression systolique
-
-La tension artérielle moyenne optimale va donc être comprise entre 80 et 107. Les études ont montré que la pression artérielle augmente avec l'âge. Cette augmentation s'explique entre autres par la perte d'élasticité des artères.
-
-Le but de cette séance d'exercice est de modéliser la variation de la pression artérielle moyenne en fonction de l'âge. Vous avez le tableau suivant à votre disposition.
+Le but de ce tutoriel est de modéliser la variation de la pression artérielle moyenne en fonction de l'âge. Vous avez le jeu de données suivant à votre disposition.
 
 ```{r, echo = TRUE, warning=FALSE}
+SciViews::R("model", lang = "fr") # System configuration
+
 # Import dataset
 diabetes <- read("diabetes", package = "faraway")
-# rename variable
+# Rework the dataset
 diabetes <- janitor::clean_names(diabetes)
 skimr::skim(diabetes)
+# Correct label in French for age
+diabetes$age <- labelise(diabetes$age, "Âge", units = "années")
+# Some columns are of class "labelled", we convert them into numeric
+is.labelled <- function(x) inherits(x, c("labelled", "haven_labelled"))
+diabetes <- smutate(diabetes, across(sapply(diabetes, is.labelled), .fns = as.numeric))
 ```
 
-Les données collectées s'intéressent au diabète, à l'obésité, aux maladies cardiaques et aux problèmes de cholestérol. Dans le cadre de cet exercice, nous allons nous limiter à quelques variables.
+> La dernière instruction mérite une petite explication. Nous avons plus d'une dizaine de variables dans le jeu de données qui ont la classe "labelled". Ce sont toutes des données quantitatives numériques et nous les voulons comme telles. Les transformer une à une explicitement serait fastidieux. Alors, nous avons fait appel ici à la fonction `across()` qui applique une transformation via son argument `.fns=` (ici, `as.numeric`) sur toutes les colonnes dont le nom est donné par le premier argument, ou via un vecteur de valeurs logiques de même taille que le nombre de variables du tableau. Comme nous voulons transformer toutes les colonnes qui héritent de la classe "labelled", nous appliquons le test sur toutes les colonnes (la fonction `sapply()` s'en charge) à l'aide de `is.labelled` définie juste au dessus qui fait ce test. Cela équivaut à utiliser `is.labelled(X)` avec `X` qui vaut tour à tour chacune des variables du tableau. Avec la function tidy `mutate()`, on aurait aussi pu écrire `across(where(is.labelled), .fns = as.numeric)`, mais `where()` n'est pas (encore) disponible pour les fonctions speedy comme `smutate()`.
+
+Les données ont été collectées au sein d'une population afro-américaine dans l'état de Virginie aux USA dans le but d'étudier la prévalence du diabète, de l'obésité, et d'autres facteurs de risques cardio-vasculaires. Dans le cadre de cet exercice, nous allons nous limiter à quelques variables. Les pressions systoliques et diastoliques ont été mesurées deux fois : `bp.1s` pour la première systolique, `bp.1d` pour la première diastolique, et `bp.2s`, `bp.2d` pour la seconde série de mesures. Vous n'utiliserez que la première série. L'âge est exprimé en années dans la variable `age`.
 
 ## Pression artérielle moyenne
 
-Débutez votre étude par calculer la variable `map`.
+Débutez votre étude par calculer la variable `map` à partir de `bp.1s` et `bp.1d` du tableau `diabetes`. Pour rappel, la formule est :
 
 $$MAP = DP + 1/3*(SP-DP)$$
 
-avec
+Réalisez ensuite dans la foulée un graphique ne nuage de points de la pression artérielle moyenne en fonction de l'âge.
 
--   MAP = pression artérielle moyenne
--   DP = pression diastolique
--   SP = pression systolique
+```{r chart_h2, exercise=TRUE}
+diabetes <- smutate(diabetes,
+  map = ___ |> labelise("Tension artérielle moyenne", units = "___"))
 
-Proposez ensuite un nuage de points de la pression artérielle en fonction de l'âge des participants.
-
-Le tableau de données à votre disposition est `diabetes`. La pression systolique correspond à la variable (`bp_1s`), la pression diastolique correspond à la variable (`bp_1d`) et l'âge des individus correspond à la variable `age`.
-
-```{r chart_h2, exercise = TRUE}
-diabetes <- smutate(diabetes, map = labelise((___+ 1/3*(___ - ___)), label = "Mean arterial pressure", units = "mm Hg"))
 chart(data = ___, ___ ~ ___) +
-  geom____()
+  geom____(na.rm = TRUE)
 ```
 
 ```{r chart_h2-hint-1}
-diabetes <- smutate(diabetes, map = labelise((bp_1d+1/3*(bp_1s - bp_1d)), label = "Mean arterial pressure", units = "mm Hg"))
+diabetes <- smutate(diabetes,
+  map = bp_1d + ___ * (___ - ___) |> labelise("Tension artérielle moyenne", units = "mm Hg"))
+
 chart(data = ___, ___ ~ ___) +
-  geom_point()
+  geom_point(na.rm = TRUE)
 
 #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r chart_h2-solution}
 ## Solution ##
-diabetes <- smutate(diabetes, map = labelise((bp_1d+1/3*(bp_1s - bp_1d)), label = "Mean arterial pressure", units = "mm Hg"))
+diabetes <- smutate(diabetes,
+  map = bp_1d + 1/3 * (bp_1s - bp_1d) |> labelise("Tension artérielle moyenne", units = "mm Hg"))
+
 chart(data = diabetes, map ~ age) +
-  geom_point()
+  geom_point(na.rm = TRUE)
 ```
 
 ```{r chart_h2-check}
-grade_code("Bien joué ! Vous venez de calculer la pression artérielle moyenne.")
+grade_code("Vous venez de calculer MAP et de représenter graphiquement MAP en fonction de l'âge. Que voyez-vous d'intéressant sur ce graphique ?")
 ```
 
 ## Modélisation
@@ -155,12 +154,12 @@ chart(map_lm1)
 ```
 
 ```{r reglin_h2-check}
-grade_code("Bien joué ! Vous venez de réalisez la régression linéaire simple demandée.")
+grade_code("Bon, voilà notre régression linéaire. Le R^2 faible de 0.07 nous indique une forte variabilité autour de la droite. Nous le voyons effectivement sur le graphique.")
 ```
 
-Réalisez ensuite une **régression linéaire polynomiale d'ordre 2** des mêmes variables.
+Réalisez ensuite une **régression linéaire polynomiale d'ordre 2** avec les mêmes variables.
 
-```{r regpoly_h2, exercise = TRUE}
+```{r regpoly_h2, exercise=TRUE}
 map_lm2 <- lm(data = ___, ___ ~ ___ + ___(___))
 # Résumé du modèle
 summary(___)
@@ -188,18 +187,16 @@ chart(map_lm2)
 ```
 
 ```{r regpoly_h2-check}
-grade_code("Bien joué ! Vous venez de réalisez la régression linéaire polynomiale d'ordre 2 demandée.")
+grade_code("Voici notre parabole ajustée dans les données... Est-ce mieux que la droite ?")
 ```
 
 **N'oubliez pas de simplifier votre modèle, si nécessaire**
 
-Analysez les résultats ci-dessus et répondez aux questions suivantes :
+Analysez les résultats ci-dessus et répondez aux questions suivantes :
 
-Suite à votre analyse, répondez aux questions suivantes :
-
-```{r qu_regpoly, eval= FALSE}
+```{r qu_regpoly}
 quiz(
-  question(text = "Quelle est la valeur de l'ordonnée à l'origine  de la régression linéaire polynomiale d'ordre 2?",
+  question(text = "Quelle est la valeur de l'ordonnée à l'origine pour la régression polynomiale d'ordre 2 ?",
     answer(sprintf("%.4f", lm_poly_coef$estimate[1]), correct = TRUE),
     answer(sprintf("%.4f", lm_poly_coef$estimate[2])),
     answer(sprintf("%.4f", lm_poly_coef$std.error[1])),
@@ -209,7 +206,7 @@ quiz(
     answer(sprintf("%.4f", lm_poly_param$r.squared[1])),
     allow_retry = TRUE, random_answer_order = TRUE
     ),
-  question(text = "Quelle est la part de la variance exprimée par ce modèle ? valeur du paramètre associé à **x** ?",
+  question(text = "Quelle est la part de la variance exprimée par ce modèle ?",
     answer(sprintf("%.2f", lm_poly_coef$estimate[1])),
     answer(sprintf("%.2f", lm_poly_coef$estimate[2])),
     answer(sprintf("%.2f", lm_poly_coef$std.error[1])),
@@ -222,55 +219,55 @@ quiz(
 )
 ```
 
-L'analyse des résidus de la régression linéaire est mise à votre disposition ci-dessous. Prenez le temps d'interpréter ces graphiques.
+Voici l'analyse des résidus de la régression linéaire. Prenez le temps d'interpréter ces graphiques.
 
 ```{r}
 chart$residuals(map_lm1)
 ```
 
-L'analyse des résidus de la régression polynomiale d'ordre 2 est mise à votre disposition ci-dessous. Prenez le temps d'interpréter ces graphiques.
+Et voici l'analyse des résidus de la régression polynomiale d'ordre 2.
 
 ```{r}
-chart$residuals(map_lm_poly)
+chart$residuals(map_lm2)
 ```
 
 ## Choix du meilleur modèle
 
-Vous avez réalisé une régression **linéaire simple** (`map_lm1`) et une régression **linéaire polynomiale d'ordre 2** (`map_lm2`) de la variable `map` en fonction de la variable `age` dans le jeu de données `diabetes`.
+Il n'est pas facile de choisir le meilleur modèle dans le cas présent sur base d'une inspection visuelle, y compris via l'analyse des résidus. Calculez le critère d'Akaike pour chaque modèle afin de vous aider dans le choix du meilleur.
 
-Calculez le critère d'Akaike pour chaque modèle afin de vous aider dans le choix du meilleur modèle.
-
-```{r aic, exercise = TRUE}
+```{r aic, exercise=TRUE}
 ___(___, ___)
 ```
 
 ```{r aic-solution}
 ## Solution ##
-AIC(map_lm1,map_lm2)
+AIC(map_lm1, map_lm2)
 ```
 
 ```{r aic-check}
-grade_code("Vous venez de réaliser votre première comparaison de modèle. Lequel est le meilleur ?")
+grade_code("Voilà les valeurs des deux criètres d'Akaike. Qule modèle est le meilleur d'après cette métrique ?")
 ```
 
 Suite à votre analyse, répondez aux questions suivantes :
 
 ```{r qu_aic}
 question(text = "Quel est le meilleur modèle selon le critère d'Akaike",
-  answer("modèle linéaire polynomiale", correct = TRUE),
+  answer("modèle polynomial d'ordre 2", correct = TRUE),
   answer("modèle linéaire simple"),
   allow_retry = TRUE,
   incorrect = "C'est la valeur la plus faible qui indique le meilleur modèle selon le critère d'Akaike",
-  correct = "Bien joué. Le meilleur modèle est celui qui est la valeur la plus faible selon le critère d'Akaike.",
+  correct = "Le meilleur modèle est celui qui a la valeur la plus faible selon le critère d'Akaike.",
   submit_button = "Soumettre une réponse", 
   try_again_button = "Resoumettre une réponse")
 ```
 
-*Le critère d'Akaike vous propose une métrique pour déterminer le meilleur modèle. Rappelez-vous que cela n'est pas suffisant. Il faut étudier l'analyse des résidus ainsi que le résumé du modèle.*
+*Le critère d'Akaike est une métrique qui aide à déterminer quel est le meilleur modèle. N'utilisez jamais le R^2^ pour cela, car si vous comparer un modèle simple et un modèle plus complexe (avec plus de paramètres), il est à peu près certain que le modèle plus complexe et plus flexible s'ajustera mieux dans les données et donnera un meilleur R^2^, mais il peut s'agir ici de **surajustement** qui n'exprime pas une meilleure qualité de ce modèle complexe.*
 
 ## Conclusion
 
-Vous venez de terminer votre séance d'exercices sur la régression linéaire polynomiale. Vous avez également comparé deux modèles.
+Vous venez de terminer ce tutoriel sur la régression polynomiale. Le jeu de données utilisé montre une grande dispersion des valeurs et une faible corrélation entre les variables `map` et `age`. Cependant, les modèles sont quand même significatifs (l'ANOVA de la régression, autant que les tests *t* de Student sur les paramètres l'indiquent dans les deux cas, au seuil alpha choisi de 10%). Le choix entre les deux modèles n'est pas aisé visuellement ici. Nous avons utilisé le critère d'Akaike pour nous aider à prendre une décision.
+
+Que faire ensuite ? Si l'âge a un effet sur la tension artérielle, il est évident que ce n'est pas le seul facteur. Notre modèle doit être complété en y incluant d'autres variables du jeu de données `diabetes` (régression multiple et polynomiale). Vous pouvez tester par vous-mêmes l'ajout de ces autres variables pour diminuer les résdus du modèle, mais l'exercice concernant la régression polynomiale est maintenant terminé.
 
 ```{r comm_noscore, echo=FALSE}
 question_text(

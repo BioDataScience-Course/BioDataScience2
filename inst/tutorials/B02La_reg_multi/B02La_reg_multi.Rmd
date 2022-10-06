@@ -1,7 +1,7 @@
 ---
 title: "Régression linéaire multiple"
 author: "Guyliann Engels & Philippe Grosjean"
-description: "**SDD II Module 2** Aborder la régression linéaire multiple dans R."
+description: "**SDD II Module 2** Résumé de lm et régression linéaire multiple."
 tutorial:
   id: "B02La_reg_multi"
   version: 2.3.0/7
@@ -20,14 +20,14 @@ SciViews::R("model",lang = "fr")
 fat <- read("fat", package = "faraway")
 
 # lm
-densi_lm1 <- lm(data = fat, density ~ abdom)
-lm_lin_result <- tidy(densi_lm1)
-lm_lin_param <- glance(densi_lm1)
+fat_lm1 <- lm(data = fat, density ~ abdom)
+lm_lin_result <- tidy(fat_lm1)
+lm_lin_param <- glance(fat_lm1)
 
 # lm multi
-densi_lm2 <- lm(data = fat, density ~ abdom + hip)
-lm_mult_result <- tidy(densi_lm2)
-lm_mult_param <- glance(densi_lm2)
+fat_lm2 <- lm(data = fat, density ~ abdom + hip)
+lm_mult_result <- tidy(fat_lm2)
+lm_mult_param <- glance(fat_lm2)
 ```
 
 ```{r, echo=FALSE}
@@ -40,13 +40,11 @@ BioDataScience2::learnr_server(input, output, session)
 
 ------------------------------------------------------------------------
 
-**Ce tutoriel correspond à la version 2021-2022. Il est en cours de révision pour la version 2022-2023. Vous devez probablement penser à installer une version plus récente du package qui contient les exercices finalisés !**
-
 ## Objectifs
 
-Le premier module vous a permis de vous familiariser avec la régression linéaire. Vous avez appris à interpréter une partie des résultats proposés par le résumé du modèle ainsi qu'à interpréter les graphiques d'analyses des résidus. Les objectifs de ce tutoriel sont :
+Le premier module vous a permis de vous familiariser avec la régression linéaire. Vous avez appris à interpréter une partie des résultats renvoyés dans le résumé du modèle, ainsi qu'à réaliser et interpréter les graphiques d'analyse des résidus. Les objectifs de ce tutoriel sont :
 
--   Être capable de lire la sortie renvoyée par `summary()` lorsqu'il est appliqué à un objet **lm**.
+-   Être capable de lire la sortie renvoyée par `summary()` pour un objet **lm**.
 -   Maîtriser la régression linéaire multiple dans R avec la fonction `lm()`.
 
 ## Description des données
@@ -54,6 +52,8 @@ Le premier module vous a permis de vous familiariser avec la régression linéai
 Le tableau de données `fat` traite du pourcentage de masse grasse sur 252 hommes. Les participants à cette étude ont été immergés afin de déterminer leur densité corporelle. Cette méthode bien que très fiable n'est pas des plus simples à mettre en place. Les scientifiques font donc appel à vous afin d'estimer la densité des participants à l'aide de mesures biométriques plus simples à obtenir.
 
 ```{r, echo = TRUE}
+SciViews::R("model",lang = "fr")
+
 fat <- read("fat", package = "faraway")
 skimr::skim(fat)
 ```
@@ -70,25 +70,25 @@ chart(data = fat, density ~ abdom) +
 Modélisez la densité (`density`) en fonction du tour de taille (`abdom`) sur les données du tableau `fat`.
 
 ```{r reglin_h2, exercise = TRUE}
-summary(densi_lm1 <- lm(data = ___, ___ ~ ___))
+summary(fat_lm1 <- lm(data = ___, ___ ~ ___))
 ```
 
 ```{r reglin_h2-hint}
-summary(densi_lm1 <- lm(data = DF, FORMULA))
+summary(fat_lm1 <- lm(data = DF, FORMULA))
 
 #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r reglin_h2-solution}
 ## Solution ##
-summary(densi_lm1 <- lm(data = fat, density ~ abdom))
+summary(fat_lm1 <- lm(data = fat, density ~ abdom))
 ```
 
 ```{r reglin_h2-check}
 grade_code("D'accord, on a maintenant une régression linéaire simple comme point de départ.")
 ```
 
-Analysez le tableau des résultats et répondez aux questions suivantes :
+Analysez le tableau des résultats et répondez aux questions suivantes :
 
 ```{r qu_reglin}
 quiz(
@@ -121,12 +121,12 @@ quiz(
 L'analyse des résidus n'est pas l'objectif de cette séance d'exercice. Prenez cependant le temps de critiquer chaque graphique.
 
 ```{r}
-chart$residuals(densi_lm1)
+chart$residuals(fat_lm1)
 ```
 
 ## Régression linéaire multiple
 
-Tentez de réaliser à présent une régression linéaire multiple afin d'améliorer votre modèle. Réalisez à présent un modèle de la densité (`density`) en fonction du tour de taille (`abdom`) et du tour de hanche (`hip`). Le graphique de la densité en fonction du tour de taille vous a été présenté précédemment. Vous trouverez ci-dessous le graphique de la densité en fonction du tour de hanches.
+Tentez de réaliser à présent une régression linéaire multiple afin d'améliorer votre modèle. Ajustez un modèle de la densité (`density`) en fonction du tour de taille (`abdom`) et du tour de hanche (`hip`). Le graphique de la densité en fonction du tour de taille vous a été présenté précédemment. Vous trouverez ci-dessous le graphique de la densité en fonction du tour de hanches.
 
 ```{r, echo = TRUE}
 chart(data = fat, density ~ hip) +
@@ -135,18 +135,18 @@ chart(data = fat, density ~ hip) +
 
 ```{r regmulti_h2, exercise = TRUE}
 # régression multiple 
-summary(densi_lm2 <- lm(data = ___, ___ ~ ___))
+summary(fat_lm2 <- lm(data = ___, ___ ~ ___))
 ```
 
 ```{r regmulti_h2-hint}
-summary(densi_lm2 <- lm(data = DF, Y  ~ VAR1 + VAR2))
+summary(fat_lm2 <- lm(data = DF, Y  ~ VAR1 + VAR2))
 
 #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r regmulti_h2-solution}
 ## Solution ## 
-summary(densi_lm2 <- lm(data = fat, density ~ abdom + hip))
+summary(fat_lm2 <- lm(data = fat, density ~ abdom + hip))
 ```
 
 ```{r regmulti_h2-check}
@@ -178,28 +178,28 @@ quiz(
 L'analyse des résidus n'est pas l'objectif de cette séance d'exercice. Prenez cependant le temps de critiquer chaque graphique.
 
 ```{r}
-chart$residuals(densi_lm2)
+chart$residuals(fat_lm2)
 ```
 
 ## Choix du meilleur modèle
 
-Vous venez de réaliser deux modèles. Il s'agit d'un cas particulier. Ces deux modèles sont imbriqués. Le premier modèle de la densité en fonction du tour de taille se nomme `densi_lm1` et le second modèle de la densité en fonction du tour de taille et du tour de hanche se nomme `densi_lm2`. Comment pourriez-vous départager ces deux modèles ? Outre l'analyse du résumé des modèles et des résidus, il existe des outils pour départager ces deux modèles. L'ANOVA ci-dessus vous permet de définir qu'il y a une différence significative entre ces deux modèles.
+Vous venez de réaliser deux modèles. Il s'agit d'un cas particulier. Ces deux modèles sont imbriqués. Le premier modèle de la densité en fonction du tour de taille se nomme `fat_lm1` et le second modèle de la densité en fonction du tour de taille et du tour de hanche se nomme `fat_lm2`. Comment pourriez-vous départager ces deux modèles ? Outre l'analyse du résumé des modèles et des résidus, il existe des outils pour départager ces deux modèles. L'ANOVA ci-dessus vous permet de définir qu'il y a une différence significative entre ces deux modèles.
 
 ```{r, echo = TRUE}
-anova(densi_lm1, densi_lm2)
+anova(fat_lm1, fat_lm2)
 ```
 
 Le critère d'Akaike est une métrique adaptée à la comparaison de modèles. Le meilleur modèle selon le critère d'Akaike est le modèle ayant obtenu la valeur la plus faible.
 
 ```{r}
-AIC(densi_lm1, densi_lm2)
+AIC(fat_lm1, fat_lm2)
 ```
 
 Suite à l'analyse des résumés des deux modèles, l'interprétation des graphiques des résidus et des valeurs du critère d'Akaike, le second modèle est plus performant afin de modéliser la densité des personnes étudiées.
 
 ## Conclusion
 
-Vous venez de terminer votre séance d'exercices relative à la régression multiple.
+Vous venez de terminer votre séance d'exercices relative à la régression multiple. Vous êtes maintenant prêt à vous attaquer à un projet GitHub Classroom sur ce sujet.
 
 ```{r comm_noscore, echo=FALSE}
 question_text(
