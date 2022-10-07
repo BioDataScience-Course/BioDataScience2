@@ -4,7 +4,7 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II Module 2** Maîtriser la régression linéaire polynomiale."
 tutorial:
   id: "B02Lb_reg_poly"
-  version: 2.1.0/7
+  version: 2.2.0/5
 output: 
   learnr::tutorial:
     progressive: true
@@ -16,23 +16,22 @@ runtime: shiny_prerendered
 BioDataScience2::learnr_setup()
 SciViews::R("model", lang = "fr")
 
-diabetes <- read("diabetes", package = "faraway")
-diabetes <- janitor::clean_names(diabetes)
-diabetes <- smutate(diabetes, 
-  map  = bp_1d + 1/3 * (bp_1s - bp_1d),
-  age2 = age^2)
-is.labelled <- function(x) inherits(x, c("labelled", "haven_labelled"))
-diabetes <- smutate(diabetes, across(sapply(diabetes, is.labelled), .fns = as.numeric))
-diabetes <- labelise(diabetes, 
-  label = list(map = "Tension artérielle moyenne", age = "Âge"), 
-  units = list(map = "mm Hg", age = "années")
-)
+# datasets
+reddrum <- read("reddrum", package = "UsingR")
+reddrum$length <- reddrum$length*0.0254
+reddrum <- labelise(reddrum, 
+  label = list(length = "Longueur totale", age = "Age"),
+  units = list(length = "m"))
 
-map_lm1 <- lm(data = diabetes, map ~ age)
+lm1 <- lm(data = reddrum, length ~ age)
+lm2 <- lm(data = reddrum, length ~ age + I(age^2))
+lm3 <- lm(data = reddrum, length ~ age + I(age^2) + I(age^3))
 
-map_lm2 <- lm(data = diabetes, map ~ age + I(age^2))
-lm_poly_coef <- tidy(map_lm2)
-lm_poly_param <- glance(map_lm2)
+lm_poly_coef <- tidy(lm3)
+lm_poly_param <- glance(lm3)
+
+#chart(data = reddrum, length ~ age) +
+#  geom_point()
 ```
 
 ```{r, echo=FALSE}
@@ -47,87 +46,46 @@ BioDataScience2::learnr_server(input, output, session)
 
 ## Objectifs
 
+La première partie de ce module vous a permis de vous familiariser avec la régression linéaire multiple. L'objectif de ce tutoriel est :
+
 -   Maîtriser la régression linéaire polynomiale dans R avec la fonction `lm()`.
--   Utiliser le critère d'Akaike pour comparer deux modèles.
 
 ## Description des données
 
-Un cycle cardiaque se décompose en deux parties. La contraction cardiaque est la systole et la relaxation cardiaque est la diastole. On peut mesurer la pression de chaque phase à l'aide d'un tensiomètre en millimètre de mercure. La valeur de référence est de 140/90 mm Hg. La valeur de 140 représente la pression systolique (**SP**) et la valeur de 90 la pression diastolique (**DP**). Une tension comprise entre 100/70 et 140/90 mmHg va être considérée comme normale.
+Le tableau de données `reddrum` traite de la croissance de *Sciaenops ocellatus* (L., 1766), un poisson da la famille des Scianidae. Sur base des études Porch et Nieland (2002), le tableau comprend des données simulées de la relation de la longueur en fonction de l'âge. Le tambour rouge est un poisson ayant une longueur totale moyenne de 1 mètre adulte. L'individu le plus long recensé mesurait 1.55 mètre et l'individu le plus âgé avait 50 ans. On le retrouve dans l'océan atlantique, le long des côtes est de l'Amérique du Nord et dans le golfe du Mexique.
 
-![Mesure de la pression artérielle, photo de [Pavel Danilyuk, Pexels](https://www.pexels.com/photo/a-healthcare-worker-measuring-a-patient-s-blood-pressure-using-a-sphygmomanometer-7108344/).](images/blood_pressure.jpg)
+```{r, echo = TRUE}
+SciViews::R("model",lang = "fr") # Configuration du système
 
-La pression artérielle moyenne (**MAP**) se détermine ensuite d'après la formule suivante :
+# Importation des données
+reddrum <- read("reddrum", package = "UsingR")
+# Conversion de pouce en mètre
+reddrum$length <- reddrum$length*0.0254
+# Ajout des labels et unités
+reddrum <- labelise(reddrum, 
+  label = list(length = "Longueur totale", age = "Age"),
+  units = list(length = "m", age = "Année"))
 
-$$MAP = DP + 1/3*(SP-DP)$$
-
-La tension artérielle moyenne optimale va être comprise entre 80 et 107. Les études ont montré que la pression artérielle augmente avec l'âge. Cette augmentation s'explique entre autres par la perte d'élasticité des artères.
-
-Le but de ce tutoriel est de modéliser la variation de la pression artérielle moyenne en fonction de l'âge. Vous avez le jeu de données suivant à votre disposition.
-
-```{r, echo = TRUE, warning=FALSE}
-SciViews::R("model", lang = "fr") # System configuration
-
-# Import dataset
-diabetes <- read("diabetes", package = "faraway")
-# Rework the dataset
-diabetes <- janitor::clean_names(diabetes)
-skimr::skim(diabetes)
-# Correct label in French for age
-diabetes$age <- labelise(diabetes$age, "Âge", units = "années")
-# Some columns are of class "labelled", we convert them into numeric
-is.labelled <- function(x) inherits(x, c("labelled", "haven_labelled"))
-diabetes <- smutate(diabetes, across(sapply(diabetes, is.labelled), .fns = as.numeric))
+skimr::skim(reddrum)
 ```
 
-> La dernière instruction mérite une petite explication. Nous avons plus d'une dizaine de variables dans le jeu de données qui ont la classe "labelled". Ce sont toutes des données quantitatives numériques et nous les voulons comme telles. Les transformer une à une explicitement serait fastidieux. Alors, nous avons fait appel ici à la fonction `across()` qui applique une transformation via son argument `.fns=` (ici, `as.numeric`) sur toutes les colonnes dont le nom est donné par le premier argument, ou via un vecteur de valeurs logiques de même taille que le nombre de variables du tableau. Comme nous voulons transformer toutes les colonnes qui héritent de la classe "labelled", nous appliquons le test sur toutes les colonnes (la fonction `sapply()` s'en charge) à l'aide de `is.labelled` définie juste au dessus qui fait ce test. Cela équivaut à utiliser `is.labelled(X)` avec `X` qui vaut tour à tour chacune des variables du tableau. Avec la function tidy `mutate()`, on aurait aussi pu écrire `across(where(is.labelled), .fns = as.numeric)`, mais `where()` n'est pas (encore) disponible pour les fonctions speedy comme `smutate()`.
+Les données employées sont une simulation basée sur le papier suivant :
 
-Les données ont été collectées au sein d'une population afro-américaine dans l'état de Virginie aux USA dans le but d'étudier la prévalence du diabète, de l'obésité, et d'autres facteurs de risques cardio-vasculaires. Dans le cadre de cet exercice, nous allons nous limiter à quelques variables. Les pressions systoliques et diastoliques ont été mesurées deux fois : `bp.1s` pour la première systolique, `bp.1d` pour la première diastolique, et `bp.2s`, `bp.2d` pour la seconde série de mesures. Vous n'utiliserez que la première série. L'âge est exprimé en années dans la variable `age`.
-
-## Pression artérielle moyenne
-
-Débutez votre étude par calculer la variable `map` à partir de `bp.1s` et `bp.1d` du tableau `diabetes`. Pour rappel, la formule est :
-
-$$MAP = DP + 1/3*(SP-DP)$$
-
-Réalisez ensuite dans la foulée un graphique ne nuage de points de la pression artérielle moyenne en fonction de l'âge.
-
-```{r chart_h2, exercise=TRUE}
-diabetes <- smutate(diabetes,
-  map = ___ |> labelise("Tension artérielle moyenne", units = "___"))
-
-chart(data = ___, ___ ~ ___) +
-  geom____(na.rm = TRUE)
-```
-
-```{r chart_h2-hint-1}
-diabetes <- smutate(diabetes,
-  map = bp_1d + ___ * (___ - ___) |> labelise("Tension artérielle moyenne", units = "mm Hg"))
-
-chart(data = ___, ___ ~ ___) +
-  geom_point(na.rm = TRUE)
-
-#### ATTENTION: Hint suivant = solution !####
-```
-
-```{r chart_h2-solution}
-## Solution ##
-diabetes <- smutate(diabetes,
-  map = bp_1d + 1/3 * (bp_1s - bp_1d) |> labelise("Tension artérielle moyenne", units = "mm Hg"))
-
-chart(data = diabetes, map ~ age) +
-  geom_point(na.rm = TRUE)
-```
-
-```{r chart_h2-check}
-grade_code("Vous venez de calculer MAP et de représenter graphiquement MAP en fonction de l'âge. Que voyez-vous d'intéressant sur ce graphique ?")
-```
+-   Porch, Clay & C.A., Wilson & Nieland, David. (2002). A new growth model for red drum (Scianops ocellatus) that accommodates seasonal and ontogenic changes in growth rates. Fishery Bulletin- National Oceanic and Atmospheric Administration. 100. 149-152
 
 ## Modélisation
 
-Réalisez tout d'abord la régression linéaire de la pression artérielle moyenne (`map`) en fonction de l'âge (`age`). Le seuil alpha fixé dans le cadre de cette recherche est de 10%.
+Vous allez modéliser la longueur (m) des poissons en fonction de leur âge. Le graphique ci-dessous vous propose à nouveau le nuage de points correspondant.
+
+```{r, echo=TRUE}
+chart(data = reddrum, length ~ age) +
+  geom_point()
+```
+
+La croissance de ces poissons est particulière. Les juvéniles ont une croissance très rapide et les adultes croient très lentement. La modélisation de cette relation s'annonce une tâche complexe.
 
 ```{r reglin_h2, exercise = TRUE}
-map_lm1 <- lm(data = ___, ___ ~ ___)
+reddrum_lm1 <- lm(data = ___, ___ ~ ___)
 # Résumé du modèle
 summary(___)
 # Graphique du modèle
@@ -135,32 +93,36 @@ chart(___)
 ```
 
 ```{r reglin_h2-hint-1}
-map_lm1 <- lm(data = ___, ___ ~ ___)
+reddrum_lm1 <- lm(data = ___, ___ ~ ___)
 # Résumé du modèle
-summary(map_lm1)
+summary(reddrum_lm1)
 # Graphique du modèle
-chart(map_lm1)
+chart(reddrum_lm1)
 
 #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r reglin_h2-solution}
 ## Solution ##
-map_lm1 <- lm(data = diabetes, map ~ age)
+reddrum_lm1 <- lm(data = reddrum, length ~ age)
 # Résumé du modèle
-summary(map_lm1)
+summary(reddrum_lm1)
 # Graphique du modèle
-chart(map_lm1)
+chart(reddrum_lm1)
 ```
 
 ```{r reglin_h2-check}
-grade_code("Bon, voilà notre régression linéaire. Le R^2 faible de 0.07 nous indique une forte variabilité autour de la droite. Nous le voyons effectivement sur le graphique.")
+grade_code("Voici notre régression linéaire. Le R^2 est de 0.82. On pourrait penser que ce modèle est très intéressant, si on se limite à cette valeur. Cependant, en visualisant notre droite sur le graphique, on observe un problème d'ajustement du modèle pour les jeunes individus. Interprétez chaque graphique de l'analyse des résidus pour déterminer si la régression linéaire est justifiée ici.")
+```
+
+```{r}
+chart$residuals(lm1)
 ```
 
 Réalisez ensuite une **régression linéaire polynomiale d'ordre 2** avec les mêmes variables.
 
 ```{r regpoly_h2, exercise=TRUE}
-map_lm2 <- lm(data = ___, ___ ~ ___ + ___(___))
+reddrum_lm2 <- lm(data = ___, ___ ~ ___ + ___(___))
 # Résumé du modèle
 summary(___)
 # Graphique du modèle
@@ -168,35 +130,74 @@ chart(___)
 ```
 
 ```{r regpoly_h2-hint-1}
-map_lm2 <- lm(data = ___, ___ ~ ___ + I(___))
+reddrum_lm2 <- lm(data = ___, ___ ~ ___ + I(___))
 # résumé du modèle
-summary(map_lm2)
+summary(reddrum_lm2)
 # Graphique du modèle
-chart(map_lm2)
+chart(reddrum_lm2)
 
 #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r regpoly_h2-solution}
 ## Solution ##
-map_lm2 <- lm(data = diabetes, map ~ age + I(age^2))
+reddrum_lm2 <- lm(data = reddrum, length ~ age + I(age^2))
 # résumé du modèle
-summary(map_lm2)
+summary(reddrum_lm2)
 # Graphique du modèle
-chart(map_lm2)
+chart(reddrum_lm2)
 ```
 
 ```{r regpoly_h2-check}
-grade_code("Voici notre parabole ajustée dans les données... Est-ce mieux que la droite ?")
+grade_code("Voici notre parabole ajustée dans les données... Est-ce mieux que la droite ? Visuellement, on peut observer que notre modèle est meilleur. Cela n'empêche pas d'étudier le résumé du modèle et d'étudier les graphiques de l'analyse des résidus")
 ```
 
-**N'oubliez pas de simplifier votre modèle, si nécessaire**
+```{r}
+chart$residuals(lm2)
+```
 
-Analysez les résultats ci-dessus et répondez aux questions suivantes :
+Réalisez à présent une **régression linéaire polynomiale d'ordre 3** avec les mêmes variables.
+
+```{r regpoly3_h2, exercise=TRUE}
+reddrum_lm3 <- lm(data = ___, ___ ~ ___ + ___(___) + ___(___))
+# Résumé du modèle
+summary(___)
+# Graphique du modèle
+chart(___)
+```
+
+```{r regpoly3_h2-hint-1}
+reddrum_lm3 <- lm(data = ___, ___ ~ ___ + I(___) + ___(___))
+# résumé du modèle
+summary(reddrum_lm3)
+# Graphique du modèle
+chart(reddrum_lm3)
+
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r regpoly3_h2-solution}
+## Solution ##
+reddrum_lm3 <- lm(data = reddrum, length ~ age + I(age^2) + I(age^3))
+# résumé du modèle
+summary(reddrum_lm3)
+# Graphique du modèle
+chart(reddrum_lm3)
+```
+
+```{r regpoly3_h2-check}
+grade_code(" Est-ce mieux que la la régression linéaire ou que la régression linéaire polynomiale d'ordre 2 ? Visuellement, on peut observer que notre modèle semble meilleur. Attention, vous devez toujours étudier le résumé du modèle et étudier les graphiques de l'analyse des résidus")
+```
+
+```{r}
+chart$residuals(lm3)
+```
+
+Étudiez la régression polynomiale d'ordre 3 et répondez aux questions ci-dessous.
 
 ```{r qu_regpoly}
 quiz(
-  question(text = "Quelle est la valeur de l'ordonnée à l'origine pour la régression polynomiale d'ordre 2 ?",
+  question(text = "Quelle est la valeur de l'ordonnée à l'origine pour la régression polynomiale d'ordre 3 ?",
     answer(sprintf("%.4f", lm_poly_coef$estimate[1]), correct = TRUE),
     answer(sprintf("%.4f", lm_poly_coef$estimate[2])),
     answer(sprintf("%.4f", lm_poly_coef$std.error[1])),
@@ -207,67 +208,99 @@ quiz(
     allow_retry = TRUE, random_answer_order = TRUE
     ),
   question(text = "Quelle est la part de la variance exprimée par ce modèle ?",
-    answer(sprintf("%.2f", lm_poly_coef$estimate[1])),
-    answer(sprintf("%.2f", lm_poly_coef$estimate[2])),
-    answer(sprintf("%.2f", lm_poly_coef$std.error[1])),
-    answer(sprintf("%.2f", lm_poly_param$r.squared[1])),
-    answer(sprintf("%.2f", lm_poly_coef$statistic[1])),
-    answer(sprintf("%.2f", lm_poly_coef$statistic[2])),
-    answer(sprintf("%.2f", lm_poly_param$adj.r.squared[1]), correct = TRUE),
+    answer(sprintf("%.3f", lm_poly_coef$estimate[1])),
+    answer(sprintf("%.3f", lm_poly_coef$estimate[2])),
+    answer(sprintf("%.3f", lm_poly_coef$std.error[1])),
+    answer(sprintf("%.3f", lm_poly_param$r.squared[1])),
+    answer(sprintf("%.3f", lm_poly_coef$statistic[1])),
+    answer(sprintf("%.3f", lm_poly_coef$statistic[2])),
+    answer(sprintf("%.3f", lm_poly_param$adj.r.squared[1]), correct = TRUE),
     allow_retry = TRUE, random_answer_order = TRUE
     )
 )
 ```
 
-Voici l'analyse des résidus de la régression linéaire. Prenez le temps d'interpréter ces graphiques.
+## Etude complémentaire
+
+Nous avons pu observer que notre modèle s'ajustait de mieux en mieux en augmentant l'ordre de notre polynôme. Une méthode consiste à augmenter l'ordre du polynôme de manière itérative jusqu'à ce que les variables du modèle ne soient plus significatives. Nous ne détaillons pas chaque modèle. Voici le polynome d'ordre 6.
+
+```{r, echo = TRUE}
+reddrum_lm6 <- lm(data = reddrum, length ~ age + I(age^2) + I(age^3) + I(age^4) + I(age^5) + I(age^6))
+summary(reddrum_lm6)
+chart(reddrum_lm6)
+```
+
+Tous les termes du modèle sont significatifs au seuil alpha de 5%. La valeur de R^2^ atteint 0.94 alors qu'elle n'était que de 0.82 pour la régression linéaire simple. Les graphiques de l'analyse des résidus sont ci-dessous.
 
 ```{r}
-chart$residuals(map_lm1)
+chart$residuals(reddrum_lm6)
 ```
 
-Et voici l'analyse des résidus de la régression polynomiale d'ordre 2.
+```{r, echo = TRUE}
+reddrum_lm7 <- lm(data = reddrum, length ~ age + I(age^2) + I(age^3) + I(age^4) + I(age^5) + I(age^6) + + I(age^7))
+summary(reddrum_lm7)
+chart(reddrum_lm7)
+```
+
+Jusqu'à la régression polynomiale d'ordre 7, toutes les variables de nos modèles successifs sont significatives au seuil alpha de 5%. À partir de ce dernier, nous avons franchi la limite. Les variables du modèle ne sont plus significatives. Le meilleur modèle polynomial est le polynôme d'ordre 6.
+
+Poussons notre réflexion encore un peu plus loin. Si nous calculons une régression polynomiale d'ordre n-1. La courbe va s'adapter parfaitement à la distribution de nos observations. La valeur de R^2^ sera de 1. Ce modèle ne sera d'aucune utilité. Nous seront dans un cas de surajustement. Il ne contient plus aucune information pertinente.
+
+Voici une analyse de la régression linéaire simple à la régression polynomiale d'ordre 9.
+
+```{r, echo=TRUE}
+# Création successive des modèles
+lm1 <- lm(data = reddrum, length ~ age)
+lm2 <- lm(data = reddrum, length ~ age + I(age^2))
+lm3 <- lm(data = reddrum, length ~ age + I(age^2) + I(age^3))
+lm4 <- lm(data = reddrum, length ~ age + I(age^2) + I(age^3) + I(age^4))
+lm5 <- lm(data = reddrum, length ~ age + I(age^2) + I(age^3) + I(age^4) + I(age^5))
+lm6 <- lm(data = reddrum, length ~ age + I(age^2) + I(age^3) + I(age^4) + I(age^5) + I(age^6))
+lm7 <- lm(data = reddrum, 
+  length ~ age + I(age^2) + I(age^3) + I(age^4) + I(age^5) + I(age^6) + I(age^7))
+lm8 <- lm(data = reddrum,
+  length ~ age + I(age^2) + I(age^3) + I(age^4) + I(age^5) + I(age^6) + I(age^7) + I(age^8))
+lm9 <- lm(data = reddrum,
+  length ~ age + I(age^2) + I(age^3) + I(age^4) + I(age^5) + I(age^6) + I(age^7) + I(age^8) + I(age^9))
+```
+
+Nous pouvons extraire les paramètres du modèle avec la fonction glance() et le fonction rmse().
+
+```{r, echo=TRUE}
+# Combinaison des modèles dans un liste
+models <- list(lm1, lm2, lm3, lm4, lm5, lm6, lm7, lm8, lm9)
+names(models) <- c("lm", paste0("poly_", 2:9))
+
+# Extraction en série des paramètres du modèle grâce à la fonction glance().
+models %>.%
+  purrr::map_dfr(., glance) -> mod_params
+mod_params$rmse <- purrr::map_dbl(models, rmse, data = reddrum)
+mod_params$model <- names(models)
+
+mod_params[ , c("model", "adj.r.squared", "rmse")]
+```
+
+> Le chunk ci-dessus mérite une petite explication. Nous avons neuf modèles. Tous ces modèles sont regroupés dans une liste nommée `models`. La fonction glance() et la fonction rmse() vous permettent d'extraire les paramètres d'un modèle. Ici, nous souhaitons extraire en série ces paramètres. Les fonctions map() du package {purrr} vont exécuter une fonction à chaque élément d'une liste ou d'un vecteur. Grâce à ces fonctions, on obtient un tableau `mod_params` qui comprend tous les paramètres des neuf modèles.
 
 ```{r}
-chart$residuals(map_lm2)
+a <- chart(data = mod_params, adj.r.squared ~ model) +
+  geom_line(group=1) +
+  geom_point()
+
+b <- chart(data = mod_params, rmse ~ model) +
+  geom_line(group=1) +
+  geom_point()
+
+combine_charts(list(a,b), ncol = 1)
 ```
 
-## Choix du meilleur modèle
+Les graphiques ci-dessus nous montrent les variations du R^2^ (A) et de l'erreur quadratique moyenne (B). On observe un gain de performance des modèles jusqu'au modèle polynomial d'ordre 5 ou 6. Ensuite, ces gains deviennent quasi nuls.
 
-Il n'est pas facile de choisir le meilleur modèle dans le cas présent sur base d'une inspection visuelle, y compris via l'analyse des résidus. Calculez le critère d'Akaike pour chaque modèle afin de vous aider dans le choix du meilleur.
-
-```{r aic, exercise=TRUE}
-___(___, ___)
-```
-
-```{r aic-solution}
-## Solution ##
-AIC(map_lm1, map_lm2)
-```
-
-```{r aic-check}
-grade_code("Voilà les valeurs des deux criètres d'Akaike. Qule modèle est le meilleur d'après cette métrique ?")
-```
-
-Suite à votre analyse, répondez aux questions suivantes :
-
-```{r qu_aic}
-question(text = "Quel est le meilleur modèle selon le critère d'Akaike",
-  answer("modèle polynomial d'ordre 2", correct = TRUE),
-  answer("modèle linéaire simple"),
-  allow_retry = TRUE,
-  incorrect = "C'est la valeur la plus faible qui indique le meilleur modèle selon le critère d'Akaike",
-  correct = "Le meilleur modèle est celui qui a la valeur la plus faible selon le critère d'Akaike.",
-  submit_button = "Soumettre une réponse", 
-  try_again_button = "Resoumettre une réponse")
-```
-
-*Le critère d'Akaike est une métrique qui aide à déterminer quel est le meilleur modèle. N'utilisez jamais le R^2^ pour cela, car si vous comparer un modèle simple et un modèle plus complexe (avec plus de paramètres), il est à peu près certain que le modèle plus complexe et plus flexible s'ajustera mieux dans les données et donnera un meilleur R^2^, mais il peut s'agir ici de **surajustement** qui n'exprime pas une meilleure qualité de ce modèle complexe.*
+**La visualisation du modèle, l'étude du résumé du modèle, l'analyse des résidus et l'étude des indicateurs de performances forment un tout. Vous devez maîtriser l'ensemble des outils pour valider la pertinence d'un modèle et ensuite comparer des modèles entre eux.**
 
 ## Conclusion
 
-Vous venez de terminer ce tutoriel sur la régression polynomiale. Le jeu de données utilisé montre une grande dispersion des valeurs et une faible corrélation entre les variables `map` et `age`. Cependant, les modèles sont quand même significatifs (l'ANOVA de la régression, autant que les tests *t* de Student sur les paramètres l'indiquent dans les deux cas, au seuil alpha choisi de 10%). Le choix entre les deux modèles n'est pas aisé visuellement ici. Nous avons utilisé le critère d'Akaike pour nous aider à prendre une décision.
-
-Que faire ensuite ? Si l'âge a un effet sur la tension artérielle, il est évident que ce n'est pas le seul facteur. Notre modèle doit être complété en y incluant d'autres variables du jeu de données `diabetes` (régression multiple et polynomiale). Vous pouvez tester par vous-mêmes l'ajout de ces autres variables pour diminuer les résdus du modèle, mais l'exercice concernant la régression polynomiale est maintenant terminé.
+Vous venez de terminer ce tutoriel sur la régression polynomiale. La régression polynomiale d'ordre 6 nous a permis de proposer un modèle qui s'ajuste correctement à la croissance des tambours rouges. Vous devez cependant être très vigilant au surajustement.
 
 ```{r comm_noscore, echo=FALSE}
 question_text(
