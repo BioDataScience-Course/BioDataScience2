@@ -1,5 +1,7 @@
 # BioDataScience2 2022.2.0
 
+-   Learnr **B02Lb_reg_poly** completely rewritten
+
 -   Learnr **B02La_reg_multi** completely rewritten
 
 # BioDataScience2 2022.1.1
