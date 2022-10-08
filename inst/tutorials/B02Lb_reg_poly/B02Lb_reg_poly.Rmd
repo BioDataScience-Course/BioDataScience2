@@ -18,20 +18,16 @@ SciViews::R("model", lang = "fr")
 
 # datasets
 reddrum <- read("reddrum", package = "UsingR")
-reddrum$length <- reddrum$length*0.0254
+reddrum$length <- reddrum$length * 0.0254
 reddrum <- labelise(reddrum, 
-  label = list(length = "Longueur totale", age = "Age"),
-  units = list(length = "m"))
+  label = list(length = "Longueur", age = "Âge"),
+  units = list(length = "m", age = "années"))
 
 lm1 <- lm(data = reddrum, length ~ age)
 lm2 <- lm(data = reddrum, length ~ age + I(age^2))
 lm3 <- lm(data = reddrum, length ~ age + I(age^2) + I(age^3))
-
 lm_poly_coef <- tidy(lm3)
 lm_poly_param <- glance(lm3)
-
-#chart(data = reddrum, length ~ age) +
-#  geom_point()
 ```
 
 ```{r, echo=FALSE}
@@ -46,45 +42,43 @@ BioDataScience2::learnr_server(input, output, session)
 
 ## Objectifs
 
-La première partie de ce module vous a permis de vous familiariser avec la régression linéaire multiple. L'objectif de ce tutoriel est :
-
--   Maîtriser la régression linéaire polynomiale dans R avec la fonction `lm()`.
+L'objectif de ce tutoriel est de vous exercer à réaliser une régression polynomiale dans R avec la fonction `lm()`.
 
 ## Description des données
 
-Le tableau de données `reddrum` traite de la croissance de *Sciaenops ocellatus* (L., 1766), un poisson da la famille des Scianidae. Sur base des études Porch et Nieland (2002), le tableau comprend des données simulées de la relation de la longueur en fonction de l'âge. Le tambour rouge est un poisson ayant une longueur totale moyenne de 1 mètre adulte. L'individu le plus long recensé mesurait 1.55 mètre et l'individu le plus âgé avait 50 ans. On le retrouve dans l'océan atlantique, le long des côtes est de l'Amérique du Nord et dans le golfe du Mexique.
+Le jeu de données `reddrum` traite de la croissance de l'ombrine tachetée *Sciaenops ocellatus* (L., 1766), un poisson da la famille des Scianidae qui vit sur la côte américaine de l'Océan Atlantique, du Massachusetts jusqu'au nord du Mexique. Les données de la longueur du poisson en fonction de son âge sont simulées sur base de mesures réalisées par Porch, Wilson et Nieland (2002). Cette espèce peut atteindre 1,5 mètre et peut vire plusieurs dizaines d'années jusqu'à 50 ou 60 ans.
 
-```{r, echo = TRUE}
+Voir Porch, C., C.A. Wilson & D. Nieland (2002). A new growth model for red drum (*Scianops ocellatus*) that accommodates seasonal and ontogenic changes in growth rates. Fish. Bull., 100:149-152.
+
+![Ombrine tachetée, avec son ocelle caractéristique à la base de la nageoire caudale.](images/reddrum.jpg)
+
+```{r, echo=TRUE}
 SciViews::R("model",lang = "fr") # Configuration du système
 
 # Importation des données
 reddrum <- read("reddrum", package = "UsingR")
 # Conversion de pouce en mètre
-reddrum$length <- reddrum$length*0.0254
+reddrum$length <- reddrum$length * 0.0254
 # Ajout des labels et unités
 reddrum <- labelise(reddrum, 
-  label = list(length = "Longueur totale", age = "Age"),
-  units = list(length = "m", age = "Année"))
+  label = list(length = "Longueur", age = "Âge"),
+  units = list(length = "m", age = "années"))
 
 skimr::skim(reddrum)
 ```
 
-Les données employées sont une simulation basée sur le papier suivant :
-
--   Porch, Clay & C.A., Wilson & Nieland, David. (2002). A new growth model for red drum (Scianops ocellatus) that accommodates seasonal and ontogenic changes in growth rates. Fishery Bulletin- National Oceanic and Atmospheric Administration. 100. 149-152
-
 ## Modélisation
 
-Vous allez modéliser la longueur (m) des poissons en fonction de leur âge. Le graphique ci-dessous vous propose à nouveau le nuage de points correspondant.
+Vous allez modéliser la longueur (m) de l'ombrine tachetée en fonction de son âge dont voici la représentation graphique.
 
 ```{r, echo=TRUE}
 chart(data = reddrum, length ~ age) +
   geom_point()
 ```
 
-La croissance de ces poissons est particulière. Les juvéniles ont une croissance très rapide et les adultes croient très lentement. La modélisation de cette relation s'annonce une tâche complexe.
+La croissance de ces poissons est particulière. Les juvéniles ont une croissance très rapide et ensuite, la croissance ralentit nettement sans jamais devenir nulle. La forme du nuage de points est telle qu'il est difficile, voire impossible de trouver une transformation capable de le linéariser. Commencez, à titre de référence, par ajuster une régression linéaire sur les données non transformées.
 
-```{r reglin_h2, exercise = TRUE}
+```{r reglin_h2, exercise=TRUE}
 reddrum_lm1 <- lm(data = ___, ___ ~ ___)
 # Résumé du modèle
 summary(___)
@@ -112,8 +106,10 @@ chart(reddrum_lm1)
 ```
 
 ```{r reglin_h2-check}
-grade_code("Voici notre régression linéaire. Le R^2 est de 0.82. On pourrait penser que ce modèle est très intéressant, si on se limite à cette valeur. Cependant, en visualisant notre droite sur le graphique, on observe un problème d'ajustement du modèle pour les jeunes individus. Interprétez chaque graphique de l'analyse des résidus pour déterminer si la régression linéaire est justifiée ici.")
+grade_code("Voici notre régression linéaire. Le R^2 est de 0.82. On pourrait penser que ce modèle est très intéressant, si on se limite à cette valeur. Cependant, en visualisant notre droite sur le graphique, on observe un problème d'ajustement du modèle pour les jeunes individus.")
 ```
+
+Afin de compléter notre analyse, voici les graphiques des résidus.
 
 ```{r}
 chart$residuals(lm1)
@@ -149,8 +145,10 @@ chart(reddrum_lm2)
 ```
 
 ```{r regpoly_h2-check}
-grade_code("Voici notre parabole ajustée dans les données... Est-ce mieux que la droite ? Visuellement, on peut observer que notre modèle est meilleur. Cela n'empêche pas d'étudier le résumé du modèle et d'étudier les graphiques de l'analyse des résidus")
+grade_code("Cette fois-ci, nous avons ajusté une parabole dans les données... C'est déjà mieux, mais insuffisant.")
 ```
+
+Analyse des résidus pour le modèle polynomial d'ordre 2.
 
 ```{r}
 chart$residuals(lm2)
@@ -186,24 +184,25 @@ chart(reddrum_lm3)
 ```
 
 ```{r regpoly3_h2-check}
-grade_code(" Est-ce mieux que la la régression linéaire ou que la régression linéaire polynomiale d'ordre 2 ? Visuellement, on peut observer que notre modèle semble meilleur. Attention, vous devez toujours étudier le résumé du modèle et étudier les graphiques de l'analyse des résidus")
+grade_code("Observez comme la courbe devient de plus en plus flexible à mesure que l'ordre du polynome augmente.")
 ```
+
+Analyse des résidus pour la régression polynomiale d'ordre 3.
 
 ```{r}
 chart$residuals(lm3)
 ```
 
-Étudiez la régression polynomiale d'ordre 3 et répondez aux questions ci-dessous.
+Étudiez les résultats obtenus et répondez aux question ci-dessous.
 
 ```{r qu_regpoly}
 quiz(
-  question(text = "Quelle est la valeur de l'ordonnée à l'origine pour la régression polynomiale d'ordre 3 ?",
-    answer(sprintf("%.4f", lm_poly_coef$estimate[1]), correct = TRUE),
+  question(text = "Quelle est la valeur du paramètre pour le terme d'ordre 2 ?",
+    answer(sprintf("%.4f", lm_poly_coef$estimate[1])),
     answer(sprintf("%.4f", lm_poly_coef$estimate[2])),
-    answer(sprintf("%.4f", lm_poly_coef$std.error[1])),
-    answer(sprintf("%.4f", lm_poly_coef$std.error[2])),
-    answer(sprintf("%.4f", lm_poly_coef$statistic[1])),
+    answer(sprintf("%.4f", lm_poly_coef$estimate[3]), correct = TRUE),
     answer(sprintf("%.4f", lm_poly_coef$statistic[2])),
+    answer(sprintf("%.4f", lm_poly_coef$statistic[3])),
     answer(sprintf("%.4f", lm_poly_param$r.squared[1])),
     allow_retry = TRUE, random_answer_order = TRUE
     ),
@@ -220,12 +219,13 @@ quiz(
 )
 ```
 
-## Etude complémentaire
+## Choix du meilleur modèle
 
-Nous avons pu observer que notre modèle s'ajustait de mieux en mieux en augmentant l'ordre de notre polynôme. Une méthode consiste à augmenter l'ordre du polynôme de manière itérative jusqu'à ce que les variables du modèle ne soient plus significatives. Nous ne détaillons pas chaque modèle. Voici le polynome d'ordre 6.
+Nous avons pu observer que notre modèle s'ajuste de mieux en mieux en augmentant l'ordre de notre polynôme. Une méthode consiste à augmenter l'ordre du polynôme de manière itérative jusqu'à ce que le paramètre relatif au terme d'ordre maximum ne soit plus significativement différent de zéro. Ici, cela implique de tester aussi un modèle polynomial d'ordre 4, 5, 6, 7... Nous ne détaillons pas chaque modèle, mais voici ce que donne le polynôme d'ordre 6.
 
-```{r, echo = TRUE}
-reddrum_lm6 <- lm(data = reddrum, length ~ age + I(age^2) + I(age^3) + I(age^4) + I(age^5) + I(age^6))
+```{r, echo=TRUE}
+reddrum_lm6 <- lm(data = reddrum, length ~ age + I(age^2) + I(age^3) +
+  I(age^4) + I(age^5) + I(age^6))
 summary(reddrum_lm6)
 chart(reddrum_lm6)
 ```
@@ -236,71 +236,74 @@ Tous les termes du modèle sont significatifs au seuil alpha de 5%. La valeur de
 chart$residuals(reddrum_lm6)
 ```
 
-```{r, echo = TRUE}
-reddrum_lm7 <- lm(data = reddrum, length ~ age + I(age^2) + I(age^3) + I(age^4) + I(age^5) + I(age^6) + + I(age^7))
+Voici à présent le résultat pour un polynôme d'ordre 7.
+
+```{r, echo=TRUE}
+reddrum_lm7 <- lm(data = reddrum, length ~ age + I(age^2) + I(age^3) +
+  I(age^4) + I(age^5) + I(age^6) + I(age^7))
 summary(reddrum_lm7)
 chart(reddrum_lm7)
 ```
 
-Jusqu'à la régression polynomiale d'ordre 7, toutes les variables de nos modèles successifs sont significatives au seuil alpha de 5%. À partir de ce dernier, nous avons franchi la limite. Les variables du modèle ne sont plus significatives. Le meilleur modèle polynomial est le polynôme d'ordre 6.
+Nous voyons ici que le paramètre du terme en puissance 7 n'est plus significativement différent de zéro au seuil alpha de 5%. Nous avons franchi la limite. Nous en concluons donc que le meilleur modèle polynomial est ici le polynôme d'ordre 6.
 
 Poussons notre réflexion encore un peu plus loin. Si nous calculons une régression polynomiale d'ordre n-1. La courbe va s'adapter parfaitement à la distribution de nos observations. La valeur de R^2^ sera de 1. Ce modèle ne sera d'aucune utilité. Nous seront dans un cas de surajustement. Il ne contient plus aucune information pertinente.
 
-Voici une analyse de la régression linéaire simple à la régression polynomiale d'ordre 9.
+Voici une analyse de la régression linéaire simple à la régression polynomiale d'ordre 9. Au lieu d'utiliser `age + I(age^2) + I(age^3) + ...`, ce qui devient rapidement fastidieux, nous utilisons ici `poly(x, n, raw = TRUE)`, avec `n`, l'ordre du polynôme (l'explication relative à `raw = TRUE` sort du cadre de ce cours, mais `raw = FALSE`, la valeur par défaut, conduit à transformer le polynôme de sorte que ses paramètres soient orthogonaux l'un à l'autre, ce qui leurs confère plus de stabilité).
 
 ```{r, echo=TRUE}
-# Création successive des modèles
-lm1 <- lm(data = reddrum, length ~ age)
-lm2 <- lm(data = reddrum, length ~ age + I(age^2))
-lm3 <- lm(data = reddrum, length ~ age + I(age^2) + I(age^3))
-lm4 <- lm(data = reddrum, length ~ age + I(age^2) + I(age^3) + I(age^4))
-lm5 <- lm(data = reddrum, length ~ age + I(age^2) + I(age^3) + I(age^4) + I(age^5))
-lm6 <- lm(data = reddrum, length ~ age + I(age^2) + I(age^3) + I(age^4) + I(age^5) + I(age^6))
-lm7 <- lm(data = reddrum, 
-  length ~ age + I(age^2) + I(age^3) + I(age^4) + I(age^5) + I(age^6) + I(age^7))
-lm8 <- lm(data = reddrum,
-  length ~ age + I(age^2) + I(age^3) + I(age^4) + I(age^5) + I(age^6) + I(age^7) + I(age^8))
-lm9 <- lm(data = reddrum,
-  length ~ age + I(age^2) + I(age^3) + I(age^4) + I(age^5) + I(age^6) + I(age^7) + I(age^8) + I(age^9))
+# Ajustement des différents modèles au sein d'une liste
+models <- list(
+  lm1 = lm(data = reddrum, length ~ age),
+  lm2 = lm(data = reddrum, length ~ poly(age, 2, raw = TRUE)),
+  lm3 = lm(data = reddrum, length ~ poly(age, 3, raw = TRUE)),
+  lm4 = lm(data = reddrum, length ~ poly(age, 4, raw = TRUE)),
+  lm5 = lm(data = reddrum, length ~ poly(age, 5, raw = TRUE)),
+  lm6 = lm(data = reddrum, length ~ poly(age, 6, raw = TRUE)),
+  lm7 = lm(data = reddrum, length ~ poly(age, 7, raw = TRUE)),
+  lm8 = lm(data = reddrum, length ~ poly(age, 8, raw = TRUE)),
+  lm9 = lm(data = reddrum, length ~ poly(age, 9, raw = TRUE))
+)
 ```
 
-Nous pouvons extraire les paramètres du modèle avec la fonction glance() et le fonction rmse().
+Nous pouvons extraire les paramètres du modèle en utilisant `glance()` et nous utilisons `rmse()` pour calculer une métrique, **l'erreur quadratique moyenne**, qui quantifié l'ajustement du modèle.
 
 ```{r, echo=TRUE}
-# Combinaison des modèles dans un liste
-models <- list(lm1, lm2, lm3, lm4, lm5, lm6, lm7, lm8, lm9)
-names(models) <- c("lm", paste0("poly_", 2:9))
-
-# Extraction en série des paramètres du modèle grâce à la fonction glance().
-models %>.%
-  purrr::map_dfr(., glance) -> mod_params
+# Extraction en série des paramètres des modèles grâce à glance()
+mod_params <- purrr::map_dfr(models, glance)
+# Ajout de RMSE selon le même principe
 mod_params$rmse <- purrr::map_dbl(models, rmse, data = reddrum)
+# Ajout du nom des modèles
 mod_params$model <- names(models)
-
+# Visualisation des résultats
 mod_params[ , c("model", "adj.r.squared", "rmse")]
 ```
 
-> Le chunk ci-dessus mérite une petite explication. Nous avons neuf modèles. Tous ces modèles sont regroupés dans une liste nommée `models`. La fonction glance() et la fonction rmse() vous permettent d'extraire les paramètres d'un modèle. Ici, nous souhaitons extraire en série ces paramètres. Les fonctions map() du package {purrr} vont exécuter une fonction à chaque élément d'une liste ou d'un vecteur. Grâce à ces fonctions, on obtient un tableau `mod_params` qui comprend tous les paramètres des neuf modèles.
+> Le chunk ci-dessus mérite une petite explication. Nous avons neuf modèles. Tous ces modèles sont regroupés dans une liste nommée `models`. `purrr::map()` et ses variantes `map_dfr()`, `map_dbl()` exécutent une fonction donnée en second argument sur chaque élément de la liste en premier argument, c'est-à-dire, sur chacun des neuf modèles que notre liste contient. Une liste est renvoyée, ou un data frame pour `map_dfr()`, ou un vecteur de valeurs numériques doubles pour `map_dbl()`.
 
-```{r}
+Voici un graphique de la variation du R^2^ et de l'erreur quadratique moyenne en fonction de l'ordre du polynôme ajusté :
+
+```{r, echo=TRUE}
 a <- chart(data = mod_params, adj.r.squared ~ model) +
-  geom_line(group=1) +
+  geom_line(group = 1) +
   geom_point()
 
 b <- chart(data = mod_params, rmse ~ model) +
-  geom_line(group=1) +
+  geom_line(group = 1) +
   geom_point()
 
-combine_charts(list(a,b), ncol = 1)
+combine_charts(list(a, b), ncol = 1)
 ```
 
-Les graphiques ci-dessus nous montrent les variations du R^2^ (A) et de l'erreur quadratique moyenne (B). On observe un gain de performance des modèles jusqu'au modèle polynomial d'ordre 5 ou 6. Ensuite, ces gains deviennent quasi nuls.
+Nous pouvons observer un gain de performance des modèles jusqu'au modèle polynomial d'ordre 5 ou 6. Ensuite, ces gains deviennent nuls ou quasi nuls. Ceci confirme qu'il est inutile d'augmenter l'ordre du polynôme au delà de 6 et cela valide aussi la première méthode itérative que nous avons utilisée qui consiste à s'arrêter juste avant que le paramètre du terme de plus forte puissance ne s'annule.
 
-**La visualisation du modèle, l'étude du résumé du modèle, l'analyse des résidus et l'étude des indicateurs de performances forment un tout. Vous devez maîtriser l'ensemble des outils pour valider la pertinence d'un modèle et ensuite comparer des modèles entre eux.**
+> Pour le polynôme d'ordre 2, il est intéressant de déterminer si nous pouvons laisser tomber le terme de puissance 1 et simplifier le modèle. Cela signifie alors utiliser `y = a*x^2 + b`, soit une droite dans les données après avoir élevé `x` au carré. Pour les polynômes d'ordre plus élevé, il faut considérer le modèle comme un tout. Analysez-le sur base du paramètre de puissance la plus élevée uniquement, comme nous l'avons fait ici, et n'essayer pas de simplifier si des termes intermédiaires apparaissent non significatifs.
+
+**La visualisation du modèle, l'étude du résumé du modèle, l'analyse des résidus et l'étude des indicateurs de performances forment un tout. Vous devez maîtriser l'ensemble des outils pour être capable de valider la pertinence d'un modèle et pour pouvoir comparer des modèles entre eux.**
 
 ## Conclusion
 
-Vous venez de terminer ce tutoriel sur la régression polynomiale. La régression polynomiale d'ordre 6 nous a permis de proposer un modèle qui s'ajuste correctement à la croissance des tambours rouges. Vous devez cependant être très vigilant au surajustement.
+Vous venez de terminer ce tutoriel sur la régression polynomiale. La régression polynomiale d'ordre 6 nous a permis d'ajuster un modèle dans ces données malgré la forme non linéaire du nuage de points. Ce genre de modèle est utile dans un but de prédiction, mais il n'est d'aucune utilité pour aider à expliquer le mécanisme de la croissance de ce poisson. Pour cela, nous devrons nous tourner vers des modèles non linéaires spécialisés (modèles de croissance) que nous étudierons au module 5. Avec le modèle polynomial, vous devez rester très vigilant à deux aspects : le surajustement, car un polynome d'ordre suffisamment élevé peut, à la limite, passer par tous les points mais il inclut alors l'erreur de mesure ce qui est contre-productif, et (2) ne jamais faire des extrapolations lors de prédictions car la courbe polynomiale s'écarte généralement très rapidement du "vrai modèle" aux deux extrémités.
 
 ```{r comm_noscore, echo=FALSE}
 question_text(
