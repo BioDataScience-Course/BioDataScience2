@@ -16,7 +16,7 @@
 
 -   All learnr exercices adapted and tested with svbox2022.
 
--   Reorganization of learnrs and additio, of new ones (course 8 modules -\> 10 modules).
+-   Reorganization of learnrs and addition of new ones (course 8 modules -\> 10 modules).
 
 # BioDataScience2 2022.0.0
 
