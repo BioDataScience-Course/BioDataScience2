@@ -1,10 +1,14 @@
+# BioDataScience2 2022.3.0
+
+-   Learnr **B05La_nls** revised
+
+-   Shiny application B04... renamed B05...
+
 # BioDataScience2 2022.2.0
 
 -   Learnr **B02Lb_reg_poly** completely rewritten
 
 -   Learnr **B02La_reg_multi** completely rewritten
-
--   Shiny application B04... renamed B05...
 
 # BioDataScience2 2022.1.1
 

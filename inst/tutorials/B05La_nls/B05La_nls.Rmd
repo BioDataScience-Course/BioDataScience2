@@ -18,7 +18,8 @@ SciViews::R()
 set.seed(42)
 tumor <- dtx(
   time   = seq(1, 60, by = 1),
-  volume = SSgompertz(time, Asym = 8, b2 = 11, b3 = 0.9) + rnorm(length(time), 0, 0.05)
+  volume = SSgompertz(time, Asym = 8, b2 = 11, b3 = 0.9) +
+    rnorm(length(time), 0, 0.05)
 )
 ```
 
@@ -31,8 +32,6 @@ BioDataScience2::learnr_server(input, output, session)
 ```
 
 ------------------------------------------------------------------------
-
-**Ce tutoriel correspond à la version 2021-2022. Il est en cours de révision pour la version 2022-2023. Vous devez probablement penser à installer une version plus récente du package qui contient les exercices finalisés !**
 
 ## Objectifs
 
@@ -79,7 +78,7 @@ df1 <- dtx(
 )
 ```
 
-```{r expo_h2, exercise = TRUE, exercise.setup = "expo_prep"}
+```{r expo_h2, exercise=TRUE, exercise.setup="expo_prep"}
 expo <- ___(data = ___, ___ ~ ___(t, ___, ___),
   start = list(___ = ___, ___ = ___), trace = TRUE)
 summary(___)
@@ -101,7 +100,7 @@ summary(expo)
 ```
 
 ```{r expo_h2-check}
-grade_code("Félicitation ! Voici votre premier modèle non linéaire... et certainement pas le dernier.")
+grade_code("Voici votre premier modèle non linéaire... et certainement pas le dernier.")
 ```
 
 ## Volume tumoral
@@ -142,7 +141,7 @@ AIC(logis)
 ```
 
 ```{r tumor_logis_h2-check}
-grade_code("Vous progressez bien ! Essayons un autre modèle pour voir si l'on peut trouver mieux.")
+grade_code("Essayons un autre modèle pour voir si l'on peut faire mieux.")
 ```
 
 ### Modèle de Gompertz
@@ -200,7 +199,7 @@ AIC(vb)
 ```
 
 ```{r tumor_vb_h2-check}
-grade_code("Vous maîtrisez parfaitement la régression non linéaire !")
+grade_code("Ce modèle s'ajuste aussi dans ces données")
 ```
 
 ### Comparaison des modèles à partir du critère d'Akaïke
