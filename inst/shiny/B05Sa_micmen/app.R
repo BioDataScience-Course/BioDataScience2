@@ -5,17 +5,14 @@ library(shiny)
 library(learnitdown)
 library(BioDataScience2)
 
-y0_init <- 3.5
-k_init <- 0.10
-error_sd <- 0.5
+vm_init <- 6
+k_init <- 2
+error_sd <- 0.05
 set.seed(42)
 
-exponent <- function(x, y0, k)
-  y0 * exp(k * x)
-
 model_data <- tibble::tibble(
-  x = seq(0, 20, by = 0.5),
-  y = exponent(x, y0 = y0_init, k = k_init) +
+  x = seq(0, 25, by = 0.1),
+  y = SSmicmen(x, Vm = vm_init, K = k_init) +
     rnorm(n = length(x), sd = error_sd))
 
 graph <- chart::chart(model_data, y ~ x) +
@@ -24,16 +21,17 @@ graph <- chart::chart(model_data, y ~ x) +
   ggplot2::ylab("y")
 
 ui <- fluidPage(
-  learnitdownShiny("Ajustement manuel d'un modèle : courbe exponentielle"),
+  learnitdownShiny("Ajustement manuel d'un modèle : Michaelis-Menten"),
 
   sidebarLayout(
     sidebarPanel(
       withMathJax(),
-      p("$$y(x) = y_0 \\ e^{k \\ x}$$"),
-      sliderInput("y0", label = "y0",
-        value = 1, min = -5, max = 5, step = 0.5),
-      sliderInput("k", label = "k",
-        value = 0.025, min = -0.20, max = 0.20, step = 0.025),
+      p("$$y(x) = \\frac{V_{m} * x}{K + x}$$"),
+
+      sliderInput("vm", label = "Vm",
+        value = 1, min = 0, max = 10, step = 0.5),
+      sliderInput("k", label = "K",
+        value = 1, min = -3, max = 10, step = 0.5),
       hr(),
       submitQuitButtons()
     ),
@@ -60,15 +58,15 @@ server <- function(input, output, session) {
 
   model_predict <- reactive({
     dplyr::mutate(model_data,
-      y_predit = exponent(x, y0 = input$y0, k = input$k),
+      y_predit = SSmicmen(x, Vm = input$vm, K = input$k),
       distance2 = (y_predit - y)^2
     )
   })
 
   output$model_equation <- renderUI({
     withMathJax(
-      sprintf("$$y(x) = %.02f \\ e^{ %.02f \\ x}$$", input$y0, input$k)
-      )
+      sprintf("$$y(x) = \\frac{%.02f * x}{%.02f + x}$$",
+        input$vm, input$k))
   })
 
   output$model_resid <- renderUI({
@@ -80,20 +78,19 @@ server <- function(input, output, session) {
     data <- model_predict()
     p <- graph
 
-    if(!any(is.nan(data$y_predit))) {
+    if (!any(is.nan(data$y_predit))) {
       p <- p +
         ggplot2::geom_line(chart::f_aes(y_predit ~ x), color = "red", data = data)
     }
-
     p
   })
 
   trackEvents(session, input, output,
     sign_in.fun = BioDataScience::sign_in, config = conf)
   trackSubmit(session, input, output, max_score = 2,
-    solution = list(y0 = y0_init, k = k_init),
-    comment = "y = y0.e^(k.x)",
-    message.success = "Correct, c'est le meilleur modèle. y0 et la valeur de y pour x = 0 et k est la vitesse de croissance.",
+    solution = list(vm = vm_init, k = k_init),
+    comment = "y = Vm*x/K+x",
+    message.success = "Correct, c'est le meilleur modèle.",
     message.error = "Incorrect, un modèle mieux ajusté existe.")
   trackQuit(session, input, output, delay = 20)
 }
