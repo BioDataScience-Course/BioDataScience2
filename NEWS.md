@@ -1,3 +1,7 @@
+# BioDataScience2 2022.3.1
+
+-   Learnr version for **B05La_nls** incremented to try solving the problem of one student stuck with this learnr.
+
 # BioDataScience2 2022.3.0
 
 -   Learnr **B05La_nls** revised

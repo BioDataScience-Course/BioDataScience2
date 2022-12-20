@@ -4,7 +4,7 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II Module 5** Régression non linéaire et modèles non linéaires principaux en biologie."
 tutorial:
   id: "B05La_nls"
-  version: 2.0.0/5
+  version: 2.0.1/5
 output: 
   learnr::tutorial:
     progressive: true
