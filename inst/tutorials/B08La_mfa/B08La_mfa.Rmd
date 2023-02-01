@@ -3,7 +3,7 @@ title: "Analyse factorielle multiple (AFM)"
 author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II Module 8** : Méthode multi-tableaux avec l'analyse factorielle multiple."
 tutorial:
-  id: "B08Lb_mfa"
+  id: "B08La_mfa"
   version: 2.0.1/8
 output: 
   learnr::tutorial:
@@ -13,192 +13,7 @@ runtime: shiny_prerendered
 
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
-# Package utile
-SciViews::R()
-# Functions utiles 
-# Code mfa() version 2.0.0
-# Copyright (c) 2020, Philippe Grosjean (phgrosjean@sciviews.org)
-
-mfa <- function(data, formula, nd = 5, suprow = NA, ..., graph = FALSE) {
-  # TODO: rework Call in the final MFA object
-  if (is.na(suprow)) suprow <- NULL # MFA uses NULL instead of NA!
-  if (!rlang::is_formula(formula))
-    stop("'formula' must be a formula object")
-  if (!is.null(rlang::f_lhs(formula)))
-    stop("'formula cannot have left-hand side (must be ~ n1 * type...")
-  params <- get_groups(list(expr = rlang::f_rhs(formula)))
-  
-  # data must be a data frame
-  if (!inherits(data, "data.frame"))
-    stop("'data' must be a data.frame")
-  data <- as.data.frame(data) # No tibble or data.table!
-  # Number of columns in  data must match specifications in the formula
-  if (ncol(data) != sum(params$groups))
-    stop("You must specify groups in 'formula' for all the columns in 'data'")
-  
-  # Call FactoMineR::MFA() with corresponding arguments
-  FactoMineR::MFA(base = data, group = params$groups, type = params$types,
-    ind.sup = suprow, ncp = nd, name.group = params$names,
-    num.group.sup = params$suppl, ..., graph = graph)
-}
-
-# x is a list with: expr, groups, types, names, suppl
-# Note: this is a mess, I need to clean up this code!
-get_groups <- function(x) {
-  items <- as.list(x$expr)
-  # We should have here '+', '-' or something else in case of last expression
-  if (items[[1]] == "+") {
-    x$suppl <- c(FALSE, x$suppl) # Not a supplementary variable
-    x$expr <- items[[2]] # Second item is next expression
-    # Third item is the information for that group
-    # (n, or n * type, or n * type %as% name)
-    item <- as.list(items[[3]])
-  } else if (items[[1]] == "-") {
-    x$suppl <- c(TRUE, x$suppl) # A supplementary variable
-    x$expr <- items[[2]] # Second item is next expression
-    # Third item is the information for that group
-    # (n, or n * type, or n * type %as% name)
-    item <- as.list(items[[3]])
-  } else {
-    # Last expression
-    x$expr <- NULL
-    item <- items
-  }
-  if (length(item) < 3) { # either n, or +n or -n
-    if (length(item) == 2) {
-      x$suppl <- switch(as.character(item[[1]]),
-        "-" = c(TRUE, x$suppl),
-        "+" = c(FALSE, x$suppl),
-        stop("Bad 'formula', see help"))
-      n <- item[[2]]
-    } else n <- item[[1]]
-    if (!is.numeric(n)) 
-      stop("Bad 'formula', see help")
-    x$groups <- c(as.integer(n, x$groups))
-    x$types <- c("s", x$types)
-    x$names <- c(NA, x$names)
-  } else if (item[[1]] == "*") { # n * type or n * type %as% name
-    if (length(item[[2]]) > 2)
-      stop("Bad 'formula', see help")
-    if (length(item[[2]]) == 2) {
-      x$suppl <- switch(as.character(item[[2]][[1]]),
-        "-" = c(TRUE, x$suppl),
-        "+" = c(FALSE, x$suppl),
-        stop("Bad 'formula', see help"))
-      n <- item[[2]][[2]]
-    } else n <- item[[2]]
-    if (!is.numeric(n))
-      stop("Bad 'formula', see help")
-    x$groups <- c(as.integer(n), x$groups)
-    # Right-hand side after '*': type or type %as% name
-    subitem <- as.list(item[[3]])
-    if (subitem[[1]] == "%as%") { # type %as name
-      x$types <- c(as.character(subitem[[2]]), x$types)
-      x$names <- c(as.character(subitem[[3]]), x$names)
-    } else if (length(subitem) == 1 && is.name(subitem[[1]])) { # type only
-      x$types <- c(as.character(subitem[[1]]), x$types)
-      x$names <- c(NA, x$names)
-    } else stop("Bad 'formula', see help") # Error
-  } else if (item[[1]] == "%as%") { # n %as% name
-    if (length(item[[2]]) == 2) {
-      x$suppl <- switch(as.character(item[[2]][[1]]),
-        "-" = c(TRUE, x$suppl),
-        "+" = c(FALSE, x$suppl),
-        stop("Bad 'formula', see help"))
-      n <- item[[2]][[2]]
-    } else n <- item[[2]]
-    if (!is.numeric(n))
-      stop("Bad 'formula', see help")
-    x$groups <- c(as.integer(n), x$groups)
-    x$types <- c("s", x$types) # type by default (s)
-    x$names <- c(as.character(item[[3]]), x$names)
-  } else stop("Bad 'formula', see help") # Error
-  # Is there another expression to evaluate?
-  if (!is.null(x$expr)) {
-    x <- get_groups(x)
-  } else {
-    # Get correct vector for suppl
-    if (length(x$suppl) < length(x$groups))
-      x$suppl <- c(FALSE, x$suppl)
-    # We need the group indices for the supplementary variables instead
-    x$suppl <- (1:length(x$groups))[x$suppl]
-    if (!length(x$suppl)) x$suppl <- NULL
-    # Fix names
-    def_names <- paste("group", 1:length(x$groups), sep = ".")
-    names <- x$names
-    names[is.na(names)] <- def_names[is.na(names)]
-    x$names <- names
-  }
-  x
-}
-#form <- ~ -4 %as% Environnement -24*f %as% Plancton +1*f +18
-#get_groups(list(expr = rlang::f_rhs(form)))
-
-# TODO: methods for broom...
-
-autoplot.MFA <- function(object,
-type = c("screeplot", "altscreeplot", "loadings", "scores", "groups", "axes", "frequences", "ellipses"),
-choices = 1L:2L, name = deparse(substitute(object)), col = "black",
-fill = "gray", title, ..., env) {
-  type = match.arg(type)
-
-  if (missing(title))
-    title <- paste(name, type, sep = " - ")
-
-  res <- switch(type,
-    screeplot = object %>.% # Classical screeplot
-      tibble::tibble(eig = .$eig[, 1], PC = 1:nrow(.$eig)) %>.%
-      chart(data = ., eig ~ PC) +
-      geom_col(col = col, fill = fill) +
-      labs(y = "Eigenvalues", title = title),
-
-    altscreeplot = object %>.% # screeplot represented by dots and lines
-      tibble::tibble(eig = .$eig[, 1], PC = 1:nrow(.$eig)) %>.%
-      chart(data = ., eig ~ PC) +
-      geom_line(col = col) +
-      geom_point(col = "white", fill = col, size = 2, shape = 21, stroke = 3) +
-      labs(y = "Eigenvalues", title = title),
-
-    loadings = object %>.% # Plots of the variables
-      plot(., axes = choices, choix = "var", title = title, ...),
-
-    scores = object %>.% # Plot of the individuals
-      plot(., axes = choices, choix = "ind", title = title, ...),
-
-    groups = object %>.% # Plot of the groups
-      plot(., axes = choices, choix = "group", title = title, ...),
-    
-    axes = object %>.% # Plot of the loadings for the various groups
-      plot(., axes = choices, choix = "axes", title = title, ...),
-    
-    frequences = object %>.% # Plot of the correpondance analyses
-      plot(., axes = choices, choix = "freq", title = title, ...),
-    
-    ellipses = object %>.% # Plot of the individuals with ellipses
-      FactoMineR::plotellipses(., axes = choices, title = title, ...),
-
-    stop("Unrecognized type, must be 'screeplot', 'altscreeplot',
-      'loadings', 'scores', 'groups', 'axes', 'frequences', or 'ellipses'")
-  )
-  if (inherits(res, "ggplot")) {
-    res
-  } else {
-    invisible(res)
-  }
-}
-
-chart.MFA <- function(data, choices = 1L:2L, name = deparse(substitute(data)),
-..., type = NULL, env = parent.frame())
-  autoplot.MFA(data, choices = choices, name = name, ..., type = type, env = env)
-class(chart.MFA) <- c("function", "subsettable_type")
-
-# A hack to get fun$type() working in learnr
-chart <- list(
-  screeplot = function(data, type, ...) chart(data, type = "screeplot", ...),
-  loadings = function(data, type, ...) chart(data, type = "loadings", ...),
-  scores = function(data, type, ...) chart(data, type = "scores", ...),
-  axes = function(data, type,...) chart(data, type = "axes",...)
-)
+SciViews::R("explore")
 ```
 
 ```{r, echo=FALSE}
@@ -210,8 +25,6 @@ BioDataScience2::learnr_server(input, output, session)
 ```
 
 ------------------------------------------------------------------------
-
-**Ce tutoriel correspond à la version 2021-2022. Il est en cours de révision pour la version 2022-2023. Vous devez probablement penser à installer une version plus récente du package qui contient les exercices finalisés !**
 
 ## Objectifs
 
@@ -225,7 +38,7 @@ Il est donc utile de comprendre la logique et l'usage de cette analyse. Ce tutor
 
 -   Vous préparer à interpréter par vous-même les résultats de vos AFM
 
-Avant toute chose, assurez vous d'avoir bien compris le contenu de la [section 8.1](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/analyse-factorielle-multiple-afm.html) du cours de SDD II.
+Avant toute chose, assurez vous d'avoir bien compris le contenu de la [section 8.1](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2022/analyse-factorielle-multiple-afm.html) du cours de SDD II.
 
 ## Étude de composition floristique
 
@@ -256,7 +69,7 @@ Ces données sont disponible depuis `varechem` dans le package {vegan} et nous e
 
 ```{r, echo=TRUE}
 read("varechem", package = "vegan") %>.%
-  rename(., station = .rownames) %->%
+  srename(., station = .rownames) %->%
   envir
 head(envir)
 ```
@@ -265,7 +78,7 @@ Les scientifiques ont également réalisé un relevé floristique (en excluant *
 
 ```{r, echo=TRUE}
 read("varespec", package = "vegan") %>.%
-  rename(., station = .rownames) %->%
+  srename(., station = .rownames) %->%
   spec
 head(spec)
 ```
@@ -278,20 +91,20 @@ La première étape consiste dans la réalisation d'un tableau de données uniqu
 
 ```{r join}
 read("varechem", package = "vegan") %>.%
-  rename(., station = .rownames) %->%
+  srename(., station = .rownames) %->%
   envir
 read("varespec", package = "vegan") %>.%
-  rename(., station = .rownames) %->%
+  srename(., station = .rownames) %->%
   spec
 ```
 
 ```{r join_h2, exercise=TRUE, exercise.setup="join"}
-vare %<-% left_join(___ , ___, by = "___")
+vare <- sleft_join(___ , ___, by = "___")
 head(___)
 ```
 
 ```{r join_h2-hint-1}
-vare %<-% left_join(envir , spec, by = "___")
+vare <- sleft_join(envir , spec, by = "___")
 head(___)
 
 #### ATTENTION: Hint suivant = solution !####
@@ -299,7 +112,7 @@ head(___)
 
 ```{r join_h2-solution}
 ## Solution ##
-vare %<-% left_join(envir , spec, by = "station")
+vare <- sleft_join(envir , spec, by = "station")
 head(vare)
 ```
 
@@ -311,13 +124,13 @@ Il va encore falloir convertir la variable `station` en nom de ligne grâce à l
 
 ```{r rowname}
 read("varechem", package = "vegan") %>.%
-  rename(., station = .rownames) %->%
+  srename(., station = .rownames) %->%
   envir
 read("varespec", package = "vegan") %>.%
-  rename(., station = .rownames) %->%
+  srename(., station = .rownames) %->%
   spec
 
-vare %<-% left_join(envir , spec, by = "station")
+vare <- sleft_join(envir , spec, by = "station")
 ```
 
 ```{r rowname_h2, exercise=TRUE, exercise.setup="rowname"}
@@ -345,19 +158,19 @@ rownames(vare)
 grade_code("Bravo ! Vous venez de convertir la colonne station en nom de lignes. Cette astuce peut être utile dans certain cas. Il y a également la fonction opposée `rownames_to_column()`. Tout est prêt pour réaliser l'AFM à présent.")
 ```
 
-## Réalisation de la AFM
+## Réalisation de l'AFM
 
 L'AFM peut s'obtenir grâce à la fonction `mfa()`. Cette dernière requiert l'utilisation d'une formule avec une syntaxe un peu particulière. Votre formule commence par un `~` puis elle est composée de blocs qui doivent contenir trois éléments :
 
 1.  Le nombre **n** de colonnes constituant le groupe
 2.  Le type des variables qui composent le groupe. Vous avez quatre possibilités :
-    -   **s** : Ce sont des variables quantitatives que l'on souhaite standardiser et les traiter par une ACP.
+    -   **std** : Ce sont des variables quantitatives que l'on souhaite standardiser et les traiter par une ACP.
 
-    -   **c** : Ce sont des variables quantitatives continues que l'on ne souhaite pas standardiser et les traiter par une ACP.
+    -   **num** : Ce sont des variables quantitatives continues que l'on ne souhaite pas standardiser et les traiter par une ACP.
 
-    -   **f** : Ce sont des variables qualitatives facteurs associées à des tableaux de contingences qu'on traite par une AFC.
+    -   **fact** : Ce sont des variables qualitatives facteurs associées à des tableaux de contingences qu'on traite par une AFC.
 
-    -   **n** : Ce sont des variables qualitatives de type dénombrements qu'on traite par une AFC.
+    -   **cnt** : Ce sont des variables quantitatives de type dénombrements qu'on traite par une AFC.
 3.  Le nom à donner au groupe
 
 Le tableau `vare` est composé de quatorze variables associées à des mesures physico-chimiques et 44 variables liées à des relevés floristiques. Votre formule doit comprendre les éléments suivants pour que votre analyse soit la plus proche possible de celle que les auteurs ont réalisée dans la publication :
@@ -369,12 +182,12 @@ Réalisez l'AFM demandée en utilisant le tableau `vare` puis affichez un résum
 
 ```{r varemfa}
 read("varechem", package = "vegan") %>.%
-  rename(., station = .rownames) %->%
+  srename(., station = .rownames) %->%
   envir
 read("varespec", package = "vegan") %>.%
-  rename(., station = .rownames) %->%
+  srename(., station = .rownames) %->%
   spec
-vare %<-% left_join(envir , spec, by = "station")
+vare <- sleft_join(envir , spec, by = "station")
 vare <- column_to_rownames(vare, var = "station")
 ```
 
@@ -389,7 +202,7 @@ summary(vare_mfa)
 ```
 
 ```{r mfa_h3-hint-2}
-vare_mfa <- mfa(data = vare, ~ 14*s %as% physico + ___*___ %as% ___)
+vare_mfa <- mfa(data = vare, ~ 14*std %as% physico + ___*___ %as% ___)
 summary(vare_mfa)
 
 #### ATTENTION: Hint suivant = solution !####
@@ -397,7 +210,7 @@ summary(vare_mfa)
 
 ```{r mfa_h3-solution}
 ## Solution ##
-vare_mfa <- mfa(data = vare, ~ 14*s %as% physico + 44*c %as% flore)
+vare_mfa <- mfa(data = vare, ~ 14*std %as% physico + 44*num %as% flore)
 summary(vare_mfa)
 ```
 
@@ -422,16 +235,16 @@ Réalisez un graphique des éboulis sur l'objet `vare_mfa` que vous avez réalis
 
 ```{r vare_mfa}
 read("varechem", package = "vegan") %>.%
-  rename(., station = .rownames) %->%
+  srename(., station = .rownames) %->%
   envir
 read("varespec", package = "vegan") %>.%
-  rename(., station = .rownames) %->%
+  srename(., station = .rownames) %->%
   spec
 
-vare %<-% left_join(envir , spec, by = "station")
+vare <- sleft_join(envir , spec, by = "station")
 vare <- column_to_rownames(vare, var = "station")
 
-vare_mfa <- mfa(data = vare, ~ 14*s %as% physico + 44*c %as% flore)
+vare_mfa <- mfa(data = vare, ~ 14*std %as% physico + 44*num %as% flore)
 ```
 
 ```{r scree_h2, exercise=TRUE, exercise.setup="vare_mfa", exercise.lines=1}
@@ -528,16 +341,16 @@ La représentation des variables ainsi que la représentation de stations sont d
 
 ```{r}
 read("varechem", package = "vegan") %>.%
-  rename(., station = .rownames) %->%
+  srename(., station = .rownames) %->%
   envir
 read("varespec", package = "vegan") %>.%
-  rename(., station = .rownames) %->%
+  srename(., station = .rownames) %->%
   spec
 
-vare %<-% left_join(envir , spec, by = "station")
+vare <- sleft_join(envir , spec, by = "station")
 vare <- column_to_rownames(vare, var = "station")
 
-vare_mfa <- mfa(data = vare, ~ 14*s %as% physico + 44*c %as% flore)
+vare_mfa <- mfa(data = vare, ~ 14*std %as% physico + 44*num %as% flore)
 
 chart$scores(vare_mfa, choices = c(1, 2))
 ```

@@ -13,218 +13,11 @@ runtime: shiny_prerendered
 
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
-# Package utile
-SciViews::R()
-
-# Functions utiles 
-# pca for SciViews, version 1.0.0
-# Copyright (c) 2020, Philippe Grosjean (phgrosjean@sciviews.org)
-library(broom)
-
-# broom implements only methods for prcomp objects, not princomp, while pcomp
-# is compatible with princomp... but prcomp is simpler. So, conversion is easy
-as.prcomp <- function(x, ...)
-  UseMethod("as.prcomp")
-
-as.prcomp.default <- function(x, ...)
-  stop("No method to convert this object into a 'prcomp'")
-
-as.prcomp.prcomp <- function(x, ...)
-  x
-
-as.prcomp.princomp <- function(x, ...)
-  structure(list(sdev = as.numeric(x$sdev), rotation = unclass(x$loadings),
-    center = x$center, scale = x$scale, x = as.matrix(x$scores)),
-    class = "prcomp")
-
-# Comparison of pcomp() -> as.prcomp() with prcomp() directly
-# Almost the same, only no rownames for x (is it important?)
-#iris_prcomp_pcomp <- as.prcomp(pcomp(iris[, -5], scale = TRUE))
-#iris_prcomp <- prcomp(iris[, -5], scale = TRUE)
-
-# Now, broom methods can be defined simply by converting into prcomp objects
-augment.princomp <- function(x, data = NULL, newdata, ...)
-  if (missing(newdata)) {
-  augment(as.prcomp(x), data = data, ...)
-  } else {
-    augment(as.prcomp(x), data = data, newdata = newdata, ...)
-  }
-
-tidy.princomp <- function(x, matrix = "u", ...)
-  tidy(as.prcomp(x), matrix = matrix, ...)
-
-# There is no glance.prcomp() method
-
-# There is a problem with pcomp() that returns a data.frame in scores,
-# while it is a matrix in the original princomp object. pca() corrects this
-pca <- function(x, ...) {
-  res <- SciViews::pcomp(x, ...)
-  # Change scores into a matrix
-  res$scores <- as.matrix(res$scores)
-  res
-}
-
-scale_axes <- function(data, aspect.ratio = 1) {
-  range_x <- range(data[, 1])
-  span_x <- abs(max(range_x) - min(range_x))
-  range_y <- range(data[, 2])
-  span_y <- abs(max(range_y) - min(range_y))
-  if ((span_y / aspect.ratio) > span_x) {
-    # Adjust range_x
-    span_x_2 <- span_y / aspect.ratio / 2
-    range_x_mid <- sum(range_x) / 2
-    range_x <- c(range_x_mid - span_x_2, range_x_mid + span_x_2)
-  } else {
-    # Adjust range_y
-    span_y_2 <- span_x * aspect.ratio / 2
-    range_y_mid <- sum(range_y) / 2
-    range_y <- c(range_y_mid - span_y_2, range_y_mid + span_y_2)
-  }
-  list(x = range_x, y = range_y)
-}
-
-autoplot.pcomp <- function(object,
-type = c("screeplot", "altscreeplot", "loadings", "correlations", "scores", "biplot"),
-choices = 1L:2L, name = deparse(substitute(object)), ar.length = 0.1,
-circle.col = "gray", col = "black", fill = "gray", scale = 1, aspect.ratio = 1,
-repel = FALSE, labels, title, xlab, ylab, ...) {
-  type = match.arg(type)
-
-  if (missing(title))
-    title <- paste(name, type, sep = " - ")
-
-  contribs <- paste0(names(object$sdev), " (",
-    round((object$sdev^2/object$totdev^2) * 100, digits = 1), "%)")[choices]
-
-  scores <- as.data.frame(object$scores[, choices])
-  names(scores) <- c("x", "y")
-  if (!missing(labels)) {
-    if (length(labels) != nrow(scores))
-      stop("You must provide a character vector of length ", nrow(scores),
-        " for 'labels'")
-    scores$labels <- labels
-  } else {# Default labels are row numbers
-    scores$labels <- 1:nrow(scores)
-  }
-
-  lims <- scale_axes(scores, aspect.ratio = aspect.ratio)
-
-  if (!missing(col)) {
-    if (length(col) != nrow(scores))
-      stop("You must provide a vector of length ", nrow(scores), " for 'col'")
-    scores$color <- col
-    scores_formula <- y ~ x %col=% color %label=% labels
-  } else {
-    if (missing(labels)) {
-      scores_formula <- y ~ x %label=% labels
-    } else {
-      scores_formula <- y ~ x %col=% labels %label=% labels
-    }
-  }
-
-  res <- switch(type,
-    screeplot = object %>.% # Classical screeplot
-      tidy(., "pcs") %>.%
-      chart(data = ., std.dev^2 ~ PC) +
-      geom_col(col = col, fill = fill) +
-      labs(y = "Variances", title = title),
-
-    altscreeplot = object %>.% # screeplot represented by dots and lines
-      tidy(., "pcs") %>.%
-      chart(data = ., std.dev^2 ~ PC) +
-      geom_line(col = col) +
-      geom_point(col = "white", fill = col, size = 2, shape = 21, stroke = 3) +
-      labs(y = "Variances", title = title),
-
-    loadings = object %>.% # Plots of the variables
-      tidy(., "variables") %>.%
-      spread(., key = PC, value = value) %>.%
-      #rename_if(., is.numeric, function(x) paste0("PC", x)) %>.%
-      select(., c(1, choices + 1)) %>.%
-      set_names(., c("labels", "x", "y")) %>.%
-      chart(data = ., y ~ x %xend=% 0 %yend=% 0 %label=% labels) +
-        annotate("path", col = circle.col,
-          x = cos(seq(0, 2*pi, length.out = 100)),
-          y = sin(seq(0, 2*pi, length.out = 100))) +
-        geom_hline(yintercept = 0, col = circle.col) +
-        geom_vline(xintercept = 0, col = circle.col) +
-        geom_segment(arrow = arrow(length = unit(ar.length, "inches"),
-          ends = "first")) +
-        ggrepel::geom_text_repel(hjust = "outward", vjust = "outward") +
-        coord_fixed(ratio = 1) +
-        labs(x = contribs[1], y = contribs[2], title = title),
-
-    correlations = object %>.% # Correlations plot
-      Correlation(.) %>.%
-      as_tibble(., rownames = "labels") %>.%
-      select(., c(1, choices + 1)) %>.%
-      set_names(., c("labels", "x", "y")) %>.%
-      chart(data = ., y ~ x %xend=% 0 %yend=% 0 %label=% labels) +
-      annotate("path", col = circle.col,
-        x = cos(seq(0, 2*pi, length.out = 100)),
-        y = sin(seq(0, 2*pi, length.out = 100))) +
-      geom_hline(yintercept = 0, col = circle.col) +
-      geom_vline(xintercept = 0, col = circle.col) +
-      geom_segment(arrow = arrow(length = unit(ar.length, "inches"),
-        ends = "first")) +
-      ggrepel::geom_text_repel(hjust = "outward", vjust = "outward") +
-      coord_fixed(ratio = 1) +
-      labs(x = contribs[1], y = contribs[2], title = title),
-
-    scores = scores %>.% # Plot of the individuals
-      chart(data = ., scores_formula) +
-      geom_hline(yintercept = 0, col = circle.col) +
-      geom_vline(xintercept = 0, col = circle.col) +
-      coord_fixed(ratio = 1, xlim = lims$x, ylim = lims$y, expand = TRUE) +
-      labs(x = contribs[1], y = contribs[2], title = title) +
-      theme(legend.position = "none"),
-
-    biplot = object %>.% # Biplot using ggfortify function
-      as.prcomp(.) %>.%
-      ggfortify:::autoplot.prcomp(., x = choices[1], y = choices[2],
-        scale = scale, size = -1, label = TRUE, loadings = TRUE,
-        loadings.label = TRUE) +
-      geom_hline(yintercept = 0, col = circle.col) +
-      geom_vline(xintercept = 0, col = circle.col) +
-      theme_sciviews() +
-      labs(x = contribs[1], y = contribs[2], title = title),
-
-    stop("Unrecognized type, must be 'screeplot', 'altscreeplot', loadings', 'correlations', 'scores' or 'biplot'")
-  )
-
-  if (type == "scores") {
-    if (isTRUE(repel)) {
-      res <- res + geom_point() + ggrepel::geom_text_repel()
-    } else {# Use text
-      res <- res + geom_text()
-    }
-  }
-
-  if (!missing(xlab))
-    res <- res + xlab(xlab)
-  if (!missing(ylab))
-    res <- res + ylab(ylab)
-  res
-}
-
-chart.pcomp <- function(data, choices = 1L:2L, name = deparse(substitute(data)),
-..., type = NULL, env = parent.frame())
-  autoplot.pcomp(data, choices = choices, name = name, ..., type = type, env = env)
-class(chart.pcomp) <- c("function", "subsettable_type")
-
-# A hack to get fun$type() working in learnr
-chart <- list(
-  screeplot = function(data, type, ...) chart(data, type = "screeplot", ...),
-  altscreeplot = function(data, type, ...) chart(data, type = "altscreeplot", ...),
-  loadings = function(data, type, ...) chart(data, type = "loadings", ...),
-  correlations = function(data, type, ...) chart(data, type = "correlations", ...),
-  scores = function(data, type, ...) chart(data, type = "scores", ...),
-  biplot = function(data, type, ...) chart(data, type = "biplot", ...)
-)
+SciViews::R("explore")
 
 # Preparation of the dataset ------
  read("penguins", package = "palmerpenguins", lang = "fr") %>.%
-  drop_na(., bill_length_mm) %->%
+  sdrop_na(., bill_length_mm) %->%
   penguins
 ```
 
@@ -238,8 +31,6 @@ BioDataScience2::learnr_server(input, output, session)
 
 ------------------------------------------------------------------------
 
-**Ce tutoriel correspond à la version 2021-2022. Il est en cours de révision pour la version 2022-2023. Vous devez probablement penser à installer une version plus récente du package qui contient les exercices finalisés !**
-
 ## Objectifs
 
 L'Analyse en Composantes Principales (ACP) est une méthode statistique exploratoire très utilisée dans le domaine de la biologie et de l'écologie. Elle forme aussi la base de nombreuses autres techniques qui en sont dérivées. Il est donc primordial de comprendre la logique et l'usage de cette analyse. Ce tutoriel vous permettra de :
@@ -250,7 +41,7 @@ L'Analyse en Composantes Principales (ACP) est une méthode statistique explorat
 
 -   Vous préparer à interpréter par vous-même les résultats de vos ACP
 
-Avant toute chose, assurez vous d'avoir bien compris le contenu du [module 7](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/acp-afc.html) du cours et en particulier la [section 7.1](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2020/analyse-en-composantes-principales.html).
+Avant toute chose, assurez vous d'avoir bien compris le contenu du [module 7](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2022/acp-afc.html) du cours et en particulier la [section 7.1](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2022/analyse-en-composantes-principales.html).
 
 ## Manchots de l'Antarctique
 
@@ -267,7 +58,7 @@ Le jeu de données nommé `penguins` ici contient trois variables facteurs : l'
 
 ```{r, echo=TRUE}
 naniar::vis_miss(penguins) # Visualiser les données manquantes
-penguins %<-% drop_na(penguins, bill_length_mm) # Éliminer les lignes vides
+penguins <- sdrop_na(penguins, bill_length_mm) # Éliminer les lignes vides
 ```
 
 La variable sexe a quelques valeurs manquantes, mais comme elle ne sera pas utilisée dans cette analyse (l'ACP utilise en effet des variables quantitatives uniquement), nous n'éliminons **pas** les lignes qui contiennent des valeurs manquantes pour cette variable. Nous ne supprimons que les valeurs manquantes observées pour `bill_length_mm`.
@@ -322,8 +113,7 @@ Calculez maintenant votre analyse en composantes principales sur le jeu de donn�
 
 ```{r pca_h2, exercise=TRUE, exercise.lines=6}
 ___ %>.%
-  ___(., ___:___) %>.%
-  collect_dtx(.) %>.%
+  sselect(., ___:___) %>.%
   pca(., scale = ___) %->%
   penguins_pca
 summary(penguins_pca)
@@ -331,8 +121,7 @@ summary(penguins_pca)
 
 ```{r pca_h2-hint-1}
 ___ %>.%
-  select(., ___:___) %>.%
-  collect_dtx(.) %>.%
+  sselect(., ___:___) %>.%
   pca(., scale = TRUE) %->%
   penguins_pca
 summary(penguins_pca)
@@ -343,8 +132,7 @@ summary(penguins_pca)
 ```{r pca_h2-solution}
 ## Solution ##
 penguins %>.%
-  select(., 3:6) %>.%
-  collect_dtx(.) %>.%
+  sselect(., 3:6) %>.%
   pca(., scale = TRUE) %->%
   penguins_pca
 summary(penguins_pca)
@@ -371,8 +159,7 @@ Réalisez un graphique des éboulis sur l'objet `penguins_pca` que vous avez ré
 
 ```{r pca_prep}
 penguins %>.%
-  select(., 3:6) %>.%
-  collect_dtx(.) %>.%
+  sselect(., 3:6) %>.%
   pca(., scale = TRUE) %->%
   penguins_pca
 ```
@@ -451,12 +238,11 @@ Voici les deux représentations dans l'espace des variables et des individus dan
 
 ```{r}
  read("penguins", package = "palmerpenguins", lang = "fr") %>.%
-  drop_na(., bill_length_mm) %->%
+  sdrop_na(., bill_length_mm) %->%
   penguins
 
 penguins %>.%
-  select(., 3:6) %>.%
-  collect_dtx(.) %>.%
+  sselect(., 3:6) %>.%
   pca(., scale = TRUE) %->%
   penguins_pca
 

@@ -1,3 +1,7 @@
+# BioDataScience2 2022.4.0
+
+-   Revision and restructuration of all learnrs for modules 6 to 10.
+
 # BioDataScience2 2022.3.1
 
 -   Learnr version for **B05La_nls** incremented to try solving the problem of one student stuck with this learnr.
