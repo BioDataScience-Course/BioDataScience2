@@ -1,10 +1,10 @@
 ---
-title: "K-moyennes"
+title: "K-moyennes et indices de diversité"
 author: "Guyliann Engels, Raphael Conotte & Philippe Grosjean"
-description: "**SDD II Module 9** Regroupement des données par les K-moyennes."
+description: "**SDD II Module 6** Regroupement des données par les K-moyennes et indices de diversité."
 tutorial:
   id: "B06Lb_kmeans"
-  version: 2.1.0/4
+  version: 2.2.0/8
 output: 
   learnr::tutorial:
     progressive: true
@@ -18,6 +18,7 @@ SciViews::R("explore")
 # Preparation dataset
 data("doubs", package = "ade4")
 envir <- as_dtx(doubs$env)
+fish <- as_dtx(doubs$fish)
 ```
 
 ```{r, echo=FALSE}
@@ -32,20 +33,23 @@ BioDataScience2::learnr_server(input, output, session)
 
 ## Objectifs
 
-La méthode des k-moyennes ("k-means" en anglais) permet de réaliser des regroupements d'individus en partant d'un tableau multivarié. Elle a donc le même objectif que la classification hiérarchique ascendante (CAH) que vous avez découverte dans le module précédent. La méthode des k-moyennes a l'avantage, par rapport à la classification ascendante hiérarchique, d'être moins gourmande en temps de calcul et en mémoire vive. Elle sera donc à privilégier lorsque vous vous retrouvez confronté à un grand jeu de données. Par contre, elle est souvent moins efficace que la CAH.
+-   Vérifiez que vous avez compris les différentes étapes de la classification par les k-moyennes : choix du nombre de groupes, classification par les k-moyennes, récupération des coordonnées des centres et représentation graphique.
+-   Vous préparer à analyser et interpréter de manière autonome un jeu de données multivariées à l'aide des k-moyennes
+-   Vous familiarisez avec les indices de diversité : richesse spécifique, indice de Shannon, indice de Jaccard...
 
-Dans ce tutoriel, vous allez pouvoir auto-évaluer votre capacité à :
+N'entamez ce tutoriel qu'après avoir compris le principe des k-moyennes et les indices de diversité proposés dans le [module 6](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2022/k-moyennes.html) du cours. Assurez-vous d'avoir réalisé les exercices H5P qui s'y trouvent avant de vous lancer dans ce tutoriel-ci.
 
--   comprendre les différentes étapes de la classification par les k-moyennes : choix du nombre de groupes, classification par les k-moyennes, récupération des coordonnées des centres et représentation graphique.
--   analyser et interpréter de manière autonome un jeu de données multivariées à l'aide des k-moyennes
+## Communautés piscicoles de rivière
 
-N'entamez ce tutoriel qu'après avoir compris le principe des k-moyennes proposé dans le [module 6](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2022/k-moyennes.html) du cours. Assurez-vous d'avoir réalisé les exercices H5P qui s'y trouvent avant de vous lancer dans ce tutoriel-ci.
-
-## Données environnementales du Doubs
-
-Nous utilisons ici le même jeu de données concernant les variables environnementales mesurées à 30 stations le long du Doubs, une rivière qui serpente entre la France et la Suisse. Il ne s'agit pas d'un gros jeu de données, et vous avez pu constater que la CAH s'y applique facilement. Néanmoins, nous le conservons à des fins de comparaison entre les deux techniques k-moyennes et CAH.
+Nous utilisons ici les mêmes jeux de données longuement présentés dans le tutoriel précédent sur la classification ascendante hiérarchique. Trente stations ont été échantillonnées le long du Doubs, une rivière qui serpente entre la France et la Suisse.
 
 ![Carte du Doubs, d'après OpenStreetMap.](images/doubs.jpg){width="60%"}
+
+Les données environnementales se trouvent dans le tableau `envir` dont voici les premières lignes
+
+```{r}
+head(envir)
+```
 
 Pour rappel, le tableau suivant reprend les onze variables mesurées. Rappelez-vous que les auteurs de l'étude d'où sont issues ces données ont décidé d'appliquer des coefficients multiplicateurs pour homogénéiser les données :
 
@@ -63,17 +67,38 @@ Pour rappel, le tableau suivant reprend les onze variables mesurées. Rappelez-v
 | **oxy** | oxygène dissout                  | mg/L \* 10     |
 | **bdo** | demande biologique en oxygène    | mg/L \* 10     |
 
-Voici les premières lignes du tableau `envir` qui contient ces données.
+Les observations relatives à la distribution des poissons sont disponibles dans le tableau `fish` dont voici les premières lignes. Pour rappel, les valeurs sont toutes bornées entre 0 et 5. Il s'agit en fait de **classes d'abondance**, avec 0 = absence et 5 = abondance maximale, voir [ce descriptif complet](http://pbil.univ-lyon1.fr/R/pdf/pps047.pdf){target="_blank"}.
 
 ```{r}
-head(envir)
+head(fish)
 ```
 
-## Choix du nombre de clusters
+Les 27 espèces de poisson étudiées au sein des 30 stations sont présentées dans le tableau ci-dessous
 
-Avec la méthode des k-moyennes, vous devez spécifier le nombre de groupes que vous souhaitez réaliser à l'avance. Souvent, à ce stade de l'analyse, il est inconnu. Vous pouvez utiliser `profile_k()` pour vous aider à choisir la valeur de *k* qui diminuera le plus la somme des carrés des distances intra-groupes, comme indicateur de la qualité de votre regroupement.
+```{r, echo=FALSE}
+doubs$species %>.%
+  sselect(., -English) %>.%
+  smutate(., Scientific = paste0("*", Scientific, "*")) %>.%
+  srename(., `Nom scientifique` = Scientific, `Nom français` = French,
+    Code = code) %>.%
+  knitr::kable(.)
+```
 
-Sur base du jeu de données `envir`, réalisez un graphique permettant d'estimer le nombre de groupes à employer dans la méthode des k-moyennes. Les variables mesurées ayant des unités différentes, n'oubliez pas de **standardiser** vos données en utilisant la fonction `scale()` et assignez les ensuite à `envir_scale`. Ce n'est pas le cas pour ce jeu de données, mais pensez aussi à éliminer les colonnes non numériques à l'aide de `select()` si vous en avez dans votre tableau de départ.
+**Référence**
+
+Verneaux, J. (1973) Cours d'eau de Franche-Comté (Massif du Jura). Recherches écologiques sur le réseau hydrographique du Doubs. Essai de biotypologie. Thèse d'état, Besançon. 1--257.
+
+## K-moyennes
+
+La méthode des k-moyennes ("k-means" en anglais) permet de réaliser des regroupements d'individus en partant d'un tableau multivarié. Elle a donc le même objectif que la classification ascendante hiérarchique (CAH) que vous avez découverte précédemment. La méthode des k-moyennes a l'avantage, par rapport à la classification ascendante hiérarchique, d'être moins gourmande en temps de calcul et en mémoire vive. Elle sera donc à privilégier lorsque vous vous retrouvez confronté à un grand jeu de données. Par contre, elle est souvent moins efficace que la CAH.
+
+Dans ce tutoriel, les données employées ne sont pas de gros jeux de données, et vous avez pu constater que la CAH s'y applique facilement. Néanmoins, nous les conservons à des fins de comparaison entre les deux techniques k-moyennes et CAH.
+
+### Étape 1 : Choix du nombre de clusters
+
+Avec la méthode des k-moyennes, vous devez spécifier le nombre de groupes que vous souhaitez réaliser à l'avance. Souvent, à ce stade de l'analyse, il est inconnu. Vous pouvez utiliser `profile_k()` pour vous aider à choisir la valeur de *k* qui diminuera le plus la somme des carrés des distances intragroupes, comme indicateur de la qualité de votre regroupement.
+
+Sur base du jeu de données `envir`, réalisez un graphique permettant d'estimer le nombre de groupes à employer dans la méthode des k-moyennes. Les variables mesurées ayant des unités différentes, n'oubliez pas de **standardiser** vos données en utilisant la fonction `scale()` et assignez-les ensuite à `envir_scale`. Ce n'est pas le cas pour ce jeu de données, mais pensez aussi à éliminer les colonnes non numériques à l'aide de `select()` si vous en avez dans votre tableau de départ.
 
 ```{r nbclust_h2, exercise=TRUE}
 envir_scale <- ___(___)
@@ -110,7 +135,7 @@ question("Sur base du graphique que vous avez réalisé, quelle valeur de k util
   incorrect = "Retentez votre chance. Nous recherchons des sauts importants dans la décroissance de la somme des carrés (*total within sum of square*). L'objectif est de choisir la valeur de *k* à la base du coude, lorsque l'ajout d'un *k* supplémentaire ne permet plus de faire baisser la somme des carrés de manière importante.")
 ```
 
-## Calcul des k-moyennes
+### Étape 2 : Calcul des k-moyennes
 
 Maintenant que vous avez défini la valeur de *k* que vous allez utiliser, vous pouvez procéder au calcul des k-moyennes en utilisant la fonction `k_means()`. Vous lui fournirez le tableau de départ contenant uniquement des valeurs numériques éventuellement *standardisées* et spécifierez le nombre `k =` de groupes souhaités.
 
@@ -146,7 +171,7 @@ grade_code("Vous venez de réaliser votre première classification par les k moy
 
 ### Graphique du regroupement
 
-Réaliser un graphique des nitrates `nit` en fonction de l'oxygène dissout `oxy`. Regrouper les stations par de la couleur en utilisant les groupes que vous avez calculé et représentez les centres sur votre graphique.
+Réaliser un graphique des nitrates `nit` en fonction de l'oxygène dissout `oxy`. Regroupez les stations par de la couleur en utilisant les groupes que vous avez calculés et représentez les centres sur votre graphique.
 
 ```{r graphe_prep}
 envir_scale <- as_dtx(scale(envir))
@@ -177,9 +202,108 @@ chart(envir_kmn, choices = c("oxy", "nit"))
 grade_code("Vous voyez comme c'est facile ! Les fonctions SciViews vous facilitent la tâche. Naturellement, vous pouvez aussi choisir d'autres paires de variables pour visualiser votre regroupement.")
 ```
 
+## Indice de diversité
+
+La notion de diversité est complexe. On peut néanmoins faire ressortir deux éléments principaux que sont le nombre d'espèces différentes présentes sur la zone d'étude et l'abondance de chaque espèce. Il existe une multitude d'indices, dont la richesse spécifique, l'indice de Simpson, l'indice de Shannon...
+
+Un des premiers indices mis au point est la richesse spécifique. Cet indice dénombre les espèces sur une zone déterminée. Déterminez la richesse spécifique pour chaque station. Employez l'objet `fish` et utilisez la fonction adéquate.
+
+```{r richness_h2, exercise = TRUE}
+___::___()
+```
+
+```{r richness_h2-hint-1}
+vegan::___(fish)
+
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r richness_h2-solution}
+## Solution ##
+vegan::specnumber(fish)
+```
+
+```{r richness_h2-check}
+grade_code("Bien joué ! Vous avez utilisé la fonction adéquate. La fonction specnumber() se trouve dans le package {vegan}. Ce package a été développé pour aider à l'étude des communautés en écologie. Il ne vous reste plus qu'à analyser le résultat afin de répondre à la question suivante.")
+```
+
+```{r qu_richness}
+question("Quelle est la station avec la richesse spécifique la plus élevée ?",
+  answer("Station 1"),
+  answer("Station 8"),
+  answer("Station 15"),
+  answer("Station 29", correct = TRUE),
+  answer("Station 30"),
+  allow_retry = TRUE,
+  correct = "Bravo, Vous avez trouvé la bonne réponse.",
+  incorrect = "Retentez votre chance. Les stations sont affiché de la numéro 1 à la numéro 30.")
+```
+
+Cet indice est simple et facile à comprendre. Attention, ce dernier a donc une limite que vous devez bien retenir. Cet indice ne tient pas compte de l'abondance de chaque espèce étudiée. Il pourrait tout à fait être complété par l'indice de Shannon.
+
+Vous avez découvert une série d'indices de similarité ou de dissimilarité au cours de ce module 6. Nous vous proposons d'employer à présent l'indice de Jaccard. Cet indice permet une comparaison entre deux sites en calculant le rapport entre les espèces communes aux deux sites et celles propres à chaque relevé. La formule est la suivante :
+
+$$I = \frac{N_c}{N_1 + N2 – N_c}$$
+
+où :
+
+-   $N_c$ correspond au nombre de taxons communs entre les deux sites
+-   $N_1$ et $N_2$ le nombre de taxons présents sur le site 1 et 2, respectivement
+
+Les valeurs de l'indice varient entre 0 lorsque les deux sites n'ont aucune espèce en commun, et 1 quand les deux sites ont toutes leurs espèces en commun. Utilisez l'indice de Jaccard pour calculer une matrice de distance entre les trente stations.
+
+Comparez les stations entre elles deux à deux à l'aide de l'indice de Jaccard sur le tableau `fish`. Nommez cet objet `fish_jacc`.
+
+```{r jaccard_h2, exercise = TRUE}
+___ <- ___(___, ___, ___) 
+```
+
+```{r, jaccard_h2-hint-1}
+fish_jacc <- ___(___, method = ___, binary = ___) 
+```
+
+```{r, jaccard_h2-solution}
+fish_jacc <- dissimilarity(fish, method = "jaccard", binary = TRUE) 
+```
+
+```{r jaccard_h2-check}
+grade_code("Bien joué ! Vous avez utilisez la fonction adéquate. L'indice de Jaccard traite un tableau de type absence/présence que vous spécifié à l'aide de binary = TRUE.")
+```
+
+À présent que vous avez obtenu votre matrice de distance (`fish_jacc`), vous pouvez l'employer afin d'obtenir un dendrogramme avec la méthode `ward.D2`.
+
+```{r jacc_prep}
+fish_jacc <- dissimilarity(fish, method = "jaccard", binary = TRUE) 
+```
+
+```{r cah_h2, exercise=TRUE, exercise.setup="jacc_prep"}
+# Calcul de la CAH avec la méthod des liens "ward.D2"
+fish_clust <- ___(___, ___)
+# Dendrogramme horizontal
+___(___)
+```
+
+```{r cah_h2-hint-1}
+# Calcul de la CAH avec la méthod des liens "ward.D2"
+fish_clust <- cluster(___, method = ___)
+# Dendrogramme horizontal
+chart$___(fish_clust)
+```
+
+```{r cah_h2-solution}
+# Calcul de la CAH avec la méthod des liens "ward.D2"
+fish_clust <- cluster(fish_jacc, method = "ward.D2")
+# Dendrogramme horizontal
+chart$horizontal(fish_clust)
+```
+
+```{r cah_h2-check}
+grade_code("Bien joué ! Vous avez obtenu un dendrogramme horizontal intéressant. On peut par exemple observer que les station 23, 24 et 25 sont regroupées. Elles se différencient des stations précédentes (16-22) et des stations suivantes (26-30) entre autre par une richesse spécifique plus faible. On ne tient pas compte de la station 8 qui ne comprend pas espèce.")
+```
+
 ## Conclusion
 
-Vous venez de terminer votre auto-évaluation relative à la classification par les k-moyenne. Vous êtes maintenant prêts pour appliquer cette technique sur d'autres données par vous-même dans une assignation GitHub.
+Vous venez de terminer votre auto-évaluation relative à la classification par les k-moyenne et les indices de diversité. Vous êtes maintenant prêts pour les appliquer sur d'autres données par vous-même dans une assignation GitHub.
 
 ```{r comm_noscore, echo=FALSE}
 question_text(

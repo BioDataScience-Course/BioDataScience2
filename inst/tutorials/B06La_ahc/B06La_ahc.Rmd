@@ -71,7 +71,7 @@ doubs$xy %>.%
 doubs$species %>.%
   sselect(., -English) %>.%
   smutate(., Scientific = paste0("*", Scientific, "*")) %>.%
-  srename(., `Nom Scientifique` = Scientific, `Nom français` = French,
+  srename(., `Nom scientifique` = Scientific, `Nom français` = French,
     Code = code) %>.%
   knitr::kable(.)
 ```
@@ -138,7 +138,7 @@ question("À partir des données du tableau `fish`, vous souhaitez réaliser un 
 A partir du jeu de données `fish`, calculez la matrice de distances entre stations en utilisant l'indice de Bray-Curtis et `dissimilarity()`, considérant que toutes les fonctions nécessaires sont déjà chargées dans R. Pour une aide concernant les arguments de la fonction, voyez `?vegan::vegdist`.
 
 ```{r fish_bray_h2, exercise=TRUE}
-print(fish_dist <- ___(___, ___))
+print(fish_dist <- ___(___, ___ = ___))
 ```
 
 ```{r fish_bray_h2-hint-1}
@@ -311,11 +311,11 @@ grade_code("Félicitation ! Vous venez de réaliser votre premier dendrogramme. 
 
 ### Dendrogramme 2
 
-Réalisez un nouveau dendrogramme à partir de l'objet `envir_dist` mais cette fois-ci, utilisez la **méthode de Ward D2**. Voyez l'aide en ligne de la fonction `?stats::hclust` pour le détails des arguments à employer. Tracez ensuite votre dendrogramme de manière **circulaire**.
+Réalisez un nouveau dendrogramme à partir de l'objet `envir_dist` mais cette fois-ci, utilisez la **méthode de Ward D2**. Voyez l'aide en ligne de la fonction `?stats::hclust` pour le détails des arguments à employer. Tracez ensuite votre dendrogramme de manière **circulaire** (utilisez la même logique que pour obtenir un dendrogramme horizontal).
 
 ```{r hclust2_h3, exercise=TRUE, exercise.setup="hac_prep"}
 envir_clust <- ___(___, ___)
-___(___)
+___$___(___)
 ```
 
 ```{r hclust2_h3-hint-1}
