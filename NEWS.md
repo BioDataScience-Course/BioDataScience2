@@ -1,3 +1,7 @@
+# BioDataScience2 2022.5.0
+
+-   Learnr **B06Lb_kmeans** revised
+
 # BioDataScience2 2022.4.0
 
 -   Revision and restructuration of all learnrs for modules 6 to 10.
