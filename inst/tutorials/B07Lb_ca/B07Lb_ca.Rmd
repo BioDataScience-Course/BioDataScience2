@@ -4,7 +4,7 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II Module 7** Comprendre et utiliser l'analyse factorielle des correspondances."
 tutorial:
   id: "B07Lb_ca"
-version: 2.0.0/0
+version: 2.0.0/4
 output:
   learnr::tutorial:
   progressive: true
@@ -13,27 +13,251 @@ runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
-BioDataScience3::learnr_setup()
-SciViews::R()
-library(mlearning)
+BioDataScience2::learnr_setup()
+SciViews::R("explore")
+
 
 # ...
+data("macroloire", package = "ade4")
+
+envir <- macroloire$envir
+taxo <- macroloire$taxo
+
+taxo$code <- rownames(taxo)
+species <- macroloire$labels
+species$code <- rownames(species)
+species <-left_join(species, taxo, by = "code")
+species <- janitor::clean_names(species)
+
+invert <- as_dtx(t(macroloire$fau), rownames = "Station")
+invert2 <- smutate(invert, across(2:41, log1p))
+
+column_to_rownames(invert2, "Station") %>.%
+  ca(.) ->
+  invert_ca
 ```
 
 ```{r, echo=FALSE}
-BioDataScience3::learnr_banner()
+BioDataScience2::learnr_banner()
 ```
 
 ```{r, context="server"}
-BioDataScience3::learnr_server(input, output, session)
+BioDataScience2::learnr_server(input, output, session)
 ```
 
 ------------------------------------------------------------------------
 
 ## Objectifs
 
--   ...
+L'Analyse Factorielle des Correspondances (AFC) est une variante de l'Analyse en Composantes Principales (ACP) qui permet de traiter les variables qualitatives. Ce tutoriel vous permettra de :
 
-## Types de jeux de données pour l'AFC
+-   Réaliser de manière guidée une AFC
 
-TODO: ce tutoriel doit encore être écrit. Vous devez probablement penser à installer une version plus récente du package qui contient les exercices finalisés !
+-   Effectuer les graphiques associés à cette analyse
+
+-   Vous préparez à interpréter par vous-même les résultats de vos AFC
+
+Avant toute chose, assurez-vous d'avoir bien compris le contenu du [module 7](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2022/acp-afc.html) du cours et en particulier la [section 7.3](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2022/analyse-factorielle-des-correspondances.html).
+
+## Les macroinvertébrés de la Loire (France)
+
+La Loire est un cours d'eau qui prend sa source dans le Massif central pour se jeter dans l'atlantique proche de Nantes. On dénombre 38 stations de mesures couvrant plus de 800km du fleuve de la source jusqu'à 200 km de son embouchure.
+
+```{r}
+chart(macroloire$envir, Altitude ~ Distance %label=% rownames(macroloire$envir)) +
+  geom_point() +
+  geom_line() +
+  labs(y = "Altitude [m]", x = "Distance à la source [km]") +
+  ggrepel::geom_label_repel()
+```
+
+Une chute rapide de l'altitude est observée de la source à 250km de cette dernière. Ensuite, la diminution est linéaire jusqu'à la dernière station située à 10 m d'altitude. On peut observer un saut de plus de 50 km et de 150m d'altitude entre la station 8 (Serre de la Fare) et la station 9 (Vorey).
+
+Les chercheurs ont dénombré 40 espèces d'invertébrés présentées ci-dessous.
+
+```{r}
+knitr::kable(species, col.names = c("Espèce", "Code", "Genre", "Famille", "Ordre"))
+```
+
+## Visualisation des données
+
+Voici le tableau des dénombrements effectués.
+
+```{r}
+invert
+```
+
+Proposez un graphique intéressant afin de visualiser les dénombrements des espèces réalisés par les chercheurs. Sélectionner les colonnes intéressantes à l'aide de leur position. Votre tableau se nomme `invert`.
+
+```{r visu1_h2, exercise = TRUE}
+___ %>.%
+  smutate(., station = 1:nrow(___)) %>.%
+  spivot_longer(., ____:___, names_to = "species", values_to = "n") %>.%
+  chart(., species ~ station %fill=% n) +
+  geom____() +
+  labs( x = "Station", y = "Espèce", fill = "N")
+```
+
+```{r visu1_h2-hint-1}
+invert %>.%
+  smutate(., station = 1:nrow(invert)) %>.%
+  spivot_longer(., ___:___, names_to = "species", values_to = "n") %>.%
+  chart(., species ~ station %fill=% n) +
+  geom_raster() +
+  labs( x = "Station", y = "Espèce", fill = "N")
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r visu1_h2-solution}
+## Solution ##
+invert %>.%
+  smutate(., station = 1:nrow(invert)) %>.%
+  spivot_longer(., 2:41, names_to = "species", values_to = "n") %>.%
+  chart(., species ~ station %fill=% n) +
+  geom_raster() +
+  labs( x = "Station", y = "Espèce", fill = "N")
+```
+
+```{r visu1_h2-check}
+grade_code("Ce graphique est peu lisible. Il y a des stations ou la même espèce a été observée plus de 200 fois. Il va falloir appliquer une transformation sur les données.")
+```
+
+Le graphique précédent nous permet d'observer de grandes disparités entre les espèces. Vous allez devoir appliquer une modification mathématique afin de transformer les observations et de réduire les écarts entre les observations. Votre tableau comprend 41 colonnes dont la première est caractère. Il n'est donc pas possible de réaliser l'instruction suivante : DF \<- log1p(DF). Il n'est pas question d'écrire un `smutate()` avec 41 fois DF \<- smutate(DF, varx = log1p(varx),...). Il est possible de le faire bien plus simplement en utilisant par exemple `across()` au sein de la fonction `smutate()`. La fonction `across()` requiert les colonnes d'intérêt que vous pouvez spécifier par leur position. Un exemple pourrait être DF \<- smutate(DF, across(1:15, log)).
+
+Vous avez à présent toutes les connaissances afin de transformer vos variables numériques avec la fonction `log1p()` et puis d'afficher le même graphique que précédemment.
+
+```{r visu2_h2, exercise = TRUE}
+# Transformation des variables numériques
+invert2 <- smutate(invert, ___(___:___, ___))
+# Réalisation du même graphique que précédement.
+invert2 %>.%
+  smutate(., station = 1:nrow(___)) %>.%
+  spivot_longer(., ___:___, names_to = "species", values_to = "n") %>.%
+  chart(., species ~ station %fill=% n) +
+  geom_raster() +
+  labs( x = "Station", y = "Espèce", fill = "N")
+```
+
+```{r visu2_h2-hint-1}
+# Transformation des variables numériques
+invert2 <- smutate(invert, across(___:___, log1p))
+# Réalisation du même graphique que précédement.
+invert2 %>.%
+  smutate(., station = 1:nrow(___)) %>.%
+  spivot_longer(., ___:___, names_to = "species", values_to = "n") %>.%
+  chart(., species ~ station %fill=% n) +
+  geom_raster() +
+  labs( x = "Station", y = "Espèce", fill = "N")
+
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r visu2_h2-solution}
+## Solution ##
+# Transformation des variables numériques
+invert2 <- smutate(invert, across(2:41, log1p))
+# Réalisation du même graphique que précédement.
+invert2 %>.%
+  smutate(., station = 1:nrow(invert2)) %>.%
+  spivot_longer(., 2:41, names_to = "species", values_to = "n") %>.%
+  chart(., species ~ station %fill=% n) +
+  geom_raster() +
+  labs( x = "Station", y = "Espèce", fill = "N")
+```
+
+```{r visu2_h2-check}
+grade_code("Vous venez d'ajouter à votre liste de fonction utile, la fonction across. N'hésitez pas à consulter la page d'aide de cette fonction. La transformation log+1 fut très efficace afin de réduire les écarts entre les observations. On observe par exemple que *Hydropsyche contubernalis* (E26) et Hydropsyche exocellata (E28) sont des espèces présentes dans de très nombreuses stations.")
+```
+
+## AFC
+
+Calculez à présent votre AFC avec la fonction `ca()` et nommez votre objet `invert_ca`. La variable `Station` ne doit pas être employée dans l'AFC. Nous vous proposons de débuter par retirer la variable Station et la placer comme nom des lignes du tableau invert2 avec la fonction `column_to_rownames()`. Consultez la page d'aide de cette fonction afin d'en connaitre les arguments.
+
+```{r ca_h3, exercise = TRUE}
+# Conversion de la colonne Station en nom de lignes
+invert2 <- ___(___, var = ___)
+# Calcul de l'AFC
+___ <- ___(___)
+# Affichage du résumé 
+summary(___, rows = FALSE, columns = FALSE)
+```
+
+```{r ca_h3-hint-1}
+# Conversion de la colonne Station en nom de lignes
+invert2 <- ___(invert2, var = "")
+# Calcul de l'AFC
+___ <- ___(invert2)
+# Affichage du résumé 
+summary(___, rows = FALSE, columns = FALSE)
+```
+
+```{r ca_h3-hint-2}
+# Conversion de la colonne Station en nom de lignes
+invert2 <- column_to_rownames(invert2, var = "Station")
+# Calcul de l'AFC
+___ <- ___(invert2)
+# Affichage du résumé 
+summary(____, rows = FALSE, columns = FALSE)
+
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r ca_h3-solution}
+## Solutions
+# Conversion de la colonne Station en nom de lignes
+invert2 <- column_to_rownames(invert2, var = "Station")
+# Calcul de l'AFC
+invert_ca <- ca(invert2)
+# Affichage du résumé 
+summary(invert_ca, rows = FALSE, columns = FALSE)
+```
+
+```{r ca_h3-check}
+grade_code("La fonction column_to_rownames() a son inverse qui est rownames_to_column(). Ajoutez ces deux fonctions à votre boite à outils des fonctions utiles. Concernant le résumé de votre AFC, notez que les deux premières dimensions ne capture que 31 % de la Variabilité totale.")
+```
+
+Réalisez à présent le graphique des éboulis et la carte (biplot) de votre objet `invert_ca`
+
+```{r ca_plot_h2, exercise = TRUE}
+# graphe des éboulis
+___(___)
+# biplot
+chart$biplot(___,  choices = c(1, 2), repel = TRUE)
+```
+
+```{r ca_plot_h2-hint-1}
+# graphe des éboulis
+chart$___(___)
+# biplot
+chart$___(___,  choices = c(1, 2), repel = TRUE)
+
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r ca_plot_h2-solution}
+## Solution ##
+# graphe des éboulis
+chart$scree(invert_ca)
+# biplot
+chart$biplot(invert_ca,  choices = c(1, 2), repel = TRUE)
+```
+
+```{r ca_plot_h2-check}
+grade_code("La part de la variance exprimée par l'AFC est faible avec à peine plus de 30%. On peut néanmoins observer des éléments intéressants. Nous observons la forme typique du fer à cheval lors de la réalisation d'un transect. Certaines espèces de trichoptères comme *Agapetus delicatulus*, *Philopotamus montanus* ou encore *Plectrocnemia geniculata*, et de coléoptère comme *Limnius perrisi* ou *Esolus angustatus* sont plus présente dans les stations de plus haute altitude (S1-S3).")
+```
+
+## Conclusion
+
+Cette AFC nous a permis d'y voir plus clair entre les différentes stations et les espèces qui y vivent. Sans rien connaître sur ces espèces, nous avons pu mettre en évidence une certaine tendance.
+
+Maintenant que vous avez compris la logique, que vous maitriser les méthodes pour de préparer vos données et que vous êtes capable d'écrire le code permettant de réaliser une AFC, vous pouvez appliquer cette technique par vous-même (assignation GitHub dans le cours).
+
+```{r comm_noscore, echo=FALSE}
+question_text(
+  "Laissez-nous vos impressions sur cet outil pédagogique",
+  answer("", TRUE, message = "Pas de commentaires... C'est bien aussi."),
+  incorrect = "Vos commentaires sont enregistrés.",
+  placeholder = "Entrez vos commentaires ici...",
+  allow_retry = TRUE
+)
+```
