@@ -1,5 +1,7 @@
 # BioDataScience2 2022.5.0
 
+-   A new tutorial **B07Lb_ca** is added.
+
 -   Learnr **B06Lb_kmeans** revised
 
 # BioDataScience2 2022.4.0
