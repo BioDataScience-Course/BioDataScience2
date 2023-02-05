@@ -1,10 +1,8 @@
-# BioDataScience2 2022.5.0
+# BioDataScience2 2022.4.0
 
 -   A new tutorial **B07Lb_ca** is added.
 
--   Learnr **B06Lb_kmeans** revised
-
-# BioDataScience2 2022.4.0
+-   Learnr **B06Lb_kmeans** revised, and exercises on diversity indices added.
 
 -   Revision and restructuration of all learnrs for modules 6 to 10.
 

@@ -1,7 +1,7 @@
 ---
 title: "Analyse factorielle des correspondances (AFC)"
 author: "Guyliann Engels & Philippe Grosjean"
-description: "**SDD II Module 7** Comprendre et utiliser l'analyse factorielle des correspondances."
+description: "**SDD II Module 7** Analyse Factorielle des Correspondances."
 tutorial:
   id: "B07Lb_ca"
 version: 2.0.0/4
@@ -16,8 +16,6 @@ runtime: shiny_prerendered
 BioDataScience2::learnr_setup()
 SciViews::R("explore")
 
-
-# ...
 data("macroloire", package = "ade4")
 
 envir <- macroloire$envir
@@ -33,7 +31,7 @@ invert <- as_dtx(t(macroloire$fau), rownames = "Station")
 invert2 <- smutate(invert, across(2:41, log1p))
 
 column_to_rownames(invert2, "Station") %>.%
-  ca(.) ->
+  ca(.) %->%
   invert_ca
 ```
 
@@ -49,7 +47,7 @@ BioDataScience2::learnr_server(input, output, session)
 
 ## Objectifs
 
-L'Analyse Factorielle des Correspondances (AFC) est une variante de l'Analyse en Composantes Principales (ACP) qui permet de traiter les variables qualitatives. Ce tutoriel vous permettra de :
+L'Analyse Factorielle des Correspondances (AFC) est une variante de l'Analyse en Composantes Principales (ACP) qui permet de traiter les variables qualitatives (deux variables qualitatives transformées en un tableau de contingence à double entrée). Elle permet aussi de traiter des variables quantitatives discrètes (entiers nuls ou positifs) comme des dénombrements d'espèces à divers stations, ce qui s'apparente également dans un certain sens à un tableau de contingence qui croise espèce et station. Ce tutoriel vous permettra de :
 
 -   Réaliser de manière guidée une AFC
 
@@ -61,7 +59,7 @@ Avant toute chose, assurez-vous d'avoir bien compris le contenu du [module 7](ht
 
 ## Les macroinvertébrés de la Loire (France)
 
-La Loire est un cours d'eau qui prend sa source dans le Massif central pour se jeter dans l'atlantique proche de Nantes. On dénombre 38 stations de mesures couvrant plus de 800km du fleuve de la source jusqu'à 200 km de son embouchure.
+La Loire est un cours d'eau qui prend sa source dans le Massif Central pour se jeter dans l'Atlantique près de Nantes. Dans le jeu de données que nous traiterons ici, on dénombre 38 stations couvrant plus de 800 km du fleuve de sa source jusqu'à environ 200 km de son embouchure.
 
 ```{r}
 chart(macroloire$envir, Altitude ~ Distance %label=% rownames(macroloire$envir)) +
@@ -71,7 +69,7 @@ chart(macroloire$envir, Altitude ~ Distance %label=% rownames(macroloire$envir))
   ggrepel::geom_label_repel()
 ```
 
-Une chute rapide de l'altitude est observée de la source à 250km de cette dernière. Ensuite, la diminution est linéaire jusqu'à la dernière station située à 10 m d'altitude. On peut observer un saut de plus de 50 km et de 150m d'altitude entre la station 8 (Serre de la Fare) et la station 9 (Vorey).
+Une diminution rapide de l'altitude est observée de la source à 250 km de cette dernière. Ensuite, la diminution est linéaire jusqu'à la dernière station située à 10 m d'altitude. On peut observer un saut de plus de 50 km et de 150m d'altitude entre la station 8 (Serre de la Fare) et la station 9 (Vorey).
 
 Les chercheurs ont dénombré 40 espèces d'invertébrés présentées ci-dessous.
 
@@ -87,14 +85,14 @@ Voici le tableau des dénombrements effectués.
 invert
 ```
 
-Proposez un graphique intéressant afin de visualiser les dénombrements des espèces réalisés par les chercheurs. Sélectionner les colonnes intéressantes à l'aide de leur position. Votre tableau se nomme `invert`.
+Élaborez un graphique permettant de visualiser les dénombrements des espèces réalisés par les chercheurs. Sélectionnez les colonnes intéressantes à l'aide de leur position. Votre tableau se nomme `invert`.
 
-```{r visu1_h2, exercise = TRUE}
+```{r visu1_h2, exercise=TRUE}
 ___ %>.%
   smutate(., station = 1:nrow(___)) %>.%
   spivot_longer(., ____:___, names_to = "species", values_to = "n") %>.%
-  chart(., species ~ station %fill=% n) +
-  geom____() +
+  chart(., ___ ~ ___ %fill=% n) +
+  geom_raster() +
   labs( x = "Station", y = "Espèce", fill = "N")
 ```
 
@@ -102,9 +100,10 @@ ___ %>.%
 invert %>.%
   smutate(., station = 1:nrow(invert)) %>.%
   spivot_longer(., ___:___, names_to = "species", values_to = "n") %>.%
-  chart(., species ~ station %fill=% n) +
+  chart(., species ~ ___ %fill=% n) +
   geom_raster() +
   labs( x = "Station", y = "Espèce", fill = "N")
+
 #### ATTENTION: Hint suivant = solution !####
 ```
 
@@ -126,7 +125,7 @@ Le graphique précédent nous permet d'observer de grandes disparités entre les
 
 Vous avez à présent toutes les connaissances afin de transformer vos variables numériques avec la fonction `log1p()` et puis d'afficher le même graphique que précédemment.
 
-```{r visu2_h2, exercise = TRUE}
+```{r visu2_h2, exercise=TRUE}
 # Transformation des variables numériques
 invert2 <- smutate(invert, ___(___:___, ___))
 # Réalisation du même graphique que précédement.
@@ -166,14 +165,14 @@ invert2 %>.%
 ```
 
 ```{r visu2_h2-check}
-grade_code("Vous venez d'ajouter à votre liste de fonction utile, la fonction across. N'hésitez pas à consulter la page d'aide de cette fonction. La transformation log+1 fut très efficace afin de réduire les écarts entre les observations. On observe par exemple que *Hydropsyche contubernalis* (E26) et Hydropsyche exocellata (E28) sont des espèces présentes dans de très nombreuses stations.")
+grade_code("Vous venez d'ajouter à votre liste de fonction utile, la fonction `across()`. N'hésitez pas à consulter la page d'aide de cette fonction. La transformation `log(x + 1)` fut très efficace afin de réduire les écarts entre les observations. On observe par exemple que *Hydropsyche contubernalis* (E26) et Hydropsyche exocellata (E28) sont des espèces présentes dans de très nombreuses stations.")
 ```
 
 ## AFC
 
-Calculez à présent votre AFC avec la fonction `ca()` et nommez votre objet `invert_ca`. La variable `Station` ne doit pas être employée dans l'AFC. Nous vous proposons de débuter par retirer la variable Station et la placer comme nom des lignes du tableau invert2 avec la fonction `column_to_rownames()`. Consultez la page d'aide de cette fonction afin d'en connaitre les arguments.
+Calculez à présent votre AFC avec la fonction `ca()` et nommez votre objet `invert_ca`. La variable `Station` ne doit pas être employée dans l'AFC. Nous vous proposons de débuter par retirer la variable Station et la placer comme nom des lignes du tableau `invert2` à l'aide de `column_to_rownames()`. Consultez la page d'aide de cette fonction afin d'en connaitre les arguments.
 
-```{r ca_h3, exercise = TRUE}
+```{r ca_h3, exercise=TRUE}
 # Conversion de la colonne Station en nom de lignes
 invert2 <- ___(___, var = ___)
 # Calcul de l'AFC
@@ -184,7 +183,7 @@ summary(___, rows = FALSE, columns = FALSE)
 
 ```{r ca_h3-hint-1}
 # Conversion de la colonne Station en nom de lignes
-invert2 <- ___(invert2, var = "")
+invert2 <- ___(invert2, var = "___")
 # Calcul de l'AFC
 ___ <- ___(invert2)
 # Affichage du résumé 
@@ -248,9 +247,9 @@ grade_code("La part de la variance exprimée par l'AFC est faible avec à peine 
 
 ## Conclusion
 
-Cette AFC nous a permis d'y voir plus clair entre les différentes stations et les espèces qui y vivent. Sans rien connaître sur ces espèces, nous avons pu mettre en évidence une certaine tendance.
+Cette AFC nous a permis d'y voir plus clair entre les différentes stations et les espèces qui y vivent. Sans rien connaître sur ces espèces, nous avons pu mettre en évidence une tendance.
 
-Maintenant que vous avez compris la logique, que vous maitriser les méthodes pour de préparer vos données et que vous êtes capable d'écrire le code permettant de réaliser une AFC, vous pouvez appliquer cette technique par vous-même (assignation GitHub dans le cours).
+Maintenant que vous avez compris la logique, que vous maîtriser les techniques pour préparer vos données et que vous êtes capable d'écrire le code permettant de réaliser une AFC, vous pouvez appliquer tout cela dans une assignation GitHub (voir dans le cours).
 
 ```{r comm_noscore, echo=FALSE}
 question_text(

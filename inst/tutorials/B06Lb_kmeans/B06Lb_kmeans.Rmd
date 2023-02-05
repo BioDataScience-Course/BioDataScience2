@@ -202,14 +202,14 @@ chart(envir_kmn, choices = c("oxy", "nit"))
 grade_code("Vous voyez comme c'est facile ! Les fonctions SciViews vous facilitent la tâche. Naturellement, vous pouvez aussi choisir d'autres paires de variables pour visualiser votre regroupement.")
 ```
 
-## Indice de diversité
+## Indices de diversité
 
 La notion de diversité est complexe. On peut néanmoins faire ressortir deux éléments principaux que sont le nombre d'espèces différentes présentes sur la zone d'étude et l'abondance de chaque espèce. Il existe une multitude d'indices, dont la richesse spécifique, l'indice de Simpson, l'indice de Shannon...
 
-Un des premiers indices mis au point est la richesse spécifique. Cet indice dénombre les espèces sur une zone déterminée. Déterminez la richesse spécifique pour chaque station. Employez l'objet `fish` et utilisez la fonction adéquate.
+Un des premiers indices mis au point est la richesse spécifique. Cet indice dénombre les espèces dans les stations étudiées. À titre d'exercice, déterminez la richesse spécifique pour chaque station du tableau `fish` en utilisant la fonction adéquate.
 
-```{r richness_h2, exercise = TRUE}
-___::___()
+```{r richness_h2, exercise=TRUE}
+___::___(___)
 ```
 
 ```{r richness_h2-hint-1}
@@ -224,7 +224,7 @@ vegan::specnumber(fish)
 ```
 
 ```{r richness_h2-check}
-grade_code("Bien joué ! Vous avez utilisé la fonction adéquate. La fonction specnumber() se trouve dans le package {vegan}. Ce package a été développé pour aider à l'étude des communautés en écologie. Il ne vous reste plus qu'à analyser le résultat afin de répondre à la question suivante.")
+grade_code("La fonction `specnumber()` du package {vegan} effectue ce calcul. Inspectez le résultat afin de répondre à la question suivante.")
 ```
 
 ```{r qu_richness}
@@ -235,17 +235,17 @@ question("Quelle est la station avec la richesse spécifique la plus élevée ?"
   answer("Station 29", correct = TRUE),
   answer("Station 30"),
   allow_retry = TRUE,
-  correct = "Bravo, Vous avez trouvé la bonne réponse.",
+  correct = "Vous avez trouvé la bonne réponse.",
   incorrect = "Retentez votre chance. Les stations sont affiché de la numéro 1 à la numéro 30.")
 ```
 
-Cet indice est simple et facile à comprendre. Attention, ce dernier a donc une limite que vous devez bien retenir. Cet indice ne tient pas compte de l'abondance de chaque espèce étudiée. Il pourrait tout à fait être complété par l'indice de Shannon.
+Cet indice est simple et facile à comprendre. Attention, toutefois, qu'il ne tient pas compte de l'abondance de chaque espèce étudiée dans les stations, ni des compositions respectives entre les stations (espèces communes ou exclusives à l'une ou l'autre station). Il est donc utile de compléter votre étude en ajoutant une information complémentaire.
 
-Vous avez découvert une série d'indices de similarité ou de dissimilarité au cours de ce module 6. Nous vous proposons d'employer à présent l'indice de Jaccard. Cet indice permet une comparaison entre deux sites en calculant le rapport entre les espèces communes aux deux sites et celles propres à chaque relevé. La formule est la suivante :
+Vous avez découvert une série d'indices de similarité ou de dissimilarité au cours de ce module 6. Nous vous proposons d'employer à présent l'indice de Jaccard. Cet indice permet une comparaison entre deux sites en calculant le rapport entre les espèces communes aux deux sites et celles propres à chaque relevé. La formule est la suivante :
 
-$$I = \frac{N_c}{N_1 + N2 – N_c}$$
+$$J = \frac{N_c}{N_1 + N2 – N_c}$$
 
-où :
+où :
 
 -   $N_c$ correspond au nombre de taxons communs entre les deux sites
 -   $N_1$ et $N_2$ le nombre de taxons présents sur le site 1 et 2, respectivement
@@ -255,55 +255,58 @@ Les valeurs de l'indice varient entre 0 lorsque les deux sites n'ont aucune esp�
 Comparez les stations entre elles deux à deux à l'aide de l'indice de Jaccard sur le tableau `fish`. Nommez cet objet `fish_jacc`.
 
 ```{r jaccard_h2, exercise = TRUE}
-___ <- ___(___, ___, ___) 
+fish_jacc <- ___(___, method = ___, binary = ___)
 ```
 
 ```{r, jaccard_h2-hint-1}
-fish_jacc <- ___(___, method = ___, binary = ___) 
+fish_jacc <- ___(___, method = "jaccard", binary = TRUE)
+
+#### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r, jaccard_h2-solution}
-fish_jacc <- dissimilarity(fish, method = "jaccard", binary = TRUE) 
+## Solution ##
+fish_jacc <- dissimilarity(fish, method = "jaccard", binary = TRUE)
 ```
 
 ```{r jaccard_h2-check}
-grade_code("Bien joué ! Vous avez utilisez la fonction adéquate. L'indice de Jaccard traite un tableau de type absence/présence que vous spécifié à l'aide de binary = TRUE.")
+grade_code("L'indice de Jaccard nécessite des données de type présence/absence (1 ou 0). Le tableau `fish` présente des abondances en semi-quantitatif (valeurs entre 0 et 5). Grâce à l'argument `binary = TRUE`, ce tableau est transformé en présence/absence à l'intérieur du calcul de `dissimilarity()` afin qu'il convienne ensuite au calcul de cet indice.")
 ```
 
-À présent que vous avez obtenu votre matrice de distance (`fish_jacc`), vous pouvez l'employer afin d'obtenir un dendrogramme avec la méthode `ward.D2`.
+À présent que vous avez obtenu votre matrice de distance (`fish_jacc`), vous pouvez effectuer un regroupement à l'aide de la CAH avec la méthode `ward.D2` et en tracer un dendrogramme.
 
 ```{r jacc_prep}
-fish_jacc <- dissimilarity(fish, method = "jaccard", binary = TRUE) 
+fish_jacc <- dissimilarity(fish, method = "jaccard", binary = TRUE)
 ```
 
 ```{r cah_h2, exercise=TRUE, exercise.setup="jacc_prep"}
-# Calcul de la CAH avec la méthod des liens "ward.D2"
+# Calcul de la CAH avec la méthode des liens "ward.D2"
 fish_clust <- ___(___, ___)
 # Dendrogramme horizontal
 ___(___)
 ```
 
 ```{r cah_h2-hint-1}
-# Calcul de la CAH avec la méthod des liens "ward.D2"
+# Calcul de la CAH avec la méthode des liens "ward.D2"
 fish_clust <- cluster(___, method = ___)
 # Dendrogramme horizontal
 chart$___(fish_clust)
 ```
 
 ```{r cah_h2-solution}
-# Calcul de la CAH avec la méthod des liens "ward.D2"
+# Calcul de la CAH avec la méthode des liens "ward.D2"
 fish_clust <- cluster(fish_jacc, method = "ward.D2")
 # Dendrogramme horizontal
 chart$horizontal(fish_clust)
 ```
 
 ```{r cah_h2-check}
-grade_code("Bien joué ! Vous avez obtenu un dendrogramme horizontal intéressant. On peut par exemple observer que les station 23, 24 et 25 sont regroupées. Elles se différencient des stations précédentes (16-22) et des stations suivantes (26-30) entre autre par une richesse spécifique plus faible. On ne tient pas compte de la station 8 qui ne comprend pas espèce.")
+grade_code("Vous avez obtenu un dendrogramme horizontal intéressant. On peut, par exemple, observer que les station 23, 24 et 25 sont regroupées. Elles se différencient des stations précédentes (16-22) et des stations suivantes (26-30) du point de vue de la diversité selon l'indice de Jaccard (on ne tient pas compte de la station 8 qui ne comprend pas espèce).")
 ```
 
 ## Conclusion
 
-Vous venez de terminer votre auto-évaluation relative à la classification par les k-moyenne et les indices de diversité. Vous êtes maintenant prêts pour les appliquer sur d'autres données par vous-même dans une assignation GitHub.
+Vous venez de terminer votre auto-évaluation relative à la classification par les k-moyenne et les indices de diversité. Vous allez maintenant appliquer ces techniques sur d'autres données dans une assignation GitHub.
 
 ```{r comm_noscore, echo=FALSE}
 question_text(
