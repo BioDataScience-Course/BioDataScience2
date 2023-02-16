@@ -40,50 +40,52 @@ L'Analyse Factorielle des Correspondances (AFC) est une variante de l'Analyse en
 
 -   Effectuer les graphiques associés à cette analyse
 
--   Vous préparez à interpréter par vous-même les résultats de vos AFC
+-   Vous préparer à interpréter par vous-même les résultats de vos AFC
 
 Avant toute chose, assurez-vous d'avoir bien compris le contenu du [module 7](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2022/acp-afc.html) du cours et en particulier la [section 7.3](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2022/analyse-factorielle-des-correspondances.html).
 
 ## Couleur des yeux et des cheveux
 
-L'étude porte sur 5387 personnes vivant dans l'ancienne région de Caithness, se situant au nord de l'Écosse.
+L'étude porte sur 5387 personnes provenant du Nord de l'Écosse. Le jeu de données se nomme `caith`.
 
 ```{r, echo=TRUE}
 caith <- read("caith", package = "MASS")
 caith
 ```
 
-Le tableau de données est un tableau de contingence à double entrée. Observez les colonnes. On en dénombre `r dim(caith)[2]` colonnes. La première colonne est particulièrement intéressante en portant un nom particulier `.rownames`.
+Il s'agit d'un tableau de contingence à double entrée. Observez les colonnes. On en dénombre `r dim(caith)[2]`. La première est de type `character`. Elle porte un nom particulier : `.rownames`.
 
-Rappelez-vous que nous retrouvons plusieurs types d'objets pour les tableaux de données : les `data.frames`, les `data.tables` ou encore les `tibbles`. Par défaut en utilisant les fonctions `SciViews`, les tableaux de données sont des `data.tables`. Vous pouvez vérifier la classe d'un objet avec la fonction `class()`.
+Rappelez-vous que nous retrouvons plusieurs types d'objets dans R pour les tableaux de données : les `data.frame`s, les `data.table`s ou encore les `tibble`s. Par défaut dans `SciViews::R`, les tableaux de données sont des `data.table`s. Vous pouvez vérifier la classe d'un objet avec `class()`.
 
 ```{r, echo=TRUE}
 class(caith)
 ```
 
-## Réalisation de l'ACF
+## Préparation des données
 
-Le tableau nécessaire afin de réaliser une analyse factorielle des correspondances ne doit comprendre que des valeurs numériques. La première colonne `.rownames` est donc un problème. Une solution serait de la retirer avec la fonction `sselect()`. Elle n'est cependant pas la meilleure solution. Cette colonne apporte une information très intéressante dont on ne veut pas se passer. Il est donc préférable d'employer un objet différent. Les `data.frames` supporte les noms des lignes (*rownames*).
+Le tableau nécessaire afin de réaliser une analyse factorielle des correspondances ne doit comprendre que des valeurs numériques. La première colonne `.rownames` est donc un problème. Une solution serait de la retirer avec, par exemple, `sselect()`. Ce n'est cependant pas la meilleure solution. Cette colonne apporte une information très intéressante dont on ne veut pas se passer : un label pour les lignes du tableau. Il est donc préférable de convertir en un objet différent qui prendra en compte ces labels. Les `data.frame`s supportent des noms pour les lignes (*rownames*) autant que les colonnes à la différence des `data.table`s et des `tibble`s.
 
-Convertissez l'objet `caith` un `data.tables` en `data.frames` à l'aide de la fonction `as_dtf()`. Nommez ce nouvel objet `caith_df`.
+Convertissez l'objet `caith` en `data.frame` à l'aide de `as_dtf()`. Nommez ce nouvel objet `caith_df`.
 
 ```{r dtf, exercise=TRUE}
 caith_df <- ___(___)
-# affichez le tableau
+# Afficher le tableau
 caith_df
 ```
 
 ```{r dtf-solution}
 caith_df <- as_dtf(caith)
-# affichez le tableau
+# Afficher le tableau
 caith_df
 ```
 
 ```{r dtf-check}
-grade_code("La conversion du tableau de données entre le `data.tables` en `data.frames` est simple avec la fonction `as_dtf()`. par defaut, la fonction reconnait la colonne .rownames et la converti en nom de ligne pour un objet de class data.frames qui les accepte.")
+grade_code("La conversion du tableau en `data.frames` est simple avec la fonction `as_dtf()`. Par defaut, la fonction reconnait la colonne `.rownames` et la converti en nom de lignes. Si la colonne à transformer en nom des lignes porte un autre nom que `.rownames`, alors vous pouvez utiliser l'argument `rownames =` pour indiquer quelle colonne utiliser.")
 ```
 
-Réalisez à présent une analyse factorielle des correspondances sur l'objet `caith_df` et nommez cet objet `caith_ca`. Proposez en plus le résumé de cet objet.
+## Réalisation de l'ACF
+
+Réalisez à présent une analyse factorielle des correspondances sur l'objet `caith_df` et nommez-la `caith_ca`. Réalisez ensuite le résumé de ce dernier objet.
 
 ```{r ca_h2, exercise=TRUE}
 # AFC
@@ -94,7 +96,7 @@ ___(___)
 
 ```{r ca_h2-hint-1}
 # AFC
-caith_ca <- ca()
+caith_ca <- ca(___)
 # Résumé de l'objet
 ___(caith_ca)
 ```
@@ -107,10 +109,10 @@ summary(caith_ca)
 ```
 
 ```{r ca_h2-check}
-grade_code("Le code est simple à réaliser. Le résumé de l'objet met en avant qu'avec les deux premiers axes ont couvre 99.6% de la variance. Le premier axe couvre plus de 86%. L'essentiel de l'information se lira sur ce seul axe.")
+grade_code("Le code est simple. Le résumé de l'objet met en avant qu'avec les deux premiers axes on couvre 99.6% de la variance. Le premier axe couvre déjà plus de 86%. L'essentiel de l'information se lira donc dans le premier plan de projection.")
 ```
 
-Proposez le graphique des éboulis associé à l'objet `caith_ca`
+Réalisez le graphique des éboulis de votre analyse.
 
 ```{r scree, exercise=TRUE}
 ___$___()
@@ -121,10 +123,10 @@ chart$scree(caith_ca)
 ```
 
 ```{r scree-check}
-grade_code("Ce graphique vient en complément du premier tableau proposé dans le résumé. On observe que le premier axe comprend une grande part de la variance.")
+grade_code("Ce graphique vient en complément du résumé. On observe que le premier axe comprend une grande part de la variance.")
 ```
 
-Proposez enfin la carte (biplot) de votre objet `caith_ca`.
+Réalisez enfin la carte (biplot) de votre AFC.
 
 ```{r biplot, exercise=TRUE}
 ___$___()
@@ -135,12 +137,12 @@ chart$biplot(caith_ca)
 ```
 
 ```{r biplot-check}
-grade_code("Ce graphique va s'analyser en 3 étapes. On va d'abord s'intéresser aux yeux, puis au cheveux et enfin les deux ensembles. Faites le travail par vous même avant de vous rendre dans la section suivante pour comparer votre analyse avec celle que nous vous proposons.")
+grade_code("Ce graphique va s'analyser en trois étapes. On va d'abord s'intéresser aux yeux, puis au cheveux et enfin les deux ensemble. Faites le travail par vous-même avant de vous rendre dans la section suivante pour comparer votre analyse avec celle que nous vous proposons.")
 ```
 
-## Interprétation de ACF
+## Interprétation d'une ACF
 
-Les instructions réalisées pour obtenir l'AFC sont assez simples, mais toute la subtilité vient de l'analyse des résultats.
+Les instructions pour obtenir l'AFC sont assez simples, au delà de la petite difficulté éventuelle liée au label des lignes du tableau, mais toute la subtilité vient de l'interprétation des résultats.
 
 ```{r}
 caith_df <- as_dtf(read("caith", package = "MASS"))
@@ -149,13 +151,13 @@ summary(caith_ca)
 chart$biplot(caith_ca, repel = TRUE)
 ```
 
-Les deux premiers axes couvrent 99.6% de la variance. Du point de vue des cheveux, on observe une transition des cheveux clairs à gauche vers les cheveux foncés à droite. Du point de vue des yeux, les yeux clairs sont à gauche et les yeux foncés à droite.
+Les deux premiers axes couvrent 99.6% de la variance. Du point de vue des cheveux (représentés ici en rouge), on observe une transition des cheveux clairs (*fair* = blond) à gauche vers les cheveux foncés à droite. Du point de vue des yeux (ici en turquoise), les yeux clairs (*blue* et *light*) sont à gauche et les yeux foncés à droite.
 
-On observe la même transition du clair vers le foncé aussi bien pour les cheveux que pour les yeux. Les individus aux yeux clairs vont être liés aux cheveux clairs et les individus aux yeux foncés sont associés aux cheveux foncés.
+On observe la même transition du clair vers le foncé aussi bien pour les cheveux que pour les yeux. Les individus aux yeux clairs vont être liés aux cheveux clairs et les individus aux yeux foncés sont associés aux cheveux foncés (proximité des points rouges et turquoises pour l'interprétation de ces associations).
 
 ## Conclusion
 
-Cette AFC nous a permis d'y voir plus clair entre les différentes stations et les espèces qui y vivent. Sans rien connaître sur ces espèces, nous avons pu mettre en évidence une tendance.
+Cette AFC nous a permis d'observer des tendances dans nos données. Le fait que les blonds ont tendance à avoir des yeux clairs et les bruns des yeux foncés ne devra pas vous étonner, de même que le contraste entre ces deux extrêmes aussi bien pour les cheveux que pour les yeux. Donc, vous pouvez constater que l'AFC présente une telle information assez clairement sur le biplot.
 
 Maintenant que vous avez compris la logique, que vous maîtrisez les techniques pour préparer vos données et que vous êtes capable d'écrire le code permettant de réaliser une AFC, vous pouvez appliquer tout cela dans une assignation GitHub (voir dans le cours).
 
