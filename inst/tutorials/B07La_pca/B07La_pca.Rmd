@@ -16,7 +16,7 @@ BioDataScience2::learnr_setup()
 SciViews::R("explore")
 
 # Preparation of the dataset ------
- read("penguins", package = "palmerpenguins", lang = "fr") %>.%
+read("penguins", package = "palmerpenguins", lang = "fr") %>.%
   sdrop_na(., bill_length_mm) %->%
   penguins
 ```
