@@ -118,7 +118,7 @@ La table `exam` comprend une série de mesures obtenue à la suite d'un examen c
 
 Utilisez la fonction tbl() afin de produire deux objets qui vont accepter les verbes comme filter(), select(), group_by(),... afin de réaliser un remaniement de données.
 
-```{r tbl, exercise = TRUE}
+```{r tbl, exercise=TRUE}
 blood_db <- ___
 blood_db
 exam_db <- ___
@@ -126,6 +126,7 @@ exam_db
 ```
 
 ```{r tbl-solution}
+## Solution ##
 blood_db <- tbl(diabetes_db, "blood")
 blood_db
 exam_db <- tbl(diabetes_db, "exam")
@@ -133,17 +134,17 @@ exam_db
 ```
 
 ```{r tbl-check}
-grade_code("Vous avez à présent deux objets que vous allez pouvoir manipuler simplement avec les fonctions du remaniement de données que vous maitrisez.")
+grade_code("Vous avez à présent deux objets que vous allez pouvoir manipuler simplement avec les fonctions du remaniement de données.")
 ```
 
 Commençons par une instruction simple. Sélectionnez les individus de plus de 60 ans. Employez l'objet pertinent `blood_db`ou `exam_blood`.
 
-```{r db1_h2, exercise = TRUE}
+```{r db1_h2, exercise=TRUE}
 exam60 <- ___(___, ___ >= ___)
 # Affichez la requête SQL réalisée
 ___(___)
 # Collectez vos résultats
-collect_dtx(___)
+(___ <- collect_dtx(___))
 ```
 
 ```{r db1_h2-hint-1}
@@ -151,21 +152,22 @@ exam60 <- filter(exam_db, ___>=___)
 # Affichez la requête SQL realisée
 ___(___)
 # Collectez vos résultats
-collect_dtx(exam60)
+(exam60 <- collect_dtx(exam60))
 
 #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r db1_h2-solution}
+## Solution ##
 exam60 <- filter(exam_db, age>=60)
 # Affichez la requête SQL realisée
 show_query(exam60)
 # Collectez vos résultats
-collect_dtx(exam60)
+(exam60 <- collect_dtx(exam60))
 ```
 
 ```{r db1_h2-check}
-grade_code("Commencez par analyser la requête SQL obtenue avec la fonction show_query(). On observe que la fonction filter() va être convertie en requête SQL. On va réaliser une sélection (SELECT) dans (FROM) la table `exam` où (WHERE) la variable age est supérieur à 60 (`age` >= 60). La fonction collect_*() permet d'exécuter la requête et d'en récupérer le résultat.")
+grade_code("Commencez par analyser la requête SQL obtenue avec show_query(). On observe que la fonction filter() va être convertie en requête SQL. On va réaliser une sélection (SELECT) dans (FROM) la table `exam` où (WHERE) la variable age est supérieur à 60 (`age` >= 60). La fonction collect_*() permet d'exécuter la requête et d'en récupérer le résultat.")
 ```
 
 Sélectionnez les individus de plus de 25 ans et de moins de 45 ans. Gardez uniquement les variables suivantes : id, age, gender, waist, hip. Collectez le résultat de votre sélection dans la variable `exam25`. Affichez ensuite les 6 premières lignes de votre tableau collecté.
@@ -204,23 +206,26 @@ head(exam25)
 grade_code("Vous pouvez observer qu'avec l'assignation alternative, une requête sur une base de données est très similaire à un remaniement sur un tableau de données classique de type data.table. On récupère directement le résultat avec %->%.")
 ```
 
-Sélectionnez 25 individus aléatoires par sexe. Gardez ensuite uniquement les variables `id` et `gender`. Assignez cette requête à `exam_red`. Dans un second temps, collectez le résultat.
+Sélectionnez 25 individus aléatoires par sexe. Gardez ensuite uniquement les variables `id` et `gender`. Assignez cette requête à `exam_red`. Dans un second temps, collectez le résultat dans `exam_res`.
 
 ```{r db3_h2, exercise = TRUE}
 ___ %>.%
-  ___(., ___) |> slice_sample(n = ___) %>.%
-  ___(., ___) -> ___
+  ___(., ___) |%>.%
+  slice_sample(., n = ___) %>.%
+  ___(., ___) ->
+  exam_red
 # Collecte du résultat
-collect_dtx(___)
+(exam_res <- collect_dtx(__))
 ```
 
 ```{r db3_h2-hint-1}
 ___ %>.%
-  group_by(., ___) |> slice_sample(n = 25) %>.%
-  select(., ___) -> exam_red
-
+  group_by(., ___) %>.%
+  slice_sample(., n = 25) %>.%
+  select(., ___) ->
+  exam_red
 # Collecte du résultat
-collect_dtx(___)
+(exam_res <- collect_dtx(exam_red))
 
 #### ATTENTION: Hint suivant = solution !####
 ```
@@ -228,19 +233,21 @@ collect_dtx(___)
 ```{r db3_h2-solution}
 ## Solution ##
 exam_db %>.%
-  group_by(., gender) |> slice_sample(n = 25) %>.%
-  select(., id, gender) -> exam_red
+  group_by(., gender) %>.%
+  slice_sample(., n = 25) %>.%
+  select(., id, gender) ->
+  exam_red
 # Collecte du résultat
-collect_dtx(exam_red)
+(exam_res <- collect_dtx(exam_red))
 ```
 
 ```{r db3_h2-check}
 grade_code("Nous allons pouvoir employer `exam_red` qui est une suite d'instruction afin de réaliser une requête plus complexe.")
 ```
 
-Employez l'objet que vous venez de créer (`exam_red`) afin d'extraite uniquement le taux de cholestérol total des personnes sélectionnées. Vous allez donc devoir réaliser une jointure (réalisez une jointure à gauche).
+Employez l'objet de requête que vous venez de créer (`exam_red`) afin d'extraite uniquement le taux de cholestérol total des personnes sélectionnées. Vous allez donc devoir réaliser une jointure (réalisez une jointure à gauche).
 
-```{r db4_h2, exercise = TRUE}
+```{r db4_h2, exercise=TRUE}
 # Jointure, sélection et collecte
 cholesterol %<-% ___(exam_red, select(___, ___, ___), by = "___")
 
@@ -258,9 +265,12 @@ cholesterol %<-% left_join(exam_red, select(___, ___, ___), by = "___")
 chart(data = cholesterol, chol ~ gender) +
   geom_boxplot() +
   labs(x = "Genre", y = "Cholestérol total")
+
+#### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r db4_h2-solution}
+## Solution ##
 # Jointure, sélection et collecte
 cholesterol %<-% left_join(exam_red, select(blood_db, id, chol), by = "id")
 
@@ -271,7 +281,7 @@ chart(data = cholesterol, chol ~ gender) +
 ```
 
 ```{r db4_h2-check}
-grade_code("Vous avez employez un objet qui contenait une suite d'instruction que vous avez combiné avec une autre table à l'aide d'une jointure. Comme vous pouvez le voir, il est possible de réaliser toutes les fontions que vous avez l'habitude d'employer sur une base de données.")
+grade_code("Vous avez employé un objet qui contenait une suite d'instruction que vous avez combiné avec une autre table à l'aide d'une jointure. Comme vous pouvez le voir, il est possible de réaliser toutes les fontions que vous avez l'habitude d'utiliser sur une base de données grâce à {dbplyr}.")
 ```
 
 ## Conclusion
