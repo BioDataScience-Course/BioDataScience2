@@ -137,7 +137,7 @@ exam_db
 grade_code("Vous avez à présent deux objets que vous allez pouvoir manipuler simplement avec les fonctions du remaniement de données.")
 ```
 
-Commençons par une instruction simple. Sélectionnez les individus de plus de 60 ans. Employez l'objet pertinent `blood_db`ou `exam_blood`.
+Commençons par une instruction simple. Sélectionnez les individus de plus de 60 ans. Employez l'objet pertinent `blood_db`ou `exam_blood`. Nommez votre objet `exam60`
 
 ```{r db1_h2, exercise=TRUE}
 exam60 <- ___(___, ___ >= ___)
@@ -210,7 +210,7 @@ Sélectionnez 25 individus aléatoires par sexe. Gardez ensuite uniquement les v
 
 ```{r db3_h2, exercise = TRUE}
 ___ %>.%
-  ___(., ___) |%>.%
+  ___(., ___) %>.%
   slice_sample(., n = ___) %>.%
   ___(., ___) ->
   exam_red
@@ -254,7 +254,7 @@ cholesterol %<-% ___(exam_red, select(___, ___, ___), by = "___")
 # Graphique sur les données collectées.
 chart(data = cholesterol, chol ~ gender) +
   geom_boxplot() +
-  labs(x = "Genre", y = "Cholesterol total")
+  labs(x = "Genre", y = "Cholestérol total")
 ```
 
 ```{r db4_h2-hint-1}
