@@ -4,7 +4,7 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II Module 9** Découverte des bases de données avec {dbplyr}."
 tutorial:
   id: "B09La_db"
-version: 2.0.0/0
+version: 2.0.7/0
 output:
   learnr::tutorial:
   progressive: true
@@ -13,27 +13,346 @@ runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
-BioDataScience3::learnr_setup()
+BioDataScience2::learnr_setup()
 SciViews::R()
-library(mlearning)
+library(DBI)
+library(dm)
 
-# ...
+# Données inspirées Benrezkallah 2022
+set.seed(11)
+
+station <- dtx(tribble(
+  ~"id_station" , ~"pays", ~"localite", ~"station", ~"coordonnee",
+  "stat_01", "Belgique", "Mons", "Abbaye Saint Denis", "50.4939°N 4.1893°E",
+  "stat_02", "Belgique", "Mons", "Parc du bois de Mons", "50.4484°N 3.9906°E", 
+  "stat_03", "Belgique", "Mons", "Jardin Suspendu", "50.4469°N 3.9510°E"
+))
+
+individus <- dtx(
+  id_station = c(rep("stat_01", 568), rep("stat_02", 360), rep("stat_03", 294)),
+  id_espece = paste0("sp_", 1:1222),
+  espece = sample(c(rep("Bombus pascorum", 615), rep("Terrestribombus sp", 295), rep("Osmia bicornis", 312))),
+  experimentateur = sample(c(rep("Benrezkallah",980), rep("Santerre", 242)))
+)
+
+bees_species <- individus
+bees <- sleft_join(individus, station) %>.%
+  sselect(., -id_station)
+
+bees_db <- dbConnect(duckdb::duckdb())
+dbWriteTable(bees_db, "station", station)
+dbWriteTable(bees_db, "species", bees_species)
+
+bees_dm <- dm_from_src(bees_db) %>.%
+  dm_set_colors(., red = station, orange = species)
+bees_dm %>.%
+  dm_add_pk(., species, id_espece) %>.%
+  dm_add_pk(., station, id_station) ->
+  bees_dm1
+bees_dm2 <- dm_add_fk(bees_dm1, species, id_station, station)
 ```
 
 ```{r, echo=FALSE}
-BioDataScience3::learnr_banner()
+BioDataScience2::learnr_banner()
 ```
 
 ```{r, context="server"}
-BioDataScience3::learnr_server(input, output, session)
+BioDataScience2::learnr_server(input, output, session)
 ```
 
 ------------------------------------------------------------------------
 
 ## Objectifs
 
--   ...
+Une base de données est un ensemble structuré de données stockées dans un système informatique, avec un accès facile et rapide pour des applications logicielles et des utilisateurs autorisés. Elle peut être considérée comme un grand conteneur **organisé** pour stocker des informations de manière **structurée**.
 
-## Qu'est-ce qu'une base de données ?
+Parmi les différents types de bases de données, nous allons nous intéresser aux bases de données relationnelles. Une base de données **relationnelle** est une collection de données structurées qui sont organisées en tables qui sont liées entre elles par des relations. Les bases de données relationnelles sont très répandues et utilisées dans de nombreux domaines, notamment dans la gestion des entreprises, les services financiers, l'administration publique et la recherche scientifique. Elles sont conçues pour gérer des quantités massives de données de manière fiable et cohérente. Ce tutoriel vous permettra de :
 
-TODO: ce tutoriel doit encore être écrit. Vous devez probablement penser à installer une version plus récente du package qui contient les exercices finalisés !
+-   créer une base de données
+-   traiter de la normalisation d'une base de données
+-   réaliser le schéma d'une base de données
+
+## Base de données et normalisation
+
+Ajouter des tables dans une base de données n'est pas une étape complexe. Si l’on ne s’intéresse pas à la **normalisation **des données, les avantages d’une base de données est très limité., n'est intéressant que si on s'intéresse à la **normalisation** des données. La normalisation des bases de données est un processus qui vise à optimiser la structure des données stockées dans une base de données relationnelle en **évitant la redondance** et en définissant des liens entre les tables. La normalisation va permettre de diminuer la taille d'une base de données, de simplifier les requêtes, et d'optimiser le traitement des requêtes.
+
+Le tableau de données présenté est inspiré des travaux de fin d'études de Benzerkallah [Effet des facteurs pédologiques sur les communautés d'abeilles sauvages dans les potagers de la commune de Mons](http://www.atlashymenoptera.net/biblio/02000/BENREZKALLAH_2022_potager_Mons.pdf) dont voici la citation.
+
+> Benrezkallah J. 2022. Effet des facteurs pédologiques sur les communautés d'abeilles sauvages dans les potagers de la commune de Mons. Mémoire de Master 2 en Sciences biologiques, Université de Mons, Mons, 127 pp.
+
+Cette étude a mené à la collecter de très nombreuses données que le chercheur souhaite gérer sous la forme d'une base de données. Aidez ce dernier dans la gestion de ces données.
+
+Les dix premières lignes sont présentées ci-dessous.
+
+```{r, echo = TRUE}
+head(bees, n=10)
+```
+
+Les colonnes de ce tableau sont les suivantes :
+
+-   id : l'identifiant de l'insecte collecté.
+-   espece : l'espèce capturée et identifiée
+-   experimentateur : Le personne ayant collecté et identifié les individus
+-   pays : Pays de la collecte
+-   localite : Ville de la collecte
+-   station : nom de la station
+-   coordonnee : coordonnées de la station (WGS84)
+
+Explorez le jeu de données `bees` afin de répondre aux questions ci-dessous
+
+```{r explo_noscore, exercise = TRUE}
+
+```
+
+```{r qu_db}
+quiz(
+  question("Est ce que la tableau présenté ci-dessus peut être une table d'un base de données relationnelles ?",
+    answer("Oui", correct = TRUE),
+    answer("Non"),
+    allow_retry = TRUE,
+    random_answer_order = TRUE,
+    correct = "Ce tableau correspond bien à un tableau cas par variable. Il est donc possible de l'utiliser dans une base de données. Il n'est cependant pas normalisé."
+    ),
+  question("Sélectionnez parmi les variables suivantes celles présentant de la redondance optimisable avec la normalisation.",
+    answer("espece", message = "Plusieurs individus peuvent être de la même espèce. Cette information est crucial dans cette table et ne doit pas être optimisé."),
+    answer("pays", correct = TRUE, , message = "Il n'est pas utile de répliquer le nom de pays d'une station pour chaque individu collecté."),
+    answer("coordonnée", correct = TRUE, message = "Il n'est pas utile de répliquer les coordonnées d'une station pour chaque individu collecté."),
+    answer("id_espece", message = "La varaible id est un identifiant unique pour chaque individus. Cette variable n'est pas redondante."),
+    allow_retry = TRUE,
+    random_answer_order = TRUE)
+  )
+```
+
+## Base de données et schéma
+
+Suite à votre exploration de tableau `bees`, vous avez pu observer une certaine redondance dans les données. Deux tables sont réalisées afin de limiter cette redondance. Vous pouvez observer qu'une colonne id_station a été ajoutée.
+
+```{r, echo=TRUE}
+head(station)
+```
+
+```{r, echo=TRUE}
+head(bees_species)
+```
+
+Créez une base de données au format duckdb en mémoire et ajoutez vos deux tables que vous nommerez station pour le tableau station et species pour le tableau bees_species.
+
+```{r connect_h2, exercise = TRUE}
+# Création de la base de données en mémoire
+bees_db <- ___(duckdb::___)
+bees_db
+# Ajout des tables
+___(___, "___", ___)
+___(___, "___", ___)
+# Noms des tables présentes dans bees_db
+dbListTables(bees_db)
+```
+
+```{r connect_h2-hint-1}
+# Création de la base de données en mémoire
+bees_db <- dbConnect(duckdb::___)
+bees_db
+# Ajout des tables
+___(___, "___", ___)
+___(___, "___", ___)
+# Noms des tables présentes dans bees_db
+dbListTables(bees_db)
+
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r connect_h2-solution}
+# Création de la base de données en mémoire
+bees_db <- dbConnect(duckdb::duckdb())
+bees_db
+# Ajout des tables
+dbWriteTable(bees_db, "station", station)
+dbWriteTable(bees_db, "species", bees_species)
+# Noms des tables présentes dans bees_db
+dbListTables(bees_db)
+
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r connect_h2-check}
+grade_code("Bien joué ! Tu viens de créer un base de données en mémoire. Ensuite tu as ajouté des tables avec la fonction dbWriteTable(). Deux tables sont présentes dans la base de données bees_db.")
+```
+
+Vous avez deux tables au sein de la base de données. Il a présent temps de proposer un schéma et des liens (on parlera de clés) entre vos tables. Vous allez pour ce faire employer le package {dm}.
+
+Créez un objet dm associé à votre base de données (`bees_db`) et nommé le `bees_dm`. Ajoutez ensuite la couleur rouge à la table `station` et la couleur orange à la table `species`. Terminez par visualiser le schéma de la base.
+
+```{r dm, exercise = TRUE}
+# Création d'un objet `dm`
+bees_dm <- ___(___)
+bees_dm
+# Ajout d'un couleur pour chaque table
+bees_dm <- ___(bees_dm, red = ___, orange = ___)
+# Graphique du schéma de la base
+___(___, view_type = "all")
+```
+
+```{r dm-solution}
+# Création d'un objet `dm`
+bees_dm <- dm_from_src(bees_db)
+bees_dm
+# Ajout d'un couleur pour chaque table
+bees_dm <- dm_set_colors(bees_dm, red = station, orange = species)
+# Graphique du schéma de la base
+dm_draw(bees_dm, view_type = "all")
+```
+
+```{r dm-check}
+grade_code("Vous avez un objet dm. La visualition de l'objet vous permet d'observer vos deux tables. Actuellement, les clés primaires et les clés étrangères n'ont pas encore été définie.")
+```
+
+Afin de proposer une base de données avec un niveau de normalisation plus élevé. Définissez une clé primaire pour chaque table.
+
+```{r pk_h2, exercise =TRUE, paged.print=FALSE}
+# Clés primaires potentiels
+___(___, species)
+___(___, ____)
+# Ajout des clés primaires
+bees_dm %>.%
+  ___(___, ___, ___) %>.%
+  ___(___, ___, ___)->
+  bees_dm1
+bees_dm1
+```
+
+```{r pk_h2-hint-1}
+# Clés primaires potentiels
+dm_enum_pk_candidates(___, species)
+___(___, ___)
+# Ajout des clés primaires
+bees_dm %>.%
+  dm_add_pk(., ___, ___) %>.%
+  ___(., ___, ___) ->
+  bees_dm1
+bees_dm1
+
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r pk_h2-solution}
+# Clés primaires potentiels
+dm_enum_pk_candidates(bees_dm, species)
+dm_enum_pk_candidates(bees_dm, station)
+# Ajout des clés primaires
+bees_dm %>.%
+  dm_add_pk(., species, id_espece) %>.%
+  dm_add_pk(., station, id_station) ->
+  bees_dm1
+bees_dm1
+```
+
+```{r pk_h2-check}
+grade_code("Votre objet bees_dm1 comprend à présent deux clés primaires.")
+```
+
+Définissez à présent une clé étrangère entre vos deux tables (species et station) en partant de l'objet `bees_dm1` et visualisez le schéma de la base.
+
+```{r fk, exercise =TRUE, , paged.print=FALSE}
+# Clés étrangères potentiels
+___(___, ___, ___)
+# Ajout de la clé étrangères
+bees_dm2 <- ___(___, ___, ___, ___)
+# Graphique du schéma de la base
+dm_draw(___, view_type = "all")
+```
+
+```{r fk-solution}
+# Clés étrangères potentiels
+dm_enum_fk_candidates(bees_dm1, species, station)
+# Ajout de la clé étrangères
+bees_dm2 <- dm_add_fk(bees_dm1, species, id_station, station)
+# Graphique du schéma de la base
+dm_draw(bees_dm2, view_type = "all")
+```
+
+```{r fk-check}
+grade_code("Votre objet bees_dm2 comprend à présent deux clés primaires et une clé étrangère qui lié vos deux tables. Le graphique vous permet de bien visualiser la structuration de votre base. La visualisation de la base est très intéressante. Cet objet dm permet de réaliser des requêtes très simplement.")
+```
+
+## Requête sur la base de données
+
+Répondez à la question suivante à l'aide d'un tableau résumé : *Combien d'individus par espèce ont été collectés dans la station"Abbaye Saint Denis" par l'expérimentateur "Benrezkallah »?*
+
+Le schéma de la base de données est proposé afin de vous aider à répondre à cette question.
+
+```{r}
+dm_draw(bees_dm2, view_type = "all")
+```
+
+```{r request_h2, exercise = TRUE}
+# Filtre 
+bees_dm2 %>.%
+  ___(___, ___, ____) %>.% # filtre sur `station`
+  ___(___, ___, ____) %>.% # filtre sur `species`
+  ___(., ___) -> # combinaison des tableaux
+  bees_request
+# Résumé des données
+____ %>.% 
+  ___(., ___) %>.%
+  ___(.) -> 
+  request2
+
+# Collecte de la requête
+(___ <- collect_dtx(___))
+```
+
+```{r request_h2-hint-1}
+# Filtre 
+bees_dm2 %>.%
+  dm_filter(., station, station == "Abbaye Saint Denis") %>.% # filtre sur `station`
+  dm_filter(., ___, ___) %>.% # filtre sur `species`
+  dm_flatten_to_tbl(., species) ->  # combinaison des tableaux
+  bees_request
+# Résumé des données par espèce
+bees_request %>.% 
+  ___(., ___) %>.%
+  ___ -> 
+  request2
+
+# Collecte de la requête
+(bee_sum <- collect_dtx(___))
+
+```
+
+```{r request_h2-solution}
+# Filtre 
+bees_dm2 %>.%
+  dm_filter(., station, station == "Abbaye Saint Denis") %>.% # filtre sur `station`
+  dm_filter(., species, experimentateur == "Benrezkallah") %>.% # filtre sur `species`
+  dm_flatten_to_tbl(., species) ->  # combinaison des tableaux
+  bees_request
+
+# Résumé des données
+bees_request %>.% 
+  group_by(., espece) %>.%
+  count(.) -> 
+  request2
+
+# Collecte de la requête
+(bee_sum <- collect_dtx(request2))
+```
+
+```{r request_h2-check}
+grade_code("Parfait ! L'espèce la plus présente est *Bombus pascorum*. La mise en place d'un schéma avec {dm} a permis de réaliser une requête sur deux tables et de les combiner facilement. Vous avez ensuite résumé ces observations. Vous avez réalisé tout cela directement sur votre base de données et sans vous préoccuper de l'écriture de la requête. En effet, avec {dbplyr}, est aussi simple que de la faire sur un tableau de données classique.")
+```
+
+## Conclusion
+
+Félicitation ! Vous avez créé une base de données, en limitant la redondance, en définissant des clés primaires et étranges et proposé un schéma clair de la base avec le package {dm}. Vous avez également réalisé une requête multitable avec les fonctions du package {dm} et de {dbplyr}.
+
+Maintenant que vous avez compris les grands principes des bases de données et que vous êtes capable d'écrire le code permettant de réaliser une requête, vous pouvez appliquer cette technique par vous-même.
+
+```{r comm_noscore, echo=FALSE}
+question_text(
+  "Laissez-nous vos impressions sur cet outil pédagogique",
+  answer("", TRUE, message = "Pas de commentaires... C'est bien aussi."),
+  incorrect = "Vos commentaires sont enregistrés.",
+  placeholder = "Entrez vos commentaires ici...",
+  allow_retry = TRUE
+)
+```
