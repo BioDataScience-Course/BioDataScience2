@@ -43,7 +43,7 @@ Avant toute chose, assurez vous d'avoir bien compris le contenu du [module 10](h
 
 ## Données environnementales
 
-Des chercheurs ont étudié la composition floristique et les variables environnementales dans des forêts de pins oligotropes (*Pinus sylvestris*) dans l'est de la Fennoscandie, une région située au nord de l'Europe constituée de la Finlande, de la péninsule Scandinave, de la Carélie et de la péninsule de Kola.
+Des chercheurs ont étudié la composition floristique et les variables environnementales dans des forêts de pins oligotrophes (*Pinus sylvestris*) dans l'est de la Fennoscandie, une région située au nord de l'Europe constituée de la Finlande, de la péninsule Scandinave, de la Carélie et de la péninsule de Kola.
 
 ![Fénoscandie](images/Fennoscandia.jpg)
 
@@ -68,7 +68,7 @@ Les 24 sites sélectionnés pour cette étude sont situés dans le nord de la Fi
 
 Vous pouvez facilement télécharger ces données depuis `"varechem"` dans le package {vegan} et en visualiser les premières lignes.
 
-```{r}
+```{r, echo=TRUE}
 read("varechem", package = "vegan") %>.%
   rename(., station = .rownames) %->%
   envir
@@ -77,11 +77,11 @@ head(envir)
 
 Pour avoir une idée globale du jeu de données, vous pouvez commencer par utiliser `skimr::skim()`.
 
-```{r}
+```{r, echo=TRUE}
 skimr::skim(envir)
 ```
 
-On constate qu'aucune donnée n'est manquante et que toutes les variables sont numériques à l'exception de la première colonne nommée "station" qui contient les numéros des stations. Il faut donc l'enlever pour la suite de l'étude. Les unités étant différentes, il faudra également standardiser les données. Le tableau devra également être transformé en matrice car la fonction `som()` du package {kohonen} ne peut utiliser que ce type d'objet.
+Nous constatons qu'aucune donnée n'est manquante et que toutes les variables sont numériques à l'exception de la première colonne nommée "station" qui contient les numéros des stations. Il faut donc l'enlever pour la suite de l'étude. Les unités étant différentes, il faudra également standardiser les données. Le tableau devra également être transformé en matrice car la fonction `som()` du package {kohonen} ne peut utiliser que ce type d'objet.
 
 ### Transformation en matrice
 
@@ -125,9 +125,9 @@ grade_code("Maintenant que vous avez transformé votre jeu de données en matric
 
 Pour réalisez le calcul de votre carte auto-adaptative ou SOM, vous allez devoir utiliser la fonction `som()` du package {kohonen}. Avant de faire le calcul, il est important de noter que l'analyse fait intervenir le générateur pseudo-aléatoire. Il peut-être donc intéressant de le fixer en déterminant un point de départ avec `set.seed()` si vous souhaitez rendre votre analyse reproductible.
 
-Pour utiliser la fonction `som()`, vous devrez lui renseigner une matrice et utiliser l'argument `grid =` avec la fonction `somgrid()` pour lui préciser la topologie de la carte. Cette fonction `somgrid()` nécessite au minimum trois arguments : le nombre de cellules en x, en y (les dimensions de notre grille) et la topologie (grille rectangulaire ou grille hexagonale) spécifiée par l'argument `topo =` avec pour valeur `"rectangular"` et `"hexagonal"`, respectivement.
+Pour utiliser la fonction `som()`, vous devrez lui renseigner une matrice et utiliser l'argument `grid =` avec la fonction `somgrid()` pour lui préciser la topologie de la carte. Cette fonction `somgrid()` nécessite au minimum trois arguments : le nombre de cellules en x, en y (les dimensions de notre grille) et la topologie (grille rectangulaire ou grille hexagonale) spécifiée par l'argument `topo =` avec pour valeur `"rectangular"` ou `"hexagonal"`, respectivement.
 
-À partir de votre matrice `envir_mat`, calculez la SOM pour une grille hexagonale de 3 par 3. Affichez le résumer de votre analyse avec `summary()`.
+À partir de votre matrice `envir_mat`, calculez la SOM pour une grille hexagonale de 3 par 3. Affichez le résumé de votre analyse avec `summary()`.
 
 ```{r mat_prep}
 envir %>.%
@@ -165,7 +165,7 @@ summary(envir_som)
 ```
 
 ```{r som_h3-check}
-grade_code("Et voilà ... vous venez de réaliser votre première SOM ! Comme vous le constatez, le résumé de l'objet que vous venez de créer ne vous fournit pas beaucoup d'informations. Pas de panique ! La SOM étant une technique esssentiellement visuelle, c'est en réalisant ensuite différents graphiques que vous allez obtenir l'information.")
+grade_code("Et voilà ... vous venez de réaliser votre première SOM ! Comme vous le constatez, le résumé de l'objet que vous venez de créer ne vous fournit pas beaucoup d'information. Pas de panique ! La SOM étant une technique esssentiellement visuelle, c'est en réalisant ensuite différents graphiques que vous allez comprendre le résultat de votre analyse.")
 ```
 
 ### Évolution de l'apprentissage
@@ -181,7 +181,7 @@ set.seed(198)
 envir_som <- som(envir_mat, grid = somgrid(3, 3, topo = "hexagonal"))
 ```
 
-Vous réalisez vos graphiques à partir de l"objet "SOM3 à l'aide de la fonction `plot()`. Il existe plusieurs types de graphiques disponibles, vous pouvez dès lors consulter l'aide en ligne `?kohonen::plot.kohonen` pour en savoir plus.
+Vous réalisez vos graphiques à partir de l'objet **kohonen** obtenu via `som()` à l'aide de la fonction `plot()`. Il existe plusieurs types de graphiques disponibles, vous pouvez dès lors consulter l'aide en ligne `?kohonen::plot.kohonen` pour en savoir plus.
 
 Commencez par visualiser l'évolution de l'apprentissage en utilisant l'argument `type = "changes"`. Vous avez à disposition l'objet `envir_som`.
 
@@ -226,12 +226,12 @@ plot(envir_som, type = "mapping", shape = "straight", labels = envir$station)
 ```
 
 ```{r mapping_h2-check}
-grade_code("Le graphique que vous venez d'obtenir permet de voir comment les stations sont regroupées. Les stations qui sont dans la même cellule ont des caractéristiques environnementales relativement similaires. Les stations regroupées dans les cellules à proximité de la cellule en haut à droite auront des caractérisques environnementales assez proche par contre les stations présentent dans des cellules plus éloignées, en bas à gauche, par exemple, seront différentes. Il est possible de visualiser ces différences dans un autre graphique et c'est ce que vous allez faire maintenant.")
+grade_code("Le graphique que vous venez d'obtenir permet de voir comment les stations sont regroupées. Les stations qui sont dans la même cellule ont des caractéristiques environnementales relativement similaires. Les stations regroupées dans les cellules à proximité de la cellule en haut à droite auront des caractérisques environnementales assez proche. Par contre, les stations présentent dans des cellules plus éloignées, en bas à gauche par exemple, seront différentes. Il est possible de visualiser ces différences dans un autre graphique et c'est ce que vous allez faire maintenant.")
 ```
 
 ### Représentation des variables
 
-Les cellules représentent des stations présentants des compositions différentes. La carte SOM étant orientée, il est possible de lui associer des informations relatives aux variables. Le graphique obtenu avec l'argument `type = "codes"` permet la visualisation de ces différences de façon générale. Représentez ce graphique pour `envir_som` dans une grille hexagonale et en utilisant l'argument `codeRendering = "segments"` pour représenter les variables.
+Les cellules représentent des stations présentant des compositions différentes. La carte SOM étant orientée, il est possible de lui associer des informations relatives aux variables. Le graphique obtenu avec l'argument `type = "codes"` permet la visualisation de ces différences de façon générale. Représentez ce graphique pour `envir_som` dans une grille hexagonale et en utilisant l'argument `codeRendering = "segments"` pour représenter les variables.
 
 ```{r codes_h2, exercise=TRUE, exercise.setup="carte_prep"}
 ___(___, type = ___, codeRendering = ___, shape = ___)
@@ -249,12 +249,12 @@ plot(envir_som, type = "codes", codeRendering = "segments", shape = "straight")
 ```
 
 ```{r codes_h2-check}
-grade_code("On remarque sur ce graphique que les stations présentants les concentrations les plus élevées en `P`, `K`, `Ca`, `Mg` et `S` sont sur la gaunche de la carte alors que les concentrations les plus basses sont à droite. Les stations en bas de la carte présentent des concentrations plus élevée en `Al` et en `Fe` contrairement aux stations du haut. L'épaisseur de l'humus est la plus grande pour les stations en haut de la carte de même que la surface de sol nu. Le pH est quant à lui plus élevé dans les stations en bas à aux deux extrémités.")
+grade_code("On remarque sur ce graphique que les stations présentants les concentrations les plus élevées en `P`, `K`, `Ca`, `Mg` et `S` sont sur la gaunche de la carte alors que les concentrations les plus basses sont à droite. Les stations en bas de la carte présentent des concentrations plus élevée en `Al` et en `Fe` contrairement aux stations du haut. L'épaisseur de l'humus est la plus grande pour les stations en haut de la carte de même que la surface de sol nu. Le pH est, quant à lui, plus élevé dans les stations en bas à aux deux extrémités.")
 ```
 
 ## Conclusion
 
-Vous êtes arrivé à la fin de auto-évaluation relative aux cartes auto-adaptative. Vous avez acquis de nouveaux outils vous permettant l'analyse et l'interprétation d'un jeu de données multivariées. Essayez maintenant d'appliquer ces techniques dans une assignation GitHub.
+Vous êtes arrivé à la fin de auto-évaluation relative aux cartes auto-adaptative. Vous avez acquis la maîtrise de nouveaux outils vous permettant l'analyse et l'interprétation d'un jeu de données multivariées. Essayez maintenant d'appliquer ces techniques dans une assignation GitHub.
 
 ```{r comm_noscore, echo=FALSE}
 question_text(

@@ -48,7 +48,7 @@ Une surface permanente de 50 hectares a été définie par l'Institut de recherc
 
 ![Foret tropicale de l'ile de Barro Colorado](images/bci_forest.jpg)
 
-Les données peuvent être chargées à partir de `"BCI"` dans le package {vegan} et se présentent comme ceci :
+Les données peuvent être chargées à partir de `BCI` dans le package {vegan} et se présentent comme ceci :
 
 ```{r, echo=TRUE}
 bci <- read("BCI", package = "vegan")
@@ -61,7 +61,7 @@ Toutes les variables du tableau représentent des espèces (il n'y a pas ici une
 
 ### Matrice de distance
 
-Lors de la réalisation d'une MDS, la première étape nécessite de construire une matrice de distances entre les stations ou entre les espèces comme vous l'aviez fait lors de la CAH. Pour cela, nous utiliserons la fonction `dissimilarity()` que vous connaissez déjà. Rappelez-vous que vous devrez commencer par sélectionner une métrique adaptée à votre jeu de données pour calculer votre matrice. Pour rappel, vous explorez l'aide en ligne de `?vegan::vegdist` pour déterminer les arguments à utiliser dans `dissimilarity()`.
+Lors de la réalisation d'une MDS, la première étape nécessite de construire une matrice de distances entre les stations ou entre les espèces comme vous l'aviez fait pour la CAH. Pour cela, nous utiliserons la fonction `dissimilarity()` que vous connaissez déjà. Rappelez-vous que vous devrez commencer par sélectionner une métrique adaptée à votre jeu de données pour calculer votre matrice. Pour rappel, vous explorez l'aide en ligne de `?vegan::vegdist` pour déterminer les arguments à utiliser dans `dissimilarity()`.
 
 A partir du jeu de données `bci`, calculez la matrice de distances entre stations en utilisant l'indice de Bray-Curtis sans transformation des données afin de privilégier les espèces les plus abondantes dans votre analyse (choix au départ).
 
@@ -114,7 +114,7 @@ chart(bci_mds, labels = 1:50)
 grade_code("Vous venez de réaliser votre première MDS métrique. Sur ce graphique, les stations qui sont proches les unes des autres ont un indice de dissimilarité faible et se ressemblent du point de vue de la composition en végétaux. Notez bien que ni l’orientation des axes, ni les valeurs absolues sur ces axes n’ont de significations particulières. Sur ce graphique, vous pouvez voir qu'un petit groupe d'une douzaine de parcelles se détache à gauche du graphique. Un autre groupe s'individualise dans le bas... mais avant d'interpréter, nous devons vérifier le GOF pour déterminer si la représentation reste suffisamment fidèle à la réalité.") 
 ```
 
-### "Goodness-of-fit"
+### Goodness-of-fit
 
 Vérifiez toujours les indicateurs de "Goodness-of-fit" (GOF avec `glance()`) qui vous donneront une idée de la qualité de la projection MDS.
 
@@ -139,11 +139,11 @@ glance(bci_mds)
 ```
 
 ```{r gof_h2-check}
-grade_code("Tentez maintenant de répondre à la question qui vous est proposée ci-dessous.") 
+grade_code("Répondez maintenant à la question qui vous est proposée ci-dessous.") 
 ```
 
 ```{r qu_mds}
-question("Considérez vous que cette PCoA est une bonne PCoA ?",
+question("Considérez vous que cette PCoA est exploitable ?",
   answer("oui, sur base du goodness-of-fit, la PCoA est fidèle aux distances"),
   answer("non, le goodness-of-fit est trop faible, nous devons tenter une MDS non métrique", 
   correct = TRUE),
@@ -229,9 +229,9 @@ question("Considérez vous que cette MDS non métrique est de qualité ?",
 
 ### Diagramme de Shepard
 
-Le diagramme de Shepard (fonction `shepard()` pour le calculer puis `chart()` pour l'afficher) visualise la distorsion introduite par notre MDS non métrique. Une différence importante entre le R^2^ linéaire et le R^2^ non linéaire est une première indication d'un stress important. La fonction `shepard()` demande d'une part la matrice de distance de départ et d'autre part, l'objet nmds pour pouvoir réaliser le calcul.
+Le diagramme de Shepard (fonction `shepard()` pour le calculer puis `chart()` pour l'afficher) visualise la distorsion introduite par notre MDS non métrique. Une différence importante entre le R^2^ linéaire et le R^2^ non linéaire est une première indication d'un stress important. La fonction `shepard()` demande d'une part la matrice de distance de départ et d'autre part, l'objet **nmds** pour pouvoir réaliser le calcul.
 
-Sur le diagramme des dissimilarités de la matrice *versus* distances sur la carte, le trait rouge matérialise la fonction de stress. Plus les points sont proches de ce trait, mieux c'est en mode non linéaire. De plus, si ce trait se rapproche d'une droite, alors la linéarité est d'autant mieux respectée également. C'est donc une analyse en deux étapes que l'on fait ici par observation du diagramme : d'abord, une fidélité pour des distances similaires, ert en second lieu comme bonus éventuellement, un respect des distances relatives les unes par rapport aux autres.
+Sur le diagramme des dissimilarités de la matrice *versus* distances sur la carte, le trait rouge matérialise la fonction de stress. Plus les points sont proches de ce trait, mieux c'est en mode non linéaire. De plus, si ce trait se rapproche d'une droite, alors la linéarité est d'autant mieux respectée également. C'est donc une analyse en deux étapes que l'on fait ici par observation du diagramme : d'abord, une fidélité pour des distances similaires, et en second lieu, un respect des distances relatives les unes par rapport aux autres.
 
 Réaliser le diagramme de Shepard pour votre MDS non métrique.
 
@@ -259,12 +259,12 @@ chart(bci_sh)
 ```
 
 ```{r shepard_h2-check}
-grade_code("Comme vous le voyez, les points sont relativement proches de la fonction de stress. Et plus ils seront proches, mieux ce sera. Par contre la forme de la fonction de stress n'est pas très linaire. Nous pouvions nous y attendre, car si cela avait été le cas, la MDS métrique aurait aussi bien fonctionné sur ces données.") 
+grade_code("Comme vous le voyez, les points sont relativement proches de la fonction de stress. Et plus ils seront proches, mieux ce sera. Par contre la forme de la fonction de stress n'est pas très linéaire. Nous pouvions nous y attendre, car si cela avait été le cas, la MDS métrique aurait aussi bien fonctionné sur ces données.") 
 ```
 
 ## Conclusion
 
-Félicitation ! Vous venez de terminer votre auto-évaluation relative au positionnement multidimensionnel. Vous maîtrisez maintenant les notions et fonctions de base nécessaires pour la réalisation ce type d'analyse et vous pouvez vous lancer dans le projet relatif à cette matière.
+Félicitation ! Vous venez de terminer votre auto-évaluation relative au positionnement multidimensionnel. Vous maîtrisez maintenant les notions et fonctions de base nécessaires pour la réalisation de ce type d'analyse et vous pouvez vous lancer dans le projet relatif à cette matière.
 
 ```{r comm_noscore, echo=FALSE}
 question_text(

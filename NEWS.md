@@ -1,3 +1,9 @@
+# BioDataScience2 2022.6.0
+
+-   A new tutorial **B09La_db** is added.
+
+-   Learnr tutorials **B09Lb_mds** and **B10La_som** are revised.
+
 # BioDataScience2 2022.5.0
 
 -   A new tutorial **B08Lb_bigd** is added.
