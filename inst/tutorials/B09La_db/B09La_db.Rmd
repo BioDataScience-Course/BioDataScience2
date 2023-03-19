@@ -73,6 +73,7 @@ Parmi les différents types de bases de données, nous allons nous intéresser a
 -   créer une base de données relationnelle
 -   normaliser les données dans votre base
 -   réaliser le schéma d'une base de données
+-   effectuer une requête dans la base de données
 
 ## Base de données et normalisation
 
@@ -82,7 +83,7 @@ Le tableau de données présenté est inspiré des travaux de fin d'étude de Be
 
 > Benrezkallah J. 2022. Effet des facteurs pédologiques sur les communautés d'abeilles sauvages dans les potagers de la commune de Mons. Mémoire de Master 2 en Sciences biologiques, Université de Mons, Mons, 127 pp.
 
-Cette étude a né&cessité la collecte de nombreuses données que le chercheur souhaite gérer sous la forme d'une base de données relationnelle. Aidez ce dernier dans la mise en place de cette base. Les dix premières lignes du jeu de données sont présentées ci-dessous.
+Cette étude a nécessité la collecte de nombreuses données que le chercheur souhaite gérer sous la forme d'une base de données relationnelle. Aidez ce dernier dans la mise en place de cette base. Les dix premières lignes du jeu de données sont présentées ci-dessous.
 
 ```{r, echo=TRUE}
 head(bees, 10)
@@ -113,7 +114,7 @@ quiz(
     random_answer_order = TRUE,
     correct = "Ce tableau correspond bien à un format cas par variable. Il est donc possible de l'utiliser dans une base de données. Il n'est cependant pas normalisé."
     ),
-  question("Sélectionnez parmi les variables suivantes celles présentant de la redondance optimisable via normalisation niveau 3.",
+  question("Sélectionnez parmi les variables suivantes celles présentant de la redondance optimisable via normalisation niveau 3 (déependance transitive).",
     answer("country", correct = TRUE, , message = "Il n'est pas utile de répliquer le nom de pays d'une station pour chaque collecte."),
     answer("localisation", correct = TRUE, message = "Il n'est pas utile de répliquer les coordonnées d'une station pour chaque collecte."),
     answer("id", message = "La variable 'id' est un identifiant unique pour chaque individu collecté. Cette variable n'est pas redondante."),
@@ -124,7 +125,7 @@ quiz(
 
 ## Base de données et schéma
 
-Suite à votre exploration du tableau `bees`, vous avez pu observer une certaine redondance dans les données. Deux tables sont réalisées afin de limiter cette redondance (normalisation au niveau 3). Vous pouvez observer qu'une colonne 'id_station' a été ajoutée.
+Suite à votre exploration du tableau `bees`, vous avez pu observer que son schéma peut être optimisé. Deux tables sont réalisées afin d'assurer une normalisation au niveau 3 de la base. Vous pouvez observer qu'une colonne 'id_station' a été ajoutée.
 
 ```{r, echo=TRUE}
 head(stations)
@@ -176,7 +177,7 @@ dbListTables(bees_db)
 grade_code("Vous venez de créer une base de données en mémoire avec deux tables.")
 ```
 
-Il a présent temps de lier ces deux tables par l'intermédiaire de clés. Vous allez pour ce faire employer le package {dm}.
+Il est à présent temps de dé"finir des clés pour ces deux tables. Vous allez pour ce faire employer le package {dm}.
 
 Créez un objet **dm** associé à votre base de données (`bees_db`) et nommez-le `bees_dm`. Indiquez ensuite que vous voulez utiliser la couleur rouge pour la table `stations` et la couleur orange pour la table `captures`. Terminez par visualiser le schéma de la base en l'état.
 
@@ -205,7 +206,7 @@ dm_draw(bees_dm, view_type = "all")
 grade_code("Vous avez un objet dm. La visualition de l'objet vous permet d'observer vos deux tables. Actuellement, les clés primaires et les clés étrangères n'ont pas encore été définie.")
 ```
 
-Afin de compléter le schéma de votre base de données (niveau 2 de normalisation), définissez une clé primaire pour chaque table.
+Afin de compléter le schéma de votre base de données (finaliser le niveau 1 de normalisation), définissez une clé primaire pour chaque table.
 
 ```{r pk_h2, exercise=TRUE, paged.print=FALSE}
 # Clés primaires potentielles
@@ -250,7 +251,7 @@ bees_dm1
 grade_code("Votre objet bees_dm1 comprend à présent deux clés primaires, une pour chaque table.")
 ```
 
-Définissez maintenant une clé étrangère qui fait le lien entre vos deux tables (`captures` et `stations`) en partant de l'objet `bees_dm1` et placer ceci dans `bees_dm2`. Enfin, visualisez le schéma de la base depuis `bees_dm2`.
+Définissez maintenant une clé étrangère qui fait le lien entre vos deux tables (`captures` et `stations`) selon une relation un à plusieurs en partant de l'objet `bees_dm1` et placez le résultat dans `bees_dm2`. Enfin, visualisez le schéma de la base depuis `bees_dm2`.
 
 ```{r fk, exercise =TRUE, , paged.print=FALSE}
 # Clés étrangères potentiels
@@ -272,7 +273,7 @@ dm_draw(bees_dm2, view_type = "all")
 ```
 
 ```{r fk-check}
-grade_code("Votre objet bees_dm2 comprend à présent deux clés primaires et une clé étrangère qui lie vos deux tables. La séparation des données en deux tables liées entre elles concrétise la normalisation au niveau 3 visant à éliminer la redondance au sein de la base de données. Le shéma (data model) vous permet de bien visualiser la structure de votre base. Cet objet dm permet ensuite de réaliser des requêtes facilement.")
+grade_code("Votre objet bees_dm2 comprend à présent deux clés primaires et une clé étrangère qui lie vos deux tables. La séparation des données en deux tables liées entre elles vous permet d'obtenir une base de données 3NF. Le schéma (data model) vous permet de bien visualiser la structure de votre base. Cet objet dm permet ensuite de réaliser des requêtes facilement.")
 ```
 
 ## Requête sur la base de données

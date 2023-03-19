@@ -1,3 +1,7 @@
+# BioDataScience2 2022.6.1
+
+-   Slight adaptations to **B09La_db**.
+
 # BioDataScience2 2022.6.0
 
 -   A new tutorial **B09La_db** is added.
