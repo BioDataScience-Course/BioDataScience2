@@ -1,3 +1,7 @@
+# BioDataScience2 2022.0.0
+
+-   New version for the academic year 2023-2024.
+
 # BioDataScience2 2022.6.1
 
 -   Slight adaptations to **B09La_db**.
