@@ -2,6 +2,8 @@
 
 -   New version for the academic year 2023-2024.
 
+-   The addin to select learnrs or Shiny apps now detects inactivated items and takes them out of the list.
+
 # BioDataScience2 2022.6.1
 
 -   Slight adaptations to **B09La_db**.
