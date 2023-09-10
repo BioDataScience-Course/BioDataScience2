@@ -9,7 +9,7 @@ Authors@R: c(
   email = "guyliann.engels@umons.ac.be"))
 Maintainer: Philippe Grosjean <phgrosjean@sciviews.org>
 Depends: R (>= 4.2.0)
-Imports: learnitdown, BioDataScience, shiny, miniUI
+Imports: learnitdown, BioDataScience, shiny, miniUI, rstudioapi
 Suggests: SciViews, ggplot2, ggpubr, data.io, svMisc, svBase, svFlow, chart, covr, knitr, testthat, gradethis
 License: MIT + file LICENSE
 Encoding: UTF-8

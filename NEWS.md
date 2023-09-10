@@ -1,8 +1,10 @@
-# BioDataScience2 2022.0.0
+# BioDataScience2 2023.0.0
 
 -   New version for the academic year 2023-2024.
 
 -   The addin to select learnrs or Shiny apps now detects inactivated items and takes them out of the list.
+
+-   A new addin to create a course issue is added.
 
 # BioDataScience2 2022.6.1
 
