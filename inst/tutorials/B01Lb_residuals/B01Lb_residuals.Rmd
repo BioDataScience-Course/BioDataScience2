@@ -17,8 +17,12 @@ BioDataScience2::learnr_setup()
 SciViews::R("model", lang = "fr")
 
 rice <- read("rice", package = "BioDataScience2")
+rice <- labelise(rice, self = FALSE,
+  label = list(area = "Surface", major_axis_length = "Longueur"),
+  units = list(area = "pixels²", major_axis_length = "pixels")
+)
 
-rice_lm <- lm(data = rice,area ~ major_axis_length) 
+rice_lm <- lm(data = rice, area ~ major_axis_length) 
 lm_result <- tidy(rice_lm)
 lm_param <- glance(rice_lm)
 ```
@@ -35,27 +39,33 @@ BioDataScience2::learnr_server(input, output, session)
 
 ## Objectifs
 
--   Utiliser la fonction `lm()` afin d'obtenir un modèle de régression linéaire simple.
+-   Utiliser la fonction `lm()` pour obtenir un modèle de régression linéaire simple
 
--   Étudier le résumé du modèle linéaire
+-   Étudier le résumé et le graphique du modèle linéaire
 
--   Être capable de réaliser une analyse des résidus
+-   Paramétriser l'équation de la régression linéaire
+
+-   Découvrir l'analyse des résidus du modèle
 
 ## Description des données
 
-Des scientifiques s'intéressent à deux variétés de riz cultivées en Turquie. Ils ont l'objectif de mettre en place un outil capable sur base d'analyse d'image de classer des grains de riz.
+Des ingénieurs agronomes s'intéressent à deux variétés de riz cultivées en Turquie. Ils ont pour objectif de mettre en place un outil capable, sur base d'analyse d'image, de classer des grains de riz. Les dimensions mesurées sur les images ne sont pas calibrées et sont exprimées en pixels. Nous rajoutons cette information dans `rice`.
 
 ```{r, echo = TRUE}
 rice <- read("rice", package = "BioDataScience2")
+rice <- labelise(rice, self = FALSE,
+  label = list(area = "Surface", major_axis_length = "Longueur"),
+  units = list(area = "pixels²", major_axis_length = "pixels")
+)
 ```
 
-Vous avez à disposition le tableau `rice` qui comprend les variables suivantes `r names(rice)`. Consultez la page d'aide afin d'en apprendre davantage.
+Vous avez à disposition le tableau `rice` constitué des variables suivantes `r names(rice)`. Consultez la page d'aide avec `?BioDataScience2::rice` afin d'en apprendre davantage.
 
-Votre objectif est de réaliser une régression linéaire de la variable `area` sur à la variable `major_axis_length`. Vous devrez ensuite analyser le résumé de cette régression et utilser les outils de diagnostic des résidus.
+Votre objectif est de réaliser une régression linéaire de la variable `area` sur à la variable `major_axis_length`. Vous devrez ensuite analyser le résumé de cette régression et utiliser les outils de diagnostic des résidus.
 
-Débutez cette analyse par proposer un nuage de point de la variable `area` en fonction de la variable `major_axis_length`.
+Débutez cette analyse en réalisant un nuage de point de la variable `area` en fonction de la variable `major_axis_length` pour voir comment se présentent les données.
 
-```{r np_h2, exercise = TRUE}
+```{r np_h2, exercise=TRUE}
 chart(data = ___, ___ ~ ___) ___
   ___()
 ```
@@ -73,17 +83,32 @@ chart(data = rice, area ~ major_axis_length) +
 ```
 
 ```{r np_h2-check}
-grade_code("Bien joué ! Vous avez réalisé un nuage de points afin de visualiser vos données avant de modéliser. C'est une bonne habitude à prendre.")
+grade_code("Ce graphique en nuage de points est un pré-requis indispensable pour visualiser vos données avant de modéliser. C'est une bonne habitude à prendre que de l'étudier systématiquement avant de faire un régression. Vous noterez que le nuage de point s'étire le long d'une droite... C'est plutôt bon signe, non ?")
 ```
+
+Nous pouvons continuer la description des données avec une matrice de corrélation de Pearson :
+
+```{r, echo=TRUE}
+correlation(num_vars(rice), method = "pearson") |>
+  tabularise()
+```
+
+Nous voyons que `area` est raisonnablement bien corrélé à `major_axis_length`, même si ce n'est pas la corrélation la plus forte. Ensuite une description générale des données, notamment pour voir comment elles se répartissent et s'il y a des valeurs manquantes, complète notre description du jeu de données.
+
+```{r, echo=TRUE}
+skimr::skim(rice)
+```
+
 
 ## Modélisation
 
 Réalisez à présent la régression linéaire demandée de la variable `area` en fonction de la variable `major_axis_length`du tableau `rice`.
 
-```{r rice_lm_h2, exercise = TRUE}
+```{r rice_lm_h2, exercise=TRUE}
 rice_lm <- lm(data = ___, ___ ~ ___) 
 # Résumé de la régression linéaire
-summary(___)
+summary(___) |>
+  tabularise()
 # Graphique de la régression
 chart(___)
 ```
@@ -91,7 +116,8 @@ chart(___)
 ```{r rice_lm_h2-hint-1}
 rice_lm <- lm(data = rice, ___ ~ ___) 
 # Résumé de la régression linéaire
-summary(rice_lm)
+summary(rice_lm) |>
+  tabularise()
 # Graphique de la régression
 chart(rice_lm)
 
@@ -102,13 +128,14 @@ chart(rice_lm)
 ## Solution ##
 rice_lm <- lm(data = rice, area ~ major_axis_length) 
 # Résumé de la régression linéaire
-summary(rice_lm)
+summary(rice_lm) |>
+  tabularise()
 # Graphique de la régression
 chart(rice_lm)
 ```
 
 ```{r rice_lm_h2-check}
-grade_code("Bien joué ! Vous avez calculé votre objet `lm_rice`. Vous l'avez résumé et représenté graphiquement.")
+grade_code("Vous avez calculé votre objet `lm_rice`. Vous l'avez résumé et représenté graphiquement. Vous avez du matériel à examiner pour déterminer si cette régression tient la route.")
 ```
 
 ```{r qu_lm}
@@ -122,7 +149,7 @@ quiz(
     answer(sprintf("%.2f", lm_result$statistic[2])),
     answer(sprintf("%.2f", lm_param$r.squared[1])),
     allow_retry = TRUE, random_answer_order = TRUE,
-    correct = "Bien joué ! Vous savez analyser le tableau des résultats.",
+    correct = "Vous semblez comprendre ce qu'il y a dans le tableau des résultats.",
     incorrect = "Oups, il semble que vous avez mal lu le tableau résumé de la régression linéaire.",
     submit_button = "Soumettre une réponse", 
     try_again_button = "Resoumettre une réponse"),
@@ -135,21 +162,39 @@ quiz(
     answer(sprintf("%.2f", lm_result$statistic[2])),
     answer(sprintf("%.2f", lm_param$r.squared[1])),
     allow_retry = TRUE, random_answer_order = TRUE,
-    correct = "Bien joué ! Vous savez analyser le tableau des résultats.",
+    correct = "Vous avez repéré les valeurs estimées des deux paramètres du modèle, pente et ordonnée à l'origine. Un aspect très important est la paramétrisation du modèle.",
     incorrect = "Oups, il semble que vous avez mal lu le tableau résumé de la régression linéaire.",
     submit_button = "Soumettre une réponse", 
     try_again_button = "Resoumettre une réponse")
 )
 ```
 
+### Paramétrisation du modèle
+
+Une fois que vous avez les estimateurs des différents paramètres de votre modèle, vous pouvez placer ces valeurs dans son équation. Cette étape importante se nomme la **paramétrisation** du modèle. Dans la SciViews Box 2023, vous avez des outils pour vous y aider. La fonction `eq__()` extrait l'équation du modèle et son argument `use_coefs = TRUE` indique de remplacer les paramètres par les valeurs estimées. Ainsi, pour obtenir cette équation, vous pouvez écrire un chunk en ligne `` `r eq__(rice_lm, use_coefs = TRUE)` `` à l'intérieur de balises Markdown d'équation dite "display" (équation sur sa propre ligne, hors texte, par opposition à l'équation "inline", directement dans le texte). Cela s'écrit comme suit :
+
+-   à une nouvelle ligne, vous entrez deux dollars `$$`, c'est la balise Markdown d'entrée d'une équation
+-   à la ligne suivante, vous écrivez le chunk en ligne `` `r eq__(...)` `` qui viendra placer le contenu de l'équation calculé par R lors du rendu du document
+-   à la troisième ligne, vous fermer le balisage d'équation à nouveau avec deux dollars `$$` et prenez soin d'encader le tout par deux lignes vide (une au dessus de la balise d'entrée, et une au dessous de la balise de sortie)
+
+Cela donne ceci :
+
+$$
+`r eq__(rice_lm, use_coefs = TRUE, coef_digits = c(0, 2))`
+$$
+
+Notez que vous contrôlez le nombre de chiffres derrière la virgule pour chaque estimation à l'aide de l'argument supplémentaire `coef_digits =` qui accepte un entier (même nombre de chiffres derrière la virgule pour tous les estimateurs), ou un vecteur d'entiers pour varier la précision de chaque estimateur successif. Notez aussi que `eq__()` ne remplace pas encore les noms des variables par les labels. L'équation ci-dessus a été obtenue à l'aide de `` `r eq__(rice_lm, use_coefs = TRUE, coef_digits = c(0, 2))` ``.
+
+Maintenant que les aspects techniques sont expliqués, concentrez-vous sur cette équation *Comparez le modèle paramétrisé avec son équation générale qui est présentée dans le tableau résumé plus haut. Assurez-vous d'avoir bien compris la logique de la paramétrisation pour passer de l'un à l'autre avant de passer à la suite.*
+
 ## Analyse des résidus
 
-Vous avez à votre disposition l'objet `rice_lm` que vous avez réalisé précédemment. Proposez quatre graphiques afin d'étudier la distribution des résidus, le graphique quantile-quantile des résidus, la position et l'échelle des résidus et la distance de Cook des résidus.
+Vous avez à votre disposition l'objet `rice_lm` que vous avez créé précédemment. Construisez quatre graphiques afin d'étudier (1) la distribution générale des résidus, (2) le graphique quantile-quantile des résidus, (3) la position et l'échelle des résidus et (4) la distance de Cook des résidus.
 
-```{r resid_h2, exercise = TRUE}
-# distribution des résidus
+```{r resid_h2, exercise=TRUE}
+# Distribution des résidus
 chart$___(___)
-# graphique quantile-quantile
+# Graphique quantile-quantile
 chart$___(___)
 # Position et échelle des résidus
 chart$___(___)
@@ -158,16 +203,25 @@ chart$___(___)
 ```
 
 ```{r resid_h2-hint-1}
-# Consultez la page d'aide `modelit::chart.lm()`
+# Consultez la page d'aide `?modelit::chart.lm`
+
+# Distribution des résidus
+chart$___(___)
+# Graphique quantile-quantile
+chart$___(___)
+# Position et échelle des résidus
+chart$___(___)
+# Distance de Cook
+chart$___(___)
 
 #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r resid_h2-solution}
 ## Solution ##
-# distribution des résidus
+# Distribution des résidus
 chart$resfitted(rice_lm)
-# graphique quantile-quantile
+# Graphique quantile-quantile
 chart$qqplot(rice_lm)
 # Position et echelle des résidus
 chart$scalelocation(rice_lm)
@@ -176,7 +230,7 @@ chart$cooksd(rice_lm)
 ```
 
 ```{r resid_h2-check}
-grade_code("Bravo ! Vous avez réalisé les quatres graphiques les plus courants de l'analyse des résidus. Saurez-vous à présent répondre à la question suivante.")
+grade_code("Ce sont les quatre graphiques les plus courants de l'analyse des résidus. Êtes-vous capable à présent de répondre à la question qui suit ?")
 ```
 
 ```{r qu_resid}
@@ -195,7 +249,7 @@ question("Sélectionnez parmi les éléments suivants les affirmations vraies.",
 
 ## Conclusion
 
-Vous progressez dans votre apprentissage. Vous êtes à présent capable de réaliser une régression linéaire dans R, d'étudier le résumé de l'objet créé et d'analyser les résidus en lien avec cette régression.
+Vous progressez dans votre apprentissage. Vous venez de découvrir comment réaliser une régression linéaire simple dans R, d'en produire un tableau résumé et une visualisation graphique. Vous avez abordé la paramétrisation de l'équation du modèle et vous avez entrepris une première approche de l'analyse des résidus du modèle.
 
 ```{r comm_noscore, echo=FALSE}
 question_text(
