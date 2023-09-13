@@ -4,7 +4,7 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II Module 1** Réaliser une régression linéaire simple dans R."
 tutorial:
   id: "B01La_reg_lin"
-  version: 2.3.0/8
+  version: 2.4.0/9
 output: 
   learnr::tutorial:
     progressive: true
@@ -15,17 +15,18 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
 SciViews::R("model", lang = "fr")
-
+# Ajout temporaire
+library(tabularise)
 # crabs
 crabs <- read("crabs", package = "MASS")
 
 # bull
 read(file = system.file("extdata", "belgianblue.xlsx",
   package = "BioDataScience2"), type = "xlsx") %>.%
-  #labelise(.,
-  #  label = list(weight = "Masse", age = "Age", variety = "Variété"),
-  #  unit = list(weight = "kg", age = "mois")) %>.%
-  sfilter(., age <= 40) %->%
+  labelise(.,
+    label = list(weight = "Masse", age = "Age", variety = "Variété"),
+    unit = list(weight = "kg", age = "mois")) %>.%
+  sfilter(., age <= 40) ->
   bull
 
 bull_lm <- lm(data = bull, weight ~ age)
@@ -51,7 +52,7 @@ Ce tutoriel sur la régression linéaire débute par un rappel sur la corrélati
 
 -   Maîtriser la régression linéaire dans R, en particulier la fonction `lm()`.
 
-<!-- TODO: paramétriser un modèle, c'est super-important! -->
+-   Paramétrer l'équation d'une régression linéaire.
 
 ## Biométrie des crabes
 
@@ -114,7 +115,9 @@ question("Quelles sont les combinaisons de variables les plus corrélées ? (sé
 
 ## Taureaux reproducteurs
 
-L'association wallonne de l'élevage dispose de plusieurs centres d'insémination. Ils ont un recensement des différents taureaux reproducteurs. Vous avez à votre disposition le jeu de données `bull` qui comprend les variables suivantes : `r names(bull)`. Il souhaite que vous réalisiez une régression linéaire de la masse en fonction de l'âge. Il vous demande de vous intéressez uniquement au plus individus de moins de 40 mois.
+L'association wallonne de l'élevage dispose de plusieurs centres d'insémination. Ils ont un recensement des différents taureaux reproducteurs. Vous avez à votre disposition le jeu de données `bull` qui comprend les variables suivantes : `r names(bull)`.
+
+Il souhaite que vous réalisiez une régression linéaire de la masse en fonction de l'âge. Il vous demande de vous intéresser uniquement aux individus de moins de 40 mois.
 
 Débutez votre analyse par réaliser un nuage de point de la masse en fonction de l'âge des taureaux.
 
@@ -148,7 +151,6 @@ summary(lm. <- lm(data = ___, ___ ~ ___))
 
 ```{r bull_lm_h2-hint-1}
 summary(lm. <- lm(data = ___, ___ ~ age))
-
 #### ATTENTION: Hint suivant = solution !####
 ```
 
@@ -158,7 +160,7 @@ summary(lm. <- lm(data = bull, weight ~ age))
 ```
 
 ```{r bull_lm_h2-check}
-grade_code("Vous avez réalisé votre première régression linéaire. Analysez le résumé de ce modèle et répondez aux questions ci-dessous.")
+grade_code("Vous avez réalisé votre première régression linéaire. Analysez le résumé de ce modèle et répondez aux questions ci-dessous. Pour obtenir une beau tableau pour tes objets `lm`ou `summary.lm`, tu peux utiliser la fonction tabularise() du package {tabularise}. Par exemple, tu pourrais essayer tabularise(lm.)")
 ```
 
 Suite à votre analyse, répondez aux questions suivantes :
@@ -205,6 +207,22 @@ quiz(
     submit_button = "Soumettre une réponse", 
     try_again_button = "Resoumettre une réponse")
 )
+```
+
+La paramétrisation du modèle est une étape indispensable dans la réalisation d'une régression linéaire.
+
+```{r qu_equa}
+question(text = "Sélectionnez parmi les propositions suivantes l'équation paramétrée du modèle.",
+  answer("$\\operatorname{y} = \\beta_{1} \\operatorname{x}+ \\alpha$"),
+  answer("$\\operatorname{weight} = \\alpha + \\beta_{1} \\operatorname{age}$"),
+  answer("$\\operatorname{y} = 26.335 \\operatorname{x} + 199.687$"),
+  answer("$\\operatorname{weight} = 26 \\operatorname{age} + 200$"),
+  answer("$\\operatorname{Masse [kg]} = 26.33 \\operatorname{Age [mois]} + 199.69$", correct = TRUE),
+  answer("$\\operatorname{Masse [kg]} = 199.69 \\operatorname{Age [mois]} + 26.33$"),
+  allow_retry = TRUE,
+  submit_button = "Soumettre une réponse", 
+  try_again_button = "Resoumettre une réponse",
+  correct = "Bien joué ! Maintenant que tu as montré ta capacité à choisir la bonne équation paramétrée du modèle. On te donne une astuce. La fonction equation() du package {tabularise} te permet d'obtenir une équation latex du modèle.")
 ```
 
 ## Conclusion
