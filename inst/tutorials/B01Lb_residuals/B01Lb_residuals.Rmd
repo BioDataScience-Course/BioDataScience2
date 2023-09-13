@@ -4,7 +4,7 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II Module 1** Analyser les résidus d'une régression linéaire simple."
 tutorial:
   id: "B01Lb_residuals"
-version: 2.0.0/6
+version: 2.1.0/6
 output:
   learnr::tutorial:
   progressive: true
@@ -15,6 +15,8 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
 SciViews::R("model", lang = "fr")
+# ajout temporaire
+library(tabularise)
 
 rice <- read("rice", package = "BioDataScience2")
 rice <- labelise(rice, self = FALSE,
@@ -189,6 +191,15 @@ Maintenant que les aspects techniques sont expliqués, concentrez-vous sur cette
 
 ## Analyse des résidus
 
+Le graphique et le tableau ci-dessous vous permettent d'obtenir des informations sur l'objet `rice_lm` que vous avez calculé précédemment
+
+```{r, echo=TRUE}
+# Graphique de votre objet `lm`
+chart(rice_lm)
+# Tableau relatif à la paramétrisation du modèle
+tabularise$tidy(rice_lm)
+```
+
 Vous avez à votre disposition l'objet `rice_lm` que vous avez créé précédemment. Construisez quatre graphiques afin d'étudier (1) la distribution générale des résidus, (2) le graphique quantile-quantile des résidus, (3) la position et l'échelle des résidus et (4) la distance de Cook des résidus.
 
 ```{r resid_h2, exercise=TRUE}
@@ -237,7 +248,7 @@ grade_code("Ce sont les quatre graphiques les plus courants de l'analyse des ré
 question("Sélectionnez parmi les éléments suivants les affirmations vraies.",
   answer("Aucune valeur n'influence trop fortement la régression linéaire.", correct = TRUE, message = "La régression linéaire est très influencée par les valeurs extrêmes. La distance de cook est parfaite pour étudier ces valeurs extrêmes."),
   answer("On observe autant de résidus positifs que négatifs.", correct = TRUE, message = "La distribution des résidus montre permet d'observer qu'il y a autant de résidus positifs que négatifs. La répartition des résidus est homogène tout le long de l'axe X (les valeurs prédites)."),
-  answer("Les résidus suivent une distribution presque normale.", correct = TRUE, message = "Le graphique quantile-quantile permet d'étudier la distribution normale. On observe que les résidus les plus faible et les plus élévé s'éloigne de la droite. Il serait intéressant de tenter des transformations mathématique sur les variables pour rendre la distribution des résidus noramle."),
+  answer("Les résidus suivent une distribution normale.", correct = TRUE, message = "Le graphique quantile-quantile permet d'étudier la distribution normale. On observe que les résidus les plus faible et les plus élévé s'éloigne de la droite. Il serait intéressant de tenter des transformations mathématique sur les variables pour rendre la distribution des résidus noramle."),
   answer("Les résidus positif et négatif ont des valeurs similaires dans l'absolu.", correct = TRUE, message = "La position et l'échelle des résidus permet dd superposer les résidus positifs et négatifs. On peut observer que la courbe bleue est presque horizontale."),
   correct = "Bien joué ! Vous avez sélectionné les affirmations correctes.",
   incorrect = "Oups, il semble que vous avez mal interpété les graphiques ci-dessus. C'est très complexe d'étudier les graphiques de diagnostic.",
