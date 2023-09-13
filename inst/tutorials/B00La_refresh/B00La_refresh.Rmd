@@ -521,7 +521,7 @@ potatoes1 <- sselect(potatoes,  yield, cultivar)
 
 Le pipe natif `|>` est apparu dans la version 4.1.0 de R. Vous connaissez déjà deux pipes que sont le pipe de {magrittr} `%>%` ou le pipe du package {svFlow} `%>.%`. Ces trois opérateurs permettent de chaîner des instructions afin de montrer de manière claire la suite des opérations. Les pipes améliorent grandement la lisibilité du code. Notez que le pipe `|>` ne requiert pas l'utilisation du `.` dans la fonction qui le suit alors que le pipe `%>.%` l'impose. Vous pouvez retrouver de plus amples informations sur le chaînage des instructions dans la [section 5.5 de SDD I](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2022/cha%25C3%25AEnage-des-instructions.html).
 
-**Nous vous proposons de continuer à utiliser le pipe `%>.%` de SciViews-R**
+*Nous vous proposons de continuer à utiliser le pipe `%>.%` de SciViews-R*
 
 Pour rappel, le tableau de données se nomme `potatoes`. Ce tableau est constitué des variables `r names(potatoes)`. Sélectionnez les parcelles ayant un rendement strictement supérieur à 30 tonnes par hectare et inférieur ou égal à 41 tonnes par hectare. Utilisez une fonction speedy pour ce faire.
 
@@ -640,7 +640,7 @@ bull_red %>.%
 
 Vous noterez que les centres d'insémination ont plus d'individus de la variété viande que mixte. Réalisez un test *t* de Student bilatéral avec un seuil $\alpha$ de 0.05 et de variances inégales afin de comparer la masse standardisée en fonction de la variété.
 
-```{r qu_student_h3, exercise=TRUE, exercise.lines=3}
+```{r qu_student_h3, exercise=TRUE, exercise.lines=4}
 bull_t <- t.test(data = ___, ___ ~ ___,
   alternative = ___, conf.level = ___, var.equal = ___)
 # Affichage du résultat sous la forme d'un tableau

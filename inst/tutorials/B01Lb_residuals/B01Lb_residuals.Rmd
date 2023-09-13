@@ -20,8 +20,9 @@ library(tabularise)
 
 read("rice", package = "BioDataScience2") %>.%
   labelise(.,
-  label = list(area = "Aire", "major_axis_length" = "Longueur du grand axe"),
-  units = list(area = "px^2", major_axis_length = "px")) ->
+  label = list(area = "Aire", "major_axis_length" = "Longueur du grand axe")#,
+  #units = list(area = "px^2", major_axis_length = "px")
+  ) ->
   rice
 
 rice_lm <- lm(data = rice,area ~ major_axis_length) 
@@ -54,8 +55,7 @@ Des scientifiques s'intéressent à deux variétés de riz cultivées en Turquie
 ```{r, echo = TRUE}
 read("rice", package = "BioDataScience2") %>.%
   labelise(rice,
-  label = list(area = "Aire", "major_axis_length" = "Longueur du grand axe"),
-  units = list(area = "px^2", major_axis_length = "px")) ->
+  label = list(area = "Aire", "major_axis_length" = "Longueur du grand axe")) ->
   rice
 ```
 
