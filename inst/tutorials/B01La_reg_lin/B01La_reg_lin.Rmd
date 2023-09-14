@@ -177,7 +177,7 @@ Toutes les corrélations sont positives et élevées. La corrélation entre la m
 
 Complétez à présent les instructions ci-dessous afin de réaliser une régression linéaire de la masse en fonction de l'âge de nos taureaux.
 
-```{r bull_lm_h2, exercise=TRUE, exercise.lines=2}
+```{r bull_lm_h2, exercise=TRUE, exercise.lines=7}
 bull_lm <- lm(data = ___, ___ ~ ___)
 # Tableau résumé de la régression linéaire
 summary(___) |>
@@ -266,8 +266,8 @@ question(text = "Sélectionnez parmi les propositions suivantes l'équation para
   answer("$\\operatorname{weight} = \\alpha + \\beta_{1} \\operatorname{age}$"),
   answer("$\\operatorname{y} = 26.335 \\operatorname{x} + 199.687$"),
   answer("$\\operatorname{weight} = 26 \\operatorname{age} + 200$"),
-  answer("$\\operatorname{Masse [kg]} = 26.34 \\operatorname{Age [mois]} + 199.69$", correct = TRUE),
-  answer("$\\operatorname{Masse [kg]} = 199.69 \\operatorname{Age [mois]} + 26.34$"),
+  answer("$\\operatorname{Masse [kg]} = 26.3 \\operatorname{Age [mois]} + 199.7$", correct = TRUE),
+  answer("$\\operatorname{Masse [kg]} = 199.7 \\operatorname{Age [mois]} + 26.3$"),
   allow_retry = TRUE,
   submit_button = "Soumettre une réponse", 
   try_again_button = "Resoumettre une réponse",
