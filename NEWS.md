@@ -1,6 +1,6 @@
 # BioDataScience2 2023.1.0
 
--   
+-   Learnrs B00La_refresh, B01La_reg_lin and B01Lb_residuals ready.
 
 # BioDataScience2 2023.0.0
 
