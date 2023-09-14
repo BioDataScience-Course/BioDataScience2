@@ -2,6 +2,7 @@
 title: "Analyse des résidus d'une régression"
 author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II Module 1** Analyser les résidus d'une régression linéaire simple."
+bibliography: references.bib
 tutorial:
   id: "B01Lb_residuals"
 version: 2.1.0/6
@@ -15,13 +16,11 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
 SciViews::R("model", lang = "fr")
-# ajout temporaire
-library(tabularise)
 
 rice <- read("rice", package = "BioDataScience2")
-rice <- labelise(rice, self = FALSE,
+rice <- labelise(rice,
   label = list(area = "Surface", major_axis_length = "Longueur"),
-  units = list(area = "pixels²", major_axis_length = "pixels")
+  units = list(area = "pixels^2", major_axis_length = "pixels")
 )
 
 rice_lm <- lm(data = rice, area ~ major_axis_length) 
@@ -51,21 +50,25 @@ BioDataScience2::learnr_server(input, output, session)
 
 ## Description des données
 
-Des ingénieurs agronomes s'intéressent à deux variétés de riz cultivées en Turquie. Ils ont pour objectif de mettre en place un outil capable, sur base d'analyse d'image, de classer des grains de riz. Les dimensions mesurées sur les images ne sont pas calibrées et sont exprimées en pixels. Nous rajoutons cette information dans `rice`.
+@Cinar_Koklu_2019 s'intéressent à deux variétés de riz cultivées en Turquie . Ils ont pour objectif de mettre en place un outil capable, sur base d'analyse d'image, de classer des grains de riz. Une copie de leurs données est disponible dans `rice` du package `BioDataScience2`. Les dimensions mesurées sur les images ne sont pas calibrées et sont exprimées en pixels. Nous rajoutons cette information dans notre jeu de données à l'aide de `labelise()`.
 
 ```{r, echo = TRUE}
 rice <- read("rice", package = "BioDataScience2")
-rice <- labelise(rice, self = FALSE,
+rice <- labelise(rice,
   label = list(area = "Surface", major_axis_length = "Longueur"),
-  units = list(area = "pixels²", major_axis_length = "pixels")
+  units = list(area = "pixels^2", major_axis_length = "pixels")
 )
 ```
 
-Vous avez à disposition le tableau `rice` constitué des variables suivantes `r names(rice)`. Consultez la page d'aide avec `?BioDataScience2::rice` afin d'en apprendre davantage.
+Vous avez à disposition le tableau `rice` constitué des variables suivantes :
 
-Votre objectif est de réaliser une régression linéaire de la variable `area` sur à la variable `major_axis_length`. Vous devrez ensuite analyser le résumé de cette régression et utiliser les outils de diagnostic des résidus.
+`r paste0("<code>", names(rice), "</code>")`
 
-Débutez cette analyse en réalisant un nuage de point de la variable `area` en fonction de la variable `major_axis_length` pour voir comment se présentent les données.
+Consultez la page d'aide avec `?BioDataScience2::rice` et la publication (référence en fin de document et dans la page d'aide) pour en apprendre davantage.
+
+Votre objectif est de réaliser une régression linéaire de la variable `area` en fonction de `major_axis_length`, parce que vous soupçonnez cette relation d'être importante pour discriminer les deux variétés de riz plus tard. Vous devrez ensuite analyser le résumé de cette régression et utiliser les outils de diagnostic des résidus.
+
+Débutez cette analyse en réalisant un nuage de point de `area` en fonction de `major_axis_length` pour voir comment se présentent les données.
 
 ```{r np_h2, exercise=TRUE}
 chart(data = ___, ___ ~ ___) ___
@@ -101,6 +104,7 @@ Nous voyons que `area` est raisonnablement bien corrélé à `major_axis_length`
 skimr::skim(rice)
 ```
 
+Les distributions des deux variables sont univariées et les moyennes assez proches des médianes, ce qui est bon signe (symétrie). Il n'y a pas de données manquantes. Avec `r nrow(rice)`, nous avons un nombre bien suffisant de cas pour réaliser notre régression linéaire.
 
 ## Modélisation
 
@@ -137,7 +141,7 @@ chart(rice_lm)
 ```
 
 ```{r rice_lm_h2-check}
-grade_code("Vous avez calculé votre objet `lm_rice`. Vous l'avez résumé et représenté graphiquement. Vous avez du matériel à examiner pour déterminer si cette régression tient la route.")
+grade_code("Vous avez calculé votre objet `lm_rice`. Vous l'avez résumé et représenté graphiquement. Vous avez du matériel à examiner pour déterminer si cette régression tient la route. Avec un R^2 de 0.815, la régression est bonne, mais pouvez-vous repérer des éléments importants dans le tableau via le Quiz ci-dessous ?")
 ```
 
 ```{r qu_lm}
@@ -171,58 +175,81 @@ quiz(
 )
 ```
 
-### Paramétrisation du modèle
+#### Paramétrisation du modèle
 
-Une fois que vous avez les estimateurs des différents paramètres de votre modèle, vous pouvez placer ces valeurs dans son équation. Cette étape importante se nomme la **paramétrisation** du modèle. Dans la SciViews Box 2023, vous avez des outils pour vous y aider. La fonction `eq__()` extrait l'équation du modèle et son argument `use_coefs = TRUE` indique de remplacer les paramètres par les valeurs estimées. Ainsi, pour obtenir cette équation, vous pouvez écrire un chunk en ligne `` `r eq__(rice_lm, use_coefs = TRUE)` `` à l'intérieur de balises Markdown d'équation dite "display" (équation sur sa propre ligne, hors texte, par opposition à l'équation "inline", directement dans le texte). Cela s'écrit comme suit :
+Une fois que vous avez les estimateurs des différents paramètres de votre modèle, vous pouvez placer ces valeurs dans son équation. Cette étape importante se nomme la **paramétrisation** du modèle.
 
--   à une nouvelle ligne, vous entrez deux dollars `$$`, c'est la balise Markdown d'entrée d'une équation
+##### Comment faire en pratique ?
+
+Dans la SciViews Box 2023, vous avez des outils pour vous y aider. La fonction `eq__()` extrait l'équation du modèle et son argument `use_coefs = TRUE` indique de remplacer les paramètres par les valeurs estimées. Ainsi, pour obtenir cette équation, vous pouvez écrire un chunk en ligne `` `r eq__(rice_lm, use_coefs = TRUE)` `` à l'intérieur de balises Markdown d'équation dite "display" (équation sur sa propre ligne, hors texte, par opposition à l'équation "inline", directement dans le texte). Cela s'écrit comme suit :
+
+-   à une nouvelle ligne, vous entrez deux dollars `$$`, c'est la balise Markdown d'entrée d'une équation "display"
 -   à la ligne suivante, vous écrivez le chunk en ligne `` `r eq__(...)` `` qui viendra placer le contenu de l'équation calculé par R lors du rendu du document
--   à la troisième ligne, vous fermer le balisage d'équation à nouveau avec deux dollars `$$` et prenez soin d'encader le tout par deux lignes vide (une au dessus de la balise d'entrée, et une au dessous de la balise de sortie)
+-   à la troisième ligne, vous fermez le balisage d'équation à nouveau avec deux dollars `$$` et prenez soin d'encadrer le tout par deux lignes vides (une au-dessus de la balise d'entrée, et une au-dessous de la balise de sortie)
 
 Cela donne ceci :
 
 $$
-`r eq__(rice_lm, use_coefs = TRUE, coef_digits = c(0, 2))`
+`r eq__(rice_lm, use_coefs = TRUE, coef_digits = c(0, 1))`
 $$
 
-Notez que vous contrôlez le nombre de chiffres derrière la virgule pour chaque estimation à l'aide de l'argument supplémentaire `coef_digits =` qui accepte un entier (même nombre de chiffres derrière la virgule pour tous les estimateurs), ou un vecteur d'entiers pour varier la précision de chaque estimateur successif. Notez aussi que `eq__()` ne remplace pas encore les noms des variables par les labels. L'équation ci-dessus a été obtenue à l'aide de `` `r eq__(rice_lm, use_coefs = TRUE, coef_digits = c(0, 2))` ``.
+**Astuce:** vous contrôlez le nombre de chiffres derrière la virgule pour chaque estimateur à l'aide de l'argument supplémentaire `coef_digits =` qui accepte un nombre entier (même nombre de chiffres derrière la virgule pour tous les estimateurs), ou un vecteur d'entiers pour varier la précision de chaque estimateur successif. Il est important de limiter les valeurs à un nombre de chiffres **significatifs** par rapport au calcul qui est réalisé. Ne jamais conserver un grand nombre de décimales inutiles dans les équations ! L'équation ci-dessus a été obtenue à l'aide de `` `r eq__(rice_lm, use_coefs = TRUE, coef_digits = c(0, 1))` ``.
 
-Maintenant que les aspects techniques sont expliqués, concentrez-vous sur cette équation *Comparez le modèle paramétrisé avec son équation générale qui est présentée dans le tableau résumé plus haut. Assurez-vous d'avoir bien compris la logique de la paramétrisation pour passer de l'un à l'autre avant de passer à la suite.*
+##### Compréhension de la paramétrisation du modèle
+
+Maintenant que les aspects techniques sont expliqués, concentrez-vous sur le contenu de cette dernière équation et sa signification.
+
+-   Rappelez-vous que $Y = \hat{Y} + \epsilon$, les valeurs de la variable réponse $Y$ sont égales à leurs valeurs estimées par le modèle notées $\hat{Y}$ (on prononce "I grec chapeau" en français, ou "waïe hat" en anglais) additionnées des résidus $\epsilon$ et
+
+-   $\epsilon \sim \mathcal{N}(0, \sigma)$. les résidus forment la composante statistique du modèle et suivent une distribution Normale de moyenne nulle et d'écart type constant $\sigma$.
+
+-   Comparez l'équation du modèle paramétrisé avec l'équation générale du modèle qui est présentée dans le tableau résumé plus haut. **Assurez-vous d'avoir bien compris la logique de la paramétrisation pour passer de l'une à l'autre avant de passer à la suite.**
+
+Pour vous faciliter la comparaison, l'équation générale du modèle est reproduite ci-dessous avec `` `r eq__(rice_lm)` `` :
+
+$$
+`r eq__(rice_lm)`
+$$
 
 ## Analyse des résidus
 
-Le graphique et le tableau ci-dessous vous permettent d'obtenir des informations sur l'objet `rice_lm` que vous avez calculé précédemment
+Le graphique et le tableau ci-dessous vous rappellent les informations importantes de votre régression `rice_lm`.
 
 ```{r, echo=TRUE}
-# Graphique de votre objet `lm`
+# Graphique de la régression `rice_lm`
 chart(rice_lm)
-# Tableau relatif à la paramétrisation du modèle
+# Tableau résumé court de la régression `rice_lm`
 tabularise$tidy(rice_lm)
 ```
 
-Vous avez à votre disposition l'objet `rice_lm` que vous avez créé précédemment. Construisez quatre graphiques afin d'étudier (1) la distribution générale des résidus, (2) le graphique quantile-quantile des résidus, (3) la position et l'échelle des résidus et (4) la distance de Cook des résidus.
+Vous avez toujours à disposition l'objet `rice_lm`. Construisez quatre graphiques afin d'étudier :
+
+-   les résidus par rapport aux valeurs prédites de `area`,
+-   la distribution des résidus via un graphique quantile-quantile,
+-   l'échelle et la position position des résidus par rapport à `area` et
+-   l'a distance de Cook des résidus'effet de levier des observations.
 
 ```{r resid_h2, exercise=TRUE}
-# Distribution des résidus
+# Résidus en fonction des valeurs prédites de area
 chart$___(___)
 # Graphique quantile-quantile
 chart$___(___)
-# Position et échelle des résidus
+# Echelle et position des résidus
 chart$___(___)
-# Distance de Cook
+# Effet de levier
 chart$___(___)
 ```
 
 ```{r resid_h2-hint-1}
 # Consultez la page d'aide `?modelit::chart.lm`
 
-# Distribution des résidus
+# Résidus en fonction des valeurs prédites de area
 chart$___(___)
 # Graphique quantile-quantile
 chart$___(___)
-# Position et échelle des résidus
+# Echelle et position des résidus
 chart$___(___)
-# Distance de Cook
+# Effet de levier
 chart$___(___)
 
 #### ATTENTION: Hint suivant = solution !####
@@ -230,14 +257,14 @@ chart$___(___)
 
 ```{r resid_h2-solution}
 ## Solution ##
-# Distribution des résidus
+# Résidus en fonction des valeurs prédites de area
 chart$resfitted(rice_lm)
 # Graphique quantile-quantile
 chart$qqplot(rice_lm)
-# Position et echelle des résidus
+# Echelle et position des résidus
 chart$scalelocation(rice_lm)
-# Distance de Cook
-chart$cooksd(rice_lm)
+# Effet de levier
+chart$resleverage(rice_lm)
 ```
 
 ```{r resid_h2-check}
@@ -246,17 +273,21 @@ grade_code("Ce sont les quatre graphiques les plus courants de l'analyse des ré
 
 ```{r qu_resid}
 question("Sélectionnez parmi les éléments suivants les affirmations vraies.",
-  answer("Aucune valeur n'influence trop fortement la régression linéaire.", correct = TRUE, message = "La régression linéaire est très influencée par les valeurs extrêmes. La distance de cook est parfaite pour étudier ces valeurs extrêmes."),
-  answer("On observe autant de résidus positifs que négatifs.", correct = TRUE, message = "La distribution des résidus montre permet d'observer qu'il y a autant de résidus positifs que négatifs. La répartition des résidus est homogène tout le long de l'axe X (les valeurs prédites)."),
-  answer("Les résidus suivent une distribution normale.", correct = TRUE, message = "Le graphique quantile-quantile permet d'étudier la distribution normale. On observe que les résidus les plus faible et les plus élévé s'éloigne de la droite. Il serait intéressant de tenter des transformations mathématique sur les variables pour rendre la distribution des résidus noramle."),
-  answer("Les résidus positif et négatif ont des valeurs similaires dans l'absolu.", correct = TRUE, message = "La position et l'échelle des résidus permet dd superposer les résidus positifs et négatifs. On peut observer que la courbe bleue est presque horizontale."),
-  correct = "Bien joué ! Vous avez sélectionné les affirmations correctes.",
-  incorrect = "Oups, il semble que vous avez mal interpété les graphiques ci-dessus. C'est très complexe d'étudier les graphiques de diagnostic.",
-  allow_retry = TRUE, random_answer_order = TRUE,
+  answer("Les résidus sont contenus et se répartissent de manière équilibrée et linéaire.", correct = TRUE, message = "**Graphique1** La répartition des résidus sur le premier graphique permet d'observer sur l'axe des ordonnées des valeurs entre - 2000 et +2000 pour les résidus, par rapport à un plage plus élevée pour les valeurs prédites de 10000 à 17000. Les résidus sont donc, comparativement, raisonnables. La répartition des résidus est homogène autour de l'axe horizontal à zéro et il n'y a pas de dérive non linéaire (la courbe de tendance générale en bleu est pratiquement linéaire et reste proche de zéro)."),
+  answer("Les résidus suivent une distribution Normale.", correct = TRUE, message = "<br/><br/>**Graphique 2** Le graphique quantile-quantile permet de vérifier si la distribution des résidus est Normale. On observe que les résidus les plus faibles et les plus élevés ne s'éloigne de la droite de référence que très légèrement. La distribution des résidus est donc Normale ou proche de la Normale."),
+  answer("Il y a homoscédasticité des résidus.", correct = TRUE, message = "<br/><br/>**Graphique 3** La position et l'échelle des résidus sur le graphique 3, en représentant leur valeur absolue sur l'axe des ordonnées, superpose les résidus négatifs sur les résidus positifs. Cette représentation est la meilleure pour vérifier l'homoscédasticité, c'est-à-dire, la variance homogène en fonction des valeurs prédites sur l'axe des abscisses. La courbe de tendance en bleu est horizontale, ce qui le confirme. Nous avons bien ici homoscédasticité des résidus."),
+  answer("Aucune valeur n'influence trop fortement la régression linéaire.", correct = TRUE, message = "<br/><br/>**Graphique 4** La régression linéaire par les moindres carrés est très influencée par les valeurs extrêmes. L'effet de levier quantifie l'impact de chaque observation sur la position de la droite de régression. La distance de Cook (taille des points sur le quatrième graphique) mets en évidence les valeurs extrêmes. Ici, le graphique 4 présente un comportement sain du point de vue des observations potentiellement influentes ou extrêmes."),
+  correct = "Vous avez sélectionné les affirmations correctes.",
+  incorrect = "Oups, il semble que vous avez mal interpété les graphiques ci-dessus. Observez bien, relisez la section correspondante du cours et retentez l'exercice.",
+  allow_retry = TRUE, random_answer_order = FALSE,
     submit_button = "Soumettre une réponse", 
     try_again_button = "Resoumettre une réponse"
   )
 ```
+
+L'analyse des résidus est importante pour déterminer la validité de votre modèle, mais ce n'est pas une tâche facile. Au début, ces graphiques ne paraissent pas des plus clairs. Vous apprendrez par la pratique et en faisant d'autres exercices dans la suite du cours.
+
+Ici, le nombre important d'observations donne une réponse claire... et de plus, les résidus sont pratiquement parfaits. Retenez ceci comme un exemple d'excellents résultats. Avec moins de points (voyez par exemple le cas des cerisiers noirs développé dans le cours) il faut bien aiguiser son œil pour discerner les résultats corrects ou acceptables de ceux qui invalident votre modèle.
 
 ## Conclusion
 
@@ -273,3 +304,5 @@ question_text(
   try_again_button = "Resoumettre une réponse"
 )
 ```
+
+### Reference
