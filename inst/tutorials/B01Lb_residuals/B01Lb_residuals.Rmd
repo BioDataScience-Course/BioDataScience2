@@ -199,9 +199,9 @@ $$
 
 Maintenant que les aspects techniques sont expliqués, concentrez-vous sur le contenu de cette dernière équation et sa signification.
 
--   Rappelez-vous que $Y = \hat{Y} + \epsilon$, les valeurs de la variable réponse $Y$ sont égales à leurs valeurs estimées par le modèle notées $\hat{Y}$ (on prononce "I grec chapeau" en français, ou "waïe hat" en anglais) additionnées des résidus $\epsilon$ et
+-   Rappelez-vous que $Y = \hat{Y} + \epsilon$, les valeurs de la variable réponse $Y$ sont égales à leurs valeurs estimées par le modèle notées $\hat{Y}$ (on prononce "i grec chapeau" en français, ou "waïe hat" en anglais) additionnées des résidus $\epsilon$ et
 
--   $\epsilon \sim \mathcal{N}(0, \sigma)$. les résidus forment la composante statistique du modèle et suivent une distribution Normale de moyenne nulle et d'écart type constant $\sigma$.
+-   $\epsilon \sim N(0, \sigma^2)$, les résidus forment la composante statistique du modèle et suivent une distribution Normale de moyenne nulle et de variance constante $\sigma^2$ (à garder à l'esprit pour comprendre ce que l'on vérifiera ensuite lors de l'analyse des résidus).
 
 -   Comparez l'équation du modèle paramétrisé avec l'équation générale du modèle qui est présentée dans le tableau résumé plus haut. **Assurez-vous d'avoir bien compris la logique de la paramétrisation pour passer de l'une à l'autre avant de passer à la suite.**
 
