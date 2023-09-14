@@ -15,8 +15,7 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
 SciViews::R("model", "infer", lang = "fr")
-#ajout temporaire
-library(tabularise)
+
 # datasets
 ## crabs
 crabs <- read("crabs", package = "MASS")

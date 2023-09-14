@@ -15,8 +15,7 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
 SciViews::R("model", lang = "fr")
-# Ajout temporaire
-library(tabularise)
+
 # crabs
 crabs <- read("crabs", package = "MASS")
 
@@ -54,7 +53,7 @@ Ce tutoriel sur la régression linéaire débute par un rappel sur la corrélati
 
 -   Paramétrer l'équation d'une régression linéaire.
 
-## Biométrie des crabes
+## Biométrie de crabes
 
 Cinq mesures morphologiques ont été étudiées sur 200 crabes. On retrouve quatre groupes composés de 50 individus, soit des crabes bleu mâles et femelles et des crabes orange mâles et femelles.
 
@@ -63,9 +62,9 @@ crabs <- read("crabs", package = "MASS")
 skimr::skim(crabs)
 ```
 
-La fonction `skimr::skim()` vous permet d'obtenir de nombreuses informations sur le tableau `crabs`. N'hésitez pas à consulter la page d'aide du jeu de données pour en apprendre davantage.
+La fonction `skimr::skim()` vous permet d'obtenir de nombreuses informations sur le tableau `crabs`. N'hésitez pas à consulter la page d'aide du jeu de données pour en apprendre davantage avec `?MASS:crabs`.
 
-C'est à vous de jouer ! Réalisez une matrice de corrélation avec l'indice de Pearson. N'utilisez que les variables pertinentes. Sélectionnez ces variables sur base de leur nom. Affichez un corrélogramme avec la partie supérieure uniquement (`upper`).
+Réalisez une matrice de corrélation avec le coefficient de corrélation de Pearson sur ce jeu de données. N'utilisez que les variables pertinentes. Sélectionnez ces variables sur base de leur nom. Affichez un corrélogramme avec la partie supérieure uniquement (`upper`).
 
 ```{r corr1_h3, exercise=TRUE, exercise.lines=3}
 crabs_corr <- correlation(sselect(___, ___:___),
@@ -113,18 +112,25 @@ question("Quelles sont les combinaisons de variables les plus corrélées ? (sé
   try_again_button = "Resoumettre une réponse")
 ```
 
-*L'analyse de la corrélation est utile comme première approche afin de déterminer si une régression linéaire est intéressantes av ec nos données.*
+*L'analyse de la corrélation est utile comme première approche afin de déterminer si une régression linéaire est intéressante avec nos données.*
 
 <!-- PhG: je ne comprend pas du tout pourquoi on fait de la corrélation sur crabs, et puis on passe à la régression sur bull. C'est décousu et cela n'a aucun sens. Comment les étudiants penvent comprendre la logique d'une analyse autour d'une régression linéaire sur base de problèmes aussi peu construits !!!- -->
 
+<!-- J'essaie de faire une petite explication quand même pour justifier ceci... -->
+
+Nous pourrions effectuer différentes régressions linéaires sur ce jeu de données, mais nous proposons dans la section suivante de travailler plutôt avec d'autres données que vous n'avez encore jamais rencontrées auparavant pour rendre l'exercice plus proche de la réalité pratique.
+
 ## Taureaux reproducteurs
 
+L'association wallonne de l'élevage dispose de plusieurs centres d'insémination. Elle possède un recensement des différents taureaux reproducteurs. Vous avez à votre disposition le jeu de données `bull` qui comprend les variables suivantes :
 
-L'association wallonne de l'élevage dispose de plusieurs centres d'insémination. Elle possède un recensement des différents taureaux reproducteurs. Vous avez à votre disposition le jeu de données `bull` qui comprend les variables suivantes : `r names(bull)`.
+`r paste0("<code>", names(bull), "</code>")`
 
-Elle souhaite que vous réalisiez une régression linéaire de la masse en fonction de l'âge. Elle vous demande de vous intéressez uniquement aux individus de moins de 40 mois.
+Votre objectif sera de réaliser une régression linéaire de la masse des taureaux (mesurée en kg) en fonction de leur âge (en mois).
 
-Débutez votre analyse par réaliser un nuage de point de la masse en fonction de l'âge des taureaux.
+#### Description des données
+
+Toute analyse commence par la description des données, surtout si elles sont nouvelles pour vous ! Commencez donc en réalisant un graphique en nuage de point de la masse en fonction de l'âge des taureaux.
 
 ```{r  bull_np_h2, exercise=TRUE}
 chart(data = ___, ___ ___ ___) +
@@ -145,22 +151,48 @@ chart(data = bull, weight ~ age) +
 ```
 
 ```{r bull_np_h2-check}
-grade_code("Bravo ! Vous avez réalisé le nuage de points souhaité.")
+grade_code("Vous avez réalisé le nuage de points souhaité.")
 ```
 
-Complétez à présent les instructions ci-dessous afin de réaliser une régression linéaire de la masse en fonction de l'âge. *Souvenez-vous que `tabularise()` est une nouvelle fonction qui permet de réaliser un tableau propre des résultats (nous l'avons découvert dans le learnr précédent).*
+Le plus important ici à noter est la forme du nuage de points. S'étire t'il en diagonale le long d'une droite ? C'est évidemment indispensable pour que les données conviennent à une régression linéaire. Vous pouvez aussi observer l'étalement des points, la présence de différents patchs qui suggèreraient peut-être l'existence de sous-populations, ou encore les valeurs extrêmes qui vous pousseraient à investiguer plus à fond (individus abberants, erreurs de mesure ou d'encodage des données, par exemple). Dans notre cas, le nuage de point s'étire linéairement et il n'y a pas d'autres problèmes détectés.
+
+Vous complétez la description des données avec un tableau général via `skimr::skim()` et par une matrice de corrélation entre les trois variables quantitatives présentes :
+
+```{r, echo=TRUE}
+skimr::skim(bull)
+```
+
+Le tableau contient deux variables qualitatives et trois variables quantitatives avec `r nrow(bull)` taureaux qui ont été mesurés et il n'y a pas de valeurs manquantes. La quantité de données disponibles est acceptable pour une régression linéaire. Les distributions de l'âge et de la masse montrent qu'il y a plus de données pour les faibles valeurs, la distribution dans la plage d'âges étudiée -entre 13 et 40 mois- n'est pas homogène, mais sans que cela ne soit dramatique (cela se voit aussi sur le graphique, plus haut, avec comparativement un peu moins de données pour des âges de 30 à 40 mois).
+
+```{r, echo=TRUE}
+correlation(num_vars(bull)) |>
+  tabularise()
+```
+
+Toutes les corrélations sont positives et élevées. La corrélation entre la masse et l'âge est la plus forte.
+
+*Souvenez-vous que `tabularise()` est une nouvelle fonction qui permet de réaliser un tableau propre des résultats (nous l'avons découvert dans le learnr précédent).*
+
+#### Modèle de la masse des taureaux en fonction de leur âge
+
+Complétez à présent les instructions ci-dessous afin de réaliser une régression linéaire de la masse en fonction de l'âge de nos taureaux.
 
 ```{r bull_lm_h2, exercise=TRUE, exercise.lines=2}
 bull_lm <- lm(data = ___, ___ ~ ___)
+# Tableau résumé de la régression linéaire
 summary(___) |>
   tabularise()
+# Graphique de la régression
+___(___)
 ```
 
 ```{r bull_lm_h2-hint-1}
-
 bull_lm <- lm(data = ___, ___ ~ age)
+# Tableau résumé de la régression linéaire
 summary(___) |>
   tabularise()
+# Graphique de la régression
+chart(___)
 
 #### ATTENTION: Hint suivant = solution !####
 ```
@@ -168,13 +200,16 @@ summary(___) |>
 ```{r bull_lm_h2-solution}
 ## Solution ##
 bull_lm <- lm(data = bull, weight ~ age)
+# Tableau résumé de la régression linéaire
 summary(bull_lm) |>
   tabularise()
+# Graphique de la régression
+chart(bull_lm)
 ```
 
 ```{r bull_lm_h2-check}
 
-grade_code("Vous avez réalisé votre première régression linéaire. Analysez le tableau issu de ce modèle et répondez aux questions qui suivent.")
+grade_code("Vous avez réalisé votre première régression linéaire. Analysez le tableau et le graphique issus de ce modèle et répondez aux questions qui suivent.")
 ```
 
 Suite à votre analyse, répondez aux questions suivantes :
@@ -190,7 +225,7 @@ quiz(
     answer(sprintf("%.2f", lm_result$statistic[2])),
     answer(sprintf("%.2f", lm_param$r.squared[1])),
     allow_retry = TRUE, random_answer_order = TRUE,
-    correct = "Bien joué ! Vous savez analyser le tableau des résultats.",
+    correct = "Vous pouvez repérer des éléments clés dans le tableau des résultats.",
     incorrect = "Oups, il semble que vous avez mal lu le tableau résumé de la régression linéaire.",
     submit_button = "Soumettre une réponse", 
     try_again_button = "Resoumettre une réponse"),
@@ -207,7 +242,7 @@ quiz(
     incorrect = "Ce n'est pas correct. Regardez plus attentivement vos résultats.",
     submit_button = "Soumettre une réponse", 
     try_again_button = "Resoumettre une réponse"),
-  question(text = "Est ce que la valeur de l'ordonnée à l'origne est significativement différente de zéro au seuil alpha de 5% ?",
+  question(text = "Est ce que la valeur de l'ordonnée à l'origine est significativement différente de zéro au seuil alpha de 5% ?",
     answer("oui", correct = TRUE),
     answer("non"),
     allow_retry = TRUE,
@@ -236,12 +271,12 @@ question(text = "Sélectionnez parmi les propositions suivantes l'équation para
   allow_retry = TRUE,
   submit_button = "Soumettre une réponse", 
   try_again_button = "Resoumettre une réponse",
-  correct = "Bien joué ! Maintenant que tu as montré ta capacité à choisir la bonne équation paramétrée du modèle. On te donne une astuce. La fonction equation() du package {tabularise} te permet d'obtenir une équation latex du modèle.")
+  correct = "Vous avez démontré votre capacité à choisir la bonne équation paramétrée du modèle dans la liste. Dans le learnr suivant, vous apprendrez à générer une telle équation.")
 ```
 
 ## Conclusion
 
-Votre auto-évaluation concernant la régression linéaire dans R (première partie) arrive à son terme. Il est temps de revenir au syllabus et de poursuivre vers des exercices pratiques maintenant.
+Votre auto-évaluation concernant la régression linéaire dans R (première partie) est terminée. Il est temps de revenir au syllabus et d'aborder la section relative à l'**Analyse des résidus** qui feront l'objet du prochain learnr et que vous retravaillerez encore avec des exercices pratiques tout au long du module et après.
 
 ```{r comm_noscore, echo=FALSE}
 question_text(
