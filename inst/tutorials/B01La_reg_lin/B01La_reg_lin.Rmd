@@ -55,7 +55,7 @@ Ce tutoriel sur la régression linéaire débute par un rappel sur la corrélati
 
 ## Biométrie de crabes
 
-Cinq mesures morphologiques ont été étudiées sur 200 crabes. On retrouve quatre groupes composés de 50 individus, soit des crabes bleu mâles et femelles et des crabes orange mâles et femelles.
+Cinq mesures morphologiques ont été étudiées sur 200 crabes. On retrouve quatre groupes composés de 50 individus, soit des crabes bleus mâles et femelles et des crabes oranges mâles et femelles.
 
 ```{r, echo=TRUE}
 crabs <- read("crabs", package = "MASS")
@@ -116,13 +116,10 @@ question("Quelles sont les combinaisons de variables les plus corrélées ? (sé
 
 <!-- PhG: je ne comprend pas du tout pourquoi on fait de la corrélation sur crabs, et puis on passe à la régression sur bull. C'est décousu et cela n'a aucun sens. Comment les étudiants penvent comprendre la logique d'une analyse autour d'une régression linéaire sur base de problèmes aussi peu construits !!!- -->
 
-<!-- J'essaie de faire une petite explication quand même pour justifier ceci... -->
-
-Nous pourrions effectuer différentes régressions linéaires sur ce jeu de données, mais nous proposons dans la section suivante de travailler plutôt avec d'autres données que vous n'avez encore jamais rencontrées auparavant pour rendre l'exercice plus proche de la réalité pratique.
 
 ## Taureaux reproducteurs
 
-L'association wallonne de l'élevage dispose de plusieurs centres d'insémination. Elle possède un recensement des différents taureaux reproducteurs. Vous avez à votre disposition le jeu de données `bull` qui comprend les variables suivantes :
+Pour aborder la régression linéaire, nous revenons sur le jeu de données `bull` déjà utilisé lors du learnr de révision et issu de données de l'association wallonne de l'élevage. Ce jeu de données `bull` contient les variables suivantes :
 
 `r paste0("<code>", names(bull), "</code>")`
 
@@ -154,7 +151,7 @@ chart(data = bull, weight ~ age) +
 grade_code("Vous avez réalisé le nuage de points souhaité.")
 ```
 
-Le plus important ici à noter est la forme du nuage de points. S'étire t'il en diagonale le long d'une droite ? C'est évidemment indispensable pour que les données conviennent à une régression linéaire. Vous pouvez aussi observer l'étalement des points, la présence de différents patchs qui suggèreraient peut-être l'existence de sous-populations, ou encore les valeurs extrêmes qui vous pousseraient à investiguer plus à fond (individus abberants, erreurs de mesure ou d'encodage des données, par exemple). Dans notre cas, le nuage de point s'étire linéairement et il n'y a pas d'autres problèmes détectés.
+Le plus important ici à noter est la forme du nuage de points. S'étire-t-il en diagonale le long d'une droite ? C'est évidemment indispensable pour que les données conviennent à une régression linéaire. Vous pouvez aussi observer l'étalement des points, la présence de différents patchs qui suggèreraient peut-être l'existence de sous-populations, ou encore les valeurs extrêmes qui vous pousseraient à investiguer plus à fond (individus aberrants, erreurs de mesure ou d'encodage des données, par exemple). Dans notre cas, le nuage de point s'étire linéairement et il n'y a pas d'autres problèmes détectés.
 
 Vous complétez la description des données avec un tableau général via `skimr::skim()` et par une matrice de corrélation entre les trois variables quantitatives présentes :
 
@@ -276,7 +273,7 @@ question(text = "Sélectionnez parmi les propositions suivantes l'équation para
 
 ## Conclusion
 
-Votre auto-évaluation concernant la régression linéaire dans R (première partie) est terminée. Il est temps de revenir au syllabus et d'aborder la section relative à l'**Analyse des résidus** qui feront l'objet du prochain learnr et que vous retravaillerez encore avec des exercices pratiques tout au long du module et après.
+Votre auto-évaluation concernant la régression linéaire dans R (première partie) est terminée. Il est temps de revenir au syllabus et d'aborder la section relative à l'**Analyse des résidus** qui feront l'objet du prochain learnr et que vous travaillerez encore avec des exercices pratiques tout au long du module et après.
 
 ```{r comm_noscore, echo=FALSE}
 question_text(
