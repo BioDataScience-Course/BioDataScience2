@@ -16,6 +16,31 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
 SciViews::R("model", lang = "fr")
+# Required for RSConnect
+# SciViews::R
+library(rlang)
+library(data.table)
+library(ggplot2)
+library(tibble)
+library(tidyr)
+library(dplyr)
+library(dtplyr)
+library(broom)
+library(forcats)
+library(collapse)
+library(fs)
+library(svMisc)
+library(svBase)
+library(svFlow)
+library(data.io)
+library(chart)
+library(tabularise)
+library(SciViews)
+# model
+library(modelit)
+# ... more
+library(testthat)
+library(equatags)
 
 rice <- read("rice", package = "BioDataScience2")
 rice <- labelise(rice,
@@ -227,7 +252,7 @@ Vous avez toujours à disposition l'objet `rice_lm`. Construisez quatre graphiqu
 -   les résidus par rapport aux valeurs prédites de `area`,
 -   la distribution des résidus via un graphique quantile-quantile,
 -   l'échelle et la position position des résidus par rapport à `area` et
--   l'a distance de Cook des résidus'effet de levier des observations.
+-   l'effet de levier des observations.
 
 ```{r resid_h2, exercise=TRUE}
 # Résidus en fonction des valeurs prédites de area
@@ -276,7 +301,7 @@ question("Sélectionnez parmi les éléments suivants les affirmations vraies.",
   answer("Les résidus sont contenus et se répartissent de manière équilibrée et linéaire.", correct = TRUE, message = "**Graphique1** La répartition des résidus sur le premier graphique permet d'observer sur l'axe des ordonnées des valeurs entre - 2000 et +2000 pour les résidus, par rapport à un plage plus élevée pour les valeurs prédites de 10000 à 17000. Les résidus sont donc, comparativement, raisonnables. La répartition des résidus est homogène autour de l'axe horizontal à zéro et il n'y a pas de dérive non linéaire (la courbe de tendance générale en bleu est pratiquement linéaire et reste proche de zéro)."),
   answer("Les résidus suivent une distribution Normale.", correct = TRUE, message = "<br/><br/>**Graphique 2** Le graphique quantile-quantile permet de vérifier si la distribution des résidus est Normale. On observe que les résidus les plus faibles et les plus élevés ne s'éloigne de la droite de référence que très légèrement. La distribution des résidus est donc Normale ou proche de la Normale."),
   answer("Il y a homoscédasticité des résidus.", correct = TRUE, message = "<br/><br/>**Graphique 3** La position et l'échelle des résidus sur le graphique 3, en représentant leur valeur absolue sur l'axe des ordonnées, superpose les résidus négatifs sur les résidus positifs. Cette représentation est la meilleure pour vérifier l'homoscédasticité, c'est-à-dire, la variance homogène en fonction des valeurs prédites sur l'axe des abscisses. La courbe de tendance en bleu est horizontale, ce qui le confirme. Nous avons bien ici homoscédasticité des résidus."),
-  answer("Aucune valeur n'influence trop fortement la régression linéaire.", correct = TRUE, message = "<br/><br/>**Graphique 4** La régression linéaire par les moindres carrés est très influencée par les valeurs extrêmes. L'effet de levier quantifie l'impact de chaque observation sur la position de la droite de régression. La distance de Cook (taille des points sur le quatrième graphique) mets en évidence les valeurs extrêmes. Ici, le graphique 4 présente un comportement sain du point de vue des observations potentiellement influentes ou extrêmes."),
+  answer("Aucune valeur n'influence trop fortement la régression linéaire.", correct = TRUE, message = "<br/><br/>**Graphique 4** La régression linéaire par les moindres carrés est très influencée par les valeurs extrêmes. L'effet de levier compare les distances des points entres eux sur l'axe des abscisses et vérifie q'il n'y en a pas trop éloigné des autres, la distance de Cook (taille des points sur le quatrième graphique) quantifie l'impact de chaque observation sur la position de la droite de régression. Ici, le graphique 4 présente un comportement sain du point de vue des observations potentiellement influentes ou extrêmes."),
   correct = "Vous avez sélectionné les affirmations correctes.",
   incorrect = "Oups, il semble que vous avez mal interpété les graphiques ci-dessus. Observez bien, relisez la section correspondante du cours et retentez l'exercice.",
   allow_retry = TRUE, random_answer_order = FALSE,
