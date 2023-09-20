@@ -15,6 +15,35 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
 SciViews::R("model", "infer", lang = "fr")
+# Required for RSConnect
+# SciViews::R
+library(rlang)
+library(data.table)
+library(ggplot2)
+library(tibble)
+library(tidyr)
+library(dplyr)
+library(dtplyr)
+library(broom)
+library(forcats)
+library(collapse)
+library(fs)
+library(svMisc)
+library(svBase)
+library(svFlow)
+library(data.io)
+library(chart)
+library(tabularise)
+library(SciViews)
+# model
+library(modelit)
+# infer
+library(distributional)
+library(inferit)
+# ... more
+library(readxl)
+library(testthat)
+library(equatags)
 
 # datasets
 ## crabs
