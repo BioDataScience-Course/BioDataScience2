@@ -16,7 +16,7 @@ runtime: shiny_prerendered
 BioDataScience2::learnr_setup()
 SciViews::R("model",lang = "fr")
 
-# fat -----
+# fat dataset
 fat <- read("fat", package = "faraway")
 # lm
 fat_lm1 <- lm(data = fat, density ~ abdom)
@@ -27,15 +27,15 @@ fat_lm2 <- lm(data = fat, density ~ abdom + thigh)
 lm_mult_result <- tidy(fat_lm2)
 lm_mult_param <- glance(fat_lm2)
 
-# diabetes -----
+# diabetes dataset
 diabetes <- read("diabetes", package = "faraway")
 diabetes <- janitor::clean_names(diabetes)
 diabetes <- smutate(diabetes, weight = weight * 0.453592)
 diabetes <- smutate(diabetes, 
   map  = bp_1d + 1/3 * (bp_1s - bp_1d),
   age2 = age^2)
-is.labelled <- function(x) inherits(x, c("labelled", "haven_labelled"))
-diabetes <- smutate(diabetes, across(sapply(diabetes, is.labelled), .fns = as.numeric))
+# Des colonnes de classe "labelled" sont à transformer en "numeric"
+diabetes <- smutate(diabetes, across(function(x) inherits(x, "labelled"), as.numeric))
 diabetes <- labelise(diabetes, 
   label = list(map = "Tension artérielle moyenne", age = "Âge"), 
   units = list(map = "mm Hg", age = "années")
@@ -60,14 +60,14 @@ BioDataScience2::learnr_server(input, output, session)
 
 Le premier module vous a permis de vous familiariser avec la régression linéaire. Vous avez appris à interpréter une partie des résultats renvoyés dans le résumé du modèle, ainsi qu'à réaliser et interpréter les graphiques d'analyse des résidus. Les objectifs de ce tutoriel sont :
 
--   Être capable de lire la sortie renvoyée par `summary()` pour un objet **lm**.
+-   Être capable de lire la totalité de la sortie renvoyée par `summary()` pour un objet **lm**.
 -   Maîtriser la régression linéaire multiple dans R avec la fonction `lm()`.
 
 ## Masse grasse et densité corporelle
 
 ![La masse grasse influe-t-elle la densité corporelle ? Photo de [Andres Ayrton](https://www.pexels.com/photo/crop-plump-woman-touching-abdomen-6550872/)](images/body_fat.jpg)
 
-Le tableau de données `fat` traite du pourcentage de masse grasse de 252 hommes. Les participants à cette étude ont été mesurés sous toutes les coutures, et ensuite, leur densité corporelle a été déterminée avec précision par un procédé d'immersion dans l'eau. Cette méthode, bien que très fiable, n'est pas des plus simples à mettre en œuvre. Les scientifiques font donc appel à vous pour déterminer s'il est possible de prédire la densité corporelle à l'aide de mesures biométriques plus simples à obtenir et avec quelle précision.
+Le jeu de données `fat` traite du pourcentage de masse grasse de 252 hommes. Les participants à cette étude ont été mesurés sous toutes les coutures, et ensuite, leur densité corporelle a été déterminée avec précision par un procédé d'immersion dans l'eau. Cette méthode, bien que très fiable, n'est pas des plus simples à mettre en œuvre. Les scientifiques font donc appel à vous pour déterminer s'il est possible de prédire la densité corporelle à l'aide de mesures biométriques plus simples à obtenir et si oui, avec quelle précision.
 
 ```{r, echo=TRUE}
 SciViews::R("model",lang = "fr") # Configuration du système
@@ -86,7 +86,7 @@ chart(data = fat, density ~ abdom) +
   labs(x = "Tour de taille [cm]", y = "Densité [g/cm^3]")
 ```
 
-Calculez maintenant une régression linéaire simple de `density` en fonction de `abdom` du jeu de données `fat`. Vous placerez le résultat dans `fat_lm1` et vous imprimerez le résumé.
+Ajustez maintenant une régression linéaire simple de `density` en fonction de `abdom` du jeu de données `fat`. Vous placerez le résultat dans `fat_lm1` et vous imprimerez le résumé.
 
 ```{r reglin_h2, exercise=TRUE}
 summary(fat_lm1 <- lm(data = ___, ___ ~ ___))
@@ -107,7 +107,7 @@ summary(fat_lm1 <- lm(data = fat, density ~ abdom))
 grade_code("D'accord, on a maintenant une régression linéaire simple comme point de départ.")
 ```
 
-Analysez le tableau des résultats et répondez aux questions suivantes :
+Analysez le tableau des résultats et répondez aux questions suivantes (repérer les différents paramètres du modèle dans la sortie brute de `summary()` est un tout petit peu plus difficile qu'avec la sortie formatée à l'aide de `tabularise()`, mais vous devez aussi être capable de le faire) :
 
 ```{r qu_reglin}
 quiz(
@@ -137,7 +137,7 @@ quiz(
 )
 ```
 
-L'analyse des résidus n'est pas l'objectif de ce tutoriel. Prenez cependant le temps d'interpréter chaque graphique pour déterminer si la régression linéaire est justifiée ici.
+L'analyse des résidus n'est pas l'objectif de ce tutoriel. Prenez cependant le temps d'interpréter chaque graphique pour déterminer si la régression linéaire est justifiée ici (nous interpréterons ensemble un graphique très similaire plus loin).
 
 ```{r}
 chart$residuals(fat_lm1)
@@ -159,7 +159,7 @@ chart(data = fat, thigh ~ abdom) +
   labs(x = "Tour de cuisse [cm]", y = "Tour de taille [cm]")
 ```
 
-> Lorsque vous incluez des variables dans une régression linéaire multiple, vérifiez toujours la corrélation entre elles. Des variables trop fortement corrélées (avec des coefficients tendant vers un en valeur absolue) n'apporteront rien : elles sont "synonymes" en quelque sorte. Mais pis, elles risquent de rendre la détermination des paramètres du modèle instable.
+> Lorsque vous incluez des variables dans une régression linéaire multiple, vérifiez toujours la corrélation entre elles. Des variables trop fortement corrélées (avec des coefficients tendant vers un en valeur absolue) n'apporteront rien : elles sont "synonymes" en quelque sorte. Mais pis, elles risquent de rendre la détermination des paramètres du modèle instable et difficilement interprétable. On appelle cela la [multicolinéarité](https://larmarange.github.io/analyse-R/multicolinearite.html).
 
 Voici la matrice de corrélation entre les trois variables considérées.
 
@@ -211,29 +211,42 @@ quiz(
 )
 ```
 
-Voici le graphique composite de l'analyse des résidus pour notre modèle multiple. Y-voyez-vous des anomalies ?
+Voici le graphique composite de l'analyse des résidus pour notre modèle multiple. Y voyez-vous des anomalies ?
 
 ```{r}
 chart$residuals(fat_lm2)
 ```
 
-En réalité, les résidus ont un comportement très, très similaire entre les deux modèles et les problèmes visibles le sont à cause de points extrêmes qui étaient d'ailleurs identifiables dès le départ sur les graphiques en nuage de points.
+En réalité, les résidus ont un comportement très, très similaire entre les deux modèles et les problèmes visibles le sont à cause de points extrêmes qui étaient d'ailleurs identifiables dès le départ sur les graphiques en nuage de points. À part un point extrême qui a à la fois un effet de levier important et une distance de Cook élevée (donc, ce point est très problématique) visible sur tous les graphiques, le reste montre un comportement relativement bon (il y a plusieurs valeurs extrêmes, mais une seule est vraiment problématique ici). (A) L'étendue des résidus par rapport aux valeurs prédites et la linéarité sont bonnes. (B) Les résidus montrent une distribution proche de la Normale et (C) une variance constante (homoscédasticité). En (D) l'effet d'un des points extrêmes est particulièrement flagrant.
 
 ## Choix du meilleur modèle
 
-Vous venez de réaliser deux modèles. Il s'agit d'un cas particulier. Ces deux modèles sont imbriqués, ce qui signifie que l'un est une version simplifiée (avec un ou plusieurs paramètres en moins) de l'autre. Comment pourriez-vous départager ces deux modèles ? Dans un tel cas, une ANOVA permet de comparer les deux et de tirer une conclusion. Avant de faire notre test, décidons de fixer alpha à 5%. L'hypothèse nulle est que les deux modèles sont identiques. L'hypothèse alternative que le modèle plus complexe apporte un gain.
+Vous venez de réaliser deux modèles. Il s'agit d'un cas particulier. Ces deux modèles sont imbriqués, ce qui signifie que l'un est une version simplifiée (avec un ou plusieurs termes en moins) de l'autre. Comment pourriez-vous départager ces deux modèles ? Dans un tel cas, une ANOVA permet de comparer les deux et de tirer une conclusion. Avant de faire notre test, décidons de fixer $\alpha$ à 5%. L'hypothèse nulle est que les deux modèles sont identiques (exprimé différemment, cela signifie que les termes supplémentaires du modèle plus complexe n'apportent rien). L'hypothèse alternative que le modèle plus complexe apporte un gain.
 
 ```{r, echo=TRUE}
-anova(fat_lm1, fat_lm2)
+anova(fat_lm1, fat_lm2) |>
+  tabularise()
 ```
 
-Le critère d'Akaike est une métrique adaptée à la comparaison de modèles. Le meilleur modèle selon le critère d'Akaike est le modèle ayant obtenu la valeur la plus faible.
+Le critère d'Akaike est une métrique qui sert à la comparaison de modèles différents ajustés sur les mêmes données. Le meilleur modèle  est celui qui obtient la valeur la plus faible du critère d'Akaike.
 
 ```{r}
 AIC(fat_lm1, fat_lm2)
 ```
 
-Dans les deux cas, c'est le modèle multiple qui sort gagnant, mais de peu. En effet, la valeur P de l'ANOVA étant légèrement supérieure à 1%, elle est moyenne, mais reste inférieure au seuil alpha de 5% choisi. Nous rejetons donc l'hypothèse nulle. D'autre part, le critère d'Akaike est très, très légèrement plus faible en faveur du modèle multiple. C'est ténu et le gain en terme de part de variance expliquée (R^2^) l'est aussi puisque l'on ne gagne même pas un pour cent. Donc, malgré ces résultats en faveur du modèle multiple, nous pourrions aussi légitimement considérer que la simplicité de la régression linéaire simple nous fait préférer cette dernière. Tout est affaire de compromis en statistiques. Naturellement, nous avons encore d'autres variables à explorer, mais laissons ce jeu de données pour en aborder un autre...
+Dans les deux cas, le modèle multiple se démarque de justesse. En effet, la valeur *p* de l'ANOVA étant légèrement supérieure à 1%, elle est moyenne, mais reste inférieure au seuil alpha de 5% choisi. Nous rejetons donc l'hypothèse nulle que le terme supplémentaire n'apporte rien. D'autre part, le critère d'Akaike est très, très légèrement plus faible en faveur du modèle multiple. C'est ténu et le gain en part de variance expliquée (*R*^2^) l'est aussi puisque l'on ne gagne même pas un pour cent. Une présentation "soignée" de ca modèle avec `tabularise()` donne :
+
+```{r, echo=TRUE, warning=FALSE}
+summary(fat_lm2) |> tabularise()
+```
+
+Le modèle paramétré est extrait ici en utilisant ``` `r eq__(fat_lm2, use_coefs = TRUE, coef_digits = c(2, 5, 6))` ``` dans une balise équation Markdown commençant et terminant par deux signes dollars (`$$...$$`). Ici, l'ajustement manuel du nombre de chiffres significatifs pour les coefficients estimés est *obligatoire* :
+
+$$`r eq__(fat_lm2, use_coefs = TRUE, coef_digits = c(2, 5, 6))`$$
+
+Que devons-nous conclure sur ce modèle ? Il est significatif du point de vue des différents critères, mais l'**effet** du terme supplémentaire est négligeable sur l'estimation de la MAP. Nous pourrions aussi légitimement considérer que la simplicité du modèle qui n'utilise que la variable `abdom` (notre premier modèle) pour les prédictions est, en fin de compte, celui que nous conservons. Tout est affaire de compromis en statistiques... et de bon sens aussi. N'utilisez *jamais* vos indicateurs et vos métriques aveuglément ! Naturellement, nous avons encore d'autres variables à explorer, mais nous laisserons ici ce jeu de données pour en aborder un autre...
+
+> L'interprétation de statistiques sur base de la valeur *p* de tests d'hypothèses est souvent mal comprise et mal utilisée. Cette valeur n'indique rien d'autre que la probabilité d'obtenir notre échantillon à partir de la population statistique étudiée si les mécanismes en jeu ont des propriétés correspondantes au modèle mathématique que nous avons choisi sous l'hypothèse nulle (H~0~). D'une part, la décision de rejet de H~0~ à un seuil $\alpha$ fixé d'avance est une convention arbitraire que trop d'utilisateurs prennent comme un "seuil de vérité" alors que ce n'est qu'un indicateur à considérer dans le contexte de l'étude. D'autre part, si le fait de ne rien pouvoir conclure si H~0~ n'est pas rejetée est relativement bien accepté par les utilisateurs, il est totalement faux de dire que l'on peut conclure à un effet démontré si H~0~ est rejeté. Il faut encore examiner l'**effet** observé, c'est à dire, le degré d'écart par rapport à la situation sous H~0~. Le test peut très bien être significatif avec un effet infime, si la taille de l'échantillon est grande (comme dans notre jeu de données). Cet effet est peut-être alors tellement faible qu'il n'a aucune incidence biologique !
 
 ## Hypertension
 
@@ -241,9 +254,9 @@ L'hypertension est un des maux du siècle. Elle est liée à de nombreux facteur
 
 ![Mesure de la tension artérielle, photo de [Pavel Danilyuk, Pexels](https://www.pexels.com/photo/a-healthcare-worker-measuring-a-patient-s-blood-pressure-using-a-sphygmomanometer-7108344/).](images/blood_pressure.jpg)
 
-La tension artérielle moyenne (**MAP**) se détermine ensuite d'après la formule suivante :
+La tension artérielle moyenne (**MAP**) est calculée selon la formule :
 
-$$MAP = DP + 1/3*(SP-DP)$$
+$$MAP = DP + \frac{SP-DP}{3}$$
 
 La tension artérielle moyenne optimale va être comprise entre 80 et 107. Les études ont montré que la MAP augmente avec l'âge. Elle s'explique entre autres par la perte d'élasticité des artères. Le surpoids a également un effet, ainsi qu'un cholestérol élevé dans les vaisseaux sanguins.
 
@@ -256,24 +269,30 @@ diabetes <- janitor::clean_names(diabetes)
 skimr::skim(diabetes)
 # Transformation de la masse de livres en kg
 diabetes <- smutate(diabetes, weight = weight * 0.453592)
-# Libellés et unités de différentes variables en français
-diabetes <- labelise(diabetes, label = list(
-  age = "Âge", chol = "Cholestérol total", glyhb = "Hémoglobine glycosylée", weight = "Masse"),
-  units = list(age = "années", weight = "kg"))
-# Some columns are of class "labelled", we convert them into numeric
-is.labelled <- function(x) inherits(x, c("labelled", "haven_labelled"))
-diabetes <- smutate(diabetes, across(sapply(diabetes, is.labelled), .fns = as.numeric))
+# Labels et unités de différentes variables en français
+diabetes <- labelise(diabetes,
+  label = list(
+    age    = "Âge",
+    chol   = "Cholestérol total",
+    glyhb  = "Hémoglobine glycosylée",
+    weight = "Masse"),
+  units = list(
+    age    = "années",
+    weight = "kg")
+)
+# Des colonnes de classe "labelled" sont à transformer en "numeric"
+diabetes <- smutate(diabetes, across(function(x) inherits(x, "labelled"), as.numeric))
 ```
 
-> La dernière instruction mérite une petite explication. Nous avons plus d'une dizaine de variables dans le jeu de données qui ont la classe "labelled". Ce sont toutes des données quantitatives numériques et nous les voulons comme telles. Les transformer une à une explicitement serait fastidieux. Alors, nous avons fait appel ici à la fonction `across()` qui applique une transformation via son argument `.fns=` (ici, `as.numeric`) sur toutes les colonnes dont le nom est donné par le premier argument, ou via un vecteur de valeurs logiques de même taille que le nombre de variables du tableau. Comme nous voulons transformer toutes les colonnes qui héritent de la classe "labelled", nous appliquons le test sur toutes les colonnes (la fonction `sapply()` s'en charge) à l'aide de `is.labelled` définie juste au dessus qui fait ce test. Cela équivaut à utiliser `is.labelled(X)` avec `X` qui vaut tour à tour chacune des variables du tableau. Avec la function tidy `mutate()`, on aurait aussi pu écrire `across(where(is.labelled), .fns = as.numeric)`, mais `where()` n'est pas (encore) disponible pour les fonctions speedy comme `smutate()`.
+> La dernière instruction mérite une petite explication. Nous avons plus d'une dizaine de variables dans le jeu de données qui ont la classe **labelled**. Ce sont toutes des données quantitatives numériques et nous les voulons comme telles (classe **numeric**). Les transformer une à une explicitement serait fastidieux. Alors, nous avons fait appel ici à la fonction `across()` qui applique une transformation via son second argument (ici, `as.numeric`) sur toutes les colonnes dont le nom est donné par le premier argument, ou via un vecteur de valeurs logiques de même taille que le nombre de variables du tableau. Comme nous voulons transformer toutes les colonnes qui héritent de la classe **labelled**, nous appliquons le test sur toutes les colonnes via `function(x) inherits(x, "labelled")`. Avec la function tidy `mutate()`, on aurait aussi dû écrire `across(where(function(x) inherits(x, "labelled")), as.numeric)`, mais `where()` n'est pas (encore) disponible pour les fonctions speedy comme `smutate()`.
 
 Revenons sur nos données. Elles ont été collectées au sein d'une population afro-américaine dans l'état de Virginie aux USA dans le but d'étudier la prévalence du diabète, de l'obésité, et d'autres facteurs de risques cardio-vasculaires. Dans le cadre de cet exercice, nous allons nous limiter à quelques variables. Les pressions systoliques et diastoliques ont été mesurées deux fois : `bp.1s` pour la première systolique, `bp.1d` pour la première diastolique, et `bp.2s`, `bp.2d` pour la seconde série de mesures. Vous n'utiliserez que la première série. L'âge est exprimé en années dans la variable `age`, le cholestérol total est dans `chol`, l'hémoglobine glycosylée dans `glyhb`, une mesure indicatrice de diabète, la masse est `weight`, en kg.
 
 ## Pression artérielle moyenne
 
-Débutez votre étude par le calcul de la variable `map` à partir de `bp.1s` et `bp.1d` du tableau `diabetes`. Pour rappel, la formule est :
+Débutez votre étude par le calcul de la variable `map` à partir de `bp.1s` et `bp.1d` du jeu de données `diabetes`. Vous retranscrirez la forme suivante de la formule de calcul dans R :
 
-$$MAP = DP + 1/3*(SP-DP)$$
+$$MAP = DP + 1/3 \cdot (SP-DP)$$
 
 Réalisez ensuite dans la foulée un graphique en nuage de points de la pression artérielle moyenne en fonction de l'âge.
 
@@ -316,10 +335,11 @@ diabetes <- smutate(diabetes,
 Prenez l'habitude d'étudier la matrice de corrélation entre toutes les variables qui vont entrer potentiellement dans votre modèle.
 
 ```{r, echo=TRUE}
-correlation(diabetes[, c("map", "age", "chol", "glyhb", "weight")], use = "complete.obs")
+correlation(diabetes[, c("map", "age", "chol", "glyhb", "weight")], use = "complete.obs") |>
+  tabularise()
 ```
 
-> En présence de valeurs manquantes, l'argument `use=` permet de spécifier quoi faire. `"complete.obs"` ne prend en compte que les observations pour lesquelles il n'y a aucune valeur manquante pour aucune des cinq variables, voir `?correlation()`.
+> En présence de valeurs manquantes, l'argument `use=` permet de spécifier quoi faire. `"complete.obs"` ne prends en compte que les observations pour lesquelles il n'y a aucune valeur manquante pour aucune des cinq variables, voir `?correlation()`.
 
 Ici, nous sommes en présence de corrélations très faibles entre les variables potentiellement explicatives et MAP. Ce n'est pas une bonne nouvelle. Nous pouvions déjà constater cela sur le graphique entre la MAP et l'âge avec un nuage de points très peu étiré. La bonne nouvelle, c'est que les quatre variables explicatives sont également peu corrélées entre elles, et aussi que nous avons plusieurs centaines d'individus mesurés dans notre échantillon.
 
@@ -337,6 +357,7 @@ summary(___)
 map_lm <- lm(data = ___, ___ ~ ___)
 # Résumé du modèle
 summary(map_lm)
+
 #### ATTENTION: Hint suivant = solution !####
 ```
 
@@ -348,7 +369,7 @@ summary(map_lm)
 ```
 
 ```{r regmulti2_h2-check}
-grade_code("Bon, voilà notre régression multiple pour laquelle il nous a fallu laisser tomber `glyhb`, la mesure liée au diabète, qui n'a manifestement pas de relation avec la tension artérielle moyenne. Le R^2^ est très faible avec 11%, mais le modèle est significatif au seuil alpha de 5% avec une ANOVA qui renvoie une valeur P très largement inférieure à ce seuil (tout en bas à droite de la sortie résumé).")
+grade_code("Bon, voilà notre régression multiple pour laquelle il nous a fallu laisser tomber `glyhb`, la mesure liée au diabète, qui n'a manifestement pas de relation avec la tension artérielle moyenne. Le R^2 est très faible avec 11%, mais le modèle est significatif au seuil alpha de 5% avec une ANOVA qui renvoie une valeur P très largement inférieure à ce seuil (tout en bas à droite de la sortie résumé).")
 ```
 
 Analysez les résultats ci-dessus et répondez aux questions suivantes :
@@ -365,7 +386,7 @@ quiz(
     answer(sprintf("%.4f", map_lm_param$r.squared[1])),
     allow_retry = TRUE, random_answer_order = TRUE
     ),
-  question(text = "Quelle est l'erreur standard pour le paramètres lié à l'âge ?",
+  question(text = "Quelle est l'écart type du paramètres lié à l'âge ?",
     answer(sprintf("%.2f", map_lm_coef$estimate[1])),
     answer(sprintf("%.2f", map_lm_coef$estimate[2])),
     answer(sprintf("%.2f", map_lm_coef$std.error[1])),
@@ -378,13 +399,25 @@ quiz(
 )
 ```
 
-Voici l'analyse des résidus de ce modèle. Prenez le temps d'interpréter ces graphiques.
+Dans le cas où ces résultats devraient être présentés dans un rapport soigné, vous sortirez évidemment la version `tabularise()` de ce résumé :
+
+```{r, echo=TRUE, warning=FALSE}
+summary(map_lm) |> tabularise()
+```
+
+Vous n'oubliez évidemment pas de paramétrer votre modèle en utilisant dans une balise Markdown d'équation encadrée par deux signes dollars (`\$\$`), le chunk en ligne ``` `r eq__(map_lm, use_coefs = TRUE)` ```, comme ci-dessous (vous pouvez aussi ajuster manuellement les chiffres significations avec `coef_digits = c(w, x, y, z)` où `w`, `x`, `y`, `z` sont des entiers indiquant le nombre de chiffres significatifs désirés pour les quatre paramètres, ici `c(1, 3, 4, 3)`) :
+
+$$`r eq__(map_lm, use_coefs = TRUE, coef_digits = c(1, 3, 4, 3))`$$
+
+Enfin, terminons par l'analyse des résidus de ce modèle. Prenez le temps d'interpréter ces graphiques par vous-mêmes avant de lire le texte ci-dessous.
 
 ```{r}
 chart$residuals(map_lm)
 ```
 
-Ce second exemple vous a permis, outre de vous exercer à ajuster un modèle linéaire multiple, de réaliser que significativité du modèle et des ses paramètres d'une part (ANOVA de la régression et tests de Student des paramètres), et qualité d'ajustement d'autre part (R^2^) ne vont pas forcément de pair. Il est pratiquement impossible d'avoir un R^2^ élevé et une régression non significative. Cependant, l'inverse est possible comme ici pour `diabetes`, soit un R^2^ très très faible qui ne permet pas de faire des prédictions de la MAP à partir de l'âge, du cholestérol sanguin ou de la masse, mais une régression et des paramètres qui sont pourtant tous significatifs. Ce modèle est utile parce qu'il confirme que ces trois variables explicatives -âge, cholestérol et masse- sont belles et bien associées à l'hypertension artérielle. Mais par contre, oubliez ce modèle pour effectuer des prédictions de la MAP !
+Nous avons (A) des résidus très élevés (plage de 100 unités entre -40 et +60) par rapport à des valeurs prédites $\widehat{MAP}$ qui se retrouvent dans une plage de 30 unités seulement (entre 90 et 120). Nous avons (D) une valeur avec effet de levier important, mais en même temps, une distance de Cook très faible indiquant qu'elle n'influence pas le modèle. D'autre part, la distribution des résidus est correcte : (B) elle se rapproche de la Normale et (C) la variance est constante (homoscédasticité). Enfin, (A) la linéarité est bonne (courbe bleue) et il n'y a pas de valeurs extrêmes gênantes.
+
+Ce second exemple vous a permis, outre de vous exercer à ajuster un modèle linéaire multiple, de réaliser que significativité du modèle et de ses paramètres d'une part (ANOVA de la régression et tests de Student des paramètres), et qualité d'ajustement d'autre part (*R*^2^) ne vont pas forcément de pair. Il est pratiquement impossible d'avoir un *R*^2^ élevé et une régression non significative. Cependant, l'inverse est possible comme ici pour `diabetes`, soit un *R*^2^ très très faible qui ne permet pas de faire des prédictions de la MAP à partir de l'âge, du cholestérol sanguin ou de la masse, mais une régression et des paramètres qui sont pourtant tous significatifs. Ce modèle est utile parce qu'il indique que ces trois variables explicatives -âge, cholestérol et masse- sont liées à l'hypertension artérielle (mais en l'absence d'effets plus marqués, une confirmation par répétition de l'expérience est nécessaire pour s'assurer que l'on n'ait pas ici de corrélations et relations fortuites). Mais par contre, oubliez ce modèle pour effectuer des prédictions un tant soit peu précises de la MAP !
 
 ## Conclusion
 

@@ -276,7 +276,7 @@ La fonction`SciViews::R()` est employée pour charger une série de packages qui
 
 Les packages chargés permettent d'importer, remanier et visualiser à l'aide de graphiques en limitant le recours à la fonction `library()` pour charger des packages R supplémentaires (mais vous pourriez être amené à le faire occasionnellement).
 
-Exécutez l'instruction `SciViews::R()` suivie de l'instruction `SciViews_packages()` dans la console R ci-dessous et analysez le résultat proposé. Pour rappel, vous exécutez et testez votre code via le bouton `Run Code` et vous soumettez votre réponse avec le bouton `Submit`. Utilisez autant de fois que nécessaire `Run Code` sans pénalité, mais n'oubliez surtout pas de soumettre à la fin avec `Submit`.
+Exécutez l'instruction `SciViews::R()` suivie de l'instruction `SciViews_packages()` dans la console R ci-dessous et analysez le résultat obtenu. Pour rappel, vous exécutez et testez votre code via le bouton `Run Code` et vous soumettez votre réponse avec le bouton `Submit`. Utilisez autant de fois que nécessaire `Run Code` sans pénalité, mais n'oubliez surtout pas de soumettre à la fin avec `Submit`.
 
 ```{r sciviews, exercise=TRUE}
 
@@ -359,7 +359,7 @@ La fonction `read()` permet d'importer un nombre important de formats de fichier
 data_types(view = FALSE)
 ```
 
-Analysez l'organisation des fichiers ci-dessous. Le dossier `sharks-GuyliannEngels` comprend tous les documents employés afin de réaliser une analyse sur le recensement des attaques de requins en Australie. Il s'agit d'un [projet RStudio](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2023/rs.html). Ce projet doit absolument être portable. Il faut donc employer uniquement des **chemins relatifs**. Par exemple, le document `sharks_report.Rmd` se trouve dans le dossier `docs`.
+Analysez l'organisation des fichiers ci-dessous. Le dossier `sharks-GuyliannEngels` contient tous les documents employés afin de réaliser une analyse sur le recensement des attaques de requins en Australie. Il s'agit d'un [projet RStudio](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2023/rs.html). Ce projet doit absolument être portable. Il faut donc employer uniquement des **chemins relatifs**. Par exemple, le document `sharks_report.Rmd` se trouve dans le dossier `docs`.
 
     /home
       /sv
@@ -406,7 +406,7 @@ La [section 5.1 du cours de SDD I](https://wp.sciviews.org/sdd-umons/?iframe=wp.
 
 ![](images/breaking_news.jpg){width="30%"}
 
--   Petit changement dans les types de fichiers : les blocs-notes et les rapports seront rédigés sous forme de documents **[Quarto](https://quarto.org)** (certains peuvent encore être au format R Markdown, toutefois). L'extension de fichier est `.qmd` (contre `.Rmd` pour R Markdown). Il y a relativement peu de changements dans l'utilisation de ce format par rapport à R Markdown, à part dans l'entête YAML. Cet entête sera en grande partie prérédigée pour vous dans les projets, donc, pas de panique ! Par contre, un éditeur visuel et des fonctionnalités supplémentaires de Quarto vous faciliteront la vie... Vous les découvrirez au fur et à mesure.
+-   Petit changement dans les types de fichiers : les blocs-notes et les rapports seront rédigés sous forme de documents **[Quarto](https://quarto.org)** (certains peuvent encore être au format R Markdown, toutefois). L'extension de fichier est `.qmd` (contre `.Rmd` pour R Markdown). Il y a relativement peu de changements dans l'utilisation de ce format par rapport à R Markdown, à part dans l'entête YAML. Cet entête sera en grande partie prérédigé pour vous dans les projets, donc, pas de panique ! Par contre, un éditeur visuel et des fonctionnalités supplémentaires de Quarto vous faciliteront la vie... Vous les découvrirez au fur et à mesure.
 
 -   Autre changement concernant l'organisation des dossiers et des fichiers dans les projets : vous remarquerez que les blocs-notes et les rapports ne seront plus dans le sous-dossier `/docs` dans vos projets, mais directement à la racine. Deux raisons à cela : étant les documents clés du projet, ils sont plus facilement gérés depuis sa racine, et seconde raison, le dossier courant du document Quarto est ainsi le même que le dossier courant du projet (à la console R). C'est plus facile à gérer (chemins relatifs identiques pour les scripts R et les rapports, cf. exercice juste au-dessus qui rappelle le piège lorsque le fichier R Markdown est dans un sous-dossier du projet) !
 
@@ -454,7 +454,7 @@ chart(data = crabs, length ~ width %col=% sex | species) |>
   geom_point()
 ```
 
-Reproduisez le graphique suivant. Il s'agit de boites de dispersion (*boxplot*, en anglais), en utilisant la syntaxe `Sgg()`.
+Reproduisez le graphique suivant en utilisant la syntaxe `Sgg()`. Il s'agit de boites de dispersion (*boxplot*, en anglais).
 
 ```{r}
 # Importation des données
@@ -489,7 +489,7 @@ chart(data = ___, ___ ~ ___ %___=% ___ ) |>
 crabs <- read("crabs", package = "MASS")
 # Graphique
 chart(data = ___, length ~ ___ %___=% ___ ) |>
-  Sgg$geom_b
+  Sgg$geom_b___
 ```
 
 ```{r chart_h4-hint-3}
@@ -497,7 +497,7 @@ chart(data = ___, length ~ ___ %___=% ___ ) |>
 crabs <- read("crabs", package = "MASS")
 # Graphique
 chart(data = crabs, length ~ ___ %fill=% ___ ) |>
-  Sgg$geom_box
+  Sgg$geom_box___
 
  #### ATTENTION: Hint suivant = solution !####
 ```
@@ -507,7 +507,6 @@ chart(data = crabs, length ~ ___ %fill=% ___ ) |>
 # Importation des données
 crabs <- read("crabs", package = "MASS")
 # Graphique
-
 chart(data = crabs, length ~ sex %fill=% species) |>
   Sgg$geom_boxplot()
 ```
@@ -525,7 +524,7 @@ question("Sélectionnez parmi les éléments suivants, les descriptions graphiqu
   allow_retry = TRUE, random_answer_order = TRUE,
   submit_button = "Soumettre une réponse", try_again_button = "Resoumettre une réponse",
   correct = "Bien joué. Cependant, la description n'est pas complète. Elle peut être améliorée à l'aide de valeurs numériques par exemple.",
-  incorrect = "Attention, n'auriez vous pas mélangé les descripteurs paramétriques et les descripteurs non paramétriques. La boite de dispersion présente les descripteurs non paramétriques. La section 4.3 de SDDI traite spécifiquement des boites de dispersion.")
+  incorrect = "Attention, n'auriez vous pas mélangé les descripteurs paramétriques et les descripteurs non paramétriques. La boite de dispersion présente les descripteurs non paramétriques. La section 4.3 de SDD I traite spécifiquement des boites de dispersion.")
 ```
 
 Les modules 2, 3 et 4 du cours [SDD I](https://wp.sciviews.org/sdd-umons) traitent de la réalisation des graphiques dans R avec `chart()`. Relisez cette partie si vous avez oublié comment réaliser un graphique avec SciViews-R.
@@ -589,7 +588,7 @@ En résumé, on retrouve un équivalent aux cinq fonctions "tidy" principales po
 potatoes1 <- sselect(potatoes,  yield, cultivar)
 ```
 
-Le pipe natif `|>` est apparu dans la version 4.1.0 de R. Vous connaissez déjà deux pipes que sont le pipe de {magrittr} `%>%` ou le pipe du package {svFlow} `%>.%` dans SciViews-R. Ces trois opérateurs permettent de chaîner des instructions afin de montrer de manière claire la suite des opérations. Les pipes améliorent grandement la lisibilité du code. Notez que le pipe `|>` ne requiert pas l'utilisation du `.` dans la fonction qui le suit alors que le pipe `%>.%` l'impose. Il est appelé **pipe explicite** pour cette raison. Vous pouvez retrouver de plus amples informations sur le chaînage des instructions dans la [section 5.5 de SDD I](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2022/cha%25C3%25AEnage-des-instructions.html).
+Le pipe natif `|>` est apparu dans la version 4.1.0 de R. Vous connaissez déjà deux pipes que sont le pipe de {magrittr} `%>%` ou le pipe de {svFlow} `%>.%` dans SciViews-R. Ces trois opérateurs permettent de chaîner des instructions afin de montrer de manière claire la suite des opérations. Les pipes améliorent grandement la lisibilité du code. Notez que le pipe `|>` ne requiert pas l'utilisation du `.` dans la fonction qui le suit alors que le pipe `%>.%` l'impose. Il est appelé **pipe explicite** pour cette raison. Vous pouvez retrouver de plus amples informations sur le chaînage des instructions dans la [section 5.5 de SDD I](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2023/cha%25C3%25AEnage-des-instructions.html).
 
 *Nous vous proposons de continuer à utiliser le pipe `%>.%` de SciViews-R lors de vos remaniements de données.*
 
