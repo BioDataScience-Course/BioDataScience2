@@ -116,7 +116,6 @@ question("Quelles sont les combinaisons de variables les plus corrélées ? (sé
 
 <!-- PhG: je ne comprend pas du tout pourquoi on fait de la corrélation sur crabs, et puis on passe à la régression sur bull. C'est décousu et cela n'a aucun sens. Comment les étudiants penvent comprendre la logique d'une analyse autour d'une régression linéaire sur base de problèmes aussi peu construits !!!- -->
 
-
 ## Taureaux reproducteurs
 
 Pour aborder la régression linéaire, nous revenons sur le jeu de données `bull` déjà utilisé lors du learnr de révision et issu de données de l'association wallonne de l'élevage. Ce jeu de données `bull` contient les variables suivantes :

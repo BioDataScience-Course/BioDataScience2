@@ -1,0 +1,434 @@
+---
+title: "Modèle linéaire"
+author: "Guyliann Engels & Philippe Grosjean"
+description: "**SDD II Module 3** Modèle linéaire."
+tutorial:
+  id: "B03La_mod_lin"
+  version: 2.1.1/8
+output: 
+  learnr::tutorial:
+    progressive: true
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+BioDataScience2::learnr_setup()
+SciViews::R("model", lang = "fr")
+```
+
+```{r, echo=FALSE}
+BioDataScience2::learnr_banner()
+```
+
+```{r, context="server"}
+BioDataScience2::learnr_server(input, output, session)
+```
+
+------------------------------------------------------------------------
+
+## Objectifs
+
+-   Maîtriser le modèle linéaire et l'ANCOVA.
+
+## Modèle linéaire 1
+
+```{r corn1_init}
+set.seed(42)
+x <- seq(from = 0, to = 25, by = 0.25)
+a <- x*1 + 10 + rnorm(length(x), sd = 0.5)
+b <- x*1.2 + 7 + rnorm(length(x), sd = 0.5)
+c <- x*1.4 + 6 + rnorm(length(x), sd = 0.5)
+
+area <- as.factor(rep(c("a", "b", "c"), each = length(x)))
+
+corn1 <- dtx(
+  x     = c(x, x, x),
+  value = c(a, b, c),
+  area  = area
+)
+```
+
+Voici un nuage de points et un tableau résumé pour vous familiariser avec les données `corn1`.
+
+```{r}
+lm1 <- lm(data = corn1, value ~ x * area)
+#summary(lm1)
+lm1_param <- glance(lm1)
+lm1_result <- tidy(lm1)
+
+chart(corn1, value ~ x %col=% area) +
+  geom_point()
+```
+
+```{r}
+skimr::skim(corn1)
+```
+
+Construisez un modèle linéaire (ANCOVA) pertinent pour expliquer la variable `value` en fonction de `x` et de `area` de `corn1`. *Si vous souhaitez faire passer le modèle linéaire par l'origine, utilisez `+ 0` dans la formule, pas `- 1`.*
+
+```{r corn1_prep}
+set.seed(42)
+x <- seq(from = 0, to = 25, by = 0.25)
+a <- x*1 + 10 + rnorm(length(x), sd = 0.5)
+b <- x*1.2 + 7 + rnorm(length(x), sd = 0.5)
+c <- x*1.4 + 6 + rnorm(length(x), sd = 0.5)
+
+area <- as.factor(rep(c("a", "b", "c"), each = length(x)))
+
+corn1 <- dtx(
+  x     = c(x, x, x),
+  value = c(a, b, c),
+  area  = area
+)
+```
+
+```{r corn1_h3, exercise=TRUE, exercise.setup="corn1_prep", exercise.lines=3}
+corn1_lm <- lm(data = ___, ___)
+summary(corn1_lm) |> tabularise()
+```
+
+```{r corn1_h3-hint-1}
+corn1_lm <- lm(data = DF, FORMULA)
+summary(corn1_lm) |> tabularise()
+```
+
+```{r corn1_h3-hint-2}
+corn1_lm <- lm(data = DF, VAR1 ~ VAR2 * VAR3)
+summary(corn1_lm) |> tabularise()
+
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r corn1_h3-solution}
+## Solution ##
+corn1_lm <- lm(data = corn1, value ~ x * area)
+summary(corn1_lm) |> tabularise()
+```
+
+```{r corn1_h3-check}
+grade_code("Vous venez de réaliser votre premier modèle linéaire.")
+```
+
+```{r qu_corn1}
+question("Quelle est la valeur de la pente du modèle linéaire du niveau `a` de la variable `area` ?",
+  answer(sprintf("%.3f", lm1_result$estimate[[2]]), correct = TRUE),
+  answer(sprintf("%.3f", lm1_param$AIC)),
+  answer(sprintf("%.3f", lm1_result$estimate[[3]])),
+  answer(sprintf("%.3f", lm1_result$estimate[[1]])),
+  allow_retry = TRUE, random_answer_order = TRUE)
+```
+
+## Modèle linéaire 2
+
+```{r corn2_init}
+set.seed(42)
+x <- seq(from = 0, to = 25, by = 0.25)
+a <- x*1 + 11 + rnorm(length(x), sd = 0.5)
+b <- x*1.2 + 11 + rnorm(length(x), sd = 0.5)
+c <- x*1.5 + 11 + rnorm(length(x), sd = 0.5)
+
+area <- as.factor(rep(c("a", "b", "c"), each = length(x)))
+
+corn2 <- dtx(
+  x     = c(x, x, x),
+  value = c(a, b, c),
+  area  = area
+)
+```
+
+Voici un nuage de points et un tableau résumé pour vous familiariser avec les données `corn2`.
+
+```{r}
+chart(corn2, value ~ x %col=% area) +
+  geom_point()
+```
+
+```{r}
+skimr::skim(corn2)
+
+#lm2 <- lm(data = corn2, value ~ x * area) # modèle le plus compliqué doit être simplifié 
+#lm2 <- lm(data = corn2, value ~ x + area + x:area)
+lm2 <- lm(data = corn2, value ~ x + x:area)
+#summary(lm2)
+lm2_param <- glance(lm2)
+lm2_result <- tidy(lm2)
+```
+
+Construisez un modèle linéaire (ANCOVA) pertinent pour expliquer la variable `value` en fonction de `x` et de `area` de `corn2`. *Si vous souhaitez faire passer le modèle linéaire par l'origine, utilisez `+ 0` dans la formule, pas `- 1`.*
+
+```{r corn2_prep}
+set.seed(42)
+x <- seq(from = 0, to = 25, by = 0.25)
+a <- x*1 + 11 + rnorm(length(x), sd = 0.5)
+b <- x*1.2 + 11 + rnorm(length(x), sd = 0.5)
+c <- x*1.5 + 11 + rnorm(length(x), sd = 0.5)
+
+area <- as.factor(rep(c("a", "b", "c"), each = length(x)))
+
+corn2 <- dtx(
+  x     = c(x, x, x),
+  value = c(a, b, c),
+  area  = area
+)
+```
+
+```{r corn2_h4, exercise=TRUE, exercise.setup="corn2_prep", exercise.lines=3}
+corn2_lm <- lm(data = ___, ___)
+summary(corn2_lm) |> tabularise()
+```
+
+```{r corn2_h4-hint-1}
+corn2_lm <- lm(data = DF, VAR1 ~ VAR2 ___)
+summary(corn2_lm) |> tabularise()
+```
+
+```{r corn2_h4-hint-2}
+corn2_lm <- lm(data = DF, VAR1 ~ VAR2 + VAR3)
+# ou
+corn2_lm <- lm(data = DF, VAR1 ~ VAR2 + VAR2:VAR3)
+# ou
+corn2_lm <- lm(data = DF, VAR1 ~ VAR2 + VAR3 + VAR2:VAR3)
+summary(corn2_lm) |> tabularise()
+```
+
+```{r corn2_h4-hint-3}
+corn2_lm <- lm(data = corn2, value ~ x + area)
+# ou
+corn2_lm <- lm(data = corn2, value ~ x + x:area)
+# ou
+corn2_lm <- lm(data = corn2, value ~ x + area + x:area)
+summary(corn2_lm) |> tabularise()
+
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r corn2_h4-solution}
+## Solution ##
+corn2_lm <- lm(data = corn2, value ~ x + x:area)
+summary(corn2_lm) |> tabularise()
+```
+
+```{r corn2_h4-check}
+grade_code("Plus que quelques notions à vérifier pour bien maitriser le code R relatif à cette matière.")
+```
+
+```{r qu_corn2}
+question("Quelle est la valeur de la pente du modèle linéaire du niveau `c` de la variable `area` ?",
+  answer(sprintf("%.3f", (lm2_result$estimate[[2]] + lm2_result$estimate[[4]])), correct = TRUE),
+  answer(sprintf("%.3f", lm2_param$AIC)),
+  answer(sprintf("%.3f", lm2_result$estimate[[4]])),
+  answer(sprintf("%.3f", lm2_result$estimate[[1]])),
+  allow_retry = TRUE, random_answer_order = TRUE)
+```
+
+## Modèle linéaire 3
+
+```{r corn3_init}
+set.seed(42)
+x <- seq(from = 0, to = 25, by = 0.25)
+a <- x*1 + 8 + rnorm(length(x), sd = 0.5)
+b <- x*1 + 12 + rnorm(length(x), sd = 0.5)
+c <- x*1 + 11 + rnorm(length(x), sd = 0.5)
+
+area <- as.factor(rep(c("a", "b", "c"), each = length(x)))
+
+corn3 <- dtx(
+  x = c(x, x, x),
+  value = c(a, b, c),
+  area = area
+)
+```
+
+Voici un nuage de points et un tableau résumé pour vous familiariser avec les données `corn3`.
+
+```{r}
+#lm3 <- lm(data = corn3, value ~ x*area)
+#lm3 <- lm(data = corn3, value ~ x + area + x:area)
+lm3 <- lm(data = corn3, value ~ x + area)
+#summary(lm3)
+lm3_param <- glance(lm3)
+lm3_result <- tidy(lm3)
+
+chart(corn3, value ~ x %col=%area) +
+  geom_point()
+```
+
+```{r}
+skimr::skim(corn3)
+```
+
+Construisez un modèle linéaire (ANCOVA) pertinent pour expliquer la variable `value` en fonction de `x` et de `area` de `corn3`. *Si vous souhaitez faire passer le modèle linéaire par l'origine, utilisez `+ 0` dans la formule, pas `- 1`.*
+
+```{r corn3_prep}
+set.seed(42)
+x <- seq(from = 0, to = 25, by = 0.25)
+a <- x*1 + 8 + rnorm(length(x), sd = 0.5)
+b <- x*1 + 12 + rnorm(length(x), sd = 0.5)
+c <- x*1 + 11 + rnorm(length(x), sd = 0.5)
+
+area <- as.factor(rep(c("a", "b", "c"), each = length(x)))
+
+corn3 <- dtx(
+  x = c(x, x, x),
+  value = c(a, b, c),
+  area = area
+)
+```
+
+```{r corn3_h4, exercise=TRUE, exercise.setup = "corn3_prep", exercise.lines=3}
+corn3_lm <- lm(data = ___, ___)
+summary(corn3_lm) |> tabularise()
+```
+
+```{r corn3_h4-hint-1}
+corn3_lm <- lm(data = DF, VAR1 ~VAR2 ___)
+summary(corn3_lm) |> tabularise()
+```
+
+```{r corn3_h4-hint-2}
+corn3_lm <- lm(data = DF, VAR1 ~ VAR2 + VAR3)
+# ou
+corn3_lm <- lm(data = DF, VAR1 ~ VAR2 + VAR2:VAR3)
+# ou
+corn3_lm <- lm(data = DF, VAR1 ~ VAR2 + VAR3 + VAR2:VAR3)
+summary(corn3_lm) |> tabularise()
+```
+
+```{r corn3_h4-hint-3}
+corn3_lm <- lm(data = corn3, value ~ x + area)
+# ou
+corn3_lm <- lm(data = corn3, value ~ x + x:area)
+# ou
+corn3_lm <- lm(data = corn3, value ~ x + area + x:area)
+summary(corn3_lm) |> tabularise()
+
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r corn3_h4-solution}
+## Solution ##
+corn3_lm <- lm(data = corn3, value ~ x + area)
+summary(corn3_lm) |> tabularise()
+```
+
+```{r corn3_h4-check}
+grade_code("Ici le modèle n'a pas d'interactions et les pentes sont toutes considérées comme les mêmes.")
+```
+
+```{r qu_corn3}
+question("Quelle est la valeur de l'ordonnée à l'origine du modèle linéaire pour le niveau `b` de la variable `area` ?",
+  answer(sprintf("%.3f", (lm3_result$estimate[[1]] + lm3_result$estimate[[3]])), correct = TRUE),
+  answer(sprintf("%.3f", lm3_param$AIC)),
+  answer(sprintf("%.3f", lm3_result$estimate[[4]])),
+  answer(sprintf("%.3f", lm3_result$estimate[[1]])),
+  allow_retry = TRUE, random_answer_order = TRUE)
+```
+
+## Modèle linéaire 4
+
+```{r corn4_init}
+set.seed(42)
+x <- seq(from = 0, to = 25, by = 0.25)
+a <- x*1 + rnorm(length(x), sd = 0.5)
+b <- x*1.5  + rnorm(length(x), sd = 0.5)
+c <- x*1.2  + rnorm(length(x), sd = 0.5)
+
+area <- as.factor(rep(c("a", "b", "c"), each = length(x)))
+
+corn4 <- dtx(
+  x     = c(x, x, x),
+  value = c(a, b, c),
+  area  = area
+)
+```
+
+Voici un nuage de points et un tableau résumé pour vous familiariser avec les données `corn4`.
+
+```{r}
+#lm4 <- lm(data = corn4, value ~ x * area)
+#lm4 <- lm(data = corn4, value ~ x * area + 0)
+lm4 <- lm(data = corn4, value ~ x + x:area - 1)
+#summary(lm4)
+lm4_param <- glance(lm4)
+lm4_result <- tidy(lm4)
+
+chart(corn4, value ~ x %col=%area) +
+  geom_point()
+```
+
+```{r}
+skimr::skim(corn4)
+```
+
+Construisez un modèle linéaire (ANCOVA) pertinent pour expliquer la variable `value` en fonction de `x` et de `area` de `corn4`. *Si vous souhaitez faire passer le modèle linéaire par l'origine, utilisez `+ 0` dans la formule, pas `- 1`.*
+
+```{r corn4_prep}
+set.seed(42)
+x <- seq(from = 0, to = 25, by = 0.25)
+a <- x*1 + rnorm(length(x), sd = 0.5)
+b <- x*1.5  + rnorm(length(x), sd = 0.5)
+c <- x*1.2  + rnorm(length(x), sd = 0.5)
+
+area <- as.factor(rep(c("a", "b", "c"), each = length(x)))
+
+corn4 <- dtx(
+  x     = c(x, x, x),
+  value = c(a, b, c),
+  area  = area
+)
+```
+
+```{r corn4_h4, exercise=TRUE, exercise.setup="corn4_prep", exercise.lines=3}
+corn4_lm <- lm(data = ___, ___)
+summary(corn4_lm) |> tabularise()
+```
+
+```{r corn4_h4-hint-1}
+corn4_lm <- lm(data = DF, VAR1 ~ Var2 ___)
+summary(corn4_lm) |> tabularise()
+```
+
+```{r corn4_h4-hint-2}
+corn4_lm <- lm(data = DF, VAR1 ~ VAR2 + VAR2:VAR3 ___)
+summary(corn4_lm) |> tabularise()
+```
+
+```{r corn4_h4-hint-3}
+corn4_lm <- lm(data = corn4, value ~ x + x:area ___)
+summary(corn4_lm) |> tabularise()
+
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r corn4_h4-solution}
+## Solution ##
+corn4_lm <- lm(data = corn4, value ~ x + x:area + 0)
+summary(corn4_lm) |> tabularise()
+```
+
+```{r corn4_h4-check}
+grade_code("Cette fois-ci, l'ordonnée à l'origine est forcée à zéro pour toutes les droites.")
+```
+
+```{r qu_corn4}
+question("Quelle est la valeur de l'ordonnée à l'origine du modèle linéaire pour le niveau `b` de la variable `area` ?",
+  answer(sprintf("%.3f", 0), correct = TRUE),
+  answer(sprintf("%.3f", lm4_param$AIC)),
+  answer(sprintf("%.3f", lm4_result$estimate[[3]])),
+  answer(sprintf("%.3f", lm4_result$estimate[[2]])),
+  allow_retry = TRUE, random_answer_order = TRUE)
+```
+
+## Conclusion
+
+Vous venez de terminer votre séance d'exercices qui vise à vérifier que vous avez bien compris les différentes variantes du modèle linéaire de type ANCOVA, ainsi que le code R pour ajuster ces modèles.
+
+```{r comm_noscore, echo=FALSE}
+question_text(
+  "Laissez-nous vos impressions sur ce learnr",
+  answer("", TRUE, message = "Pas de commentaires... C'est bien aussi."),
+  incorrect = "Vos commentaires sont enregistrés.",
+  placeholder = "Entrez vos commentaires ici...",
+  allow_retry = TRUE
+)
+```

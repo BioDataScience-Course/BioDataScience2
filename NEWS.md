@@ -1,3 +1,7 @@
+# BioDataScience2 2023.3.0
+
+-   Learnr B03La_mod_lin revised for 2023-2024.
+
 # BioDataScience2 2023.2.0
 
 -   Learnrs B02La_reg_multi and B02Lb_reg_poly ready.
