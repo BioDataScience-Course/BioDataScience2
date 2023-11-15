@@ -4,7 +4,7 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II Module 4** Réaliser des modèles linéaires généralisés avec R."
 tutorial:
   id: "B04La_glm"
-version: 2.0.0/0
+version: 2.0.0/11
 output:
   learnr::tutorial:
   progressive: true
@@ -13,30 +13,360 @@ runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
-BioDataScience3::learnr_setup()
-SciViews::R()
-library(mlearning)
+BioDataScience2::learnr_setup()
+SciViews::R("model", lang = "fr")
 
-# ...
+# Dataset ----
+pima <- bind_rows(
+  read("Pima.tr2", package = "MASS"), read("Pima.te", package = "MASS"))
+
+# Rename variable
+
+pima <- srename(pima, n_pregnant = npreg, glucose = glu, diastolic = bp,
+  triceps = skin, dpf = ped, diabete = type)
+
+# Labelise and units
+pima <- labelise(
+  pima,
+  label = list(
+    n_pregnant = "Nombre de grossesses",
+    glucose = "Glucose dans le plasma sanguin",
+    diastolic = "Pression diastolique",
+    triceps = "Épaisseur du pli cutané au niveau du triceps",
+    bmi = "Indice de masse corporelle",
+    dpf = "Indice du risque génétique lié au diabète",
+    diabete = "Diabètes",
+    age = "Age"
+  ),
+  units = c(
+    glucose = "mg/dL",
+    diastolic = "mmHg",
+    triceps = "mm",
+    bmi = "kg/m^2",
+    age = "Année"
+  )
+)
+
+pima1 <- sdrop_na(pima, bmi)
+
+# models ----
+diab1 <- glm(data = pima1, diabete ~ bmi*age*glucose, family = binomial)
+diab2 <- glm(data = pima1, diabete ~ bmi+age+glucose, family = binomial)
 ```
 
 ```{r, echo=FALSE}
-BioDataScience3::learnr_banner()
+BioDataScience2::learnr_banner()
 ```
 
 ```{r, context="server"}
-BioDataScience3::learnr_server(input, output, session)
+BioDataScience2::learnr_server(input, output, session)
 ```
 
 ------------------------------------------------------------------------
 
-**Ce tutoriel correspond à la version 2021-2022. Il est en cours de révision pour la version 2022-2023. Vous devez probablement penser à installer une version plus récente du package qui contient les exercices finalisés !**
-
 ## Objectifs
 
--   ...
+-   Réaliser et interpréter des modèles linéaires généralisés pertinents
+-   Comparer les modèles obtenus
 
-## Régression logistique
+## Indiens diabétiques
 
-TODO: ce tutoriel doit encore être écrit. Vous devez probablement penser à installer une version plus récente du package qui contient les exercices finalisés !
+Les données que vous allez traiter dans ce tutoriel portent sur les cas de diabète chez les descendants des Indiens Pimas en Arizona. La prévalence de diabète de type 2 est particulièrement élevée chez ces individus.
 
+Les jeux de données employés sont proposés dans le package {MASS}. Deux ensembles de données sont associés `Pima.tr2` et `Pima.te`. Les noms des variables ont été renommés afin d'être plus explicites. De plus, des labels et des unités ont été ajoutés.
+
+```{r, echo=TRUE}
+pima <- bind_rows(
+  read("Pima.tr2", package = "MASS"), read("Pima.te", package = "MASS"))
+
+# Rename variables
+pima <- srename(pima, n_pregnant = npreg, glucose = glu, diastolic = bp,
+  triceps = skin, dpf = ped, diabete = type)
+
+# Labelise and units
+pima <- labelise(
+  pima,
+  label = list(
+    n_pregnant = "Nombre de grossesses",
+    glucose = "Glucose dans le plasma sanguin",
+    diastolic = "Pression diastolique",
+    triceps = "Épaisseur du pli cutané au niveau du triceps",
+    bmi = "Indice de masse corporelle",
+    dpf = "Indice du risque génétique lié au diabète",
+    diabete = "Diabètes",
+    age = "Age"
+  ),
+  units = c(
+    glucose = "mg/dL",
+    diastolic = "mmHg",
+    triceps = "mm",
+    bmi = "kg/m^2",
+    age = "Année"
+  )
+)
+```
+
+La mesure du glucose dans le plasma sanguin est obtenue à la suite d'un test d'hyperglycémie provoquée. Cet examen est utilisé pour évaluer la capacité du corps à réguler le taux de sucre dans le sang après la prise d'une quantité précise de glucose. Plusieurs prises de sang sont réalisées au début de l'examen, puis après 60 minutes et enfin après 120 minutes. Les valeurs du tableau correspondent à la mesure après 120 minutes.
+
+Des informations complémentaires sur ces données peuvent être trouvées via la page d'aide de `Pima.te` ou `Pima.tr2` (`?MASS::Pima.te`)
+
+## Exploration des données
+
+L'Indice du risque génétique lié au diabète (DPF, Diabetes pedigree function) estime la probabilité d'avoir du diabète en fonction de l'âge de l'individu et des antécédents familiaux. Débutez votre analyse par réaliser un histogramme de la variable `dpf`. Utilisez les facettes afin de séparer les individus diabètes, des individus sains. Remplacez le label par défaut de l'axe y par "Effectifs".
+
+```{r histo_h2, exercise = TRUE}
+chart(___) +
+  ___ +
+  ylab(___)
+```
+
+```{r histo_h2-hint-1}
+chart(data = pima,  ___) +
+  geom_histogram() +
+  ylab(___)
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r histo_h2-solution}
+## Solution ##
+chart(data = pima,  ~dpf|diabete) +
+  geom_histogram() +
+  ylab("Effectifs")
+```
+
+```{r histo_h2-check}
+grade_code("Vous venez de réaliser votre graphique. On observe qu'il y a plus d'individus sains que de personnes malades dans les données. Par contre, on n'observe pas de différence marquée entre les deux groupes d'individus.")
+```
+
+Réalisez à présent un graphique en violon du diabète en fonction de l'indice de masse corporelle. Les violons doivent être à l'horizontale. Ce graphique est à réaliser en 2 lignes uniquement.
+
+```{r violin_h2, exercise=TRUE, exercise.lines=2}
+chart(___) +
+  ___
+```
+
+```{r violin_h2-hint-1}
+chart() +
+  geom_violin()
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r violin_h2-solution}
+## Solution ##
+chart(data = pima, diabete ~ bmi) +
+  geom_violin()
+```
+
+```{r violin_h2-check}
+grade_code("Vous venez de réaliser votre second graphique. Vous avez placé les violons à l'horizontal en inversant la formule que vous avez l'habitude d'employer pour ce type de graphique. On observe que les personnes diabétiques ont un IMC plus élevé que les personnes saines. De nombreuses études indiquent une corrélation entre l'obésité et le diabète.")
+```
+
+D'autres graphiques peuvent être réalisés afin d'approfondir encore votre analyse des données
+
+```{r, echo=TRUE}
+a <- chart(data = pima, ~age %fill=% diabete) +
+  geom_histogram() +
+  ylab("Effectifs")
+
+b <- chart(data = pima, diabete ~ glucose %fill=% diabete) +
+  geom_boxplot()
+
+c <- chart(data = pima, ~n_pregnant %fill=% diabete) +
+  geom_bar(position = "dodge") +
+  ylab("Effectifs")
+
+d <- chart(data = pima, diabete ~ diastolic %fill=% diabete) +
+  geom_boxplot()
+
+combine_charts(list(a, b, c, d), common.legend = TRUE)
+```
+
+Les personnes saines sont plus nombreuses que les personnes malades. Les individus étudiés ont 21 ans et plus. La proportion de personnes diabétiques augmente avec l'âge et avec le nombre de grossesses. Le glucose dans le plasma sanguin et la pression diastolique sont plus élevés chez les patients diabétiques, tout comme l'IMC.
+
+```{r, echo=TRUE}
+visdat::vis_miss(pima)
+```
+
+La présence de valeurs manquantes est de 16% pour la mesure de l'épaisseur du pli cutané au niveau du triceps. Cette mesure est employée pour définir la graisse corporelle. Malgré la plus grande marge d'erreur de l'IMC. Nous allons continuer notre analyse avec cette variable-là.
+
+Éliminez les valeurs manquantes uniquement pour la variable relative à l'IMC (`bmi`). Employez la fonction speedy pertinente.
+
+```{r sdropna_h2, exercise=TRUE, exercise.lines=1}
+pima1 <- ___
+```
+
+```{r sdropna_h2-hint-1}
+pima1 <- sdrop_na()
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r sdropna_h2-solution}
+## Solution ##
+pima1 <- sdrop_na(pima, bmi)
+```
+
+```{r sdropna_h2-check}
+grade_code("Bien joué ! La fonction sdrop_na() est une fonction puissante qui permet d'éliminer les lignes contenant des valeurs manquantes. Soyez cependant vigilant et précisez toujours les colonnes que vous comptez employer par la suite afin de garder un maximum de lignes.")
+```
+
+```{r qu_family}
+question("Quelle fonction de lien utiliseriez vous pour modéliser la présence ou l'absence du diabètes",
+  answer("identité", message = "Cette fonction de lien correspond à une distribution gaussienne de la variable y."),
+  answer("log", message = "Cette fonction de lien est employée pour des distributions de la variable y log-Normale, poisson ou encore quasi poisson."),
+  answer("logit", message = "Cette fonction de lien est employée pour des distributions de la variable y binomiale ou quasi binomiale.", correct = TRUE), allow_retry = TRUE, random_answer_order = TRUE, message = "Nous sommes en présence d'une variable binaire. La personne a le diabète ou bien n'a pas le diabète. La distribution binomiale est tout indiquée pour cette analyse.")
+```
+
+## Modélisation
+
+L'exploration des données nous a permis de mettre en avant de potentiel bon candidat pour modéliser la présence ou l'absence de diabète tel que l'IMC, l'âge ou encore l'assimilation du glucose lors d'un test d'hyperglycémie provoquée.
+
+Réalisez un modèle complet tenant compte des 3 variables sélectionnées (`bmi`, `age` et `glucose`) sur le tableau `pima1`. Affichez également le résumé du modèle.
+
+```{r glm1_h2, exercise=TRUE, exercise.lines=5}
+# Modèle complet
+diab1 <- glm(data = ___, ___, family = ___)
+# Résumé du modèle
+___
+```
+
+```{r glm1_h2-hint-1}
+# Modèle complet
+diab1 <- glm(data = ___, ___, family = binomial)
+# Résumé du modèle
+summary(___)
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r glm1_h2-solution}
+## Solution ##
+# Modèle complet
+diab1 <- glm(data = pima1, diabete ~ bmi*age*glucose, family = binomial)
+# Résumé du modèle
+summary(diab1)
+```
+
+```{r glm1_h2-check}
+grade_code("Bien joué ! Réponds aux questions suivantes pour vérifier ta compréhension du modèle réalisé.")
+```
+
+```{r qu_glm1}
+quiz(
+  question("Sélectionnez l'affirmation correcte concernant les paramètres du modèles",
+    answer("Tous les paramètres du modèle sont significatifs au seuil alpha de 5%"),
+    answer("Tous les paramètres du modèle sont non significatifs au seuil alpha de 5%", correct = TRUE),
+    answer("Des paramètres du modèle sont significatifs au seuil alpha de 5%"),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question("Sélectionnez l'affirmation correcte concernant le paramètre de dispersion",
+    answer("Une surdispersion importante est observé pour ce modèle."),
+    answer("Une sousdispersion importante est observée pour ce modèle."),
+    answer("La dispersion est proche de 1.", correct = TRUE), 
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question("Sélectionnez l'affirmation correcte concernant le critère d'Akaike",
+    answer("La valeur brute ne donne aucune information", correct = TRUE),
+    answer("La valeur est faible, c'est un bon modèle"),
+    answer("La valeur est faible, c'est un mauvais modèle"),
+    answer("La valeur est élevé, c'est un bon modèle"),
+    answer("La valeur est élevé, c'est un mauvais modèle"), 
+    allow_retry = TRUE, random_answer_order = TRUE)
+)
+```
+
+Réalisez à présent un nouveau modèle sans interaction en tenant compte des 3 variables sélectionnées (`bmi`, `age` et `glucose`).
+
+```{r glm2_h2, exercise=TRUE, exercise.lines=5}
+diab2 <- glm(data = ___, ___, family = ___)
+# Résumé du modèle
+___
+```
+
+```{r glm2_h2-hint-1}
+# Modèle complet
+diab2 <- glm(data = ___, ___, family = binomial)
+# Résumé du modèle
+summary(___)
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r glm2_h2-solution}
+## Solution ##
+diab2 <- glm(data = pima1, diabete ~ bmi+age+glucose, family = binomial)
+summary(diab2)
+```
+
+```{r glm2_h2-check}
+grade_code("Bien joué ! Avant de continuer, assurez-vous de bien comprendre ce modèle.")
+```
+
+Comparez les modèles à l'aide d'une Anova et du critère d'Akaike.
+
+```{r compa_h2, exercise=TRUE}
+anova(___)
+___(___)
+```
+
+```{r compa_h2-hint-1}
+anova(___, ___, test = ___)
+AIC(___)
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r compa_h2-solution}
+## Solution ##
+anova(diab1, diab2, test = "Chisq")
+AIC(diab1, diab2)
+```
+
+```{r compa_h2-check}
+grade_code("Bien joué ! Le code est maitrisé. Répondez à la question suivante pour vérifier votre capacité à comparer les modèles.")
+```
+
+Sur base de l'anova, du critère d'Akaike et de vos analyses des résumés des deux modèles. Affichez le tableau résumé du modèle avec la fonction tabularise() pour obtenir un "beau" rendu de ce tableau.
+
+```{r tabu_h1, exercise=TRUE}
+___(___(___))
+```
+
+```{r tabu_h1-solution}
+## Solution ##
+tabularise(summary(diab2))
+```
+
+```{r tabu_h1-check}
+grade_code("Bien joué ! Vous avez sélectionné le meilleur modèle. Le modèle sans interaction n'a que des paramètres significatifs au seuil alpha de 5%. Il n'y a pas de différence significative entre les deux modèles via l'anova. Le critère d'Akaike est plus faible pour le modèle le plus simple. Pour ces raisons, le second modèle est plus pertinent?")
+```
+
+## Pour aller plus loin
+
+En continuant l'analyse de ce jeu de données, il est possible d'obtenir un modèle encore plus pertinent. La stratégie suivante a été de partir d'un modèle complexe et de la simplifier progressivement.
+
+```{r, echo=TRUE}
+diab3 <- glm(data = pima1, diabete ~ bmi+n_pregnant+glucose+diastolic+dpf+age , family = binomial)
+summary(diab3)
+diab4 <- glm(data = pima1, diabete ~ bmi+n_pregnant+glucose+dpf+age , family = binomial)
+summary(diab4)
+diab5 <- glm(data = pima1, diabete ~ bmi+n_pregnant+glucose+dpf , family = binomial)
+summary(diab5)
+# Comparaison des modèles
+anova(diab2, diab5, test = "Chisq")
+AIC(diab2, diab5)
+```
+
+Voici le tableau bien formaté du résumé du modèle `diab5`.
+
+```{r}
+tabularise(summary(diab5))
+```
+
+## Conclusion
+
+Vous venez de terminer votre séance d'exercices qui vise à vérifier que vous avez bien compris l'interprétation de modèles linéaires généralisés, ainsi que le code R pour ajuster ces modèles.
+
+```{r comm_noscore, echo=FALSE}
+question_text(
+  "Laissez-nous vos impressions sur ce learnr",
+  answer("", TRUE, message = "Pas de commentaires... C'est bien aussi."),
+  incorrect = "Vos commentaires sont enregistrés.",
+  placeholder = "Entrez vos commentaires ici...",
+  allow_retry = TRUE
+)
+```
