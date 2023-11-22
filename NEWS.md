@@ -1,3 +1,7 @@
+# BioDataScience2 2023.5.0
+
+-   Learnr **B05La_nls** revised for 2023-2024.
+
 # BioDataScience2 2023.4.0
 
 -   New learnr **B04La_glm** added for 2023-2024.
