@@ -1,7 +1,7 @@
 ---
 title: "K-moyennes et indices de diversité"
-author: "Guyliann Engels, Raphael Conotte & Philippe Grosjean"
-description: "**SDD II Module 6** Regroupement des données par les K-moyennes et indices de diversité."
+author: "Guyliann Engels & Philippe Grosjean"
+description: "**SDD II Module 6** Regroupement des données par les k-moyennes et indices de diversité."
 tutorial:
   id: "B06Lb_kmeans"
   version: 2.2.0/8
@@ -35,9 +35,9 @@ BioDataScience2::learnr_server(input, output, session)
 
 -   Vérifiez que vous avez compris les différentes étapes de la classification par les k-moyennes : choix du nombre de groupes, classification par les k-moyennes, récupération des coordonnées des centres et représentation graphique.
 -   Vous préparer à analyser et interpréter de manière autonome un jeu de données multivariées à l'aide des k-moyennes
--   Vous familiarisez avec les indices de diversité : richesse spécifique, indice de Shannon, indice de Jaccard...
+-   Vous familiarisez avec les indices de diversité : richesse spécifique, indice de Shannon, indice de Jaccard...
 
-N'entamez ce tutoriel qu'après avoir compris le principe des k-moyennes et les indices de diversité proposés dans le [module 6](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2022/k-moyennes.html) du cours. Assurez-vous d'avoir réalisé les exercices H5P qui s'y trouvent avant de vous lancer dans ce tutoriel-ci.
+N'entamez ce tutoriel qu'après avoir compris le principe des k-moyennes et les indices de diversité proposés dans le [module 6](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2023/k-moyennes.html) du cours. Assurez-vous d'avoir réalisé les exercices H5P qui s'y trouvent avant de vous lancer dans ce tutoriel-ci.
 
 ## Communautés piscicoles de rivière
 
@@ -73,7 +73,7 @@ Les observations relatives à la distribution des poissons sont disponibles dans
 head(fish)
 ```
 
-Les 27 espèces de poisson étudiées au sein des 30 stations sont présentées dans le tableau ci-dessous
+Les 27 espèces de poissons étudiées au sein des 30 stations sont présentées dans le tableau ci-dessous
 
 ```{r, echo=FALSE}
 doubs$species %>.%
@@ -90,7 +90,7 @@ Verneaux, J. (1973) Cours d'eau de Franche-Comté (Massif du Jura). Recherches �
 
 ## K-moyennes
 
-La méthode des k-moyennes ("k-means" en anglais) permet de réaliser des regroupements d'individus en partant d'un tableau multivarié. Elle a donc le même objectif que la classification ascendante hiérarchique (CAH) que vous avez découverte précédemment. La méthode des k-moyennes a l'avantage, par rapport à la classification ascendante hiérarchique, d'être moins gourmande en temps de calcul et en mémoire vive. Elle sera donc à privilégier lorsque vous vous retrouvez confronté à un grand jeu de données. Par contre, elle est souvent moins efficace que la CAH.
+La méthode des k-moyennes (*k-means* en anglais) permet de réaliser des regroupements d'individus en partant d'un tableau multivarié. Elle a donc le même objectif que la classification ascendante hiérarchique (CAH) que vous avez découverte précédemment. La méthode des k-moyennes a l'avantage, par rapport à la classification ascendante hiérarchique, d'être moins gourmande en temps de calcul et en mémoire vive. Elle sera donc à privilégier lorsque vous vous retrouvez confronté à un grand jeu de données. Par contre, elle est souvent moins efficace que la CAH.
 
 Dans ce tutoriel, les données employées ne sont pas de gros jeux de données, et vous avez pu constater que la CAH s'y applique facilement. Néanmoins, nous les conservons à des fins de comparaison entre les deux techniques k-moyennes et CAH.
 
@@ -119,7 +119,7 @@ profile_k(envir_scale)
 ```
 
 ```{r nbclust_h2-check}
-grade_code("Avec de ce graphique, vous avez un outil qui peut vous aider à déterminer le nombre k de centres à utiliser. La valeur obtenue pour *k* = 1 nous indique de combien les données sont dispersées. En augmentant la valeur de *k*, l'objectif est de faire des regroupements pour diminuer cette variance intra-groupe, mais pas au delà d'une valeur qui ne diminuerait plus de manière importante.")
+grade_code("Avec de ce graphique, vous avez un outil qui peut vous aider à déterminer le nombre k de centres à utiliser. La valeur obtenue pour *k* = 1 nous indique de combien les données sont dispersées. En augmentant la valeur de *k*, l'objectif est de faire des regroupements pour diminuer cette variance intragroupe, mais pas au delà d'une valeur qui ne diminuerait plus de manière importante.")
 ```
 
 ```{r qu_nbclust}
@@ -137,7 +137,7 @@ question("Sur base du graphique que vous avez réalisé, quelle valeur de k util
 
 ### Étape 2 : Calcul des k-moyennes
 
-Maintenant que vous avez défini la valeur de *k* que vous allez utiliser, vous pouvez procéder au calcul des k-moyennes en utilisant la fonction `k_means()`. Vous lui fournirez le tableau de départ contenant uniquement des valeurs numériques éventuellement *standardisées* et spécifierez le nombre `k =` de groupes souhaités.
+Maintenant que vous avez défini la valeur de *k* que vous allez utiliser, vous pouvez procéder au calcul des k-moyennes en utilisant la fonction `k_means()`. Vous lui fournirez le tableau de départ contenant uniquement des valeurs numériques, éventuellement *standardisées*, et spécifierez le nombre `k =` de groupes souhaités.
 
 La position initiale des k centres est déterminée aléatoirement. Le résultat final peut donc varier et ne pas être optimal. Pour éviter cela, nous pouvons utiliser l'argument `nstart =` qui testera différentes situations de départ pour conserver le meilleur résultat. Par défaut, une seule situation aléatoire de départ `nstart = 1` est considérée. Avec une valeur plus importante de `nstart =`, votre analyse sera plus robuste... mais cela augmentera le temps de calcul.
 
@@ -166,7 +166,7 @@ set.seed(210219)
 ```
 
 ```{r kmeans_h2-check}
-grade_code("Vous venez de réaliser votre première classification par les k moyennes ! La sortie que vous obtenez est l'impression du contenu de l'objet k_means qui vous donne beaucoup d'information. Vous avez le nombre de stations présentes dans chaque groupe (2, 12, 6 et 10). Ensuite, la section \"Cluster means\" reprend les positions des centres pour les 4 groupes que vous avez réalisé. Une mesure de la qualité de regroupement de vos données est présentée dans \"Within cluster sum of squares\", 69.3% ici. Plus cette valeur sera proche de 100% mieux ce sera !")
+grade_code("Vous venez de réaliser votre première classification par les k-moyennes ! La sortie que vous obtenez est l'impression du contenu de l'objet **k_means** qui vous donne beaucoup d'information. Vous avez le nombre de stations présentes dans chaque groupe (2, 12, 6 et 10). Ensuite, la section \"Cluster means\" reprend les positions des centres pour les 4 groupes que vous avez réalisé. Une mesure de la qualité de regroupement de vos données est présentée dans \"Within cluster sum of squares\", 69.3% ici. Plus cette valeur sera proche de 100% mieux ce sera.")
 ```
 
 ### Graphique du regroupement
@@ -199,7 +199,7 @@ chart(envir_kmn, choices = c("oxy", "nit"))
 ```
 
 ```{r graphe_h3-check}
-grade_code("Vous voyez comme c'est facile ! Les fonctions SciViews vous facilitent la tâche. Naturellement, vous pouvez aussi choisir d'autres paires de variables pour visualiser votre regroupement.")
+grade_code("Vous voyez comme c'est facile ! Les fonctions SciViews::R vous facilitent la tâche. Naturellement, vous pouvez aussi choisir d'autres paires de variables pour visualiser votre regroupement.")
 ```
 
 ## Indices de diversité
