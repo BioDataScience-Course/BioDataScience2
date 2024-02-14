@@ -13,11 +13,11 @@ runtime: shiny_prerendered
 
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
-SciViews::R("explore")
+SciViews::R("explore", lang = "fr")
 
-# Preparation of the dataset ------
+# Preparation du jeu de données
 read("penguins", package = "palmerpenguins", lang = "fr") %>.%
-  sdrop_na(., bill_length_mm) %->%
+  sdrop_na(., bill_length) ->
   penguins
 ```
 
@@ -37,28 +37,28 @@ L'Analyse en Composantes Principales (ACP) est une méthode statistique explorat
 
 -   Réaliser de manière guidée une ACP
 
--   Effectuer les graphiques associées à cette analyse
+-   Effectuer les graphiques relatifs à cette analyse
 
 -   Vous préparer à interpréter par vous-même les résultats de vos ACP
 
-Avant toute chose, assurez vous d'avoir bien compris le contenu du [module 7](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2022/acp-afc.html) du cours et en particulier la [section 7.1](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2022/analyse-en-composantes-principales.html).
+Avant toute chose, assurez-vous d'avoir bien compris le contenu du [module 7](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2023/acp-afc.html) du cours et en particulier la [section 7.1](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2023/analyse-en-composantes-principales.html).
 
-## Manchots de l'Antarctique
+## Manchots en Antarctique
 
-Trois espèces de manchots ont été étudié en Antarctique entre 2007 et 2009 par le Docteur Kristen Gorman de la base antarctique Palmer. Les manchots ont été étudié sur l'île du Rêve (`Dream`), sur l'île de Torgersen (`Torgersen`) et sur île Biscoe (`Biscoe`). Les espèces étudiées sont le manchot Papou *Pygoscelis papua* (Forster, 1781), `Gentoo`, le manchot Adélie *Pygoscelis adlidae* (Hombron & Jacquinot, 1841), `Adelie` et les manchots à jugulaire *Pygoscelis antarcticus* (Forster, 1781), `Chinstrap`.
+Trois espèces de manchots ont été étudiés en Antarctique entre 2007 et 2009 par le Docteur Kristen Gorman de la base antarctique Palmer. Les manchots ont été observés sur l'île du Rêve (`Dream`), sur l'île de Torgersen (`Torgersen`) et sur l'île Biscoe (`Biscoe`). Les espèces étudiées sont le manchot Papou *Pygoscelis papua* (Forster, 1781) `Gentoo`, le manchot Adélie *Pygoscelis adlidae* (Hombron & Jacquinot, 1841) `Adelie` et le manchot à jugulaire *Pygoscelis antarcticus* (Forster, 1781) `Chinstrap`.
 
-![Couple de manchots adélies avec son petit à droite et un manchot à jugulaire (gentoo) à gauche. Photo de J. Auch, license creative commons 2.0 generic.](images/adelie_and_gentoo.jpg)
+![Couple de manchots adélies avec son petit à droite et un manchot à jugulaire (gentoo) à gauche. Photo de J. Auch, licence creative commons 2.0 generic.](images/adelie_and_gentoo.jpg)
 
 ```{r, echo=TRUE}
 penguins <- read("penguins", package = "palmerpenguins")
 skimr::skim(penguins)
 ```
 
-Le jeu de données nommé `penguins` ici contient trois variables facteurs : l'espèce, l'île doù les individus proviennent et leur sexe. Il contient aussi quatre variables biométriques : la longueur du bec (mm), la largeur du bec (mm), la longueur de la nageoire (mm) et la masse (g). Les années de mesures sont recensées dans la variable `year`.
+Le jeu de données nommé `penguins` ici contient trois variables facteurs : l'espèce, l'île d'où les individus proviennent et leur sexe. Il contient aussi quatre variables biométriques : la longueur du bec (mm), la largeur du bec (mm), la longueur de la nageoire (mm) et la masse (g). Les années des mesures sont enregistrées dans la variable `year`.
 
 ```{r, echo=TRUE}
 naniar::vis_miss(penguins) # Visualiser les données manquantes
-penguins <- sdrop_na(penguins, bill_length_mm) # Éliminer les lignes vides
+penguins <- sdrop_na(penguins, bill_length) # Éliminer les lignes vides
 ```
 
 La variable sexe a quelques valeurs manquantes, mais comme elle ne sera pas utilisée dans cette analyse (l'ACP utilise en effet des variables quantitatives uniquement), nous n'éliminons **pas** les lignes qui contiennent des valeurs manquantes pour cette variable. Nous ne supprimons que les valeurs manquantes observées pour `bill_length_mm`.
@@ -89,14 +89,14 @@ plot(peng_corr)
 grade_code("Par défaut, la fonction correlation() utilise la méthode de Pearson qui met en avant les corrélations linéaires, celles précisément qui nous intéressent pour l'ACP. Nous observons des corrélations positives en bleu entre la longueur du bec, de la nageoire et la masse. Par contre, la largeur du bec est inversément corrélée à ces trois autres variables.") 
 ```
 
-### Linearisation éventuelle
+### Linéarisation éventuelle
 
 Avant de réaliser une ACP, on vérifie aussi si les relations entre les variables sont linéaires ou à peu près linéaires. Cela se voit sur un graphique en nuage de points. Nous pouvons réaliser des graphiques entre différentes paires de variables ou alors utiliser une matrice de nuage de points.
 
 Avec des données biométriques, le nuage de points a fréquemment une forme curvilinéaire qui se linéarise par une transformation en double logarithme (logarithme des deux variables), comme pour le jeu de données `urchins` par exemple. **Si vous observez cela, une linéarisation par transformation des données est à appliquer avant d'effectuer l'ACP.**
 
 ```{r scatterplot1, echo=TRUE}
-chart(data = penguins, body_mass_g ~ flipper_length_mm) +
+chart(data = penguins, body_mass ~ flipper_length) +
   geom_point()
 ```
 
@@ -109,12 +109,12 @@ chart(data = penguins, ___ ~ ___) +
 
 ## ACP
 
-Calculez maintenant votre analyse en composantes principales sur le jeu de données `penguins`. Sélectionnez uniquement les variables numériques intéressantes. L'année de la mesure n'est pas une variable intéressante pour réaliser l'ACP. Les variables biométriques ont des unités différentes. Il est donc plus judicieux de standardiser les valeurs.
+Calculez maintenant votre analyse en composantes principales sur le jeu de données `penguins`. Sélectionnez uniquement les variables numériques intéressantes. L'année de la mesure n'est pas une variable intéressante pour réaliser l'ACP. Les variables biométriques ont des unités différentes. Il est donc judicieux de standardiser les données.
 
 ```{r pca_h2, exercise=TRUE, exercise.lines=6}
 ___ %>.%
   sselect(., ___:___) %>.%
-  pca(., scale = ___) %->%
+  pca(., scale = ___) ->
   penguins_pca
 summary(penguins_pca)
 ```
@@ -122,7 +122,7 @@ summary(penguins_pca)
 ```{r pca_h2-hint-1}
 ___ %>.%
   sselect(., ___:___) %>.%
-  pca(., scale = TRUE) %->%
+  pca(., scale = TRUE) ->
   penguins_pca
 summary(penguins_pca)
 
@@ -133,7 +133,7 @@ summary(penguins_pca)
 ## Solution ##
 penguins %>.%
   sselect(., 3:6) %>.%
-  pca(., scale = TRUE) %->%
+  pca(., scale = TRUE) ->
   penguins_pca
 summary(penguins_pca)
 ```
@@ -148,7 +148,7 @@ question("Quelle est la proportion cumulée de la variance des deux premières c
   answer("0.19"),
   answer("0.88", correct = TRUE),
   allow_retry = TRUE,
-  correct = "C'est exact ! La variance cumulée des deux premiers axes correspond à 88%. Ces deux premiers axes forment donc un plan qui représente bien l'information du jeu de données. La première composante contient déjà plus de 69% de la variance.",
+  correct = "La variance cumulée sur les deux premiers axes correspond à 88%. Ces deux premiers axes forment donc un plan qui représente bien l'information du jeu de données. La première composante contient déjà plus de 69% de la variance.",
   incorrect = "La proportion de la variance et la proportion de la variance cumulée se trouve dans le tableau `Importance of components`."
   )
 ```
@@ -160,7 +160,7 @@ Réalisez un graphique des éboulis sur l'objet `penguins_pca` que vous avez ré
 ```{r pca_prep}
 penguins %>.%
   sselect(., 3:6) %>.%
-  pca(., scale = TRUE) %->%
+  pca(., scale = TRUE) ->
   penguins_pca
 ```
 
@@ -180,7 +180,7 @@ chart$scree(penguins_pca)
 ```
 
 ```{r scree_h2-check}
-grade_code("Vous venez de réaliser le graphique des éboulis associé à votre ACP. Ce graphique permet de voir la part de variance exprimée par chaque composante principale. Nous voyons bien que le premier axe reprend une très grande part de variance et que l'ensemble des deux premiers axes en cumulent une part suffisante.")
+grade_code("Le graphique des éboulis permet de voir la part de variance exprimée par chaque composante principale. Nous voyons bien que le premier axe reprend une très grande part de variance et que l'ensemble des deux premiers axes en cumulent une part suffisante.")
 ```
 
 ### Représentation des variables
@@ -203,7 +203,7 @@ chart$loadings(penguins_pca, choices = c(1, 2))
 ```
 
 ```{r loadings_h2-check}
-grade_code("Ce graphique permet de visualiser l'importance des variables intiales dans le plan de l'ACP sous forme de vecteurs. Il est indispensable pour interpréter le graphique suivant qui répartit les observations dans le même plan. La norme (longueur) du vecteur indique si la variable est bien représentée dans ce plan ou non. Plus la norme du vecteur se rapproche de un, matérialisé par le cercle, mieux c'est. Ici, les 4 variables sont bien représentées avec des normes supérieures ou égales à 0.5. Celles aux normes trop faibles ne sont pas considérées dans l'analyse pour ce plan-là en tous cas. Ensuite, les variables qui pointent dans la même direction sont corrélées positivement comme la longueur de la nageoire et la masse. Les variables qui pointent dans le sens opposé sont inversément corrélées (il n'y en a pas ici). Les vecteurs orthogonaux correspondent à des variables non ou très faiblement corrélées entre elles, comme la largeur du bec et la masse.")
+grade_code("Ce graphique permet de visualiser l'importance des variables intiales dans le plan de l'ACP sous forme de vecteurs. Il est indispensable pour interpréter le graphique suivant qui répartit les observations dans le même plan. La norme (longueur) du vecteur indique si la variable est bien représentée dans ce plan ou non. Plus la norme du vecteur se rapproche de un, matérialisé par le cercle gris, mieux c'est. Ici, les quatre variables sont bien représentées avec des normes supérieures ou égales à 0.5. Celles aux normes trop faibles ne sont pas considérées dans l'analyse pour ce plan-là en tous cas. Ensuite, les variables qui pointent dans la même direction sont corrélées positivement comme la longueur de la nageoire et la masse. Les variables qui pointent dans le sens opposé sont inversément corrélées (il n'y en a pas ici). Les vecteurs orthogonaux correspondent à des variables non ou très faiblement corrélées entre elles, comme la largeur du bec et la masse.")
 ```
 
 ### Représentation des individus
@@ -229,7 +229,7 @@ chart$scores(penguins_pca, choices = c(1, 2), labels = penguins$species) +
 ```
 
 ```{r scores_h2-check}
-grade_code("La forme du nuage de points et surtout des sous-groupes sont à rechercher ici. Nous voyons clairement une séparation des manchots `Gentoo` par rapport aux autres. Ce graphique peut s'interpréter par rapport au précédent qui proposait une clé de lecture. Les manchots `Chinstrap` ont des becs plus long que les manchots `Adelie` (partie basse du graphique). Les manchots `Gentoo` sont plus gros que les manchots `Adelie` et `Chinstrap` et ont des nageoires plus longues (droite du graphique).")
+grade_code("La forme du nuage de points et surtout des sous-groupes sont à rechercher ici. Nous voyons clairement une séparation des manchots `Gentoo` par rapport aux autres. Ce graphique peut s'interpréter par rapport au précédent qui offre une clé de lecture. Les manchots `Chinstrap` ont des becs plus long que les manchots `Adelie` (partie basse du graphique). Les manchots `Gentoo` sont plus gros que les manchots `Adelie` et `Chinstrap` et ont des nageoires plus longues (droite du graphique).")
 ```
 
 ## Interprétation de l'ACP
@@ -238,12 +238,12 @@ Voici les deux représentations dans l'espace des variables et des individus dan
 
 ```{r}
  read("penguins", package = "palmerpenguins", lang = "fr") %>.%
-  sdrop_na(., bill_length_mm) %->%
+  sdrop_na(., bill_length) ->
   penguins
 
 penguins %>.%
   sselect(., 3:6) %>.%
-  pca(., scale = TRUE) %->%
+  pca(., scale = TRUE) ->
   penguins_pca
 
 a <- chart$loadings(penguins_pca, choices = c(1, 2))
@@ -252,7 +252,7 @@ b <- chart$scores(penguins_pca, choices = c(1, 2), labels = penguins$species) +
 combine_charts(list(a, b))
 ```
 
-Le premier axe reprend 69% de la variance totale et ce sont les variables masse et longueur de nageoire qui sont les plus corrélées à cet axe avec les valeurs élevées pointant vers la droite des graphiques. En y projetant les individus, deux sous-groupes s'individualisent principalement selon ce premier axe. Ainsi, les manchots papous (gentoo) sont plus gros et ont de plus longues nageoires que les deux autres espèces.
+Le premier axe reprend 69% de la variance totale et ce sont les variables masse et longueur de nageoire qui sont les plus corrélées à cet axe avec les valeurs élevées pointant vers la droite des graphiques. En y projetant les individus, deux sous-groupes se séparent principalement selon ce premier axe. Ainsi, les manchots papous (gentoo) sont plus gros et ont de plus longues nageoires que les deux autres espèces.
 
 Le second axe ne représente que 19% de la variance. Il est plutôt associé à la longueur et largeur du bec, avec des valeurs plus élevées dans le bas des graphiques. Les manchots adélies et à jugulaires (chinstrap) se différencient, quoique incomplètement, par cette longueur de bec plus importante chez chinstrap.
 

@@ -14,7 +14,7 @@ runtime: shiny_prerendered
 
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
-SciViews::R("explore")
+SciViews::R("explore", lang = "fr")
 
 # caith -----
 caith <- read("caith", package = "MASS")
@@ -42,7 +42,7 @@ L'Analyse Factorielle des Correspondances (AFC) est une variante de l'Analyse en
 
 -   Vous préparer à interpréter par vous-même les résultats de vos AFC
 
-Avant toute chose, assurez-vous d'avoir bien compris le contenu du [module 7](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2022/acp-afc.html) du cours et en particulier la [section 7.3](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2022/analyse-factorielle-des-correspondances.html).
+Avant toute chose, assurez-vous d'avoir bien compris le contenu du [module 7](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2023/acp-afc.html) du cours et en particulier la [section 7.3](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2023/analyse-factorielle-des-correspondances.html).
 
 ## Couleur des yeux et des cheveux
 
@@ -74,16 +74,17 @@ caith_df
 ```
 
 ```{r dtf-solution}
+## Solution ##
 caith_df <- as_dtf(caith)
 # Afficher le tableau
 caith_df
 ```
 
 ```{r dtf-check}
-grade_code("La conversion du tableau en `data.frames` est simple avec la fonction `as_dtf()`. Par defaut, la fonction reconnait la colonne `.rownames` et la converti en nom de lignes. Si la colonne à transformer en nom des lignes porte un autre nom que `.rownames`, alors vous pouvez utiliser l'argument `rownames =` pour indiquer quelle colonne utiliser.")
+grade_code("La conversion du tableau en `data.frame` est simple avec la fonction `as_dtf()`. Par defaut, la fonction reconnait la colonne `.rownames` et la converti en nom de lignes. Si la colonne à transformer en nom des lignes porte un autre nom que `.rownames`, alors vous pouvez utiliser l'argument `rownames =` pour indiquer quelle colonne utiliser.")
 ```
 
-## Réalisation de l'ACF
+## Réalisation de l'AFC
 
 Réalisez à présent une analyse factorielle des correspondances sur l'objet `caith_df` et nommez-la `caith_ca`. Réalisez ensuite le résumé de ce dernier objet.
 
@@ -102,6 +103,7 @@ ___(caith_ca)
 ```
 
 ```{r ca_h2-solution}
+## Solution ##
 # AFC
 caith_ca <- ca(caith_df)
 # Résumé de l'objet
@@ -112,13 +114,14 @@ summary(caith_ca)
 grade_code("Le code est simple. Le résumé de l'objet met en avant qu'avec les deux premiers axes on couvre 99.6% de la variance. Le premier axe couvre déjà plus de 86%. L'essentiel de l'information se lira donc dans le premier plan de projection.")
 ```
 
-Réalisez le graphique des éboulis de votre analyse.
+Tracez le graphique des éboulis de votre analyse.
 
 ```{r scree, exercise=TRUE}
 ___$___()
 ```
 
 ```{r scree-solution}
+## Solution ##
 chart$scree(caith_ca)
 ```
 
@@ -133,6 +136,7 @@ ___$___()
 ```
 
 ```{r biplot-solution}
+## Solution ##
 chart$biplot(caith_ca)
 ```
 

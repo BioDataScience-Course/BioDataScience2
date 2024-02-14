@@ -1,6 +1,10 @@
+# BioDataScience2 2023.7.0
+
+-   Learnrs **B07La_pca** and **B07Lb_ca** revised for 2023-2024.
+
 # BioDataScience2 2023.6.0
 
--   Learnrs **B06La_ahc** and **B06La_kmeans** revised for 2023-2024.
+-   Learnrs **B06La_ahc** and **B06Lb_kmeans** revised for 2023-2024.
 
 # BioDataScience2 2023.5.0
 
