@@ -2,6 +2,8 @@
 
 -   Learnrs **B07La_pca** and **B07Lb_ca** revised for 2023-2024.
 
+-   Challenge **B07Ca_multi** Shiny app added.
+
 # BioDataScience2 2023.6.0
 
 -   Learnrs **B06La_ahc** and **B06Lb_kmeans** revised for 2023-2024.
