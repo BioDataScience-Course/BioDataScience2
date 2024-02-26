@@ -1,0 +1,300 @@
+---
+title: "Big data"
+author: "Guyliann Engels & Philippe Grosjean"
+description: "**SDD II Module 8** Traiter des gros jeux de données."
+tutorial:
+  id: "B08Lb_bigd"
+version: 2.0.0/7
+output:
+  learnr::tutorial:
+  progressive: true
+allow_skip: true
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+BioDataScience2::learnr_setup()
+SciViews::R(lang = "fr")
+library(DBI)
+library(dbplyr)
+
+# Données employées
+diabetes <- read("diabetes", package = "faraway")
+# Nettoyage du jeu de données
+diabetes <- janitor::clean_names(diabetes)
+#skimr::skim(diabetes)
+# Transformation de la masse de livres en kg
+diabetes <- smutate(diabetes, 
+  weight = weight * 0.453592,
+  waist = waist*2.54,
+  hip = hip*2.54,
+  height = height*2.54)
+diabetes_blood <- sselect(diabetes, id:glyhb)
+diabetes_exam <- sselect(diabetes, id, age:weight, bp_1s:hip)
+
+# Création d'un base de données en mémoire
+diabetes_db <- dbConnect(duckdb::duckdb())
+# Ajout de la table à la base de données
+duckdb::duckdb_register(diabetes_db, "blood", diabetes_blood)
+duckdb::duckdb_register(diabetes_db, "exam", diabetes_exam)
+
+# Création d'un objet spécifique pour employer dbplyr
+blood_db <- tbl(diabetes_db, "blood")
+exam_db <- tbl(diabetes_db, "exam")
+
+exam_db %>.%
+  group_by(., gender) |> slice_sample(n = 25) %>.%
+  select(., id, gender) ->
+  exam_req
+```
+
+```{r, echo=FALSE}
+BioDataScience2::learnr_banner()
+```
+
+```{r, context="server"}
+BioDataScience2::learnr_server(input, output, session)
+```
+
+------------------------------------------------------------------------
+
+## Objectifs
+
+Vous ne pouvez pas être passé à côté de cette notion : cela fait plusieurs années qu'on entend parler de BIG DATA. En tant que biologiste, vous n'allez pas devoir employer quotidiennement les outils associés au big data. Vous allez cependant être confronté à de larges tableaux de données ou encore à des bases de données. Il est, de fait, important de connaitre les notions de base pour traiter ce genre d'information. Ce tutoriel vous permettra de :
+
+-   Choisir le format et la compression d'un fichier en fonction de vos besoins
+-   Réaliser des requêtes sur une base de données
+
+## Fichiers CSV compressés
+
+Un fichier CSV "comma-separated-values" est un fichier textuel contenant des données tabulaires. Chaque ligne de ce fichier va représenter une ligne d'un tableau de données. Généralement, les colonnes vont être séparées par une virgule. Il existe également une variante avec le point-virgule comme séparateur de champs. Ce format est très employé et conseillé pour encoder des tableaux de données.
+
+Cette première section est plutôt théorique, afin de vérifier que vous maîtrisez les notions clés dans l'utilisation d'un fichier CSV et de ses versions compressées.
+
+```{r qu_csv}
+quiz(
+  question("Dans le cadre d'une collaboration entre plusieurs chercheurs étrangers travaillant sur un même tableau de données de petite taille, mais utilisant de langages différents (python, R...), quel format est à privilégier ?",
+    answer("csv", correct = TRUE, 
+      message = "Ce format est simple et très pratique. Il ne faut pas un logiciel particulier pour l'ouvrir. Il est très répandu dans la communauté scientifique. Il s'agit du bon choix pour collaborer à condition d'avoir un fichier peu volumineux."),
+    answer("xlsx", 
+      message = "Ce format est préférable au format xls. Il n'est cependant pas le meilleur pour collaborer avec des personnes n'utilisant pas forcément Microsoft Excel."),
+    answer("xls", 
+      message = "Il s'agit d'un format propre à Microsoft Excel. Ce format est plus ancien que xlsx. Si vous devez employer xls ou xlsx, nous vous conseillons d'utiliser xslx."),
+    answer("rds", 
+      message = "Ce format est un format spécifique à R. De plus, il est déconseillé de l'employer dans le partage de données."),
+    allow_retry = TRUE,
+    random_answer_order = TRUE),
+  question("Quel format utiliser pour archiver un tableau de données si on veut qu'il occupe le moins de place possible dans le backup ?",
+    answer("csv", 
+      message = "Ce format n'est pas compressé. Il a de nombreux avantages, mais il n'est pas la meilleure solution pour archiver un fichier."),
+    answer("csv.bz2", 
+      message = "Ce format est une forme de compromis entre un fichier non compressé et un fichier très compressé."),
+    answer("csv.gz", 
+      message = "Ce format est une forme de compromis entre un fichier non compressé et un fichier très compressé."),
+    answer("csv.xz", correct = TRUE, 
+      message = "La compression xz permet de compresser un CSV de manière efficace. Si l'objectif est de compresser un maximum pour l'archivage d'un fichier, c'est un format recommandé."),
+    allow_retry = TRUE,
+    random_answer_order = TRUE)
+)
+```
+
+Le format CSV ne semble pas être près de disparaître de sitôt. Sa grande simplicité et sa facilité d'accès en font sa force. De nouveaux formats apparaissent cependant régulièrement, nous pouvons par exemple citer `feather` qui est disponible dans le package du même nom qui propose un format parfaitement compatible entre R, Python et Julia. Ce format est un fichier binaire. Il n'est pas lisible par un humain comme un CSV. On peut également citer le format `parquet` que l'on retrouve dans le package {arrow}.
+
+## Initiation au langage SQL
+
+Cette section va vous permettre de vous initier au langage SQL, mais pas de panique : il ne va pas vous falloir apprendre un tout nouveau langage. Nous pouvons nous appuyer sur le package {dbplyr} et continuer à employer les verbes que nous connaissons bien pour faire une sélection sur les colonnes avec `select()`, un filtre sur les lignes avec `filter()`, un regroupement en fonction d'une colonne d'intérêt...
+
+Cette section va se baser sur un jeu de données que vous connaissez déjà et qui va être converti en base de données DuckDB pour vous permettre de vous exercer à l'utilisation de bases de données dans R. Dans un cas plus réaliste, vous devriez vous connecter à une base de données distantes, réaliser vos requêtes et ne récupérer qu'une petite partie des données.
+
+```{r, echo=TRUE}
+diabetes_db
+dbListTables(diabetes_db)
+dbListFields(diabetes_db, "blood")
+dbListFields(diabetes_db, "exam")
+```
+
+La table `"blood"` comprend une série de mesure à partir d'une prise de sang : cholestérol total, taux de sucre, taux de HDL, ratio cholestérol/HDL ou encore hémoglobine glyquée.
+
+La table `exam` comprend une série de mesures obtenue à la suite d'un examen clinique : âge, sexe, taille, masse, pression artérielle systolique et diastolique, tour de taille, tour de hanche.
+
+Utilisez la fonction `tbl()` pour créer deux objets `blood_db` et `exam_db` liés aux deux tables présentes dans la base de données DuckDB.
+
+```{r tbl, exercise=TRUE}
+blood_db <- ___
+blood_db
+exam_db <- ___
+exam_db
+```
+
+```{r tbl-solution}
+## Solution ##
+blood_db <- tbl(diabetes_db, "blood")
+blood_db
+exam_db <- tbl(diabetes_db, "exam")
+exam_db
+```
+
+```{r tbl-check}
+grade_code("Vous avez à présent deux objets que vous allez pouvoir utiliser pour manipuler les deux tables de la base de données dans R.")
+```
+
+Commençons par un traitement simple : sélectionnez les patients de plus de 60 ans. Employez l'objet pertinent `blood_db` ou `exam_blood`. Nommez votre requête `exam60_req`. Affichez ensuite le code SQL de votre requête. Enfin, réalisez-là et récupérez le résultat dans le tableau `exam60`.
+
+```{r db1_h2, exercise=TRUE}
+exam60_req <- ___(___, ___ > ___)
+# Affichez la requête SQL réalisée
+___(___)
+# Collectez vos résultats
+(___ <- collect_dtx(___))
+```
+
+```{r db1_h2-hint-1}
+exam60_req <- filter(exam_db, ___ > ___)
+# Affichez la requête SQL réalisée
+___(___)
+# Collectez vos résultats
+(exam60 <- collect_dtx(exam60_req))
+
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r db1_h2-solution}
+## Solution ##
+exam60_req <- filter(exam_db, age > 60)
+# Affichez la requête SQL réalisée
+show_query(exam60_req)
+# Collectez vos résultats
+(exam60 <- collect_dtx(exam60_req))
+```
+
+```{r db1_h2-check}
+grade_code("Inspectez attentivement la requête SQL obtenue avec `show_query()`. On observe que la fonction `filter()` est convertie en requête SQL. Une sélection (SELECT) est réalisée dans (FROM) la table `exam` où (WHERE) la variable `age` est supérieure à 60 (`age` > 60). La fonction `collect_dtx()` permet d'exécuter la requête SQL dans la base de données et d'en récupérer le résultat dans R sous forme d'un data frame.")
+```
+
+Sélectionnez les individus de plus de 25 ans et de moins de 45 ans. Gardez uniquement les variables suivantes : `id`, `age`, `gender`, `waist` et `hip`. Collectez le résultat de votre sélection dans `exam25`. Affichez ensuite les six premières lignes de ce tableau.
+
+```{r db2_h2, exercise=TRUE}
+___ %>.%
+  ___(., ___ > ___, ___ ___ ___) %>.%
+  ___(., ___) ->
+  ___
+# Affichage des six premières lignes du tableau
+head(___)
+```
+
+```{r db2_h2-hint-1}
+exam_db %>.%
+  ___(., age > 25, ___ ___ ___) %>.%
+  ___(., id, ___) ->
+  exam25
+# Affichage des six premières lignes du tableau
+head(exam25)
+
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r db2_h2-solution}
+## Solution ##
+exam_db %>.%
+  filter(., age > 25, age < 45) %>.%
+  select(., id, age, gender, waist, hip) ->
+  exam25
+# Affichage des six premières lignes du tableau
+head(exam25)
+```
+
+```{r db2_h2-check}
+grade_code("Vous pouvez observer qu'une requête sur une base de données à l'aide de {dbplyr} est très similaire à un remaniement sur un tableau de données classique. Les fonctions \"tidy\" sont utilisables pour spécifier le traitement désiré et ce dernier est converti en interne en requête SQL automatiquement pour vous.")
+```
+
+Sélectionnez 25 individus aléatoires par sexe. Gardez ensuite uniquement les variables `id` et `gender`. Assignez cette requête à `exam_req`. Dans un second temps, collectez le résultat dans `exam_res`.
+
+```{r db3_h2, exercise=TRUE}
+___ %>.%
+  ___(., ___) %>.%
+  slice_sample(., n = ___) %>.%
+  ___(., ___) ->
+  exam_req
+# Collecte du résultat
+(exam_res <- collect_dtx(__))
+```
+
+```{r db3_h2-hint-1}
+___ %>.%
+  group_by(., ___) %>.%
+  slice_sample(., n = 25) %>.%
+  select(., ___) ->
+  exam_req
+# Collecte du résultat
+(exam_res <- collect_dtx(exam_req))
+
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r db3_h2-solution}
+## Solution ##
+exam_db %>.%
+  group_by(., gender) %>.%
+  slice_sample(., n = 25) %>.%
+  select(., id, gender) ->
+  exam_req
+# Collecte du résultat
+(exam_res <- collect_dtx(exam_req))
+```
+
+```{r db3_h2-check}
+grade_code("Nous allons pouvoir employer `exam_req` qui est une suite d'instruction afin de réaliser une requête plus complexe.")
+```
+
+Partez maintenant de l'objet de requête que vous venez de créer (`exam_req`) et extrayez le cholestérol total des personnes sélectionnées. Vous allez donc devoir réaliser une jointure à gauche pour combiner ces données.
+
+```{r db4_h2, exercise=TRUE}
+# Jointure, sélection et collecte
+cholesterol <- ___(exam_req, select(___, ___, ___), by = "___")
+
+# Graphique sur les données collectées.
+chart(data = cholesterol, chol ~ gender) +
+  geom_boxplot() +
+  labs(x = "Genre", y = "Cholestérol total")
+```
+
+```{r db4_h2-hint-1}
+# Jointure, sélection et collecte
+cholesterol <- left_join(exam_req, select(___, ___, ___), by = "___")
+
+# Graphique sur les données collectées.
+chart(data = cholesterol, chol ~ gender) +
+  geom_boxplot() +
+  labs(x = "Genre", y = "Cholestérol total")
+
+#### ATTENTION: Hint suivant = solution !####
+```
+
+```{r db4_h2-solution}
+## Solution ##
+# Jointure, sélection et collecte
+cholesterol <- left_join(exam_req, select(blood_db, id, chol), by = "id")
+
+# Graphique sur les données collectées.
+chart(data = cholesterol, chol ~ gender) +
+  geom_boxplot() +
+  labs(x = "Genre", y = "Cholestérol total")
+```
+
+```{r db4_h2-check}
+grade_code("Vous avez combiné (jointure) le résultat d'une requête sur une table avec un second traitement sur une autre table de votre base de données grâce à {dbplyr}.")
+```
+
+## Conclusion
+
+Grâce au package {dbplyr} vous êtes capable de réaliser des requêtes sur des bases de données en toute simplicité. Les fonctions que vous avez l'habitude d'utiliser comme `filter()`, `select()`, `mutate()`, `'group_by()`, `summarise()`, etc. sont réutilisable dans ce nouveau contexte des bases de données.
+
+```{r comm_noscore, echo=FALSE}
+question_text(
+  "Laissez-nous vos impressions sur cet outil pédagogique",
+  answer("", TRUE, message = "Pas de commentaires... C'est bien aussi."),
+  incorrect = "Vos commentaires sont enregistrés.",
+  placeholder = "Entrez vos commentaires ici...",
+  allow_retry = TRUE
+)
+```

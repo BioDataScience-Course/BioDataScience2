@@ -13,7 +13,7 @@ runtime: shiny_prerendered
 
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
-SciViews::R("explore")
+SciViews::R("explore", lang = "fr")
 ```
 
 ```{r, echo=FALSE}
@@ -28,17 +28,17 @@ BioDataScience2::learnr_server(input, output, session)
 
 ## Objectifs
 
-L'Analyse Factorielle Multiple (AFM) est une méthode statistique exploratoire qui permet de travailler avec plusieurs tableaux de données. Cette méthode permet également de faire le lien entre l'analyse en composantes principales (ACP) et l'Analyse factorielle des correspondances (AFC). La première méthode permet de travailler uniquement sur des variables quantitatives et la seconde uniquement sur des variables qualitatives. L'AFM est capable de traiter les deux types de variables simultanément. Cette méthode est par exemple employée en écologie. Sur une station un ensemble de mesures physico-chimiques peuvent être réalisée ainsi qu'un relevé de la faune et/ou de la flore.
+L'Analyse Factorielle Multiple (AFM) est une méthode statistique exploratoire qui permet de travailler avec plusieurs tableaux de données. Cette méthode permet également de faire le lien entre l'analyse en composantes principales (ACP) et l'Analyse factorielle des correspondances (AFC). La première méthode permet de travailler uniquement sur des variables quantitatives et la seconde uniquement sur des variables qualitatives. L'AFM est capable de traiter les deux types de variables simultanément. Cette méthode est par exemple employée en écologie. Sur une station un ensemble de mesures physico-chimiques peuvent être réalisées ainsi qu'un relevé de la faune et/ou de la flore.
 
 Il est donc utile de comprendre la logique et l'usage de cette analyse. Ce tutoriel vous permettra de :
 
 -   Réaliser de manière guidée une AFM
 
--   Effectuer les graphiques associées à cette analyse
+-   Effectuer les graphiques liés à cette analyse
 
 -   Vous préparer à interpréter par vous-même les résultats de vos AFM
 
-Avant toute chose, assurez vous d'avoir bien compris le contenu de la [section 8.1](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2022/analyse-factorielle-multiple-afm.html) du cours de SDD II.
+Avant toute chose, assurez vous d'avoir bien compris le contenu de la [section 8.1](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2023/analyse-factorielle-multiple-afm.html) du cours de SDD II.
 
 ## Étude de composition floristique
 
@@ -65,25 +65,25 @@ Les 24 sites sélectionnés pour cette étude sont situés dans le nord de la Fi
 | **Humdepth** | épaisseur de la couche d'humus | cm         |
 |    **pH**    | pH du sol                      | \-         |
 
-Ces données sont disponible depuis `varechem` dans le package {vegan} et nous en réaliserons un tableau nommé `envir`.
+Ces données sont disponibles depuis `varechem` dans le package {vegan} et nous en réaliserons un tableau nommé `envir`.
 
 ```{r, echo=TRUE}
 read("varechem", package = "vegan") %>.%
-  srename(., station = .rownames) %->%
+  srename(., station = .rownames) ->
   envir
 head(envir)
 ```
 
-Les scientifiques ont également réalisé un relevé floristique (en excluant *Pinus sylvestris* du relevé). On y observe une couverture en pourcentage pour chaque station de chacune des 44 espèces étudiées. Ces données sont également disponible depuis `varespec` dans le package {vegan} que nous lirons dans la variable `spec`.
+Les scientifiques ont également réalisé un relevé floristique (en excluant *Pinus sylvestris* du relevé). On y observe une couverture en pourcentage pour chaque station de chacune des 44 espèces étudiées. Ces données sont disponibles depuis `varespec` dans le package {vegan} que nous lirons dans la variable `spec`.
 
 ```{r, echo=TRUE}
 read("varespec", package = "vegan") %>.%
-  srename(., station = .rownames) %->%
+  srename(., station = .rownames) ->
   spec
 head(spec)
 ```
 
-Les données mises à disposition proviennent de l'étude suivante [Väre, H., Ohtonen, R. and Oksanen, J. (1995) Effects of reindeer grazing on understorey vegetation in dry Pinus sylvestris forests. Journal of Vegetation Science 6, 523--530](https://www.researchgate.net/publication/227830523_Effects_of_reindeer_grazing_on_vegetation_in_dry_Pinus_sylvestris_forests).
+Les données mises à disposition proviennent de l'étude suivante [Väre, H., Ohtonen, R. and Oksanen, J. (1995) Effects of reindeer grazing on understorey vegetation in dry *Pinus sylvestris* forests. Journal of Vegetation Science 6, 523--530](https://www.researchgate.net/publication/227830523_Effects_of_reindeer_grazing_on_vegetation_in_dry_Pinus_sylvestris_forests).
 
 ## Préparation du tableau de données
 
@@ -91,10 +91,10 @@ La première étape consiste dans la réalisation d'un tableau de données uniqu
 
 ```{r join}
 read("varechem", package = "vegan") %>.%
-  srename(., station = .rownames) %->%
+  srename(., station = .rownames) ->
   envir
 read("varespec", package = "vegan") %>.%
-  srename(., station = .rownames) %->%
+  srename(., station = .rownames) ->
   spec
 ```
 
@@ -124,10 +124,10 @@ Il va encore falloir convertir la variable `station` en nom de ligne grâce à l
 
 ```{r rowname}
 read("varechem", package = "vegan") %>.%
-  srename(., station = .rownames) %->%
+  srename(., station = .rownames) ->
   envir
 read("varespec", package = "vegan") %>.%
-  srename(., station = .rownames) %->%
+  srename(., station = .rownames) ->
   spec
 
 vare <- sleft_join(envir , spec, by = "station")
@@ -155,7 +155,7 @@ rownames(vare)
 ```
 
 ```{r rowname_h2-check}
-grade_code("Bravo ! Vous venez de convertir la colonne station en nom de lignes. Cette astuce peut être utile dans certain cas. Il y a également la fonction opposée `rownames_to_column()`. Tout est prêt pour réaliser l'AFM à présent.")
+grade_code("Bravo ! Vous venez de convertir la colonne station en nom de lignes. Cette astuce peut être utile dans certain cas. Il y a également la fonction inverse `rownames_to_column()`. Tout est prêt pour réaliser l'AFM à présent.")
 ```
 
 ## Réalisation de l'AFM
@@ -164,13 +164,13 @@ L'AFM peut s'obtenir grâce à la fonction `mfa()`. Cette dernière requiert l'u
 
 1.  Le nombre **n** de colonnes constituant le groupe
 2.  Le type des variables qui composent le groupe. Vous avez quatre possibilités :
-    -   **std** : Ce sont des variables quantitatives que l'on souhaite standardiser et les traiter par une ACP.
+    -   **std** : variables quantitatives que l'on souhaite standardiser et traiter par une ACP
 
-    -   **num** : Ce sont des variables quantitatives continues que l'on ne souhaite pas standardiser et les traiter par une ACP.
+    -   **num** : variables quantitatives continues que l'on ne souhaite traiter par une ACP sans les standardiser
 
-    -   **fact** : Ce sont des variables qualitatives facteurs associées à des tableaux de contingences qu'on traite par une AFC.
+    -   **fact** : variables qualitatives facteurs associées à des tableaux de contingences qu'on traite par une AFC
 
-    -   **cnt** : Ce sont des variables quantitatives de type dénombrements qu'on traite par une AFC.
+    -   **cnt** : variables quantitatives de type dénombrements qu'on traite par une AFC
 3.  Le nom à donner au groupe
 
 Le tableau `vare` est composé de quatorze variables associées à des mesures physico-chimiques et 44 variables liées à des relevés floristiques. Votre formule doit comprendre les éléments suivants pour que votre analyse soit la plus proche possible de celle que les auteurs ont réalisée dans la publication :
@@ -178,14 +178,14 @@ Le tableau `vare` est composé de quatorze variables associées à des mesures p
 -   Le premier bloc doit se nommer **physico**, être traité par une ACP et les variables doivent être standardisées.
 -   Le second bloc doit se nommer **flore**, être traité par une ACP et les variables ne doivent pas être standardisées.
 
-Réalisez l'AFM demandée en utilisant le tableau `vare` puis affichez un résume de l'objet `vare_mfa` obtenu avec la fonction `summary()`
+Réalisez l'AFM demandée en utilisant le tableau `vare` puis affichez un résumé de l'objet `vare_mfa` obtenu avec la fonction `summary()`
 
 ```{r varemfa}
 read("varechem", package = "vegan") %>.%
-  srename(., station = .rownames) %->%
+  srename(., station = .rownames) ->
   envir
 read("varespec", package = "vegan") %>.%
-  srename(., station = .rownames) %->%
+  srename(., station = .rownames) ->
   spec
 vare <- sleft_join(envir , spec, by = "station")
 vare <- column_to_rownames(vare, var = "station")
@@ -215,7 +215,7 @@ summary(vare_mfa)
 ```
 
 ```{r mfa_h3-check}
-grade_code("Le résumé de votre analyse est complexe. Intéressez-vous tout particulièrement à la part de variance de chaque axe. Ces informations vous seront utile pour répondre à la question suivante.")
+grade_code("Le résumé de votre analyse est complexe. Intéressez-vous en premier lieu à la part de variance représentée sur chaque axe. Cette information vous sera utile pour répondre à la question suivante.")
 ```
 
 ```{r variance_quiz}
@@ -224,21 +224,21 @@ question("Quelle est la proportion de la variance cumulée sur les deux premiers
   answer("23%"),
   answer("34%"), 
   correct = "Bien joué ! Les deux premiers axes de l'AFM expriment 58% de la variance. Gardez à l'esprit que cette valeur est assez faible. Il serait aussi intéressant de considérer les trois premiers axes qui expriment 68% de la variance totale.",
-  incorrect = "Oups, ce n'est pas la bonne réponse. Afin de trouver la bonne réponse, intéressez-vous au tableau `Eigenvalues`",
+  incorrect = "Oups, ce n'est pas la bonne réponse. Afin de trouver la bonne réponse, relisez le tableau `Eigenvalues` de votre analyse",
   allow_retry = TRUE
     )
 ```
 
 ### Graphique des éboulis
 
-Réalisez un graphique des éboulis sur l'objet `vare_mfa` que vous avez réalisé précédemment.
+Réalisez un graphique des éboulis sur l'objet `vare_mfa` que vous avez créé plus haut.
 
 ```{r vare_mfa}
 read("varechem", package = "vegan") %>.%
-  srename(., station = .rownames) %->%
+  srename(., station = .rownames) ->
   envir
 read("varespec", package = "vegan") %>.%
-  srename(., station = .rownames) %->%
+  srename(., station = .rownames) ->
   spec
 
 vare <- sleft_join(envir , spec, by = "station")
@@ -263,7 +263,7 @@ chart$scree(vare_mfa)
 ```
 
 ```{r scree_h2-check}
-grade_code("Ce graphique des éboulis permet de voir la part de variance exprimée sur chaque composante principale. Nous voyons bien que le premier axe reprend une très grande part de variance. On observe après un saut p pour le troisième axe est une diminution progressive de la variance exprimée sur les axes suivants.")
+grade_code("Ce graphique des éboulis permet de visualiser la part de variance exprimée sur chaque composante principale. Nous voyons bien que le premier axe reprend une très grande part de variance. On observe un saut pour le troisième axe et une diminution progressive de la variance exprimée sur les axes suivants.")
 ```
 
 ### Représentation des variables
@@ -286,7 +286,7 @@ chart$loadings(vare_mfa, choices = c(1, 2))
 ```
 
 ```{r loadings_h2-check}
-grade_code("Ce graphique est assez chargé car il combine les vecteurs du groupe \"physico\" et du groupe \"flore\". Il s'analyse comme pour une ACP via la visualisation de l'importance des variables intiales dans le plan de l'AFM sous forme de vecteurs. Il est indispensable pour interpréter le graphique suivant qui répartit les observations dans le même plan. La norme (longueur) du vecteur indique si la variable est bien représentée dans ce plan ou non. Plus la norme du vecteur se rapproche de un, matérialisé par le cercle, mieux c'est. Celles aux normes trop faibles ne sont pas considérées dans l'analyse, pour ce plan-là en tous cas. Ensuite, les variables qui pointent dans la même direction sont corrélées positivement. Les variables qui pointent dans le sens opposé sont inversément corrélées. Les vecteurs orthogonaux correspondent à des variables non ou très faiblement corrélées entre elles.")
+grade_code("Ce graphique est assez chargé car il combine les vecteurs du groupe \"physico\" et du groupe \"flore\". Il s'analyse comme pour une ACP via la visualisation de l'importance des variables intiales dans le plan de l'AFM sous forme de vecteurs. Il est indispensable pour interpréter le graphique suivant qui répartit les observations dans le même plan. La norme (longueur) du vecteur indique si la variable est bien représentée dans ce plan ou non. Plus la norme du vecteur se rapproche de l'unité, matérialisée par le cercle, mieux c'est. Les vecteurs aux normes trop faibles ne sont pas considérés dans l'analyse, pour ce plan-là en tous cas. Ensuite, les variables qui pointent dans la même direction sont corrélées positivement. Les variables qui pointent dans le sens opposé sont inversément corrélées. Les vecteurs orthogonaux correspondent à des variables non ou très faiblement corrélées entre elles.")
 ```
 
 ### Représentation des plans des ACP
@@ -309,7 +309,7 @@ chart$axes(vare_mfa, choices = c(1, 2))
 ```
 
 ```{r axes_h2-check}
-grade_code("Ce graphique est similaire au précédent. Il s'interprète de la même façon. Cependant, on ne s'intéresse plus à la projection de chaque variable initiale mais des plans des ACP pour chaque groupe de variables. La première dimension du groupe \"flore\" pointe dans la même direction que la seconde dimension du groupe \"physico\". Il y a donc un forte corrélation entre ces deux plans. On obtient le même résultat pour le premier axe de \"physico\" et du second axe de \"flore\". Les normes des vecteurs sont proche de 1 pour chacune des ACP. Les deux ACP sont représentées correctement dans l'AFM.")
+grade_code("Ce graphique est similaire au précédent. Il s'interprète de la même façon. Cependant, on ne s'intéresse plus à la projection de chaque variable initiale mais des plans des ACP pour chaque groupe de variables. La première dimension du groupe \"flore\" pointe dans la même direction que la seconde dimension du groupe \"physico\". Il y a donc un forte corrélation entre ces deux plans. On obtient le même résultat pour le premier axe de \"physico\" et du second axe de \"flore\". Les normes des vecteurs sont proche de un pour chacune des ACP. Les deux ACP sont représentées correctement dans l'AFM.")
 ```
 
 ### Représentation des individus
@@ -332,19 +332,19 @@ chart$scores(vare_mfa, choices = c(1, 2))
 ```
 
 ```{r scores_h2-check}
-grade_code("La forme du nuage de points et surtout des clusters sont à rechercher ici. Nous pouvons voir par exemple un regroupement des stations 5, 6 et 7. On retrouve également un groupe particulier composé des stations 2, 3, 4, 9, 10, 11 et 12. Attention, les numéros des stations ne sont pas ici une indication de la proximité des stations.")
+grade_code("La forme du nuage de points et la présence de différents groupes sont à observer ici. Nous pouvons voir, par exemple, un regroupement des stations 5, 6 et 7. On retrouve également un groupe particulier composé des stations 2, 3, 4, 9, 10, 11 et 12. Attention, les numéros des stations ne sont pas ici une indication de leur proximité les unes des autres.")
 ```
 
 ## Interprétation de l'AFM
 
-La représentation des variables ainsi que la représentation de stations sont deux graphiques complémentaires afin d'interpréter l'AFM. Gardez à l'esprit que la part de variance exprimée par les deux premiers axes reste relativement faible avec 58%.
+La représentation des variables ainsi que la représentation de stations sont deux graphiques complémentaires qui permettent d'interpréter l'AFM. Gardez à l'esprit que la part de variance exprimée par les deux premiers axes reste relativement faible avec 58%.
 
 ```{r}
 read("varechem", package = "vegan") %>.%
-  srename(., station = .rownames) %->%
+  srename(., station = .rownames) ->
   envir
 read("varespec", package = "vegan") %>.%
-  srename(., station = .rownames) %->%
+  srename(., station = .rownames) ->
   spec
 
 vare <- sleft_join(envir , spec, by = "station")
@@ -359,9 +359,9 @@ chart$scores(vare_mfa, choices = c(1, 2))
 chart$loadings(vare_mfa, choices = c(1, 2))
 ```
 
-Les stations 2, 3, 4, 9, 10, 11 et 12 sont des stations particulières qui ne sont pas des zones de pâturages. On retrouve dans ces stations une dominance de *Cladina stellaris* alors que cet espèce est très peu présente dans les zones de pâturages. Les zones de pâturages sont caractérisée par une haute concentration en azote. Les stations 5, 6 et 7 sont des zones de pâturages avec une forte teneur en azote et une présence massive de *Cladina arbuscala*.
+Les stations 2, 3, 4, 9, 10, 11 et 12 sont des stations particulières qui ne sont pas des zones de pâturages. On retrouve dans ces stations une dominance de *Cladina stellaris* alors que cette espèce est très peu présente dans les zones de pâturages. Les zones de pâturages sont caractérisées par une haute concentration en azote. Les stations 5, 6 et 7 sont des zones de pâturages avec une forte teneur en azote et une présence massive de *Cladina arbuscala*.
 
-Nous n'irons pas plus loin dans l'interprétation de cette AFM et vous laissons la possibilité de lire la publication liée à cette étude. Les scientifiques ont réalisé une NMDS en fait, pas une AFM, mais les résultats obtenus sont assez proches.
+Nous n'irons pas plus loin dans l'interprétation de cette AFM et vous laissons la possibilité de lire la publication liée à cette étude. Les scientifiques ont réalisé une NMDS en fait, pas une AFM, mais les résultats obtenus sont assez proches. Nous étudierons la MDS et la NMDS dans le module suivant du cours.
 
 ## Conclusion
 

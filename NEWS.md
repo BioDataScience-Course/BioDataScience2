@@ -1,3 +1,7 @@
+# BioDataScience2 2023.8.0
+
+-   Learnrs **B08La_mfa** and **B08Lb_bigd** revised for 2023-2024.
+
 # BioDataScience2 2023.7.0
 
 -   Learnrs **B07La_pca** and **B07Lb_ca** revised for 2023-2024.
