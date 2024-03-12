@@ -4,7 +4,7 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II Module 9** Bases de données."
 tutorial:
   id: "B09La_db"
-version: 2.0.7/0
+version: 2.0.7/7
 output:
   learnr::tutorial:
   progressive: true
@@ -38,18 +38,18 @@ captures <- dtx(
 )
 
 sleft_join(captures, stations) %>.%
-  sselect(., -id_station) %->%
+  sselect(., -id_station) ->
   bees
 
 bees_db <- dbConnect(duckdb::duckdb())
 dbWriteTable(bees_db, "stations", stations)
 dbWriteTable(bees_db, "captures", captures)
 
-bees_dm <- dm_from_src(bees_db) %>.%
+bees_dm <- dm_from_con(bees_db, learn_keys = FALSE) %>.%
   dm_set_colors(., red = stations, orange = captures)
 bees_dm %>.%
   dm_add_pk(., captures, id) %>.%
-  dm_add_pk(., stations, id_station) %->%
+  dm_add_pk(., stations, id_station) ->
   bees_dm1
 bees_dm2 <- dm_add_fk(bees_dm1, captures, id_station, stations)
 ```
@@ -68,7 +68,7 @@ BioDataScience2::learnr_server(input, output, session)
 
 Une base de données est un ensemble structuré de données, avec un accès facile et rapide pour des applications logicielles et des utilisateurs autorisés. Elle peut être considérée comme un grand conteneur **organisé** pour stocker des informations de manière **structurée**.
 
-Parmi les différents types de bases de données, nous allons nous intéresser aux bases de données relationnelles. Une base de données **relationnelle** est une collection de données structurées qui sont organisées en tables liées entre elles par des relations. Les bases de données relationnelles sont très répandues et utilisées dans de nombreux domaines, notamment dans la gestion des entreprises, les services financiers, l'administration publique et la recherche scientifique. Elles sont conçues pour gérer des quantités massives de données de manière fiable et cohérente. Ce tutoriel vous permettra de :
+Parmi les différents types de bases de données, nous allons nous intéresser aux bases de données relationnelles. Une base de données **relationnelle** est une collection de tables liées entre elles par des relations. Les bases de données relationnelles sont très répandues et utilisées dans de nombreux domaines, notamment dans la gestion des entreprises, les services financiers, l'administration publique et la recherche scientifique. Elles sont conçues pour gérer des quantités massives de données de manière fiable et cohérente. Ce tutoriel vous permettra de :
 
 -   créer une base de données relationnelle
 -   normaliser les données dans votre base
@@ -99,7 +99,7 @@ Les colonnes de ce tableau sont les suivantes :
 -   **station :** le lieu précis de la collecte
 -   **localisation :** les coordonnées de la station (WGS84)
 
-Utilisez la zone de code R ci-dessous pour explorez le jeu de données `bees` comme bon vous semble afin de répondre aux questions ci-dessous (utilisez le bouton **Run Code** uniquement).
+Utilisez la zone de code R ci-dessous pour explorez le jeu de données `bees` comme bon vous semble afin de répondre aux questions plus bas (utilisez le bouton **Run Code** uniquement).
 
 ```{r explo_noscore, exercise=TRUE}
 
@@ -107,14 +107,14 @@ Utilisez la zone de code R ci-dessous pour explorez le jeu de données `bees` co
 
 ```{r qu_db}
 quiz(
-  question("Est-ce que la tableau présenté ci-dessus peut être ajouté comme une table dand une base de données relationnelle ?",
+  question("Est-ce que la tableau présenté ci-dessus peut être ajouté comme une table dans une base de données relationnelle ?",
     answer("Oui", correct = TRUE),
     answer("Non"),
     allow_retry = TRUE,
     random_answer_order = TRUE,
     correct = "Ce tableau correspond bien à un format cas par variable. Il est donc possible de l'utiliser dans une base de données. Il n'est cependant pas normalisé."
     ),
-  question("Sélectionnez parmi les variables suivantes celles présentant de la redondance optimisable via normalisation niveau 3 (déependance transitive).",
+  question("Sélectionnez parmi les variables suivantes celles présentant de la redondance optimisable par une normalisation niveau 3 (déependance transitive).",
     answer("country", correct = TRUE, , message = "Il n'est pas utile de répliquer le nom de pays d'une station pour chaque collecte."),
     answer("localisation", correct = TRUE, message = "Il n'est pas utile de répliquer les coordonnées d'une station pour chaque collecte."),
     answer("id", message = "La variable 'id' est un identifiant unique pour chaque individu collecté. Cette variable n'est pas redondante."),
@@ -125,7 +125,7 @@ quiz(
 
 ## Base de données et schéma
 
-Suite à votre exploration du tableau `bees`, vous avez pu observer que son schéma peut être optimisé. Deux tables sont réalisées afin d'assurer une normalisation au niveau 3 de la base. Vous pouvez observer qu'une colonne 'id_station' a été ajoutée.
+Suite à votre exploration du tableau `bees`, vous avez pu observer que son schéma peut être optimisé. Deux tables sont réalisées pour assurer une normalisation au niveau 3 de la base. Vous pouvez observer qu'une colonne 'id_station' a été ajoutée.
 
 ```{r, echo=TRUE}
 head(stations)
@@ -177,13 +177,13 @@ dbListTables(bees_db)
 grade_code("Vous venez de créer une base de données en mémoire avec deux tables.")
 ```
 
-Il est à présent temps de dé"finir des clés pour ces deux tables. Vous allez pour ce faire employer le package {dm}.
+Il est à présent temps de définir des clés pour ces deux tables. Vous allez pour ce faire employer le package {dm}.
 
 Créez un objet **dm** associé à votre base de données (`bees_db`) et nommez-le `bees_dm`. Indiquez ensuite que vous voulez utiliser la couleur rouge pour la table `stations` et la couleur orange pour la table `captures`. Terminez par visualiser le schéma de la base en l'état.
 
 ```{r dm, exercise=TRUE}
 # Création d'un objet `dm`
-bees_dm <- ___(___)
+bees_dm <- ___(___, learn_keys = FALSE)
 bees_dm
 # Ajout d'un couleur pour chaque table
 bees_dm <- ___(bees_dm, red = ___, orange = ___)
@@ -194,7 +194,7 @@ ___(___, view_type = "all")
 ```{r dm-solution}
 ## Solution ##
 # Création d'un objet `dm`
-bees_dm <- dm_from_src(bees_db)
+bees_dm <- dm_from_con(bees_db, learn_keys = FALSE)
 bees_dm
 # Ajout d'un couleur pour chaque table
 bees_dm <- dm_set_colors(bees_dm, red = stations, orange = captures)
@@ -215,7 +215,7 @@ ___(___, ____)
 # Ajout des clés primaires
 bees_dm %>.%
   ___(___, ___, ___) %>.%
-  ___(___, ___, ___) %->%
+  ___(___, ___, ___) ->
   bees_dm1
 bees_dm1
 ```
@@ -227,7 +227,7 @@ ___(___, ___)
 # Ajout des clés primaires
 bees_dm %>.%
   dm_add_pk(., ___, ___) %>.%
-  ___(., ___, ___) %->%
+  ___(., ___, ___) ->
   bees_dm1
 bees_dm1
 
@@ -242,7 +242,7 @@ dm_enum_pk_candidates(bees_dm, stations)
 # Ajout des clés primaires
 bees_dm %>.%
   dm_add_pk(., captures, id) %>.%
-  dm_add_pk(., stations, id_station) %->%
+  dm_add_pk(., stations, id_station) ->
   bees_dm1
 bees_dm1
 ```
@@ -253,7 +253,7 @@ grade_code("Votre objet bees_dm1 comprend à présent deux clés primaires, une 
 
 Définissez maintenant une clé étrangère qui fait le lien entre vos deux tables (`captures` et `stations`) selon une relation un à plusieurs en partant de l'objet `bees_dm1` et placez le résultat dans `bees_dm2`. Enfin, visualisez le schéma de la base depuis `bees_dm2`.
 
-```{r fk, exercise =TRUE, , paged.print=FALSE}
+```{r fk, exercise=TRUE, , paged.print=FALSE}
 # Clés étrangères potentiels
 ___(___, ___, ___)
 # Ajout de la clé étrangère
@@ -342,12 +342,12 @@ bees_request %>.%
 ```
 
 ```{r request_h2-check}
-grade_code("L'espèce la plus présente est *Bombus pascorum*. La mise en place d'un schéma avec {dm} a permis de réaliser une requête sur deux tables et de les combiner facilement. Vous avez ensuite résumé ces observations. Vous avez réalisé tout cela directement sur votre base de données et sans vous préoccuper de l'écriture de la requête. En effet, {dbplyr} que vous avez utilisé ici vous permet d'écrire du code Tidyverse classique et il vous le traduit en requête SQL lorsque vous collectez le résultat avec `collect_dtx()`.")
+grade_code("L'espèce la plus présente est *Bombus pascorum*. La mise en place d'un schéma avec {dm} a permis de réaliser une requête sur deux tables et de les combiner facilement. Vous avez ensuite résumé ces observations. Vous avez réalisé tout cela directement dans votre base de données et sans vous préoccuper de l'écriture de la requête. En effet, {dbplyr} que vous avez utilisé ici vous permet d'écrire du code Tidyverse classique et il vous le traduit en requête SQL lorsque vous collectez le résultat avec `collect_dtx()`.")
 ```
 
 ## Conclusion
 
-Félicitation ! Vous avez créé une base de données relationnelle avec DuckDB. Ensuite, vous l'avez retravaillée en deux tables et défini les clés primaires et secondaires pour arriver à une normalisation des données au niveau 3 en limitant la redondance. Enfin, vous avez défini un schéma clair de la base avec le package {dm}. Enfin, vous avez réalisé une requête multitable avec les fonctions du package {dm} et de {dbplyr}.
+Félicitation ! Vous avez créé une base de données relationnelle avec DuckDB. Ensuite, vous l'avez retravaillée en deux tables et défini les clés primaires et secondaires pour arriver à une normalisation des données au niveau 3 en limitant la redondance. Vous avez ensuite défini un schéma clair de la base avec le package {dm}. Enfin, vous avez réalisé une requête multitable avec les fonctions du package {dm} et de {dbplyr}.
 
 Maintenant que vous avez compris les grands principes des bases de données relationnelles et que vous êtes capable d'écrire le code permettant de réaliser une requête, vous pouvez appliquer cette technique par vous-même.
 

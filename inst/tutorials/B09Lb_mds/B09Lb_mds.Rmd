@@ -13,7 +13,7 @@ runtime: shiny_prerendered
 
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
-SciViews::R("explore")
+SciViews::R("explore", lang = "fr")
 
 # Chargement du jeu de données
 bci <- read("BCI", package = "vegan")
@@ -36,19 +36,19 @@ Ce tutoriel consacré au positionnement multidimensionnel (MDS) vise à :
 -   Vérifier que vous avez bien compris les différentes étapes pour la réalisation d'une MDS : calcul de la matrice de distance, calcul du positionnement des points, réalisation de la carte et vérification de sa validité, choix entre MDS métrique ou non métrique.
 -   Vous préparer à analyser et interpréter de manière autonome un jeu de données multivariées à l'aide des MDS.
 
-Vous devez avoir compris le contenu du [module 9](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2022/db-mds.html) du cours et en particulier la [section 9.2](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2022/positionnement-multidimensionnel-mds.html). Assurez-vous d'avoir réalisé les exercices H5P qui s'y trouvent avant de vous lancer dans ce tutoriel Learnr et de bien maîtriser les notions sur les matrices de distances vue dans le [module 6](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2022/distance-entre-individus.html).
+Vous devez avoir compris le contenu du [module 9](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2023/db-mds.html) du cours et en particulier la [section 9.2](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2023/positionnement-multidimensionnel-mds.html). Assurez-vous d'avoir réalisé les exercices H5P qui s'y trouvent avant de vous lancer dans ce tutoriel Learnr et de maîtriser les notions sur les matrices de distances vue dans le [module 6](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2023/distance-entre-individus.html).
 
 ## Barro Colorado Island
 
-Barro Colorado est une île artificielle située sur le lac Gatùn, au centre du Panama. Elle représente un lieu de recherche scientifique intensive axée sur l'écologie de la forêt tropicale.
+Barro Colorado est une île artificielle située sur le lac Gatùn, au centre du Panama. Elle représente un lieu de recherche scientifique intensive axée sur l'écologie des forêts tropicales.
 
 ![Ile de Barro Colorado](images/bci_carte.png)
 
-Une surface permanente de 50 hectares a été définie par l'Institut de recherche tropicale Smithsonian et l'Université de Princeton pour étudier la dynamique de la végétation. Cette surface est divisée en 50 parcelles de 1 ha, qui s'alignent les unes sur les autres. Dans chaque parcelle, le dénombrement de toutes les espèces forestières a été enregistré (seules les plantes avec un DHP \>= 10 cm [Diamètre mesuré à plus ou moins 1,3m] sont disponibles dans cet ensemble de données). Au total, 225 espèces différentes ont été observées.
+Une surface permanente de 50 hectares a été définie par l'Institut de recherche tropicale Smithsonian et l'Université de Princeton pour étudier la dynamique de la végétation. Cette surface est divisée en 50 parcelles de 1 ha qui s'alignent les unes sur les autres. Dans chaque parcelle, le dénombrement de toutes les espèces forestières a été réalisé (seules les plantes avec un DHP \>= 10 cm [Diamètre mesuré à plus ou moins 1,3m] sont disponibles dans cet ensemble de données). Au total, 225 espèces différentes ont été observées.
 
 ![Foret tropicale de l'ile de Barro Colorado](images/bci_forest.jpg)
 
-Les données peuvent être chargées à partir de `BCI` dans le package {vegan} et se présentent comme ceci :
+Les données peuvent être chargées à partir de `BCI` du package {vegan} et se présentent comme ceci :
 
 ```{r, echo=TRUE}
 bci <- read("BCI", package = "vegan")
@@ -190,7 +190,7 @@ grade_code("La représentation que nous obtenons est assez différente de celle 
 
 La MDS non métrique est assortie d'indicateurs permettant d'évaluer d'une part la qualité de l'ajustement et d'autre part la fonction de stress appliquée. Comme pour la PCoA, vous pouvez utiliser la fonction `glance()` pour obtenir une mesure de l'ajustement global de la MDS.
 
-Analyser les indicateurs de l'objet `bci_nmds` que vous venez de créer et répondez à la question ci-dessous.
+Analysez les indicateurs de l'objet `bci_nmds` que vous venez de créer et répondez à la question ci-dessous.
 
 ```{r ajust_prep}
 bci_dist <- dissimilarity(bci, method = "bray")

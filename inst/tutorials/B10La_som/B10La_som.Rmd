@@ -16,9 +16,9 @@ BioDataScience2::learnr_setup()
 SciViews::R("explore")
 library(kohonen)
 
-# Preparation of the dataset ------
+# Preparation du jeu de données
 read("varechem", package = "vegan") %>.%
-  srename(., station = .rownames) %->%
+  srename(., station = .rownames) ->
   envir
 ```
 
@@ -39,7 +39,7 @@ Le tutoriel learnr sur les cartes auto-adaptatives (SOM) que vous vous apprêtez
 -   comprendre comment réaliser les différentes étapes de la SOM : transformation du jeu de données en matrice, calcul de la SOM et représentation sous forme de différents graphiques
 -   acquérir les outils nécessaires à l'analyse et l'interprétation d'un jeu de données multivariées grâce à la SOM
 
-Avant toute chose, assurez vous d'avoir bien compris le contenu du [module 10](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2022/cartes-auto-adaptatives-som.html) du cours. N'oubliez pas de réaliser les exercices H5P qui figurent dans cette section avant de vous lancer dans ce tutoriel.
+Avant toute chose, assurez vous d'avoir bien compris le contenu du [module 10](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2023/cartes-auto-adaptatives-som.html) du cours. N'oubliez pas de réaliser les exercices H5P qui figurent dans cette section avant de vous lancer dans ce tutoriel.
 
 ## Données environnementales
 
@@ -52,11 +52,11 @@ Les 24 sites sélectionnés pour cette étude sont situés dans le nord de la Fi
 |    label     | description                    | unités     |
 |:------------:|:-------------------------------|:-----------|
 |    **N**     | azote                          | mg/g de MO |
-|    **P**     | phosphore                      | µg/g de MO |
-|    **K**     | potassium                      | µg/g de MO |
-|    **Ca**    | calcium                        | µg/g de MO |
-|    **Mg**    | magnésium                      | µg/g de MO |
-|    **S**     | soufre                         | µg/g de MO |
+|    **P**     | phosphore                      | mg/g de MO |
+|    **K**     | potassium                      | mg/g de MO |
+|    **Ca**    | calcium                        | mg/g de MO |
+|    **Mg**    | magnésium                      | mg/g de MO |
+|    **S**     | soufre                         | mg/g de MO |
 |    **Al**    | aluminium                      | µg/g de MO |
 |    **Fe**    | fer                            | µg/g de MO |
 |    **Mn**    | manganèse                      | µg/g de MO |
@@ -70,7 +70,7 @@ Vous pouvez facilement télécharger ces données depuis `"varechem"` dans le pa
 
 ```{r, echo=TRUE}
 read("varechem", package = "vegan") %>.%
-  rename(., station = .rownames) %->%
+  rename(., station = .rownames) ->
   envir
 head(envir)
 ```
@@ -81,7 +81,7 @@ Pour avoir une idée globale du jeu de données, vous pouvez commencer par utili
 skimr::skim(envir)
 ```
 
-Nous constatons qu'aucune donnée n'est manquante et que toutes les variables sont numériques à l'exception de la première colonne nommée "station" qui contient les numéros des stations. Il faut donc l'enlever pour la suite de l'étude. Les unités étant différentes, il faudra également standardiser les données. Le tableau devra également être transformé en matrice car la fonction `som()` du package {kohonen} ne peut utiliser que ce type d'objet.
+Nous constatons qu'aucune donnée n'est manquante et que toutes les variables sont numériques à l'exception de la première colonne nommée "station" qui contient les numéros des stations. Il faut donc l'enlever pour la suite de l'étude. Les unités étant différentes, il faudra également standardiser les données. Le tableau devra ensuite être transformé en matrice car la fonction `som()` du package {kohonen} ne peut utiliser que ce type d'objet.
 
 ### Transformation en matrice
 
@@ -91,7 +91,7 @@ Transformez votre jeu de données `envir` en matrice. N'oubliez pas de commencer
 ___ %>.%
   sselect(., -station) %>.%  # Éliminer station
   ___(.) %>.%            # Standardiser
-  ___(.) %->%            # Transformer en objet matrix
+  ___(.) ->.             # Transformer en objet matrix
   envir_mat
 head(envir_mat)
 ```
@@ -100,7 +100,7 @@ head(envir_mat)
 ___ %>.%
   sselect(., -station) %>.%  # Éliminer station
   ___(.) %>.%               # Standardiser
-  as.___(.) %->%            # Transformer en objet matrix
+  as.___(.)  ->             # Transformer en objet matrix
   envir_mat
 head(envir_mat)
 
@@ -123,9 +123,9 @@ grade_code("Maintenant que vous avez transformé votre jeu de données en matric
 
 ## Cartes auto-adaptatives (SOM)
 
-Pour réalisez le calcul de votre carte auto-adaptative ou SOM, vous allez devoir utiliser la fonction `som()` du package {kohonen}. Avant de faire le calcul, il est important de noter que l'analyse fait intervenir le générateur pseudo-aléatoire. Il peut-être donc intéressant de le fixer en déterminant un point de départ avec `set.seed()` si vous souhaitez rendre votre analyse reproductible.
+Pour réalisez le calcul de votre carte auto-adaptative ou SOM, vous allez utiliser la fonction `som()` du package {kohonen}. Avant de faire le calcul, il est important de noter que l'analyse fait intervenir le générateur pseudo-aléatoire. Il peut-être donc intéressant de le fixer en déterminant un point de départ avec `set.seed()` si vous souhaitez rendre votre analyse reproductible.
 
-Pour utiliser la fonction `som()`, vous devrez lui renseigner une matrice et utiliser l'argument `grid =` avec la fonction `somgrid()` pour lui préciser la topologie de la carte. Cette fonction `somgrid()` nécessite au minimum trois arguments : le nombre de cellules en x, en y (les dimensions de notre grille) et la topologie (grille rectangulaire ou grille hexagonale) spécifiée par l'argument `topo =` avec pour valeur `"rectangular"` ou `"hexagonal"`, respectivement.
+Pour utiliser la fonction `som()`, il faut lui renseigner une matrice et utiliser l'argument `grid =` avec la fonction `somgrid()` pour préciser la topologie de la carte. Cette fonction `somgrid()` nécessite au minimum trois arguments : le nombre de cellules en x, en y (les dimensions de notre grille) et la topologie (grille rectangulaire ou grille hexagonale) spécifiée par l'argument `topo =` avec pour valeur `"rectangular"` ou `"hexagonal"`, respectivement.
 
 À partir de votre matrice `envir_mat`, calculez la SOM pour une grille hexagonale de 3 par 3. Affichez le résumé de votre analyse avec `summary()`.
 
@@ -133,7 +133,7 @@ Pour utiliser la fonction `som()`, vous devrez lui renseigner une matrice et uti
 envir %>.%
   sselect(., -station) %>.%
   scale(.) %>.%
-  as.matrix(.) %->%
+  as.matrix(.) ->
   envir_mat
 ```
 
@@ -165,7 +165,7 @@ summary(envir_som)
 ```
 
 ```{r som_h3-check}
-grade_code("Et voilà ... vous venez de réaliser votre première SOM ! Comme vous le constatez, le résumé de l'objet que vous venez de créer ne vous fournit pas beaucoup d'information. Pas de panique ! La SOM étant une technique esssentiellement visuelle, c'est en réalisant ensuite différents graphiques que vous allez comprendre le résultat de votre analyse.")
+grade_code("Et voilà... vous venez de réaliser votre première SOM ! Comme vous le constatez, le résumé de l'objet que vous venez de créer ne vous fournit pas beaucoup d'information. Pas de panique. SOM étant une technique esssentiellement visuelle, c'est en réalisant ensuite différents graphiques que vous allez expliciter le résultat de votre analyse.")
 ```
 
 ### Évolution de l'apprentissage
@@ -174,14 +174,14 @@ grade_code("Et voilà ... vous venez de réaliser votre première SOM ! Comme vo
 envir %>.%
   sselect(., -station) %>.%
   scale(.) %>.%
-  as.matrix(.) %->%
+  as.matrix(.) ->
   envir_mat
 
 set.seed(198)
 envir_som <- som(envir_mat, grid = somgrid(3, 3, topo = "hexagonal"))
 ```
 
-Vous réalisez vos graphiques à partir de l'objet **kohonen** obtenu via `som()` à l'aide de la fonction `plot()`. Il existe plusieurs types de graphiques disponibles, vous pouvez dès lors consulter l'aide en ligne `?kohonen::plot.kohonen` pour en savoir plus.
+Vous réalisez vos graphiques à partir de l'objet **kohonen** obtenu à partir de `som()`, en utilisant la fonction `plot()`. Il existe plusieurs types de graphiques disponibles, vous pouvez dès lors consulter l'aide en ligne `?kohonen::plot.kohonen` pour en savoir plus.
 
 Commencez par visualiser l'évolution de l'apprentissage en utilisant l'argument `type = "changes"`. Vous avez à disposition l'objet `envir_som`.
 
@@ -254,7 +254,7 @@ grade_code("On remarque sur ce graphique que les stations présentants les conce
 
 ## Conclusion
 
-Vous êtes arrivé à la fin de auto-évaluation relative aux cartes auto-adaptative. Vous avez acquis la maîtrise de nouveaux outils vous permettant l'analyse et l'interprétation d'un jeu de données multivariées. Essayez maintenant d'appliquer ces techniques dans une assignation GitHub.
+Vous êtes arrivé à la fin de auto-évaluation relative aux cartes auto-adaptative. Vous avez acquis la maîtrise de nouveaux outils vous permettant l'analyse et l'interprétation d'un jeu de données multivariées. Essayez maintenant d'appliquer ces techniques dans un projet GitHub.
 
 ```{r comm_noscore, echo=FALSE}
 question_text(
