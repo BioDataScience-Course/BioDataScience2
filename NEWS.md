@@ -1,3 +1,7 @@
+# BioDataScience2 2024.0.0
+
+-   New version for the academic year 2024-2025.
+
 # BioDataScience2 2023.9.0
 
 -   Learnrs **B09La_db**, **B09Lb_mds** and **B10La_som** revised for 2023-2024.
