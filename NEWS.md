@@ -2,6 +2,8 @@
 
 -   New version for the academic year 2024-2025.
 
+-   The Shiny app for linear regression is reworked to match new convention y = a + bx.
+
 # BioDataScience2 2023.9.0
 
 -   Learnrs **B09La_db**, **B09Lb_mds** and **B10La_som** revised for 2023-2024.

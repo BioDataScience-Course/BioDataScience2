@@ -1,17 +1,17 @@
-learnitdown::learnitdownShinyVersion("1.0.0")
+learnitdown::learnitdownShinyVersion("1.1.0")
 conf <- BioDataScience::config()
 
 library(shiny)
 library(learnitdown)
 library(BioDataScience2)
 
-a_init <- -1.5
-b_init <- 3.5
+a_init <- 3.5
+b_init <- -1.5
 error_sd <- 0.25
 set.seed(42)
 
 reglin <- function(x, a, b)
-  (a * x) + b
+  a + (b * x)
 
 model_data <- tibble::tibble(
   x = seq(0, 10, by = 0.25),
@@ -24,7 +24,7 @@ ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
       withMathJax(),
-      p("$$y(x) = a \\ x + \\ b $$"),
+      p("$$y(x) = a \\ + \\ b \\ x$$"),
       sliderInput("a", label = "a",
         value = 0, min = -5, max = 5, step = 0.5),
       sliderInput("b", label = "b",
@@ -61,7 +61,7 @@ server <- function(input, output, session) {
 
   output$model_equation <- renderUI({
     withMathJax(
-      sprintf("$$y(x) \\ = %.02f \\ x + \\ %.02f$$",
+      sprintf("$$y(x) \\ = %.02f \\ + \\ %.02f \\ x$$",
               input$a, input$b))
   })
 
@@ -84,8 +84,8 @@ server <- function(input, output, session) {
               sign_in.fun = BioDataScience::sign_in, conf = conf)
   trackSubmit(session, input, output, max_score = 2,
     solution = list(a = a_init, b = b_init),
-    comment = "y = a.x + b",
-    message.success = "Correct, c'est le meilleur modèle. a est la pente et b est l'ordonnée à l'origine de la droite.",
+    comment = "y = a + b.x",
+    message.success = "Correct, c'est le meilleur modèle. a est l'ordonnée à l'origine et b est la pente de la droite.",
     message.error = "Incorrect, un modèle mieux ajusté existe.")
   trackQuit(session, input, output, delay = 20)
 }
