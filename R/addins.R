@@ -73,7 +73,7 @@ sdd2_issue <- function() {
   # and get the year using two last digits
   acad_year <- format(Sys.Date() - 250, "%y")
   new_issue_url <- paste0("https://github.com/BioDataScience-Course/b00qa_",
-    acad_year, "m_issues-b", acad_year, "/issues/new")
+    acad_year, "m_issues-b", acad_year, "/issues/new/choose")
   # Display a message with short instructions + url
   rstudioapi::showDialog(title = "Nouvelle issue du cours BioDataScience2",
     url = new_issue_url,
