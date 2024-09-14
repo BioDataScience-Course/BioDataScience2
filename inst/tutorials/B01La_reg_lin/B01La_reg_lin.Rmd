@@ -45,7 +45,7 @@ BioDataScience2::learnr_server(input, output, session)
 
 ## Objectifs
 
-Ce tutoriel sur la régression linéaire débute par un rappel sur la corrélation et les corrélogrammes. Cette matière est détaillée dans le [module 12 de science des données I](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2023/correlation.html). Les objectifs de ce tutoriel sont :
+Ce tutoriel sur la régression linéaire débute par un rappel sur la corrélation et les corrélogrammes. Cette matière est détaillée dans le [module 6 de science des données I](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2024/correlation.html). Les objectifs de ce tutoriel sont :
 
 -   Revoir la corrélation et les indices de Pearson et Spearman
 
@@ -105,7 +105,7 @@ question("Quelles sont les combinaisons de variables les plus corrélées ? (sé
   answer("width", correct = TRUE),
   answer("depth"),
   answer("rear"),
-  answer("lenght", correct = TRUE),
+  answer("length", correct = TRUE),
   type = "multiple",
   allow_retry = TRUE, random_answer_order = TRUE, 
   submit_button = "Soumettre une réponse", 
