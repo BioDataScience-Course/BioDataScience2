@@ -1,3 +1,7 @@
+# BioDataScience2 2024.1.0
+
+-   All learnrs inactivated except thos of module 1.
+
 # BioDataScience2 2024.0.0
 
 -   New version for the academic year 2024-2025.
