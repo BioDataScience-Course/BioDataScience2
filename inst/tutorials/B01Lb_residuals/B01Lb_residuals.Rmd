@@ -206,7 +206,7 @@ Une fois que vous avez les estimateurs des différents paramètres de votre mod�
 
 ##### Comment faire en pratique ?
 
-Dans la SciViews Box 2023, vous avez des outils pour vous y aider. La fonction `eq__()` extrait l'équation du modèle et son argument `use_coefs = TRUE` indique de remplacer les paramètres par les valeurs estimées. Ainsi, pour obtenir cette équation, vous pouvez écrire un chunk en ligne `` `r eq__(rice_lm, use_coefs = TRUE)` `` à l'intérieur de balises Markdown d'équation dite "display" (équation sur sa propre ligne, hors texte, par opposition à l'équation "inline", directement dans le texte). Cela s'écrit comme suit :
+Dans la SciViews Box 2024, vous avez des outils pour vous y aider. La fonction `eq__()` extrait l'équation du modèle et son argument `use_coefs = TRUE` indique de remplacer les paramètres par les valeurs estimées. Ainsi, pour obtenir cette équation, vous pouvez écrire un chunk en ligne `` `r eq__(rice_lm, use_coefs = TRUE)` `` à l'intérieur de balises Markdown d'équation dite "display" (équation sur sa propre ligne, hors texte, par opposition à l'équation "inline", directement dans le texte). Cela s'écrit comme suit :
 
 -   à une nouvelle ligne, vous entrez deux dollars `$$`, c'est la balise Markdown d'entrée d'une équation "display"
 -   à la ligne suivante, vous écrivez le chunk en ligne `` `r eq__(...)` `` qui viendra placer le contenu de l'équation calculé par R lors du rendu du document
