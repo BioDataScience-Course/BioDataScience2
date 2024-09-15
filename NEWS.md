@@ -1,6 +1,10 @@
 # BioDataScience2 2024.1.0
 
--   All learnrs inactivated except thos of module 1.
+-   All learnrs inactivated except those of module 1.
+
+-   Shiny apps in v2.0.0 (recording in the events table).
+
+-   Learnrs **B00La_refresh**, **B01La_reg_lin** and **B01Lb_residuals** revised for 2024-2025.
 
 # BioDataScience2 2024.0.0
 
