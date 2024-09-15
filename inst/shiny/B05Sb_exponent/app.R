@@ -1,4 +1,4 @@
-learnitdown::learnitdownShinyVersion("1.1.0")
+learnitdown::learnitdownShinyVersion("2.0.0")
 conf <- BioDataScience::config()
 
 library(shiny)
