@@ -319,13 +319,13 @@ Dans SciViews-R, la fonction `read()` se charge de l'importation de données dep
 
 Importez le tableau nommé `crabs` qui provient du package {MASS}. **rappel : lorsqu'un exercice comporte du code avec des zones à remplacer (`___`), ne faites rien d'autre que compléter ces zones. Les outils d'autocorrection sont très sensibles et n'apprécieraient pas autrement.**
 
-```{r read_h2, exercise=TRUE}
+```{r read_h2, exercise=TRUE, eval=FALSE}
 crabs <- read(___, package = ___)
 # Tableau partiel 
 tabularise$headtail(crabs)
 ```
 
-```{r read_h2-hint-1}
+```{r read_h2-hint-1, eval=FALSE}
 # Consultez la page d'aide de read(). 
 # Elle est disponible en exécutant l'instruction `?` ou encore `.?` dans la console R.
 crabs <- read(___, package = ___)
@@ -472,7 +472,7 @@ Les variables à votre disposition sont les suivantes :
 
 `r paste0("<code>", names(crabs), "</code>")`
 
-```{r chart_h4, exercise=TRUE}
+```{r chart_h4, exercise=TRUE, eval=FALSE}
 # Importation des données
 crabs <- read("crabs", package = "MASS")
 # Graphique
@@ -480,7 +480,7 @@ chart(data = ___, ___ ~ ___ %___=% ___ ) ___
   Sgg$___
 ```
 
-```{r chart_h4-hint-1}
+```{r chart_h4-hint-1, eval=FALSE}
 # Importation des données
 crabs <- read("crabs", package = "MASS")
 # Graphique
@@ -488,7 +488,7 @@ chart(data = ___, ___ ~ ___ %___=% ___ ) |>
   Sgg$geom____
 ```
 
-```{r chart_h4-hint-2}
+```{r chart_h4-hint-2, eval=FALSE}
 # Importation des données
 crabs <- read("crabs", package = "MASS")
 # Graphique
@@ -496,7 +496,7 @@ chart(data = ___, length ~ ___ %___=% ___ ) |>
   Sgg$geom_b___
 ```
 
-```{r chart_h4-hint-3}
+```{r chart_h4-hint-3, eval=FALSE}
 # Importation des données
 crabs <- read("crabs", package = "MASS")
 # Graphique
@@ -600,19 +600,19 @@ Passons à la pratique. Sélectionnez les parcelles ayant un rendement stricteme
 
 `r paste0("<code>", names(potatoes), "</code>")`
 
-```{r filter_h3, exercise=TRUE}
+```{r filter_h3, exercise=TRUE, eval=FALSE}
 # Réduction du tableau
 potatoes_red <- ___(potatoes, ___ ___ ___ & ___ <= 41)
 tabularise(potatoes_red)
 ```
 
-```{r filter_h3-hint-1}
+```{r filter_h3-hint-1, eval=FALSE}
 # Réduction du tableau
 potatoes_red <- sfilter(potatoes, ___ ___ ___ & ___ <= 41)
 tabularise(potatoes_red)
 ```
 
-```{r filter_h3-hint-2}
+```{r filter_h3-hint-2, eval=FALSE}
 # Réduction du tableau
 potatoes_red <- sfilter(potatoes, ___ ___ ___ & yield <= 41)
 tabularise(potatoes_red)
@@ -661,7 +661,7 @@ Réalisez un tableau résumé reprenant le rendement médian, le rendement minim
 
 `r paste0("<code>", names(potatoes), "</code>")`
 
-```{r summarise_h3, exercise=TRUE}
+```{r summarise_h3, exercise=TRUE, eval=FALSE}
 potatoes %>.%
   ___(., ___) ___ 
   ___(., yield_med = ___(___), yield_min = ___(___), 
@@ -670,7 +670,7 @@ potatoes %>.%
 potatoes_red
 ```
 
-```{r summarise_h3-hint-1}
+```{r summarise_h3-hint-1, eval=FALSE}
 potatoes %>.%
   ___(., cultivar) ___ 
   ___(., yield_med = ___(___), yield_min = ___(___), 
@@ -679,7 +679,7 @@ potatoes %>.%
 potatoes_red
 ```
 
-```{r summarise_h3-hint-2}
+```{r summarise_h3-hint-2, eval=FALSE}
 potatoes %>.%
   sgroup_by(., cultivar) %>.%
   ssummarise(., yield_med = fmedian(___), yield_min = ___(___), 
@@ -710,7 +710,7 @@ Dans le cours de science des données I, cinq modules ont été consacrés enti�
 
 L'association wallonne de l'élevage dispose de plusieurs centres d'insémination. Ils ont un recensement des différents taureaux reproducteurs. Vous avez à votre disposition le jeu de données `bull` qui reprend les variables suivantes : `r names(bull)`. Il est évident qu'un taureau plus âgé sera plus lourd, nous allons donc standardiser la masse par l'âge et limiter notre étude aux individus de moins de 50 mois.
 
-```{r, echo = TRUE}
+```{r, echo=TRUE}
 bull %>.%
   sfilter(., age <= 50) %>.%
   smutate(., weight_std = labelise(weight/age,
@@ -727,21 +727,21 @@ bull_red %>.%
 
 Vous noterez que les centres d'insémination ont plus d'individus de la variété viande que mixte. Réalisez un test *t* de Student bilatéral avec un seuil $\alpha$ de 0.05 et considérant que les variances sont potentiellement inégales pour comparer la masse standardisée en fonction de la variété.
 
-```{r qu_student_h3, exercise=TRUE, exercise.lines=5}
+```{r qu_student_h3, exercise=TRUE, exercise.lines=5, eval=FALSE}
 bull_t <- t.test(data = ___, ___ ~ ___,
   alternative = ___, conf.level = ___, var.equal = ___)
 # Affichage du résultat sous la forme d'un tableau
 tabularise(bull_t)
 ```
 
-```{r qu_student_h3-hint-1}
+```{r qu_student_h3-hint-1, eval=FALSE}
 bull_t <- t.test(data = ___, ___ ~ ___,
   alternative = "two.sided", conf.level = 0.95, var.equal = ___)
 # Affichage du résultat sous la forme d'un tableau
 tabularise(bull_t)
 ```
 
-```{r qu_student_h3-hint-2}
+```{r qu_student_h3-hint-2, eval=FALSE}
 bull_t <- t.test(data = ___, ___ ~ ___,
   alternative = "two.sided", conf.level = 0.95, var.equal = FALSE)
 # Affichage du résultat sous la forme d'un tableau
