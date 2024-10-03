@@ -184,7 +184,7 @@ chart(reddrum_lm3)
 ```
 
 ```{r regpoly3_h2-check}
-grade_code("Observez comme la courbe devient de plus en plus flexible à mesure que l'ordre du polynome augmente.")
+grade_code("Observez comme la courbe devient de plus en plus flexible à mesure que l'ordre du polynôme augmente.")
 ```
 
 Analyse des résidus pour la régression polynomiale d'ordre trois.

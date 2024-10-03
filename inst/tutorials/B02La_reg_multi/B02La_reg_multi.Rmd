@@ -223,7 +223,7 @@ En réalité, les résidus ont un comportement très, très similaire entre les 
 
 Vous venez de réaliser deux modèles. Il s'agit d'un cas particulier. Ces deux modèles sont imbriqués, ce qui signifie que l'un est une version simplifiée (avec un ou plusieurs termes en moins) de l'autre. Comment pourriez-vous départager ces deux modèles ? Dans un tel cas, une ANOVA permet de comparer les deux et de tirer une conclusion. Avant de faire notre test, décidons de fixer $\alpha$ à 5%. L'hypothèse nulle est que les deux modèles sont identiques (exprimé différemment, cela signifie que les termes supplémentaires du modèle plus complexe n'apportent rien). L'hypothèse alternative que le modèle plus complexe apporte un gain.
 
-```{r, echo=TRUE}
+```{r, echo=TRUE, warning=FALSE}
 anova(fat_lm1, fat_lm2) |>
   tabularise()
 ```
@@ -334,12 +334,12 @@ diabetes <- smutate(diabetes,
 
 Prenez l'habitude d'étudier la matrice de corrélation entre toutes les variables qui vont entrer potentiellement dans votre modèle.
 
-```{r, echo=TRUE}
+```{r, echo=TRUE, warning=FALSE}
 correlation(diabetes[, c("map", "age", "chol", "glyhb", "weight")], use = "complete.obs") |>
   tabularise()
 ```
 
-> En présence de valeurs manquantes, l'argument `use=` permet de spécifier quoi faire. `"complete.obs"` ne prends en compte que les observations pour lesquelles il n'y a aucune valeur manquante pour aucune des cinq variables, voir `?correlation()`.
+> En présence de valeurs manquantes, l'argument `use=` permet de spécifier quoi faire. `"complete.obs"` ne prends en compte quikole les observations pour lesquelles il n'y a aucune valeur manquante pour aucune des cinq variables, voir `?correlation()`.
 
 Ici, nous sommes en présence de corrélations très faibles entre les variables potentiellement explicatives et MAP. Ce n'est pas une bonne nouvelle. Nous pouvions déjà constater cela sur le graphique entre la MAP et l'âge avec un nuage de points très peu étiré. La bonne nouvelle, c'est que les quatre variables explicatives sont également peu corrélées entre elles, et aussi que nous avons plusieurs centaines d'individus mesurés dans notre échantillon.
 

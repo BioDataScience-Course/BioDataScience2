@@ -82,7 +82,7 @@ corn1 <- dtx(
 )
 ```
 
-```{r corn1_h3, exercise=TRUE, exercise.setup="corn1_prep", exercise.lines=3}
+```{r corn1_h3, exercise=TRUE, exercise.setup="corn1_prep", exercise.lines=3, warning=FALSE}
 corn1_lm <- lm(data = ___, ___)
 summary(corn1_lm) |> tabularise()
 ```
@@ -172,7 +172,7 @@ corn2 <- dtx(
 )
 ```
 
-```{r corn2_h4, exercise=TRUE, exercise.setup="corn2_prep", exercise.lines=3}
+```{r corn2_h4, exercise=TRUE, exercise.setup="corn2_prep", exercise.lines=3, warning=FALSE}
 corn2_lm <- lm(data = ___, ___)
 summary(corn2_lm) |> tabularise()
 ```
@@ -275,7 +275,7 @@ corn3 <- dtx(
 )
 ```
 
-```{r corn3_h4, exercise=TRUE, exercise.setup = "corn3_prep", exercise.lines=3}
+```{r corn3_h4, exercise=TRUE, exercise.setup = "corn3_prep", exercise.lines=3, warning=FALSE}
 corn3_lm <- lm(data = ___, ___)
 summary(corn3_lm) |> tabularise()
 ```
@@ -378,7 +378,7 @@ corn4 <- dtx(
 )
 ```
 
-```{r corn4_h4, exercise=TRUE, exercise.setup="corn4_prep", exercise.lines=3}
+```{r corn4_h4, exercise=TRUE, exercise.setup="corn4_prep", exercise.lines=3, warning=FALSE}
 corn4_lm <- lm(data = ___, ___)
 summary(corn4_lm) |> tabularise()
 ```

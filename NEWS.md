@@ -1,3 +1,11 @@
+# BioDataScience2 2024.3.0
+
+-   Learnr **B03La_mod_lin** revised for 2024-2025.
+
+# BioDataScience2 2024.2.0
+
+-   Learnrs **B02La_reg_multi** and **B02LA_reg_poly** revised for 2024-2025.
+
 # BioDataScience2 2024.1.0
 
 -   All learnrs inactivated except those of module 1.
