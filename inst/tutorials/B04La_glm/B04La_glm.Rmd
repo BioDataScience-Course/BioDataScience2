@@ -121,7 +121,7 @@ Des informations complémentaires sur ces données peuvent être trouvées via l
 
 ## Exploration des données
 
-L'Indice du risque génétique lié au diabète (DPF, Diabetes pedigree function) estime la probabilité d'avoir du diabète en fonction de l'âge de l'individu et des antécédents familiaux. Débutez votre analyse avec un histogramme de la variable `dpf`. Utilisez les facettes afin de séparer les individus diabétiques, des individus n'ayant pas de problème de glycémie. Remplacez le label par défaut de l'axe des ordonnées par "Effectifs".
+L'indice du risque génétique lié au diabète (DPF, Diabetes pedigree function) estime la probabilité d'avoir du diabète en fonction de l'âge de l'individu et des antécédents familiaux. Débutez votre analyse avec un histogramme de la variable `dpf`. Utilisez les facettes afin de séparer les individus diabétiques, des individus n'ayant pas de problème de glycémie. Remplacez le label par défaut de l'axe des ordonnées par "Effectifs".
 
 ```{r histo_h2, exercise=TRUE}
 chart(___) +
@@ -170,7 +170,7 @@ chart(data = pima, diabete ~ bmi) +
 ```
 
 ```{r violin_h2-check}
-grade_code("Vous avez placé les violons à l'horizontal en inversant la formule que vous avez l'habitude d'employer pour ce type de graphique. On observe que les personnes diabétiques ont un IMC plus élevé que les personnes saines. De nombreuses études indiquent une corrélation entre l'obésité et le diabète.")
+grade_code("Vous avez placé les violons à l'horizontale en inversant la formule que vous avez l'habitude d'employer pour ce type de graphique. On observe que les personnes diabétiques ont un IMC plus élevé que les personnes saines. De nombreuses études indiquent une corrélation entre l'obésité et le diabète.")
 ```
 
 D'autres graphiques peuvent être réalisés afin d'approfondir encore votre découverte des données.
@@ -222,9 +222,9 @@ grade_code("La fonction sdrop_na() est une fonction puissante qui permet d'élim
 ```
 
 ```{r qu_family}
-question("Quelle fonction de lien utiliseriez vous pour modéliser la présence ou l'absence du diabètes",
+question("Quelle fonction de lien utiliseriez-vous pour modéliser la présence ou l'absence du diabètes",
   answer("identité", message = "Cette fonction de lien correspond à une distribution gaussienne de la variable y."),
-  answer("log", message = "Cette fonction de lien est employée pour des distributions de la variable y log-Normale, poisson ou encore quasi poisson."),
+  answer("log", message = "Cette fonction de lien est employée pour des distributions de la variable y log-normale, poisson ou encore quasi-poisson."),
   answer("logit", message = "Cette fonction de lien est employée pour des distributions de la variable y binomiale ou quasi binomiale.", correct = TRUE),
   allow_retry = TRUE, random_answer_order = TRUE,
   message = "Nous sommes en présence d'une variable binaire. La personne a le diabète ou bien ne l'a pas. La distribution binomiale est tout indiquée pour cette analyse.")
@@ -265,7 +265,7 @@ grade_code("Votre modèle est le bon. Répondez aux questions suivantes sur ce m
 
 ```{r qu_glm1}
 quiz(
-  question("Sélectionnez l'affirmation correcte concernant les paramètres du modèles",
+  question("Sélectionnez l'affirmation correcte concernant les paramètres du modèle",
     answer("Tous les paramètres du modèle sont significativement différents de zéro au seuil alpha de 5%"),
     answer("Tous les paramètres du modèle ne sont pas significativement différents de zéro au seuil alpha de 5%", correct = TRUE),
     answer("Certains paramètres du modèle sont significativement différents de zéro au seuil alpha de 5%"),
@@ -279,8 +279,8 @@ quiz(
     answer("La valeur brute ne donne aucune information", correct = TRUE),
     answer("La valeur est faible, c'est un bon modèle"),
     answer("La valeur est faible, c'est un mauvais modèle"),
-    answer("La valeur est élevé, c'est un bon modèle"),
-    answer("La valeur est élevé, c'est un mauvais modèle"), 
+    answer("La valeur est élevée, c'est un bon modèle"),
+    answer("La valeur est élevée, c'est un mauvais modèle"), 
     allow_retry = TRUE, random_answer_order = TRUE)
 )
 ```
@@ -336,7 +336,7 @@ grade_code("Maintenant que vous avez l'information requise pour choisir le meill
 
 Sur base du test de Chi carré, du critère d'Akaike et de vos interprétations des résumés des deux modèles, décidez quel modèle vous voulez conserver. Affichez le tableau résumé de ce modèle avec la fonction `tabularise()`pour en obtenir un rendu de qualité.
 
-```{r tabu_h1, exercise=TRUE}
+```{r tabu_h1, exercise=TRUE, warning=FALSE}
 ___(___(___))
 ```
 
@@ -373,7 +373,7 @@ AIC(diab2, diab5)
 
 Voici le tableau bien formaté du résumé du modèle `diab5`.
 
-```{r}
+```{r, warning=FALSE}
 tabularise(summary(diab5))
 ```
 
@@ -383,7 +383,7 @@ $$
 `r eq__(diab5, use_coefs = TRUE, coef_digits = c(2, 3, 2, 3, 2), wrap = TRUE, terms_per_line = 2)`
 $$
 
-Pour obtenir cette dernière équation, nous avons créé une zone Markdown d'équation encadrée par deux fois deux signes dollars. À l'intérieur, nous mettons un chunk en ligne avec un appel de la fonction `eq__()` sur notre modèle et les arguments suivants :
+Pour rappel, pour obtenir cette dernière équation, nous avons créé une zone Markdown d'équation encadrée par deux fois deux caractères dollar. À l'intérieur, nous mettons un chunk en ligne avec un appel de la fonction `eq__()` sur notre modèle et les arguments suivants :
 
 - `use_coefs = TRUE` pour afficher les coefficients estimés dans l'équation
 - `coef_digits = c(2, 3, 2, 3, 2)` pour indiquer le nombre de chiffres significatifs à afficher pour chaque coefficient
