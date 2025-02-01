@@ -37,7 +37,7 @@ BioDataScience2::learnr_server(input, output, session)
 -   Vous préparer à analyser et interpréter de manière autonome un jeu de données multivariées à l'aide des k-moyennes
 -   Vous familiarisez avec les indices de diversité : richesse spécifique, indice de Shannon, indice de Jaccard...
 
-N'entamez ce tutoriel qu'après avoir compris le principe des k-moyennes et les indices de diversité proposés dans le [module 6](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2023/k-moyennes.html) du cours. Assurez-vous d'avoir réalisé les exercices H5P qui s'y trouvent avant de vous lancer dans ce tutoriel-ci.
+N'entamez ce tutoriel qu'après avoir compris le principe des k-moyennes et les indices de diversité proposés dans le [module 6](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2024/k-moyennes.html) du cours. Assurez-vous d'avoir réalisé les exercices H5P qui s'y trouvent avant de vous lancer dans ce tutoriel-ci.
 
 ## Communautés piscicoles de rivière
 
@@ -45,7 +45,7 @@ Nous utilisons ici les mêmes jeux de données longuement présentés dans le tu
 
 ![Carte du Doubs, d'après OpenStreetMap.](images/doubs.jpg){width="60%"}
 
-Les données environnementales se trouvent dans le tableau `envir` dont voici les premières lignes
+Les données environnementales se trouvent dans le tableau `envir` dont voici les premières lignes :
 
 ```{r}
 head(envir)
@@ -119,11 +119,11 @@ profile_k(envir_scale)
 ```
 
 ```{r nbclust_h2-check}
-grade_code("Avec de ce graphique, vous avez un outil qui peut vous aider à déterminer le nombre k de centres à utiliser. La valeur obtenue pour *k* = 1 nous indique de combien les données sont dispersées. En augmentant la valeur de *k*, l'objectif est de faire des regroupements pour diminuer cette variance intragroupe, mais pas au delà d'une valeur qui ne diminuerait plus de manière importante.")
+grade_code("Avec de ce graphique, vous avez un outil qui peut vous aider à déterminer le nombre *k* de centres à utiliser. La valeur obtenue pour *k* = 1 nous indique de combien les données sont dispersées. En augmentant la valeur de *k*, l'objectif est de faire des regroupements pour diminuer cette variance intragroupe, mais pas au delà d'une valeur qui ne diminuerait plus de manière importante.")
 ```
 
 ```{r qu_nbclust}
-question("Sur base du graphique que vous avez réalisé, quelle valeur de k utiliseriez-vous ?",
+question("Sur base du graphique que vous avez réalisé, quelle valeur de *k* utiliseriez-vous ?",
   answer("1"),
   answer("2"),
   answer("3"),
@@ -139,7 +139,7 @@ question("Sur base du graphique que vous avez réalisé, quelle valeur de k util
 
 Maintenant que vous avez défini la valeur de *k* que vous allez utiliser, vous pouvez procéder au calcul des k-moyennes en utilisant la fonction `k_means()`. Vous lui fournirez le tableau de départ contenant uniquement des valeurs numériques, éventuellement *standardisées*, et spécifierez le nombre `k =` de groupes souhaités.
 
-La position initiale des k centres est déterminée aléatoirement. Le résultat final peut donc varier et ne pas être optimal. Pour éviter cela, nous pouvons utiliser l'argument `nstart =` qui testera différentes situations de départ pour conserver le meilleur résultat. Par défaut, une seule situation aléatoire de départ `nstart = 1` est considérée. Avec une valeur plus importante de `nstart =`, votre analyse sera plus robuste... mais cela augmentera le temps de calcul.
+La position initiale des *k* centres est déterminée aléatoirement. Le résultat final peut donc varier et ne pas être optimal. Pour éviter cela, nous pouvons utiliser l'argument `nstart =` qui testera différentes situations de départ pour conserver le meilleur résultat. Par défaut, une seule situation aléatoire de départ `nstart = 1` est considérée. Avec une valeur plus importante de `nstart =`, votre analyse sera plus robuste... mais cela augmentera le temps de calcul.
 
 En utilisant le tableau standardisé mis à votre disposition et enregistré sous `envir_scale`, réalisez un regroupement avec la fonction `k_means()`. Utilisez pour cela une valeur *k* de 4 et 25 positions de départ différentes.
 
@@ -166,12 +166,12 @@ set.seed(210219)
 ```
 
 ```{r kmeans_h2-check}
-grade_code("Vous venez de réaliser votre première classification par les k-moyennes ! La sortie que vous obtenez est l'impression du contenu de l'objet **k_means** qui vous donne beaucoup d'information. Vous avez le nombre de stations présentes dans chaque groupe (2, 12, 6 et 10). Ensuite, la section \"Cluster means\" reprend les positions des centres pour les 4 groupes que vous avez réalisé. Une mesure de la qualité de regroupement de vos données est présentée dans \"Within cluster sum of squares\", 69.3% ici. Plus cette valeur sera proche de 100% mieux ce sera.")
+grade_code("Vous venez de réaliser votre première classification par les k-moyennes ! La sortie que vous obtenez est l'impression du contenu de l'objet **k_means** qui vous donne beaucoup d'information. Vous avez le nombre de stations présentes dans chaque groupe (2, 12, 6 et 10). Ensuite, la section \"Cluster means\" reprend les positions des centres pour les quatre groupes que vous avez réalisés. Une mesure de la qualité de regroupement de vos données est présentée dans \"Within cluster sum of squares\", 69.3% ici. Plus cette valeur sera proche de 100% mieux ce sera.")
 ```
 
 ### Graphique du regroupement
 
-Réaliser un graphique des nitrates `nit` en fonction de l'oxygène dissout `oxy`. Regroupez les stations par de la couleur en utilisant les groupes que vous avez calculés et représentez les centres sur votre graphique.
+Tracez un graphique des nitrates `nit` en fonction de l'oxygène dissout `oxy`. Regroupez les stations par de la couleur en utilisant les groupes que vous avez calculés et représentez les centres sur votre graphique.
 
 ```{r graphe_prep}
 envir_scale <- as_dtx(scale(envir))
@@ -199,8 +199,10 @@ chart(envir_kmn, choices = c("oxy", "nit"))
 ```
 
 ```{r graphe_h3-check}
-grade_code("Vous voyez comme c'est facile ! Les fonctions SciViews::R vous facilitent la tâche. Naturellement, vous pouvez aussi choisir d'autres paires de variables pour visualiser votre regroupement.")
+grade_code("Vous voyez comme c'est facile ! Les fonctions `SciViews::R` vous facilitent la tâche. Naturellement, vous pouvez aussi choisir d'autres paires de variables pour visualiser votre regroupement.")
 ```
+
+<!-- Ce serait bien de rajouter ici une comparaison entre CAH et K-means, puisqu'on a utilisé les mêmes données ! -->
 
 ## Indices de diversité
 
@@ -228,7 +230,7 @@ grade_code("La fonction `specnumber()` du package {vegan} effectue ce calcul. In
 ```
 
 ```{r qu_richness}
-question("Quelle est la station avec la richesse spécifique la plus élevée ?",
+question("Quelle est la station avec la richesse spécifique la plus élevée ?",
   answer("Station 1"),
   answer("Station 8"),
   answer("Station 15"),
@@ -275,6 +277,8 @@ grade_code("L'indice de Jaccard nécessite des données de type présence/absenc
 
 À présent que vous avez obtenu votre matrice de distance (`fish_jacc`), vous pouvez effectuer un regroupement à l'aide de la CAH avec la méthode `ward.D2` et en tracer un dendrogramme.
 
+<!-- Ici ce serait peut être bien d'afficher la matrice de distance obtenue. Actuellement, le code ne renvoie rien, mais indique un avis (à cause de la station 8 vide)... Un commentaire là-dessus serait aussi utile, à moins de l'éliminer de l'analyse. -->
+
 ```{r jacc_prep}
 fish_jacc <- dissimilarity(fish, method = "jaccard", binary = TRUE)
 ```
@@ -306,7 +310,7 @@ grade_code("Vous avez obtenu un dendrogramme horizontal intéressant. On peut, p
 
 ## Conclusion
 
-Vous venez de terminer votre auto-évaluation relative à la classification par les k-moyenne et les indices de diversité. Vous allez maintenant appliquer ces techniques sur d'autres données dans une assignation GitHub.
+Vous venez de terminer votre auto-évaluation relative à la classification par les k-moyenne et les indices de diversité. Vous allez maintenant appliquer ces techniques sur d'autres données dans un projet GitHub.
 
 ```{r comm_noscore, echo=FALSE}
 question_text(
