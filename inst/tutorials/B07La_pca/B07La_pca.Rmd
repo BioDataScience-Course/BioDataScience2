@@ -41,13 +41,13 @@ L'Analyse en Composantes Principales (ACP) est une méthode statistique explorat
 
 -   Vous préparer à interpréter par vous-même les résultats de vos ACP
 
-Avant toute chose, assurez-vous d'avoir bien compris le contenu du [module 7](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2023/acp-afc.html) du cours et en particulier la [section 7.1](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2023/analyse-en-composantes-principales.html).
+Avant toute chose, assurez-vous d'avoir bien compris le contenu du [module 7](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2024/acp-afc.html) du cours et en particulier la [section 7.2](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2024/analyse-en-composantes-principales.html).
 
 ## Manchots en Antarctique
 
 Trois espèces de manchots ont été étudiés en Antarctique entre 2007 et 2009 par le Docteur Kristen Gorman de la base antarctique Palmer. Les manchots ont été observés sur l'île du Rêve (`Dream`), sur l'île de Torgersen (`Torgersen`) et sur l'île Biscoe (`Biscoe`). Les espèces étudiées sont le manchot Papou *Pygoscelis papua* (Forster, 1781) `Gentoo`, le manchot Adélie *Pygoscelis adlidae* (Hombron & Jacquinot, 1841) `Adelie` et le manchot à jugulaire *Pygoscelis antarcticus* (Forster, 1781) `Chinstrap`.
 
-![Couple de manchots adélies avec son petit à droite et un manchot à jugulaire (gentoo) à gauche. Photo de J. Auch, licence creative commons 2.0 generic.](images/adelie_and_gentoo.jpg)
+![Couple de manchots adélies avec son petit à droite et un manchot à jugulaire (gentoo) à gauche. Photo de J. Auch, license creative commons 2.0 générique.](images/adelie_and_gentoo.jpg)
 
 ```{r, echo=TRUE}
 penguins <- read("penguins", package = "palmerpenguins")
@@ -100,7 +100,7 @@ chart(data = penguins, body_mass ~ flipper_length) +
   geom_point()
 ```
 
-Le graphique présente une des paires possibles (masse en fonction de la longueur de la nageoire). Dans notre cas, le nuage de point n'étant pas fondamentalement curvilinéaire, il n'est pas nécessaire de transformer les données (vous pouvez le vérifier aussi sur d'autres graphiques ci-dessous).
+Le graphique présente une des paires possibles des variables (masse en fonction de la longueur de la nageoire). Dans notre cas, le nuage de point n'étant pas fondamentalement curvilinéaire, il n'est pas nécessaire de transformer les données (vous pouvez le vérifier aussi sur d'autres graphiques ci-dessous).
 
 ```{r scatterplot2_noscore, exercise=TRUE}
 chart(data = penguins, ___ ~ ___) +
@@ -155,7 +155,7 @@ question("Quelle est la proportion cumulée de la variance des deux premières c
 
 ### Graphique des éboulis
 
-Réalisez un graphique des éboulis sur l'objet `penguins_pca` que vous avez réalisé précédemment.
+Réalisez un graphique des éboulis sur l'objet `penguins_pca` que vous avez créé précédemment.
 
 ```{r pca_prep}
 penguins %>.%
@@ -203,7 +203,7 @@ chart$loadings(penguins_pca, choices = c(1, 2))
 ```
 
 ```{r loadings_h2-check}
-grade_code("Ce graphique permet de visualiser l'importance des variables intiales dans le plan de l'ACP sous forme de vecteurs. Il est indispensable pour interpréter le graphique suivant qui répartit les observations dans le même plan. La norme (longueur) du vecteur indique si la variable est bien représentée dans ce plan ou non. Plus la norme du vecteur se rapproche de un, matérialisé par le cercle gris, mieux c'est. Ici, les quatre variables sont bien représentées avec des normes supérieures ou égales à 0.5. Celles aux normes trop faibles ne sont pas considérées dans l'analyse pour ce plan-là en tous cas. Ensuite, les variables qui pointent dans la même direction sont corrélées positivement comme la longueur de la nageoire et la masse. Les variables qui pointent dans le sens opposé sont inversément corrélées (il n'y en a pas ici). Les vecteurs orthogonaux correspondent à des variables non ou très faiblement corrélées entre elles, comme la largeur du bec et la masse.")
+grade_code("Ce graphique permet de visualiser l'importance des variables initiales dans le plan de l'ACP sous forme de vecteurs. Il est indispensable pour interpréter le graphique suivant qui répartit les observations dans le même plan. La norme (longueur) du vecteur indique si la variable est bien représentée dans ce plan ou non. Plus la norme du vecteur se rapproche de un, matérialisé par le cercle gris, mieux c'est. Ici, les quatre variables sont bien représentées avec des normes supérieures ou égales à 0.5. Celles aux normes trop faibles ne sont pas considérées dans l'analyse pour ce plan-là en tous cas. Ensuite, les variables qui pointent dans la même direction sont corrélées positivement comme la longueur de la nageoire et la masse. Les variables qui pointent dans le sens opposé sont inversément corrélées (il n'y en a pas ici). Les vecteurs orthogonaux correspondent à des variables non ou très faiblement corrélées entre elles, comme la largeur du bec et la masse.")
 ```
 
 ### Représentation des individus

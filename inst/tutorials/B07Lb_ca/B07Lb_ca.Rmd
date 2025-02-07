@@ -38,15 +38,15 @@ L'Analyse Factorielle des Correspondances (AFC) est une variante de l'Analyse en
 
 -   Réaliser de manière guidée une AFC
 
--   Effectuer les graphiques associés à cette analyse
+-   Tracer les graphiques associés à cette analyse
 
 -   Vous préparer à interpréter par vous-même les résultats de vos AFC
 
-Avant toute chose, assurez-vous d'avoir bien compris le contenu du [module 7](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2023/acp-afc.html) du cours et en particulier la [section 7.3](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2023/analyse-factorielle-des-correspondances.html).
+Avant toute chose, assurez-vous d'avoir bien compris le contenu du [module 7](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2024/acp-afc.html) du cours et en particulier la [section 7.3](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2024/analyse-factorielle-des-correspondances.html).
 
 ## Couleur des yeux et des cheveux
 
-L'étude porte sur 5387 personnes provenant du Nord de l'Écosse. Le jeu de données se nomme `caith`.
+L'étude porte sur 5387 personnes provenant du nord de l'Écosse. Le jeu de données se nomme `caith`.
 
 ```{r, echo=TRUE}
 caith <- read("caith", package = "MASS")
@@ -81,12 +81,12 @@ caith_df
 ```
 
 ```{r dtf-check}
-grade_code("La conversion du tableau en `data.frame` est simple avec la fonction `as_dtf()`. Par defaut, la fonction reconnait la colonne `.rownames` et la converti en nom de lignes. Si la colonne à transformer en nom des lignes porte un autre nom que `.rownames`, alors vous pouvez utiliser l'argument `rownames =` pour indiquer quelle colonne utiliser.")
+grade_code("La conversion du tableau en `data.frame` est simple avec la fonction `as_dtf()`. Par défaut, la fonction reconnait la colonne `.rownames` et la converti en nom de lignes. Si la colonne à transformer en nom des lignes porte un autre nom que `.rownames`, alors vous pouvez utiliser l'argument `rownames =` pour indiquer quelle colonne utiliser.")
 ```
 
 ## Réalisation de l'AFC
 
-Réalisez à présent une analyse factorielle des correspondances sur l'objet `caith_df` et nommez-la `caith_ca`. Réalisez ensuite le résumé de ce dernier objet.
+Réalisez à présent une analyse factorielle des correspondances sur l'objet `caith_df` et nommez-la `caith_ca`. Faites ensuite le résumé de ce dernier objet.
 
 ```{r ca_h2, exercise=TRUE}
 # AFC

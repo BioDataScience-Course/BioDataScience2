@@ -1,7 +1,10 @@
+# BioDataScience2 2024.7.0
+
+-   Learnrs **B07La_pca** and **B07Lb_ca** revised for 2024-2025.
+
 # BioDataScience2 2024.6.0
 
 -   Learnrs **B06La_ahc** and **B06Lb_kmeans** revised for 2024-2025.
-
 
 # BioDataScience2 2024.5.0
 
