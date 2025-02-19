@@ -28,7 +28,7 @@ BioDataScience2::learnr_server(input, output, session)
 
 ## Objectifs
 
-L'Analyse Factorielle Multiple (AFM) est une méthode statistique exploratoire qui permet de travailler avec plusieurs tableaux de données. Cette méthode permet également de faire le lien entre l'analyse en composantes principales (ACP) et l'Analyse factorielle des correspondances (AFC). La première méthode permet de travailler uniquement sur des variables quantitatives et la seconde uniquement sur des variables qualitatives. L'AFM est capable de traiter les deux types de variables simultanément. Cette méthode est par exemple employée en écologie. Sur une station un ensemble de mesures physico-chimiques peuvent être réalisées ainsi qu'un relevé de la faune et/ou de la flore.
+L'Analyse Factorielle Multiple (AFM) est une méthode statistique exploratoire qui permet de travailler avec plusieurs tableaux de données. Cette méthode permet également de faire le lien entre l'analyse en composantes principales (ACP) et l'Analyse factorielle des correspondances (AFC). La première méthode permet de travailler uniquement sur des variables quantitatives et la seconde uniquement sur des variables qualitatives. L'AFM est capable de traiter les deux types de variables simultanément. Cette méthode est, par exemple, employée en écologie. Sur une station un ensemble de mesures physico-chimiques peuvent être réalisées ainsi qu'un relevé de la faune et/ou de la flore.
 
 Il est donc utile de comprendre la logique et l'usage de cette analyse. Ce tutoriel vous permettra de :
 
@@ -38,7 +38,7 @@ Il est donc utile de comprendre la logique et l'usage de cette analyse. Ce tutor
 
 -   Vous préparer à interpréter par vous-même les résultats de vos AFM
 
-Avant toute chose, assurez vous d'avoir bien compris le contenu de la [section 8.1](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2023/analyse-factorielle-multiple-afm.html) du cours de SDD II.
+Avant toute chose, assurez vous d'avoir bien compris le contenu de la [section 8.1](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2024/analyse-factorielle-multiple-afm.html) du cours de SDD II.
 
 ## Étude de composition floristique
 
@@ -83,7 +83,7 @@ read("varespec", package = "vegan") %>.%
 head(spec)
 ```
 
-Les données mises à disposition proviennent de l'étude suivante [Väre, H., Ohtonen, R. and Oksanen, J. (1995) Effects of reindeer grazing on understorey vegetation in dry *Pinus sylvestris* forests. Journal of Vegetation Science 6, 523--530](https://www.researchgate.net/publication/227830523_Effects_of_reindeer_grazing_on_vegetation_in_dry_Pinus_sylvestris_forests).
+Les données mises à disposition proviennent de l'étude suivante [Väre, H., Ohtonen, R. and Oksanen, J. (1995) Effects of reindeer grazing on vegetation in dry *Pinus sylvestris* forests. Journal of Vegetation Science 6, 523--530](https://www.researchgate.net/publication/227830523_Effects_of_reindeer_grazing_on_vegetation_in_dry_Pinus_sylvestris_forests).
 
 ## Préparation du tableau de données
 
@@ -168,7 +168,7 @@ L'AFM peut s'obtenir grâce à la fonction `mfa()`. Cette dernière requiert l'u
 
     -   **num** : variables quantitatives continues que l'on ne souhaite traiter par une ACP sans les standardiser
 
-    -   **fact** : variables qualitatives facteurs associées à des tableaux de contingences qu'on traite par une AFC
+    -   **fct** : variables qualitatives facteurs associées à des tableaux de contingences qu'on traite par une AFC
 
     -   **cnt** : variables quantitatives de type dénombrements qu'on traite par une AFC
 3.  Le nom à donner au groupe

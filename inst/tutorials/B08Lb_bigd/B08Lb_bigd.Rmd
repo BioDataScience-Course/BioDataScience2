@@ -60,7 +60,7 @@ BioDataScience2::learnr_server(input, output, session)
 
 ## Objectifs
 
-Vous ne pouvez pas être passé à côté de cette notion : cela fait plusieurs années qu'on entend parler de BIG DATA. En tant que biologiste, vous n'allez pas devoir employer quotidiennement les outils associés au big data. Vous allez cependant être confronté à de larges tableaux de données ou encore à des bases de données. Il est, de fait, important de connaitre les notions de base pour traiter ce genre d'information. Ce tutoriel vous permettra de :
+Vous ne pouvez pas être passé à côté de cette notion : cela fait plusieurs années qu'on entend parler de **"big data"**. En tant que biologiste, vous n'allez pas devoir employer quotidiennement les outils associés au big data. Vous allez cependant être confronté à de larges tableaux de données ou encore à des bases de données. Il est, de fait, important de connaitre les notions de base pour traiter ce genre d'information. Ce tutoriel vous permettra de :
 
 -   Choisir le format et la compression d'un fichier en fonction de vos besoins
 -   Réaliser des requêtes sur une base de données
@@ -113,7 +113,7 @@ dbListFields(diabetes_db, "blood")
 dbListFields(diabetes_db, "exam")
 ```
 
-La table `"blood"` comprend une série de mesure à partir d'une prise de sang : cholestérol total, taux de sucre, taux de HDL, ratio cholestérol/HDL ou encore hémoglobine glyquée.
+La table `blood` contient une série de mesure à partir d'une prise de sang : cholestérol total, taux de sucre, taux de HDL, ratio cholestérol/HDL ou encore hémoglobine glyquée.
 
 La table `exam` comprend une série de mesures obtenue à la suite d'un examen clinique : âge, sexe, taille, masse, pression artérielle systolique et diastolique, tour de taille, tour de hanche.
 
