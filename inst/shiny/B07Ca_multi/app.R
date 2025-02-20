@@ -16,12 +16,12 @@ library(flipdownr)
 title <- "Challenge analyses multivariées"
 # Note: define real deadline in environment variables in RStudio Connect
 deadline <- Sys.getenv("CHALLENGE_DEADLINE",
-  unset = "2024-02-23 00:00:00")
+  unset = "2025-02-21 00:00:00")
 
 # Read data from the SQLite database
 dir <- "/data1/B07_challenge"
 if (!file.exists(dir))
-  dir <- "~/Desktop/B07_challenge" # Alternate dir for local tests
+  dir <- "~/B07_challenge" # Alternate dir for local tests
 database <- file.path(dir, "multi.sqlite")
 table <- "multi"
 
@@ -44,7 +44,7 @@ score_multi <- function(x) {
   #if (any(x < 0) | any(x > 1))
   #  return(structure(NA,
   #    message = paste("Le r\u00e9sultat doit contenir des valeurs entre 0 et 1 uniquement. Corrigez et resoumettez !")))
-  score <- as.numeric(sum(x)) # Score is the sum of all the 20 individual scores for the different charts
+  score <- as.numeric(sum(x)) # Score is the sum of all the 10 individual scores for the different charts
   structure(score,
     message = paste0("Votre proposition est accept\u00e9e. Son score est de ",
       round(score, 1), "."))
@@ -184,6 +184,8 @@ server <- function(input, output) {
       ranking <- ranking[order(-ranking$score, as.numeric(ranking$date)), ]
       ranking$date <- as.POSIXct(ranking$date, origin = "1960-01-01")
       ranking$date <- format(ranking$date, "%Y-%m-%d %H:%M:%S")
+      # Keep only best score for each student or team
+      ranking <- ranking[!duplicated(ranking$project), ]
     }
     message("Date reworked")
     # Add a column with medals for the three first results
