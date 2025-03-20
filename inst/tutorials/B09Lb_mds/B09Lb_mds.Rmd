@@ -4,7 +4,7 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II Module 9** Réaliser et analyser un positionnement multidimensionnel (MDS)."
 tutorial:
   id: "B09Lb_mds"
-  version: 2.0.1/8
+  version: 2.0.2/8
 output:
   learnr::tutorial:
   progressive: true
@@ -36,7 +36,7 @@ Ce tutoriel consacré au positionnement multidimensionnel (MDS) vise à :
 -   Vérifier que vous avez bien compris les différentes étapes pour la réalisation d'une MDS : calcul de la matrice de distance, calcul du positionnement des points, réalisation de la carte et vérification de sa validité, choix entre MDS métrique ou non métrique.
 -   Vous préparer à analyser et interpréter de manière autonome un jeu de données multivariées à l'aide des MDS.
 
-Vous devez avoir compris le contenu du [module 9](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2023/db-mds.html) du cours et en particulier la [section 9.2](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2023/positionnement-multidimensionnel-mds.html). Assurez-vous d'avoir réalisé les exercices H5P qui s'y trouvent avant de vous lancer dans ce tutoriel Learnr et de maîtriser les notions sur les matrices de distances vue dans le [module 6](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2023/distance-entre-individus.html).
+Vous devez avoir compris le contenu du [module 9](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2023/db-mds.html) du cours et en particulier la [section 9.2](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2023/positionnement-multidimensionnel-mds.html). Assurez-vous d'avoir réalisé les exercices H5P qui s'y trouvent avant de vous lancer dans ce tutoriel Learnr et de maîtriser les notions sur les matrices de distances vues dans le [module 6](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2023/distance-entre-individus.html).
 
 ## Barro Colorado Island
 
@@ -46,7 +46,7 @@ Barro Colorado est une île artificielle située sur le lac Gatùn, au centre du
 
 Une surface permanente de 50 hectares a été définie par l'Institut de recherche tropicale Smithsonian et l'Université de Princeton pour étudier la dynamique de la végétation. Cette surface est divisée en 50 parcelles de 1 ha qui s'alignent les unes sur les autres. Dans chaque parcelle, le dénombrement de toutes les espèces forestières a été réalisé (seules les plantes avec un DHP \>= 10 cm [Diamètre mesuré à plus ou moins 1,3m] sont disponibles dans cet ensemble de données). Au total, 225 espèces différentes ont été observées.
 
-![Foret tropicale de l'ile de Barro Colorado](images/bci_forest.jpg)
+![Forêt tropicale de l'ile de Barro Colorado](images/bci_forest.jpg)
 
 Les données peuvent être chargées à partir de `BCI` du package {vegan} et se présentent comme ceci :
 
@@ -63,7 +63,7 @@ Toutes les variables du tableau représentent des espèces (il n'y a pas ici une
 
 Lors de la réalisation d'une MDS, la première étape nécessite de construire une matrice de distances entre les stations ou entre les espèces comme vous l'aviez fait pour la CAH. Pour cela, nous utiliserons la fonction `dissimilarity()` que vous connaissez déjà. Rappelez-vous que vous devrez commencer par sélectionner une métrique adaptée à votre jeu de données pour calculer votre matrice. Pour rappel, vous explorez l'aide en ligne de `?vegan::vegdist` pour déterminer les arguments à utiliser dans `dissimilarity()`.
 
-A partir du jeu de données `bci`, calculez la matrice de distances entre stations en utilisant l'indice de Bray-Curtis sans transformation des données afin de privilégier les espèces les plus abondantes dans votre analyse (choix au départ).
+À partir du jeu de données `bci`, calculez la matrice de distances entre stations en utilisant l'indice de Bray-Curtis sans transformation des données afin de privilégier les espèces les plus abondantes dans votre analyse (choix au départ).
 
 ```{r dist_h2, exercise=TRUE}
 bci_dist <- ___(___, ___)
@@ -86,18 +86,20 @@ grade_code("Vous n'avez pas oublié comment on fait pour calculer une matrice de
 
 ## MDS métrique (ou PCoA)
 
-Lorsque votre matrice de distance `bci_dist` est calculée, vous allez pouvoir visualiser son contenu en réalisant une MDS métrique ou analyse en coordonnées principales (PCoA). L'objectif est de *"projeter"* le nuage de points initial à *p* dimensions (les *p* variables) dans un espace réduit à deux dimensions. Afin de calculer votre MDS métrique vous utilisez la fonction `mds$metric()` et `chart()` permet de visualiser votre ordination en deux dimensions (nommez simplement vos stations de 1 à 50 dans l'ordre d'apparition dans le tableau).
+Lorsque votre matrice de distance `bci_dist` est calculée, vous allez pouvoir visualiser son contenu en réalisant une MDS métrique ou analyse en coordonnées principales (PCoA). L'objectif est de *"projeter"* le nuage de points initial à *p* dimensions (les *p* variables) dans un espace réduit à deux dimensions. Afin de calculer votre MDS métrique vous utilisez la fonction `mds$metric()` et `chart()` permet de visualiser votre ordination en deux dimensions (nommez simplement vos stations de 1 à 50 dans l'ordre d'apparition dans le tableau). Pour assurer la reproductibilité des résultats, vous utilisez `set.seed()` avec comme argument, un nombre entier positif choisi aléatoirement (et toujours différent à chaque appel de `set.seed()` dans votre script ou votre document).
 
 ```{r metric_prep}
 bci_dist <- dissimilarity(bci, method = "bray")
 ```
 
 ```{r metric_h2, exercise=TRUE, exercise.setup="metric_prep"}
+set.seed(983)
 bci_mds <- ___(___)
 ___(___, labels = 1:50)
 ```
 
 ```{r metric_h2-hint-1}
+set.seed(983)
 bci_mds <- ___$___(bci_dist)
 ___(bci_mds, labels = 1:50)
 
@@ -106,6 +108,7 @@ ___(bci_mds, labels = 1:50)
 
 ```{r metric_h2-solution}
 ## Solution ##
+set.seed(983)
 bci_mds <- mds$metric(bci_dist)
 chart(bci_mds, labels = 1:50)
 ```
@@ -116,10 +119,11 @@ grade_code("Vous venez de réaliser votre première MDS métrique. Sur ce graphi
 
 ### Goodness-of-fit
 
-Vérifiez toujours les indicateurs de "Goodness-of-fit" (GOF avec `glance()`) qui vous donneront une idée de la qualité de la projection MDS.
+Vérifiez toujours les indicateurs de *"goodness-of-fit"* (GOF avec `glance()`) qui vous donneront une idée de la qualité de la projection MDS.
 
 ```{r gof_prep}
 bci_dist <- dissimilarity(bci, method = "bray")
+set.seed(983)
 bci_mds <- mds$metric(bci_dist)
 ```
 
@@ -139,11 +143,11 @@ glance(bci_mds)
 ```
 
 ```{r gof_h2-check}
-grade_code("Répondez maintenant à la question qui vous est proposée ci-dessous.") 
+grade_code("Répondez maintenant à la question qui vous est posée ci-dessous.") 
 ```
 
 ```{r qu_mds}
-question("Considérez vous que cette PCoA est exploitable ?",
+question("Considérez vous que cette PCoA est exploitable ?",
   answer("oui, sur base du goodness-of-fit, la PCoA est fidèle aux distances"),
   answer("non, le goodness-of-fit est trop faible, nous devons tenter une MDS non métrique", 
   correct = TRUE),
@@ -154,22 +158,24 @@ question("Considérez vous que cette PCoA est exploitable ?",
 
 ## MDS non métrique
 
-Tout comme la MDS métrique, la MDS non métrique, obtenue grâce à `mds$nonmetric()`, utilise une matrice de distances pour réaliser une carte mais en autorisant des écarts entre les individus plus flexibles. On pourra donc forcer la carte à être littéralement écrasée, tant que l'ordre des points est gardé intact dans la distorsion (une dissimilarité plus grande ne peut pas être représentée par une distance plus petite sur la carte). Cette distorsion est appelée un stress.
+Tout comme la MDS métrique, la MDS non métrique, obtenue grâce à `mds$nonmetric()`, utilise une matrice de distances pour réaliser une carte, mais en autorisant des écarts entre les individus plus flexibles. On pourra donc forcer la carte à être littéralement écrasée, tant que l'ordre des points est gardé intact dans la distorsion (une dissimilarité plus grande ne peut pas être représentée par une distance plus petite sur la carte). Cette distorsion est appelée un stress.
 
-Le calcul réalisé est itératif, et comme il n'est pas garanti de converger, vous vérifierez qu'une solution à bien été trouvée (indication `*** Solution reached` à la fin). Pour les détails et les paramètres de cet algorithme, référez-vous à l'aide en ligne de la fonction `?vegan::metaMDS`.
+Le calcul réalisé est itératif, et comme il n'est pas garanti de converger, vous vérifierez qu'une solution a bien été trouvée (indication `*** Solution reached` à la fin). Pour les détails et les paramètres de cet algorithme, référez-vous à l'aide en ligne de la fonction `?vegan::metaMDS`.
 
-Vous avez toujours à disposition la matrice de distance `bci_dist` sur laquelle vous allez réaliser votre MDS non métrique. Utilisez ensuite `chart()` pour réaliser la carte permettant de visualiser les distances entre les stations (que vous numérotez de 1 à 50 dans l'ordre d'apparition).
+Vous avez toujours à disposition la matrice de distance `bci_dist` sur laquelle vous allez réaliser votre MDS non métrique. Utilisez ensuite `chart()` pour réaliser la carte permettant de visualiser les distances entre les stations (que vous numérotez de 1 à 50 dans l'ordre d'apparition). La fonction `set.seed()`est également utilisée ici pour assurer la reproductibilité des résultats.
 
 ```{r nonmetric_prep}
 bci_dist <- dissimilarity(bci, method = "bray")
 ```
 
 ```{r nonmetric_h2, exercise=TRUE, exercise.setup="nonmetric_prep"}
+set.seed(3252)
 bci_nmds <- ___(___)
 ___(___, labels = 1:50)
 ```
 
 ```{r nonmetric_h2-hint-1}
+set.seed(3252)
 bci_nmds <- ___$___(bci_dist)
 ___(bci_nmds, labels = 1:50)
 
@@ -178,6 +184,7 @@ ___(bci_nmds, labels = 1:50)
 
 ```{r nonmetric_h2-solution}
 ## Solution ##
+set.seed(3252)
 bci_nmds <- mds$nonmetric(bci_dist)
 chart(bci_nmds, labels = 1:50)
 ```
@@ -194,6 +201,7 @@ Analysez les indicateurs de l'objet `bci_nmds` que vous venez de créer et répo
 
 ```{r ajust_prep}
 bci_dist <- dissimilarity(bci, method = "bray")
+set.seed(3252)
 bci_nmds <- mds$nonmetric(bci_dist)
 ```
 
@@ -217,10 +225,10 @@ grade_code("Bon, on commence à s'habituer à l'usage simple de `glance()`. Anal
 ```
 
 ```{r qu_nmds}
-question("Considérez vous que cette MDS non métrique est de qualité ?",
+question("Considérez vous que cette MDS non métrique est de qualité ?",
   answer("Oui, car le R^2 non métrique est plus élevé que le R^2 linéaire."),
   answer("Oui, les R^2 sont excellents, même si la linearité de la transformation est un peu en dessous.", correct = TRUE),
-  answer("Non, le R^2 nion métrique est excellent, mais le R^2 linéaire un cran en dessous révèle un problème."),
+  answer("Non, le R^2 non métrique est excellent, mais le R^2 linéaire un cran en dessous révèle un problème."),
   answer("Non, il y a trop de différences entre les deux R^2."),
   allow_retry = TRUE,
   correct = "Dans la MDS non métrique, c'est le R^2 non métrique qui importe le plus. Un R^2 linéaire très élevé est un plus, mais n'est pas indispensable. D'ailleurs s'il est également très élevé, une MDS métrique pourrait convenir également et est plus rapide à calculer.",

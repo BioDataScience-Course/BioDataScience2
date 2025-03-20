@@ -1,3 +1,7 @@
+# BioDataScience2 2024.9.0
+
+-   Learnrs **B09La_db** and **B09Lb_mds** and **B10La_som** revised for 2024-2025.
+
 # BioDataScience2 2024.8.0
 
 -   Learnrs **B08La_mfa** and **B08Lb_bigd** revised for 2024-2025.

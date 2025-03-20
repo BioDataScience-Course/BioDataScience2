@@ -39,7 +39,7 @@ Le tutoriel learnr sur les cartes auto-adaptatives (SOM) que vous vous apprêtez
 -   comprendre comment réaliser les différentes étapes de la SOM : transformation du jeu de données en matrice, calcul de la SOM et représentation sous forme de différents graphiques
 -   acquérir les outils nécessaires à l'analyse et l'interprétation d'un jeu de données multivariées grâce à la SOM
 
-Avant toute chose, assurez vous d'avoir bien compris le contenu du [module 10](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2023/cartes-auto-adaptatives-som.html) du cours. N'oubliez pas de réaliser les exercices H5P qui figurent dans cette section avant de vous lancer dans ce tutoriel.
+Avant toute chose, assurez-vous d'avoir bien compris le contenu du [module 10](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2023/cartes-auto-adaptatives-som.html) du cours. N'oubliez pas de réaliser les exercices H5P qui figurent dans cette section avant de vous lancer dans ce tutoriel.
 
 ## Données environnementales
 
@@ -81,7 +81,7 @@ Pour avoir une idée globale du jeu de données, vous pouvez commencer par utili
 skimr::skim(envir)
 ```
 
-Nous constatons qu'aucune donnée n'est manquante et que toutes les variables sont numériques à l'exception de la première colonne nommée "station" qui contient les numéros des stations. Il faut donc l'enlever pour la suite de l'étude. Les unités étant différentes, il faudra également standardiser les données. Le tableau devra ensuite être transformé en matrice car la fonction `som()` du package {kohonen} ne peut utiliser que ce type d'objet.
+Nous constatons qu'aucune donnée n'est manquante et que toutes les variables sont numériques à l'exception de la première colonne nommée "station" qui contient les numéros des stations. Il faut donc l'enlever pour la suite de l'étude. Les unités étant différentes, il faudra également standardiser les données. Le tableau devra ensuite être transformé en matrice, car la fonction `som()` du package {kohonen} ne peut utiliser que ce type d'objet.
 
 ### Transformation en matrice
 
@@ -90,8 +90,8 @@ Transformez votre jeu de données `envir` en matrice. N'oubliez pas de commencer
 ```{r matrix_h2, exercise=TRUE, exercice.lines=4}
 ___ %>.%
   sselect(., -station) %>.%  # Éliminer station
-  ___(.) %>.%            # Standardiser
-  ___(.) ->.             # Transformer en objet matrix
+  ___(.) %>.%             # Standardiser
+  ___(.) ->.              # Transformer en objet matrix
   envir_mat
 head(envir_mat)
 ```
@@ -99,8 +99,8 @@ head(envir_mat)
 ```{r matrix_h2-hint-1}
 ___ %>.%
   sselect(., -station) %>.%  # Éliminer station
-  ___(.) %>.%               # Standardiser
-  as.___(.)  ->             # Transformer en objet matrix
+  ___(.) %>.%                # Standardiser
+  as.___(.)  ->              # Transformer en objet matrix
   envir_mat
 head(envir_mat)
 
@@ -111,8 +111,8 @@ head(envir_mat)
 ## Solution ##
 envir %>.%
   sselect(., -station) %>.%  # Éliminer station
-  scale(.) %>.%             # Standardiser
-  as.matrix(.) %->%         # Transformer en objet matrix
+  scale(.) %>.%              # Standardiser
+  as.matrix(.) %->%          # Transformer en objet matrix
   envir_mat
 head(envir_mat)
 ```
@@ -165,7 +165,7 @@ summary(envir_som)
 ```
 
 ```{r som_h3-check}
-grade_code("Et voilà... vous venez de réaliser votre première SOM ! Comme vous le constatez, le résumé de l'objet que vous venez de créer ne vous fournit pas beaucoup d'information. Pas de panique. SOM étant une technique esssentiellement visuelle, c'est en réalisant ensuite différents graphiques que vous allez expliciter le résultat de votre analyse.")
+grade_code("Et voilà... vous venez de réaliser votre première SOM ! Comme vous le constatez, le résumé de l'objet que vous venez de créer ne vous fournit pas beaucoup d'information. Pas de panique. SOM étant une technique esssentiellement visuelle, c'est en réalisant ensuite différents graphiques que vous allez expliciter le résultat de votre analyse.")
 ```
 
 ### Évolution de l'apprentissage
@@ -254,7 +254,7 @@ grade_code("On remarque sur ce graphique que les stations présentants les conce
 
 ## Conclusion
 
-Vous êtes arrivé à la fin de auto-évaluation relative aux cartes auto-adaptative. Vous avez acquis la maîtrise de nouveaux outils vous permettant l'analyse et l'interprétation d'un jeu de données multivariées. Essayez maintenant d'appliquer ces techniques dans un projet GitHub.
+Vous êtes arrivé à la fin de l'auto-évaluation relative aux cartes auto-adaptative. Vous avez acquis la maîtrise de nouveaux outils vous permettant l'analyse et l'interprétation d'un jeu de données multivariées. Essayez maintenant d'appliquer ces techniques dans un projet GitHub.
 
 ```{r comm_noscore, echo=FALSE}
 question_text(

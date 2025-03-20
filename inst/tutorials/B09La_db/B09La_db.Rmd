@@ -4,7 +4,7 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II Module 9** Bases de données."
 tutorial:
   id: "B09La_db"
-version: 2.0.7/7
+version: 2.1.0/7
 output:
   learnr::tutorial:
   progressive: true
@@ -68,7 +68,7 @@ BioDataScience2::learnr_server(input, output, session)
 
 Une base de données est un ensemble structuré de données, avec un accès facile et rapide pour des applications logicielles et des utilisateurs autorisés. Elle peut être considérée comme un grand conteneur **organisé** pour stocker des informations de manière **structurée**.
 
-Parmi les différents types de bases de données, nous allons nous intéresser aux bases de données relationnelles. Une base de données **relationnelle** est une collection de tables liées entre elles par des relations. Les bases de données relationnelles sont très répandues et utilisées dans de nombreux domaines, notamment dans la gestion des entreprises, les services financiers, l'administration publique et la recherche scientifique. Elles sont conçues pour gérer des quantités massives de données de manière fiable et cohérente. Ce tutoriel vous permettra de :
+Parmi les différents types de bases de données, nous allons nous intéresser aux bases de données relationnelles. Une base de données **relationnelle** est une collection de tables liées entre elles par des relations. Les bases de données relationnelles sont très répandues et utilisées dans de nombreux domaines, notamment dans la gestion des entreprises, les services financiers, l'administration publique et la recherche scientifique. Elles sont conçues pour gérer des quantités massives de données de manière fiable et cohérente. Ce tutoriel vous permettra de :
 
 -   créer une base de données relationnelle
 -   normaliser les données dans votre base
@@ -77,9 +77,9 @@ Parmi les différents types de bases de données, nous allons nous intéresser a
 
 ## Base de données et normalisation
 
-Ajouter des tables dans une base de données n'est pas une étape complexe. Si l'on ne s'intéresse pas à la **normalisation** des données, les avantages d'une base de données restent très limité. La normalisation des données dans une base vise à optimiser la structure de ces données en **évitant la redondance** et en définissant des liens entre les tables. La normalisation va permettre de diminuer la taille d'une base de données, de simplifier les requêtes, et d'optimiser le traitement des requêtes.
+Ajouter des tables dans une base de données n'est pas une étape complexe. Si l'on ne s'intéresse pas à la **normalisation** des données, les avantages d'une base de données restent très limités. La normalisation vise à optimiser la structure de ces données en **évitant la redondance** en définissant des liens entre les tables. La normalisation va permettre de diminuer la taille d'une base de données, de simplifier les requêtes, et d'optimiser le traitement des requêtes.
 
-Le tableau de données présenté est inspiré des travaux de fin d'étude de Benzerkallah [Effet des facteurs pédologiques sur les communautés d'abeilles sauvages dans les potagers de la commune de Mons](http://www.atlashymenoptera.net/biblio/02000/BENREZKALLAH_2022_potager_Mons.pdf) dont voici la citation.
+Le tableau de données présenté est inspiré des travaux de fin d'études de Benrezkallah [Effet des facteurs pédologiques sur les communautés d'abeilles sauvages dans les potagers de la commune de Mons](http://www.atlashymenoptera.net/biblio/02000/BENREZKALLAH_2022_potager_Mons.pdf) dont voici la citation.
 
 > Benrezkallah J. 2022. Effet des facteurs pédologiques sur les communautés d'abeilles sauvages dans les potagers de la commune de Mons. Mémoire de Master 2 en Sciences biologiques, Université de Mons, Mons, 127 pp.
 
@@ -89,17 +89,17 @@ Cette étude a nécessité la collecte de nombreuses données que le chercheur s
 head(bees, 10)
 ```
 
-Les colonnes de ce tableau sont les suivantes :
+Les colonnes de ce tableau sont les suivantes :
 
--   **id :** l'identifiant de l'insecte collecté
--   **species :** le nom latin (genre et espèce) de l'insecte capturé
--   **author :** la personne qui a collecté et identifié l'insecte
--   **country :** le pays de la collecte
--   **city:** la ville de la collecte
--   **station :** le lieu précis de la collecte
--   **localisation :** les coordonnées de la station (WGS84)
+-   **id :** l'identifiant de l'insecte collecté
+-   **species :** le nom latin (genre et espèce) de l'insecte capturé
+-   **author :** la personne qui a collecté et identifié l'insecte
+-   **country :** le pays de la collecte
+-   **city :** la ville de la collecte
+-   **station :** le lieu précis de la collecte
+-   **localisation :** les coordonnées de la station (dans le système WGS84)
 
-Utilisez la zone de code R ci-dessous pour explorez le jeu de données `bees` comme bon vous semble afin de répondre aux questions plus bas (utilisez le bouton **Run Code** uniquement).
+Utilisez la zone de code R ci-dessous pour explorer le jeu de données `bees` comme bon vous semble afin de répondre aux questions plus bas (utilisez le bouton **Run Code** uniquement).
 
 ```{r explo_noscore, exercise=TRUE}
 
@@ -107,14 +107,14 @@ Utilisez la zone de code R ci-dessous pour explorez le jeu de données `bees` co
 
 ```{r qu_db}
 quiz(
-  question("Est-ce que la tableau présenté ci-dessus peut être ajouté comme une table dans une base de données relationnelle ?",
+  question("Est-ce que le tableau présenté ci-dessus peut être ajouté comme une table dans une base de données relationnelle ?",
     answer("Oui", correct = TRUE),
     answer("Non"),
     allow_retry = TRUE,
     random_answer_order = TRUE,
     correct = "Ce tableau correspond bien à un format cas par variable. Il est donc possible de l'utiliser dans une base de données. Il n'est cependant pas normalisé."
     ),
-  question("Sélectionnez parmi les variables suivantes celles présentant de la redondance optimisable par une normalisation niveau 3 (déependance transitive).",
+  question("Sélectionnez parmi les variables suivantes celles présentant de la redondance optimisable par une normalisation niveau 3 (dépendance transitive).",
     answer("country", correct = TRUE, , message = "Il n'est pas utile de répliquer le nom de pays d'une station pour chaque collecte."),
     answer("localisation", correct = TRUE, message = "Il n'est pas utile de répliquer les coordonnées d'une station pour chaque collecte."),
     answer("id", message = "La variable 'id' est un identifiant unique pour chaque individu collecté. Cette variable n'est pas redondante."),
@@ -125,7 +125,7 @@ quiz(
 
 ## Base de données et schéma
 
-Suite à votre exploration du tableau `bees`, vous avez pu observer que son schéma peut être optimisé. Deux tables sont réalisées pour assurer une normalisation au niveau 3 de la base. Vous pouvez observer qu'une colonne 'id_station' a été ajoutée.
+Suite à votre exploration du tableau `bees`, vous avez pu observer que son schéma peut être optimisé. Deux tables sont réalisées pour assurer une normalisation au niveau 3 de la base. Vous pouvez observer qu'une colonne `id_station` a été ajoutée.
 
 ```{r, echo=TRUE}
 head(stations)
@@ -179,7 +179,7 @@ grade_code("Vous venez de créer une base de données en mémoire avec deux tabl
 
 Il est à présent temps de définir des clés pour ces deux tables. Vous allez pour ce faire employer le package {dm}.
 
-Créez un objet **dm** associé à votre base de données (`bees_db`) et nommez-le `bees_dm`. Indiquez ensuite que vous voulez utiliser la couleur rouge pour la table `stations` et la couleur orange pour la table `captures`. Terminez par visualiser le schéma de la base en l'état.
+Créez un objet **dm** associé à votre base de données (`bees_db`) et nommez-le `bees_dm`. Indiquez ensuite que vous voulez utiliser la couleur rouge pour la table `stations` et la couleur orange pour la table `captures`. Enfin, visualisez le schéma de la base en l'état.
 
 ```{r dm, exercise=TRUE}
 # Création d'un objet `dm`
@@ -203,7 +203,7 @@ dm_draw(bees_dm, view_type = "all")
 ```
 
 ```{r dm-check}
-grade_code("Vous avez un objet dm. La visualition de l'objet vous permet d'observer vos deux tables. Actuellement, les clés primaires et les clés étrangères n'ont pas encore été définie.")
+grade_code("Vous avez un objet dm. La visualisation de l'objet vous permet d'observer vos deux tables. Actuellement, les clés primaires et les clés étrangères n'ont pas encore été définies.")
 ```
 
 Afin de compléter le schéma de votre base de données (finaliser le niveau 1 de normalisation), définissez une clé primaire pour chaque table.
@@ -254,7 +254,7 @@ grade_code("Votre objet bees_dm1 comprend à présent deux clés primaires, une 
 Définissez maintenant une clé étrangère qui fait le lien entre vos deux tables (`captures` et `stations`) selon une relation un à plusieurs en partant de l'objet `bees_dm1` et placez le résultat dans `bees_dm2`. Enfin, visualisez le schéma de la base depuis `bees_dm2`.
 
 ```{r fk, exercise=TRUE, , paged.print=FALSE}
-# Clés étrangères potentiels
+# Clés étrangères potentielles
 ___(___, ___, ___)
 # Ajout de la clé étrangère
 bees_dm2 <- ___(___, ___, ___, ___)
@@ -264,7 +264,7 @@ dm_draw(___, view_type = "all")
 
 ```{r fk-solution}
 ## Solution ##
-# Clés étrangères potentiels
+# Clés étrangères potentielles
 dm_enum_fk_candidates(bees_dm1, captures, stations)
 # Ajout de la clé étrangère
 bees_dm2 <- dm_add_fk(bees_dm1, captures, id_station, stations)
@@ -278,7 +278,7 @@ grade_code("Votre objet bees_dm2 comprend à présent deux clés primaires et un
 
 ## Requête sur la base de données
 
-Répondez à la question suivante à l'aide d'un tableau résumé : *Combien d'individus par espèce ont été collectés dans la station "Abbaye Saint Denis" par l'auteur "Benrezkallah" ?*
+Répondez à la question suivante à l'aide d'un tableau résumé : *Combien d'individus par espèce ont été collectés dans la station "Abbaye Saint Denis" par l'auteur "Benrezkallah" ?*
 
 Le schéma de la base de données est repris ci-dessous afin de vous aider à répondre à cette question.
 
@@ -289,12 +289,12 @@ dm_draw(bees_dm2, view_type = "all")
 ```{r request_h2, exercise=TRUE}
 # Filtre 
 bees_dm2 %>.%
-  ___(___, ___, ____) %>.% # filtre sur `stations`
-  ___(___, ___, ____) %>.% # filtre sur `captures`
+  ___(___, ___ = ___, # filtre sur `stations`
+      ___, ___ = ___) %>.% # filtre sur `captures`
   ___(., ___) -> # combinaison des tables
   bees_request
 # Résumé des données
-____ %>.% 
+___ %>.% 
   ___(., ___) %>.%
   ___(.) ->
   request2
@@ -306,8 +306,8 @@ ____ %>.%
 ```{r request_h2-hint-1}
 # Filtre 
 bees_dm2 %>.%
-  dm_filter(., stations, station == "Abbaye Saint Denis") %>.% # filtre sur `stations`
-  dm_filter(., ___, ___) %>.% # filtre sur `captures`
+  dm_filter(., stations = station == "Abbaye Saint Denis", # filtre sur `stations`
+               ___ = ___) %>.% # filtre sur `captures`
   dm_flatten_to_tbl(., captures) ->  # combinaison des tables
   bees_request
 # Résumé des données par espèce
@@ -326,8 +326,8 @@ bees_request %>.%
 ## Solution ##
 # Filtre 
 bees_dm2 %>.%
-  dm_filter(., stations, station == "Abbaye Saint Denis") %>.% # filtre sur `stations`
-  dm_filter(., captures, author == "Benrezkallah") %>.% # filtre sur `captures`
+  dm_filter(., stations = station == "Abbaye Saint Denis", # filtre sur `stations`
+               captures = author == "Benrezkallah") %>.% # filtre sur `captures`
   dm_flatten_to_tbl(., captures) ->  # combinaison des tables
   bees_request
 
@@ -342,12 +342,12 @@ bees_request %>.%
 ```
 
 ```{r request_h2-check}
-grade_code("L'espèce la plus présente est *Bombus pascorum*. La mise en place d'un schéma avec {dm} a permis de réaliser une requête sur deux tables et de les combiner facilement. Vous avez ensuite résumé ces observations. Vous avez réalisé tout cela directement dans votre base de données et sans vous préoccuper de l'écriture de la requête. En effet, {dbplyr} que vous avez utilisé ici vous permet d'écrire du code Tidyverse classique et il vous le traduit en requête SQL lorsque vous collectez le résultat avec `collect_dtx()`.")
+grade_code("L'espèce la plus présente est *Bombus pascorum*. La mise en place d'un schéma avec {dm} a permit de réaliser une requête sur deux tables et de les combiner facilement. Vous avez ensuite résumé ces observations. Vous avez réalisé tout cela directement dans votre base de données et sans vous préoccuper de l'écriture de la requête. En effet {dbplyr} que vous avez utilisé ici vous permet d'écrire du code Tidyverse classique et il vous le traduit en requête SQL lorsque vous collectez le résultat avec `collect_dtx()`.")
 ```
 
 ## Conclusion
 
-Félicitation ! Vous avez créé une base de données relationnelle avec DuckDB. Ensuite, vous l'avez retravaillée en deux tables et défini les clés primaires et secondaires pour arriver à une normalisation des données au niveau 3 en limitant la redondance. Vous avez ensuite défini un schéma clair de la base avec le package {dm}. Enfin, vous avez réalisé une requête multitable avec les fonctions du package {dm} et de {dbplyr}.
+Félicitation ! Vous avez créé une base de données relationnelle avec DuckDB. Ensuite, vous l'avez retravaillée en deux tables et défini les clés primaires et secondaires pour arriver à une normalisation des données au niveau 3 en limitant la redondance. Vous avez ensuite défini un schéma clair de la base avec le package {dm}. Enfin, vous avez réalisé une requête multitable avec les fonctions du package {dm} et de {dbplyr}.
 
 Maintenant que vous avez compris les grands principes des bases de données relationnelles et que vous êtes capable d'écrire le code permettant de réaliser une requête, vous pouvez appliquer cette technique par vous-même.
 
