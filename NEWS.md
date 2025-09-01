@@ -2,6 +2,8 @@
 
 -   New version for the academic year 2024-2025.
 
+-   Only learnrs for Q1 are activated.
+
 # BioDataScience2 2024.9.0
 
 -   Learnrs **B09La_db** and **B09Lb_mds** and **B10La_som** revised for 2024-2025.
