@@ -309,7 +309,7 @@ question("Sélectionnez parmi les propositions suivantes les packages chargés a
 
 Des packages supplémentaires peuvent être chargés grâce à `SciViews::R()`. Ils correspondent à des sections complémentaires qui ne sont pas chargées de base, par exemple, `"model"` pour la modélisation, `"infer"` pour l'inférence, `"explore"` pour l'analyse multivariée. Il est également possible de définir le langage par défaut pour l'importation de données qui supportent plusieurs langages et pour les labels automatiques des axes des graphiques ou des colonnes de tableaux avec l'argument `lang=`.
 
-Vous remarquerez que l'instruction `SciViews::R` ne génère plus de sortie à présent. Avant, vous aviez un long listing des packages changés et ensuite des conflits entre fonctions. Ceci est rendu silencieux mais vous pouvez toujours préciser l'argument `silent = FALSE`, donc avec `SciViews::R(silent = FALSE)` pour retrouver le rapport auquel vous êtes habitué.
+Vous remarquerez que l'instruction `SciViews::R` ne génère pas de sortie, mais vous pouvez aussi créer un rapport détaillé sur ce qui est chargé et sur les fonctions en conflit en indiquant l'argument `silent = FALSE`, donc avec `SciViews::R(silent = FALSE)`.
 
 ```{r, echo=TRUE, eval=FALSE}
 SciViews::R("model", lang = "fr")
@@ -351,7 +351,7 @@ grade_code("Vous venez d'importer un tableau de données",
 
 <!-- ![](images/breaking_news.jpg){width="30%"} -->
 
-Depuis la SciViews Box 2024, vous avez un nouvel "addin" dans RStudio, nommé **"Help"**.
+N'oubliez pas que vous avez un "addin" à disposition dans RStudio, nommé **"Help"** pour vous aider.
 
 ![](images/addin_help.png)
 
@@ -361,7 +361,7 @@ Il donne accès à diverses pages d'aides relatives aux fonctions R, au code, au
 
 **Le chatbot SciViews ne connait que les fonctions et la syntaxe R de base ou tidyverse. Il ne connait pas le dialecte SciViews-R. Mais dans les exercices, nous vous demandons d'utiliser ce dernier sous peine de pénalité dans les exercices. Il vous faudra donc convertir le code renvoyé par ce chatbot, ou n'importe quel autre moteur LLM en code SciViews-R.** Ceci à titre didactique pour bien montrer que vous *comprenez* votre code et que vous ne copiez-collez pas "bêtement" un résultat renvoyé par un moteur LLM (bien entendu, hors de ce cours, vous êtes libre d'utiliser la syntaxe R qui vous plait). Dans la suite de ce tutoriel learnr, nous allons revenir sur les spécificités du dialecte SciViews-R pour vous rafraîchir la mémoire à ce sujet.
 
-Le package {tabularise} est disponible dans la SciViews Box 2025. Il offre une fonction centrale que vous devez retenir `tabularise()`. Elle permet d'obtenir des tableaux bien formatés pouvant être ajoutés à vos carnets de notes et vos rapports. Cette fonction utilise la logique suivante : `tabularise$xxx(objet)`. En fonction du type indiqué dans `xxx` et de la classe de l'objet, vous obtiendrez un tableau spécifique. Dans l'exemple ci-dessus, vous avez employé le type `headtail` qui permet d'afficher le début et la fin de votre tableau de données.
+Le package {tabularise} offre une fonction centrale que vous devez retenir `tabularise()`. Elle permet d'obtenir des tableaux bien formatés pouvant être ajoutés à vos carnets de notes et vos rapports. Cette fonction utilise la logique suivante : `tabularise$xxx(objet)`. En fonction du type indiqué dans `xxx` et de la classe de l'objet, vous obtiendrez un tableau spécifique. Dans l'exemple ci-dessus, vous avez employé le type `headtail` qui permet d'afficher le début et la fin de votre tableau de données.
 
 La fonction `read()` permet d'importer un nombre important de formats de fichiers. Avec l'instruction suivante, vous pouvez retrouver tous les formats supportés par la fonction `read()` (et par son pendant pour exporter vos données, la fonction `write()`).
 
@@ -369,7 +369,7 @@ La fonction `read()` permet d'importer un nombre important de formats de fichier
 data_types(view = FALSE)
 ```
 
-Analysez l'organisation des fichiers ci-dessous. Le dossier `sharks-GuyliannEngels` contient tous les documents employés pour réaliser une analyse sur le recensement des attaques de requins en Australie. Il s'agit d'un [projet RStudio](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2025/rs.html). Ce projet doit absolument être portable. Il faut donc employer uniquement des **chemins relatifs**. Par exemple, le document `sharks_report.qmd` se trouve dans le dossier `docs`.
+Analysez l'organisation des fichiers ci-dessous. Le dossier `sharks-GuyliannEngels` contient tous les documents employés pour réaliser une analyse sur le recensement des attaques de requins en Australie. Il s'agit d'un [projet RStudio](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2025/rs.html). Ce projet doit absolument être portable. Il faut donc employer uniquement des [chemins relatifs](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2025/rs.html%23chemins-relatifs). Par exemple, le document `sharks_report.qmd` se trouve dans le dossier `docs`.
 
     /home
       /sv
@@ -592,7 +592,7 @@ En résumé, on retrouve un équivalent aux cinq fonctions "tidy" principales po
 -   regrouper les données au sein d'un tableau avec `group_by()`/`sgroup_by()`/`group_by_()`
 -   résumer les variables d'un jeu de données avec `summarise()`/`ssummarise()`/`summarise_()`
 
-*Nous vous conseillons de continuer d'employer préférentiellement les fonctions "speedy" pour un travail sur des jeux de données allant jusqu'à quelques dizaines de milliers de lignes, voire plus.*
+*Nous vous conseillons de continuer d'employer préférentiellement les fonctions "speedy" que vous connaissez bien pour un travail sur des jeux de données allant jusqu'à quelques dizaines de milliers de lignes, voire plus.*
 
 ```{r, echo=TRUE}
 potatoes1 <- sselect(potatoes,  yield, cultivar)
