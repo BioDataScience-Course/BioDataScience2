@@ -4,7 +4,7 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II** Vos commentaires et suggestions..."
 tutorial:
   id: "B99La_feedback"
-  version: 2.1.0/0
+  version: 3.0.0/0
 output:
   learnr::tutorial:
     progressive: true
@@ -14,6 +14,7 @@ runtime: shiny_prerendered
 
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
+library(testthat)
 ```
 
 ```{r, echo=FALSE}
@@ -38,12 +39,12 @@ question("Quelle partie du cours évaluez-vous ?",
   answer("Module 4 : Modèle linéaire généralisé", correct = TRUE),
   answer("Module 5 : Régression non linéaire", correct = TRUE),
   answer("**AA modélisation (Q1, modules 1-5)**", correct = TRUE),
-  answer("Module 6 : Bases de données 1 & MDS", correct = TRUE),
+  answer("Module 6 : Classification & indices", correct = TRUE),
   answer("Module 7 : ACP & AFC", correct = TRUE),
-  answer("Module 8 : Bases de données 2 & AFM", correct = TRUE),
-  answer("Module 9 : CAH & K-moyenne", correct = TRUE),
-  answer("Module 10 : SOM & diversité", correct = TRUE),
-  answer("**AA analyse (Q2, modules 5-8)**", correct = TRUE),
+  answer("Module 8 : AFM & big data", correct = TRUE),
+  answer("Module 9 : Bases de données & MDS", correct = TRUE),
+  answer("Module 10 : Données ouvertes & SOM", correct = TRUE),
+  answer("**AA analyse (Q2, modules 6-10)**", correct = TRUE),
   answer("**Tout le cours**", correct = TRUE),
   allow_retry = TRUE,
   type = "single", correct = "OK, indiquez maintenant vous commentaires relatifs à cette partie ci-dessous.")
