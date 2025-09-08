@@ -98,18 +98,18 @@ BioDataScience2::learnr_server(input, output, session)
 
 ## Objectifs
 
-Ce cours de **Science des données II : analyse et modélisation** fait suite au cours de **Science des données I : visualisation et inférence**. Vous pouvez retrouver ces deux cours directement à <https://wp.sciviews.org/>. Ce tutoriel vise à :
+Ce cours de **Science des données II : analyse et modélisation** fait suite au cours de **Science des données I : visualisation et inférence**. Ils sont disponibles à partir de <https://wp.sciviews.org/>. Ce tutoriel vise à :
 
 -   Réviser les notions essentielles du cours de Science des données I
 -   Découvrir quelques nouveautés liées à la SciViews Box 2025
 
 Le cours de Science des données I se divise en deux parties. La première partie traite principalement de la réalisation de graphiques et du remaniement des données. La seconde partie s'intéresse aux probabilités, aux distributions statistiques les plus courantes en biologie ainsi qu'aux tests d'inférence (test *t* de Student, test de Wilcoxon, ANOVA, test de Kruskal-Wallis...).
 
-La matière est bien trop vaste pour revoir tous les concepts du premier cours en un seul tutoriel (il est déjà très conséquent). Une synthèse des éléments principaux est faite ici afin de vous donner une idée de votre niveau aujourd'hui. N'hésitez pas à réviser les parties du cours 1, si cela s'avère nécessaire.
+La matière est bien trop vaste pour revoir tous les concepts du premier cours en un seul tutoriel. Une synthèse des éléments principaux va vous permettre de retrouver vos marques. N'hésitez pas à réviser les parties du cours 1, si cela s'avère nécessaire.
 
 ## Logiciels
 
-Commencez par vous assurer que vous maîtrisez les outils logiciels que nous allons employer dans le cadre de ce cours. Si vous avez des doutes à ce sujet, consultez le premier module de cours de [science des données 1](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2025/outils.html). Répondez aux questions ci-dessous.
+Commencez par vous assurer que vous rappelez du rôle des différents logiciels que nous employons dans le cadre de ce cours. Si vous avez des doutes à ce sujet, consultez le premier module de cours de [science des données 1](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2025/outils.html). Répondez aux questions ci-dessous.
 
 ```{r qu_intro}
 quiz(
@@ -162,13 +162,13 @@ quiz(
 
 ## Git et GitHub
 
-Au cours de Science des données, nous utilisons abondamment Git et GitHub. Assurez-vous d'avoir bien retenu la terminologie spécifique associée à ces outils de gestion de version. La terminologie est présentée dans les deux premiers modules du cours de [science des données 1](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2025/outils.html).
+Nous utilisons abondamment Git et GitHub. Révisons maintenant la terminologie spécifique associée à ces outils de gestion de version. Elle est présentée dans les deux premiers modules du cours de [science des données 1](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2025/outils.html).
 
 ### Situation 1
 
-Deux chercheurs, distants de plusieurs centaines de kilomètres, collaborent sur un projet commun. Ils ont pour cela décidé d'employer un outil de gestion de version et d'héberger ce projet sur un système web dédié pour cela.
+Deux chercheurs, distants de plusieurs centaines de kilomètres, collaborent sur un projet commun. Ils ont pour cela décidé d'employer git et GitHub.
 
-Sur base du schéma ci-dessous où chaque cercle de couleur correspond à un état du système de gestion de version de la situation expliquée, répondez aux questions suivantes.
+Sur base du schéma ci-dessous où chaque cercle de couleur correspond à un état du système de gestion de version, répondez aux questions suivantes.
 
 ![](images/gestion-version.drawio.png)
 
@@ -276,9 +276,9 @@ quiz(
 
 La fonction`SciViews::R()` est employée pour charger une série de packages qui forment le "dialecte" SciViews-R. **Nous l'utilisons en début de script R ou encore dans le premier chunk d'un rapport d'analyse au format R Markdown.**
 
-Les packages chargés permettent d'importer, remanier et visualiser à l'aide de graphiques en limitant le recours à la fonction `library()` pour charger des packages R supplémentaires (mais vous pourriez être amené à le faire occasionnellement).
+Les packages chargés offrent des fonctionnalités qui permettent d'importer, remanier et visualiser vos données à l'aide de graphiques et de tableaux en limitant le recours à la fonction `library()` pour charger des packages R supplémentaires (mais vous pourriez être amené à le faire occasionnellement).
 
-Exécutez l'instruction `SciViews::R()` suivie de l'instruction `SciViews_packages()` dans la console R ci-dessous et analysez le résultat obtenu. Pour rappel, vous exécutez et testez votre code via le bouton `Run Code` et vous soumettez votre réponse avec le bouton `Submit Answer`. Utilisez autant de fois que nécessaire `Run Code` sans pénalité, mais n'oubliez surtout pas de soumettre à la fin avec `Submit Answer`.
+Exécutez l'instruction `SciViews::R()` suivie de l'instruction `SciViews_packages()` dans la console R ci-dessous et analysez le résultat obtenu. Pour rappel, vous exécutez et testez votre code avec le bouton `Run Code` et vous soumettez votre réponse avec le bouton `Submit Answer`. Utilisez autant de fois que nécessaire `Run Code` sans pénalité, mais n'oubliez surtout pas de soumettre à la fin avec `Submit Answer`.
 
 ```{r sciviews, exercise=TRUE}
 
@@ -307,7 +307,7 @@ question("Sélectionnez parmi les propositions suivantes les packages chargés a
     )
 ```
 
-Des packages supplémentaires peuvent être chargés grâce à `SciViews::R()`. Ils correspondent à des sections complémentaires qui ne sont pas chargées de base, par exemple, `"model"` pour la modélisation, `"infer"` pour l'inférence, `"explore"` pour l'analyse multivariée. Il est également possible de définir le langage par défaut pour l'importation de données qui supportent plusieurs langages et pour les labels automatiques des axes des graphiques via l'argument `lang=`.
+Des packages supplémentaires peuvent être chargés grâce à `SciViews::R()`. Ils correspondent à des sections complémentaires qui ne sont pas chargées de base, par exemple, `"model"` pour la modélisation, `"infer"` pour l'inférence, `"explore"` pour l'analyse multivariée. Il est également possible de définir le langage par défaut pour l'importation de données qui supportent plusieurs langages et pour les labels automatiques des axes des graphiques ou des colonnes de tableaux avec l'argument `lang=`.
 
 Vous remarquerez que l'instruction `SciViews::R` ne génère plus de sortie à présent. Avant, vous aviez un long listing des packages changés et ensuite des conflits entre fonctions. Ceci est rendu silencieux mais vous pouvez toujours préciser l'argument `silent = FALSE`, donc avec `SciViews::R(silent = FALSE)` pour retrouver le rapport auquel vous êtes habitué.
 
@@ -317,7 +317,7 @@ SciViews::R("model", lang = "fr")
 
 ## Importation des données
 
-Dans SciViews-R, la fonction `read()` se charge de l'importation de données depuis les packages R (argument `package=`), depuis le disque dur, ou depuis Internet. Consultez la page d'aide de cette fonction pour en découvrir d'autres arguments utiles avec `?read`.
+Dans SciViews-R, la fonction `read()` se charge de l'importation de données depuis les packages R (argument `package=`), depuis le disque dur, ou depuis Internet. Consultez la page d'aide de cette fonction pour en découvrir d'autres arguments utiles en entrant `?read` à la console R.
 
 Importez le tableau nommé `crabs` qui provient du package {MASS}. **rappel : lorsqu'un exercice comporte du code avec des zones à remplacer (`___`), ne faites rien d'autre que compléter ces zones. Les outils d'autocorrection sont très sensibles et n'apprécieraient pas autrement.**
 
@@ -349,19 +349,19 @@ grade_code("Vous venez d'importer un tableau de données",
   "La réponse n'est pas correcte. Ne complètez que les élèments manquants marqués ___. Lisez bien l'énoncé.")
 ```
 
-![](images/breaking_news.jpg){width="30%"}
+<!-- ![](images/breaking_news.jpg){width="30%"} -->
 
-Dans la SciViews Box 2025, vous avez maintenant un nouvel "addin" dans RStudio, nommé **"Help"**.
+Depuis la SciViews Box 2024, vous avez un nouvel "addin" dans RStudio, nommé **"Help"**.
 
 ![](images/addin_help.png)
 
-Il donne accès à diverses pages d'aides sur les fonctions R, le code, les messages d'erreurs ou plus généralement des termes statistiques, voir n'importe quelle question que vous vous posez. Vous pouvez utilise l'aide de R (**Help pages**), mais aussi interroger un moteur LLM de type ChatGPT spécialement entrainé pour répondre à des questions de statistique, de science des données ou relatives au langage R (**SciViews chatbot**), aussi bien en anglais qu'en français. Enfin, vous pourrez aussi interroger Internet avec un moteur de recherche spécialisé pour R (**Rseek**), dans un forum autour de questions de programmation (**Stack Overflow**), ou plus généralement à l'aide des moteurs **Google**, **Bing** ou **DuckDuckGo**.
+Il donne accès à diverses pages d'aides relatives aux fonctions R, au code, aux messages d'erreurs ou plus généralement à des termes statistiques, voir n'importe quelle question que vous vous posez. Vous pouvez utilise l'aide de R (**Help pages**), mais aussi interroger un moteur LLM de type ChatGPT spécialement entrainé pour répondre à des questions de statistique, de science des données ou relatives au langage R (**SciViews chatbot**), aussi bien en anglais qu'en français. Enfin, vous pourrez aussi interroger Internet avec un moteur de recherche spécialisé pour R (**Rseek**), dans un forum autour de questions de programmation (**Stack Overflow**), ou plus généralement à l'aide des moteurs **Google**, **Bing** ou **DuckDuckGo**.
 
 ![](images/addin_help2.png)
 
 **Le chatbot SciViews ne connait que les fonctions et la syntaxe R de base ou tidyverse. Il ne connait pas le dialecte SciViews-R. Mais dans les exercices, nous vous demandons d'utiliser ce dernier sous peine de pénalité dans les exercices. Il vous faudra donc convertir le code renvoyé par ce chatbot, ou n'importe quel autre moteur LLM en code SciViews-R.** Ceci à titre didactique pour bien montrer que vous *comprenez* votre code et que vous ne copiez-collez pas "bêtement" un résultat renvoyé par un moteur LLM (bien entendu, hors de ce cours, vous êtes libre d'utiliser la syntaxe R qui vous plait). Dans la suite de ce tutoriel learnr, nous allons revenir sur les spécificités du dialecte SciViews-R pour vous rafraîchir la mémoire à ce sujet.
 
-Le package {tabularise} est disponible dans la SciViews Box 2025. Ce package a une fonction centrale que vous devez retenir `tabularise()`. Elle permet d'obtenir des tableaux bien formatés pouvant être ajoutés à vos carnets de notes et vos rapports. Cette fonction utilise la structure suivante : `tabularise$xxx(objet)`. En fonction du type indiqué dans `xxx` et de la classe de l'objet, vous obtiendrez un tableau spécifique. Dans l'exemple ci-dessus, vous avez employé le type `headtail` qui permet d'afficher le début et la fin de votre tableau de données.
+Le package {tabularise} est disponible dans la SciViews Box 2025. Il offre une fonction centrale que vous devez retenir `tabularise()`. Elle permet d'obtenir des tableaux bien formatés pouvant être ajoutés à vos carnets de notes et vos rapports. Cette fonction utilise la logique suivante : `tabularise$xxx(objet)`. En fonction du type indiqué dans `xxx` et de la classe de l'objet, vous obtiendrez un tableau spécifique. Dans l'exemple ci-dessus, vous avez employé le type `headtail` qui permet d'afficher le début et la fin de votre tableau de données.
 
 La fonction `read()` permet d'importer un nombre important de formats de fichiers. Avec l'instruction suivante, vous pouvez retrouver tous les formats supportés par la fonction `read()` (et par son pendant pour exporter vos données, la fonction `write()`).
 
@@ -537,11 +537,11 @@ Les modules 1 à 3 du cours [SDD I](https://wp.sciviews.org/sdd-umons) traitent 
 
 ## Remaniement des données
 
-Le remaniement de données est tout un art que vous devez maîtriser à la perfection. Vous devez être capable de détecter les valeurs manquantes, de filtrer des observations, de sélectionner des colonnes d'intérêt, de calculer de nouvelles variables, etc.
+Le remaniement de données est indispensable car vos données sont rarement présentées d'emblée comme elles devraient l'être pour une analyse propre. Vous devez être capable de détecter les valeurs manquantes, de filtrer des observations, de sélectionner des colonnes d'intérêt, de calculer de nouvelles variables, etc.
 
-Dans la SciViews Box 2025, l'utilisation des **data.frame**s, **data.table**s et **tibble**s, trois objets très similaires pour représenter un jeu de données, est simplifiée par rapport aux versions antérieures. Dans la box 2022, avec les **data.table**s et les fonctions **tidy** comme `mutate()`, `select()`, etc., vous étiez confrontés à des difficultés liées l'utilisation automatique de "lazy data" : les calculs ne se faisaient pas directement. Ils devaient parfois être **"collectés"** à l'aide de `collect_dtx()` ou de l'assignation alternative `%<-%` ou `%->%`. Ces difficultés vous ont joué bien des tours. Depuis la box 2023, *cela n'est plus nécessaire*, et même sans `collect_dtx()` ou avec l'assignation classique `<-`, vous obtenez toujours un **data.table**. 
+Dans la SciViews Box 2025, l'utilisation des **data.frame**s, **data.table**s et **tibble**s, trois objets très similaires pour représenter un jeu de données, est remplacée par les **data.trame**s qui sont une forme hybride de data frame. En pratique, cela ne change rien au niveau du remaniement des données, car vos fonctions habituelles telles que `sfilter()`, `sselect()`, `smutate()`... fonctionnent de manière identique. 
 
-Voici un petit exercice de remaniement de données pour vous rafraîchir l'esprit... Vous allez vous intéresser au rendement de deux variétés de pommes de terre : la bintje et la fontane. Après 110 jours de culture, des prélèvements sont effectués dans différentes parcelles en Belgique. La production, exprimée en tonnes par hectare, est ainsi quantifiée pour les deux variétés de pommes de terre. Cet exercice utilise des données générées artificiellement, mais qui s'inspirent des observations relayées sur le site du sillon belge d'un [article consulté le 3 septembre 2019](https://www.sillonbelge.be/4731/article/2019-08-28/bintje-et-fontane-apres-110-115-jours-faute-de-casser-la-baraque-ces-deux).
+Voici un petit exercice de remaniement de données pour vous remémorer comme faire... Vous allez vous intéresser au rendement de deux variétés de pommes de terre : la bintje et la fontane. Après 110 jours de culture, des prélèvements sont effectués dans différentes parcelles en Belgique. La production, exprimée en tonnes par hectare, est ainsi quantifiée pour les deux variétés de pommes de terre. Cet exercice utilise des données générées artificiellement, mais qui s'inspirent des observations relayées sur le site du sillon belge d'un [article consulté le 3 septembre 2019](https://www.sillonbelge.be/4731/article/2019-08-28/bintje-et-fontane-apres-110-115-jours-faute-de-casser-la-baraque-ces-deux).
 
 ```{r, warning=FALSE, message=FALSE}
 set.seed(42)
@@ -564,7 +564,7 @@ Le tableau de données se nomme `potatoes`. Ce tableau est constitué des variab
 
 `r paste0("<code>", names(potatoes), "</code>")`
 
-Les premières et dernières lignes du tableau sont affichées ci-dessous **en utilisant notre nouvelle fonction `tabularise()` bien entendu.**
+Les premières et dernières lignes du tableau sont affichées ci-dessous:
 
 ```{r, echo=TRUE}
 tabularise$headtail(potatoes)
@@ -574,27 +574,31 @@ Pour fixer les idées, nous pouvons décider de regrouper les fonctions de R en 
 
 Le [Tidyverse](https://www.tidyverse.org) propose un ensemble de fonctions cohérentes autour des objets **tibble**s. Ce sont les fonctions comme `mutate()`, `select()`, `filter()`, `group_by()`, `summarise()`, `pivot_longer()`,... Nous appellerons cette famille les **fonctions tidy**.
 
-Depuis la SciViews Box 2022, il existe des fonctions jumelles aux précédentes qui se comportent de manière très proche et qui réalisent le même traitement dans 95% des cas, mais qui sont nettement plus rapides. Pour cette raison, nous appellerons cette famille, les **fonctions speedy**. Leur nom est identique aux fonctions "tidy", mais préfixé d'un `"s"` pour les différencier. Donc, l'homologue de `mutate()` est `smutate()`, `filter()` devient `sfilter()`, et ainsi de suite...
+Dans SciViews::R, il existe des fonctions jumelles aux précédentes qui se comportent de manière très proche et qui réalisent le même traitement dans 95% des cas, mais qui sont nettement plus rapides. Pour cette raison, nous appellerons cette famille, les **fonctions speedy**. Leur nom est identique aux fonctions "tidy", mais préfixé d'un `"s"` pour les différencier. Donc, l'homologue de `mutate()` est `smutate()`, `filter()` devient `sfilter()`, et ainsi de suite...
 
 ```{r, echo=TRUE}
 list_speedy_functions()
 ```
 
-En résumé, on retrouve un équivalent aux cinq fonctions "tidy" principales pour le remaniement de tableau dans la famille des fonctions "speedy", ainsi que pas mal d'autres. Les arguments des fonctions et les résultats proposés sont très similaires :
+Ce sont ces fonctions **speedy** que nous vous avons conseillé d'utiliser l'an dernier. Vous aurez remarqué le *warning* qui indique que ces fonctions sont dépréciées. Cela signifie qu'elles sont remplacées par les fonctions du package {svTidy} (mais rassurez-vous, les anciennes fonctions sont toujours là). Ces nouvelles fonctions ont le même nom que les fonctions tidy correspondantes mais se terminent par un trait souligné (`_`). Donc par exemple, l'équivalent de `filter()` en tidy et `sfilter()` en speedy est `filter_()` dans {svTidy}. Ces dernières implémentent un bien meilleur système de gestion des erreurs avec des messages plus clairs. Cependant, la syntaxe est légèrement différente. Elles utilisent des **formules** (instructions utilisant le tilde `~`) pour spécifier des appels non standards.
 
--   sélectionner des colonnes au sein d'un jeu de données avec `select()`/`sselect()`
--   filtrer des lignes dans un jeu de données avec `filter()`/`sfilter()`
--   calculer de nouvelles variables dans un jeu de données avec `mutate()`/`smutate()`
--   regrouper les données au sein d'un tableau avec `group_by()`/`sgroup_by()`
--   résumer les variables d'un jeu de données avec `summarise()`/`ssummarise()`
+Petit rappel: vous savez que pour indiquer la variable `var` du jeu de données `df`, il faut écrire `df$var`. C'est une expression standard. Cependant, avec les fonctions tidy, vous pouvez indiquer juste `var`. Par exemple, vous écrivez `df$log_var <- log(df$var)` pour créer `log_var` en forme standard. Vous obtenez la même chose en faisant `df <- mutate(df, log_var = log(var))`. C'est une évaluation **non standard** de `var`. Avec les fonctions de {svTidy}, vous devez écrire une formule pour indiquer que vous faites référence de manière non standard à vos variable du jeu de données. Cela donne donc: `df <- mutate_(df, log_var = ~log(var))` (à part le trait souligné après `mutate`, vous noterez le tilde avant `log(var)`). *Ce n'est pas pour vous embêter que ce tilde est nécessaire: il permet d'__expliciter__ que vous voulez une évaluation non standard à cet endroit, et cela rend le code ensuite plus solide et plus rapide.* Si vous êtes aventureux•se, vous pouvez tenter d'utiliser ces nouvelles fonctions dans vos rapports. Sinon, continuez à utiliser les anciennes et ce sera déjà très bien.
 
-*Nous vous conseillons d'employer préférentiellement les fonctions "speedy" pour un travail sur des jeux de données allant jusqu'à quelques dizaines de milliers de lignes, voire plus.*
+En résumé, on retrouve un équivalent aux cinq fonctions "tidy" principales pour le remaniement de tableau dans la famille des fonctions "speedy", ainsi que pas mal d'autres. L'équivalent existe aussi en fonctions {svTidy}. Les arguments des fonctions et les résultats proposés sont très similaires :
+
+-   sélectionner des colonnes au sein d'un jeu de données avec `select()`/`sselect()`/`select_()`
+-   filtrer des lignes dans un jeu de données avec `filter()`/`sfilter()`/`filter_()`
+-   calculer de nouvelles variables dans un jeu de données avec `mutate()`/`smutate()`/`mutate_()`
+-   regrouper les données au sein d'un tableau avec `group_by()`/`sgroup_by()`/`group_by_()`
+-   résumer les variables d'un jeu de données avec `summarise()`/`ssummarise()`/`summarise_()`
+
+*Nous vous conseillons de continuer d'employer préférentiellement les fonctions "speedy" pour un travail sur des jeux de données allant jusqu'à quelques dizaines de milliers de lignes, voire plus.*
 
 ```{r, echo=TRUE}
 potatoes1 <- sselect(potatoes,  yield, cultivar)
 ```
 
-Le pipe natif `|>` est apparu dans la version 4.1.0 de R. Vous connaissez déjà deux pipes que sont le pipe de {magrittr} `%>%` ou le pipe de {svFlow} `%>.%` dans SciViews-R. Ces trois opérateurs permettent de chaîner des instructions afin de montrer de manière claire la suite des opérations. Les pipes améliorent grandement la lisibilité du code. Notez que le pipe `|>` ne requiert pas l'utilisation du `.` dans la fonction qui le suit alors que le pipe `%>.%` l'impose. Il est appelé **pipe explicite** pour cette raison. Vous pouvez retrouver de plus amples informations sur le chaînage des instructions dans la [section 4.5 de SDD I](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2025/chainage.html).
+Le "pipe" (prononcez *"païpe"* à l'anglaise) natif `|>` est apparu dans la version 4.1.0 de R. Vous connaissez aussi deux autres opérateurs de "pipe" que sont le pipe de {magrittr} `%>%` et le pipe de {svFlow} `%>.%` dans SciViews-R. Ces trois opérateurs permettent de chaîner des instructions pour indiquer de manière claire la succession des opérations. Les pipes améliorent grandement la lisibilité du code. Notez que le pipe `|>` ne requiert pas l'utilisation du `.` dans la fonction qui le suit alors que le pipe `%>.%` l'impose. Il est appelé **pipe explicite** pour cette raison. Vous pouvez retrouver de plus amples informations sur le chaînage des instructions dans la [section 4.5 de SDD I](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2025/chainage.html).
 
 *Nous vous proposons de continuer à utiliser le pipe `%>.%` de SciViews-R lors de vos remaniements de données.*
 
@@ -632,7 +636,7 @@ tabularise(potatoes_red)
 grade_code("Vous avez employé correctement la fonction sfilter().", "Il semble que vous avez commis une erreur. n'hésitez pas à revoir la section 4.4.2 de SDD I.")
 ```
 
-Dans SciViews-R, vous trouvez une troisième série de fonctions : les **fonctions statistiques "fast"**. Ces fonctions réalisent un résumé d'un échantillon (moyenne, écart type, médiane...). Dans R de base, nous avons `mean()`, `sd()` ou `median()`. Et bien, les fonctions statistiques "fast" sont leurs sœurs jumelles (enfin, pas complètement, elles sont en fait bien plus rapides et ont encore d'autres qualités). Elles sont repérables à leur préfixe `"f"`. Ainsi, `mean()` devient `fmean()`, `sd()` devient `fsd()` et ainsi de suite.
+Dans SciViews-R, vous trouvez encore une autre série de fonctions : les **fonctions statistiques "fast"**. Ces fonctions réalisent un résumé d'un échantillon (moyenne, écart type, médiane...). Dans R de base, nous avons `mean()`, `sd()` ou `median()`. Et bien, les fonctions statistiques "fast" sont leurs sœurs jumelles (enfin, pas complètement, elles sont en fait bien plus rapides et ont encore d'autres qualités). Elles sont repérables à leur préfixe `"f"`. Ainsi, `mean()` devient `fmean()`, `sd()` devient `fsd()` et ainsi de suite.
 
 Sachant tout cela, voyons un exemple de traitement classique pour résumer un tableau de données, vous utilisez le code suivant hors SciViews-R :
 
@@ -710,7 +714,7 @@ grade_code("Vous avez bien en tête la syntaxe. Pour améliorer visuellement ce 
 
 Dans le cours de science des données I, cinq modules ont été consacrés entièrement ou en partie à la réalisation de tests d'hypothèses. Le nombre conséquent de modules vous permet de vous rendre compte de l'importance de cette matière. L'exercice suivant traite du test *t* de Student. Ce test permet de comparer les moyennes de deux groupes, ou de comparer une moyenne à une valeur de référence. Vous allez travailler pour ce faire sur des taureaux reproducteurs.
 
-L'association wallonne de l'élevage dispose de plusieurs centres d'insémination. Ils ont un recensement des différents taureaux reproducteurs. Vous avez à votre disposition le jeu de données `bull` qui reprend les variables suivantes : `r names(bull)`. Il est évident qu'un taureau plus âgé sera plus lourd, nous allons donc standardiser la masse par l'âge et limiter notre étude aux individus de moins de 50 mois.
+Restons dans le domaine agricole pour une application pratique. L'association wallonne de l'élevage dispose de plusieurs centres d'insémination. Ils ont un recensement des différents taureaux reproducteurs. Vous avez à votre disposition le jeu de données `bull` qui reprend les variables suivantes : `r names(bull)`. Il est évident qu'un taureau plus âgé sera plus lourd, nous allons donc standardiser la masse par l'âge et limiter notre étude aux individus de moins de 50 mois.
 
 ```{r, echo=TRUE}
 bull %>.%
