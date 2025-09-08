@@ -5,7 +5,7 @@ description: "**SDD II Module 1** Analyser les résidus d'une régression linéa
 bibliography: references.bib
 tutorial:
   id: "B01Lb_residuals"
-version: 2.1.0/6
+version: 3.0.0/6
 output:
   learnr::tutorial:
   progressive: true
@@ -29,6 +29,9 @@ library(broom)
 library(forcats)
 library(collapse)
 library(fs)
+library(data.trame)
+library(svFast)
+library(svTidy)
 library(svMisc)
 library(svBase)
 library(svFlow)
@@ -36,11 +39,14 @@ library(data.io)
 library(chart)
 library(tabularise)
 library(SciViews)
-# model
-library(modelit)
 # ... more
+library(readxl)
 library(testthat)
 library(equatags)
+# 'model' and 'infer' packages
+library(modelit)
+library(distributional)
+library(inferit)
 
 rice <- read("rice", package = "BioDataScience2")
 rice <- labelise(rice,
@@ -118,7 +124,7 @@ grade_code("Ce graphique en nuage de points est un pré-requis indispensable pou
 
 Nous pouvons continuer la description des données avec une matrice de corrélation de Pearson :
 
-```{r, echo=TRUE}
+```{r, echo=TRUE, warning=FALSE}
 correlation(num_vars(rice), method = "pearson") |>
   tabularise()
 ```
@@ -135,7 +141,7 @@ Les distributions des deux variables sont univariées et les moyennes assez proc
 
 Réalisez à présent la régression linéaire demandée de la variable `area` en fonction de la variable `major_axis_length`du tableau `rice`.
 
-```{r rice_lm_h2, exercise=TRUE}
+```{r rice_lm_h2, exercise=TRUE, warning=FALSE}
 rice_lm <- lm(data = ___, ___ ~ ___) 
 # Résumé de la régression linéaire
 summary(___) |>
@@ -144,7 +150,7 @@ summary(___) |>
 chart(___)
 ```
 
-```{r rice_lm_h2-hint-1}
+```{r rice_lm_h2-hint-1, warning=FALSE}
 rice_lm <- lm(data = rice, ___ ~ ___) 
 # Résumé de la régression linéaire
 summary(rice_lm) |>
@@ -155,7 +161,7 @@ chart(rice_lm)
 #### ATTENTION: Hint suivant = solution !####
 ```
 
-```{r rice_lm_h2-solution}
+```{r rice_lm_h2-solution, warning=FALSE}
 ## Solution ##
 rice_lm <- lm(data = rice, area ~ major_axis_length) 
 # Résumé de la régression linéaire
@@ -165,7 +171,7 @@ summary(rice_lm) |>
 chart(rice_lm)
 ```
 
-```{r rice_lm_h2-check}
+```{r rice_lm_h2-check, warning=FALSE}
 grade_code("Vous avez calculé votre objet `lm_rice`. Vous l'avez résumé et représenté graphiquement. Vous avez du matériel à examiner pour déterminer si cette régression tient la route. Avec un R^2 de 0.815, la régression est bonne, mais pouvez-vous repérer des éléments importants dans le tableau via le Quiz ci-dessous ?")
 ```
 
@@ -200,13 +206,13 @@ quiz(
 )
 ```
 
-#### Paramétrisation du modèle
+### Paramétrisation du modèle
 
 Une fois que vous avez les estimateurs des différents paramètres de votre modèle, vous pouvez placer ces valeurs dans son équation. Cette étape importante se nomme la **paramétrisation** du modèle.
 
-##### Comment faire en pratique ?
+#### Comment faire en pratique ?
 
-Dans la SciViews Box 2024, vous avez des outils pour vous y aider. La fonction `eq__()` extrait l'équation du modèle et son argument `use_coefs = TRUE` indique de remplacer les paramètres par les valeurs estimées. Ainsi, pour obtenir cette équation, vous pouvez écrire un chunk en ligne `` `r eq__(rice_lm, use_coefs = TRUE)` `` à l'intérieur de balises Markdown d'équation dite "display" (équation sur sa propre ligne, hors texte, par opposition à l'équation "inline", directement dans le texte). Cela s'écrit comme suit :
+Avec SciViews-R, vous avez des outils pour vous y aider. La fonction `eq__()` extrait l'équation du modèle et son argument `use_coefs = TRUE` indique de remplacer les paramètres par les valeurs estimées. Ainsi, pour obtenir cette équation, vous pouvez écrire un chunk en ligne `` `r eq__(rice_lm, use_coefs = TRUE)` `` à l'intérieur de balises Markdown d'équation dite "display" (équation sur sa propre ligne, hors texte, par opposition à l'équation "inline", directement dans le texte). Cela s'écrit comme suit :
 
 -   à une nouvelle ligne, vous entrez deux dollars `$$`, c'est la balise Markdown d'entrée d'une équation "display"
 -   à la ligne suivante, vous écrivez le chunk en ligne `` `r eq__(...)` `` qui viendra placer le contenu de l'équation calculé par R lors du rendu du document
@@ -220,7 +226,7 @@ $$
 
 **Astuce:** vous contrôlez le nombre de chiffres derrière la virgule pour chaque estimateur à l'aide de l'argument supplémentaire `coef_digits =` qui accepte un nombre entier (même nombre de chiffres derrière la virgule pour tous les estimateurs), ou un vecteur d'entiers pour varier la précision de chaque estimateur successif. Il est important de limiter les valeurs à un nombre de chiffres **significatifs** par rapport au calcul qui est réalisé. Ne jamais conserver un grand nombre de décimales inutiles dans les équations ! L'équation ci-dessus a été obtenue à l'aide de `` `r eq__(rice_lm, use_coefs = TRUE, coef_digits = c(0, 1))` ``.
 
-##### Compréhension de la paramétrisation du modèle
+#### Compréhension de la paramétrisation du modèle
 
 Maintenant que les aspects techniques sont expliqués, concentrez-vous sur le contenu de cette dernière équation et sa signification.
 

@@ -4,7 +4,7 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II Module 1** Réaliser une régression linéaire simple dans R."
 tutorial:
   id: "B01La_reg_lin"
-  version: 2.4.0/9
+  version: 3.0.0/9
 output: 
   learnr::tutorial:
     progressive: true
@@ -15,6 +15,37 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
 SciViews::R("model", lang = "fr")
+# Required for RSConnect
+# SciViews::R
+library(rlang)
+library(data.table)
+library(ggplot2)
+library(tibble)
+library(tidyr)
+library(dplyr)
+library(dtplyr)
+library(broom)
+library(forcats)
+library(collapse)
+library(fs)
+library(data.trame)
+library(svFast)
+library(svTidy)
+library(svMisc)
+library(svBase)
+library(svFlow)
+library(data.io)
+library(chart)
+library(tabularise)
+library(SciViews)
+# ... more
+library(readxl)
+library(testthat)
+library(equatags)
+# 'model' and 'infer' packages
+library(modelit)
+library(distributional)
+library(inferit)
 
 # crabs
 crabs <- read("crabs", package = "MASS")
@@ -45,7 +76,7 @@ BioDataScience2::learnr_server(input, output, session)
 
 ## Objectifs
 
-Ce tutoriel sur la régression linéaire débute par un rappel sur la corrélation et les corrélogrammes. Cette matière est détaillée dans le [module 6 de science des données I](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2024/correlation.html). Les objectifs de ce tutoriel sont :
+Ce tutoriel sur la régression linéaire débute par un rappel sur la corrélation et les corrélogrammes. Cette matière est détaillée dans le [module 6 de science des données I](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2025/correlation.html). Les objectifs de ce tutoriel sont :
 
 -   Revoir la corrélation et les indices de Pearson et Spearman
 
@@ -66,34 +97,34 @@ La fonction `skimr::skim()` vous permet d'obtenir de nombreuses informations sur
 
 Réalisez une matrice de corrélation avec le coefficient de corrélation de Pearson sur ce jeu de données. N'utilisez que les variables pertinentes. Sélectionnez ces variables sur base de leur nom. Affichez un corrélogramme avec la partie supérieure uniquement (`upper`).
 
-```{r corr1_h3, exercise=TRUE, exercise.lines=3}
+```{r corr1_h3, exercise=TRUE, exercise.lines=3, warning=FALSE}
 crabs_corr <- correlation(sselect(___, ___:___),
   use = ___, method = ___)
 plot(crabs_corr, ___ = ___)
 ```
 
-```{r corr1_h3-hint-1}
+```{r corr1_h3-hint-1, warning=FALSE}
 crabs_corr <- correlation(sselect(___, ___:___),
   use = "complete.obs", method = "pearson")
 plot(crabs_corr, type = ___)
 # Relisez le chapitre 12 du livre science des données 1 <https://wp.sciviewg/sdd-umons/>
 ```
 
-```{r corr1_h3-hint-2}
+```{r corr1_h3-hint-2, warning=FALSE}
 correlation(sselect(crabs, ___:___),
   use = "complete.obs", method = "pearson")
 plot(crabs_corr, type = "upper")
 #### ATTENTION: Hint suivant = solution !####
 ```
 
-```{r corr1_h3-solution}
+```{r corr1_h3-solution, warning=FALSE}
 ## Solution ##
 crabs_corr <- correlation(sselect(crabs, front:depth),
   use = "complete.obs", method = "pearson")
 plot(crabs_corr, type = "upper")
 ```
 
-```{r corr1_h3-check}
+```{r corr1_h3-check, warning=FALSE}
 grade_code("Vous vous rappelez comment réaliser une matrice de corrélation et un corrélogramme. Présenter une matrice de corrélation sous la forme d'un graphique, c'est quand même plus convivial.")
 ```
 
@@ -114,8 +145,6 @@ question("Quelles sont les combinaisons de variables les plus corrélées ? (sé
 
 *L'analyse de la corrélation est utile comme première approche afin de déterminer si une régression linéaire est intéressante avec nos données.*
 
-<!-- PhG: je ne comprend pas du tout pourquoi on fait de la corrélation sur crabs, et puis on passe à la régression sur bull. C'est décousu et cela n'a aucun sens. Comment les étudiants penvent comprendre la logique d'une analyse autour d'une régression linéaire sur base de problèmes aussi peu construits !!!- -->
-
 ## Taureaux reproducteurs
 
 Pour aborder la régression linéaire, nous revenons sur le jeu de données `bull` déjà utilisé lors du learnr de révision et issu de données de l'association wallonne de l'élevage. Ce jeu de données `bull` contient les variables suivantes :
@@ -124,7 +153,7 @@ Pour aborder la régression linéaire, nous revenons sur le jeu de données `bul
 
 Votre objectif sera de réaliser une régression linéaire de la masse des taureaux (mesurée en kg) en fonction de leur âge (en mois).
 
-#### Description des données
+### Description des données
 
 Toute analyse commence par la description des données, surtout si elles sont nouvelles pour vous ! Commencez donc en réalisant un graphique en nuage de point de la masse en fonction de l'âge des taureaux.
 
@@ -160,20 +189,19 @@ skimr::skim(bull)
 
 Le tableau contient deux variables qualitatives et trois variables quantitatives avec `r nrow(bull)` taureaux qui ont été mesurés et il n'y a pas de valeurs manquantes. La quantité de données disponibles est acceptable pour une régression linéaire. Les distributions de l'âge et de la masse montrent qu'il y a plus de données pour les faibles valeurs, la distribution dans la plage d'âges étudiée -entre 13 et 40 mois- n'est pas homogène, mais sans que cela ne soit dramatique (cela se voit aussi sur le graphique, plus haut, avec comparativement un peu moins de données pour des âges de 30 à 40 mois).
 
-```{r, echo=TRUE}
+```{r, echo=TRUE, warning=FALSE}
 correlation(num_vars(bull)) |>
   tabularise()
 ```
 
 Toutes les corrélations sont positives et élevées. La corrélation entre la masse et l'âge est la plus forte.
 
-*Souvenez-vous que `tabularise()` est une nouvelle fonction qui permet de réaliser un tableau propre des résultats (nous l'avons découvert dans le learnr précédent).*
 
-#### Modèle de la masse des taureaux en fonction de leur âge
+### Modèle de la masse des taureaux en fonction de leur âge
 
 Complétez à présent les instructions ci-dessous afin de réaliser une régression linéaire de la masse en fonction de l'âge de nos taureaux.
 
-```{r bull_lm_h2, exercise=TRUE, exercise.lines=7}
+```{r bull_lm_h2, exercise=TRUE, exercise.lines=7, warning=FALSE}
 bull_lm <- lm(data = ___, ___ ~ ___)
 # Tableau résumé de la régression linéaire
 summary(___) |>
@@ -182,7 +210,7 @@ summary(___) |>
 ___(___)
 ```
 
-```{r bull_lm_h2-hint-1}
+```{r bull_lm_h2-hint-1, warning=FALSE}
 bull_lm <- lm(data = ___, ___ ~ age)
 # Tableau résumé de la régression linéaire
 summary(___) |>
@@ -193,7 +221,7 @@ chart(___)
 #### ATTENTION: Hint suivant = solution !####
 ```
 
-```{r bull_lm_h2-solution}
+```{r bull_lm_h2-solution, warning=FALSE}
 ## Solution ##
 bull_lm <- lm(data = bull, weight ~ age)
 # Tableau résumé de la régression linéaire
@@ -203,7 +231,7 @@ summary(bull_lm) |>
 chart(bull_lm)
 ```
 
-```{r bull_lm_h2-check}
+```{r bull_lm_h2-check, warning=FALSE}
 
 grade_code("Vous avez réalisé votre première régression linéaire. Analysez le tableau et le graphique issus de ce modèle et répondez aux questions qui suivent.")
 ```

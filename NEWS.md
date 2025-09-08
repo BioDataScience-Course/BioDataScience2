@@ -1,3 +1,7 @@
+# BioDataScience2 2025.1.0
+
+-   Learnrs **B00La_refresh**, **B01La_reg_lin** and **B01Lb_residuals** revised for 2025-2026.
+
 # BioDataScience2 2025.0.1
 
 -   Argument `envir=` added to `learnr_server()` to accomodate changes for compatibility with a Posit Connect server.
