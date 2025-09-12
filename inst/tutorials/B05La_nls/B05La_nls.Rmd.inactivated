@@ -4,7 +4,7 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II Module 5** Régression non linéaire."
 tutorial:
   id: "B05La_nls"
-  version: 2.0.1/5
+  version: 3.0.0/5
 output:
   learnr::tutorial:
     progressive: true
@@ -28,6 +28,12 @@ BioDataScience2::learnr_banner()
 ```
 
 ```{r, context="server"}
+if (Sys.info()["user"] == "rstudio-connect") {
+  options(learnr_user_id = session$user)
+  assignInNamespace("default_user_id", function() {
+    getOption("learnr_user_id", unname(Sys.info()["user"]))
+  }, ns = "learnr")
+}
 BioDataScience2::learnr_server(input, output, session)
 ```
 
