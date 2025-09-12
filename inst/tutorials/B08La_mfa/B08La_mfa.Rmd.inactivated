@@ -5,7 +5,7 @@ description: "**SDD II Module 8** : Méthode multi-tableaux avec l'analyse facto
 tutorial:
   id: "B08La_mfa"
   version: 2.0.1/8
-output: 
+output:
   learnr::tutorial:
     progressive: true
 runtime: shiny_prerendered
@@ -222,7 +222,7 @@ grade_code("Le résumé de votre analyse est complexe. Intéressez-vous en premi
 question("Quelle est la proportion de la variance cumulée sur les deux premiers axes de l'AFM ?",
   answer("58%", correct = TRUE),
   answer("23%"),
-  answer("34%"), 
+  answer("34%"),
   correct = "Bien joué ! Les deux premiers axes de l'AFM expriment 58% de la variance. Gardez à l'esprit que cette valeur est assez faible. Il serait aussi intéressant de considérer les trois premiers axes qui expriment 68% de la variance totale.",
   incorrect = "Oups, ce n'est pas la bonne réponse. Afin de trouver la bonne réponse, relisez le tableau `Eigenvalues` de votre analyse",
   allow_retry = TRUE
@@ -321,7 +321,7 @@ chart$___(___, choices = c(___, ___))
 ```
 
 ```{r scores_h2-hint-1}
-chart$___(vare_mfa, choices = c(___, ___)) 
+chart$___(vare_mfa, choices = c(___, ___))
 
 #### ATTENTION: Hint suivant = solution !####
 ```
@@ -377,4 +377,16 @@ question_text(
   placeholder = "Entrez vos commentaires ici...",
   allow_retry = TRUE
 )
+```
+
+```{css, echo=FALSE}
+@media print {
+  .topics {
+    width: 100% !important;
+    padding: 0 0.5em 0 !important;
+  }
+  .topicsContainer, .topicsContainer *, .learnrBanner, .learnrBanner *, .topicActions, .topicActions * {
+    display: none !important;
+  }
+}
 ```

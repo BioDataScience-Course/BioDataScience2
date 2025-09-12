@@ -24,7 +24,7 @@ diabetes <- read("diabetes", package = "faraway")
 diabetes <- janitor::clean_names(diabetes)
 #skimr::skim(diabetes)
 # Transformation de la masse de livres en kg
-diabetes <- smutate(diabetes, 
+diabetes <- smutate(diabetes,
   weight = weight * 0.453592,
   waist = waist*2.54,
   hip = hip*2.54,
@@ -74,24 +74,24 @@ Cette première section est plutôt théorique, afin de vérifier que vous maît
 ```{r qu_csv}
 quiz(
   question("Dans le cadre d'une collaboration entre plusieurs chercheurs étrangers travaillant sur un même tableau de données de petite taille, mais utilisant de langages différents (python, R...), quel format est à privilégier ?",
-    answer("csv", correct = TRUE, 
+    answer("csv", correct = TRUE,
       message = "Ce format est simple et très pratique. Il ne faut pas un logiciel particulier pour l'ouvrir. Il est très répandu dans la communauté scientifique. Il s'agit du bon choix pour collaborer à condition d'avoir un fichier peu volumineux."),
-    answer("xlsx", 
+    answer("xlsx",
       message = "Ce format est préférable au format xls. Il n'est cependant pas le meilleur pour collaborer avec des personnes n'utilisant pas forcément Microsoft Excel."),
-    answer("xls", 
+    answer("xls",
       message = "Il s'agit d'un format propre à Microsoft Excel. Ce format est plus ancien que xlsx. Si vous devez employer xls ou xlsx, nous vous conseillons d'utiliser xslx."),
-    answer("rds", 
+    answer("rds",
       message = "Ce format est un format spécifique à R. De plus, il est déconseillé de l'employer dans le partage de données."),
     allow_retry = TRUE,
     random_answer_order = TRUE),
   question("Quel format utiliser pour archiver un tableau de données si on veut qu'il occupe le moins de place possible dans le backup ?",
-    answer("csv", 
+    answer("csv",
       message = "Ce format n'est pas compressé. Il a de nombreux avantages, mais il n'est pas la meilleure solution pour archiver un fichier."),
-    answer("csv.bz2", 
+    answer("csv.bz2",
       message = "Ce format est une forme de compromis entre un fichier non compressé et un fichier très compressé."),
-    answer("csv.gz", 
+    answer("csv.gz",
       message = "Ce format est une forme de compromis entre un fichier non compressé et un fichier très compressé."),
-    answer("csv.xz", correct = TRUE, 
+    answer("csv.xz", correct = TRUE,
       message = "La compression xz permet de compresser un CSV de manière efficace. Si l'objectif est de compresser un maximum pour l'archivage d'un fichier, c'est un format recommandé."),
     allow_retry = TRUE,
     random_answer_order = TRUE)
@@ -297,4 +297,16 @@ question_text(
   placeholder = "Entrez vos commentaires ici...",
   allow_retry = TRUE
 )
+```
+
+```{css, echo=FALSE}
+@media print {
+  .topics {
+    width: 100% !important;
+    padding: 0 0.5em 0 !important;
+  }
+  .topicsContainer, .topicsContainer *, .learnrBanner, .learnrBanner *, .topicActions, .topicActions * {
+    display: none !important;
+  }
+}
 ```

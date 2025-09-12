@@ -5,7 +5,7 @@ description: "**SDD II Module 6** Classification hiérarchique ascendante et int
 tutorial:
   id: "B06La_ahc"
   version: 2.0.1/10
-output: 
+output:
   learnr::tutorial:
     progressive: true
 runtime: shiny_prerendered
@@ -127,7 +127,7 @@ question("À partir des données du tableau `fish`, vous souhaitez réaliser une
   answer("Indice de Bray-Curtis", correct = TRUE),
   answer("Indice de Canberra", correct = TRUE),
   answer("Distance Euclidienne"),
-  answer("Indice de Manhattan"), 
+  answer("Indice de Manhattan"),
   allow_retry = TRUE, random_answer_order = TRUE,
   incorrect = "La grande question à se poser est celle de la représentativité des doubles zéros (et nous avons vu qu'il y en a beaucoup dans notre jeu de données).",
   correct = "Seuls les indices qui n'utilisent pas les doubles zéros comme information sont pertinents ici. Canberra effectuera une pondération des espèces les unes par rapport aux autres contrairement à Bray-Curtis. Cela correspond à deux points de vue différents : soit la communauté dans son ensemble caractérise le milieu, soit les espèces les plus abondantes définissent principalement ces communautés. En pratique ici, la pondération est déjà incluse via l'échelle d'abondance par espèce.")
@@ -219,7 +219,7 @@ question("Vous souhaitez réaliser un matrice de distance sur les données envir
   answer("Indice de Bray-Curtis", message = "L'indice de Bray-Curtis sert plutôt pour des dénombrements d'espèces."),
   answer("Indice de Canberra", message = "L'indice de Canberra ne prenant pas en compte les doubles zéros, il est plutôt mal adapté pour des données environnementales."),
   answer("Distance Euclidienne", correct = TRUE),
-  answer("Indice de Manhattan", correct = TRUE), 
+  answer("Indice de Manhattan", correct = TRUE),
   allow_retry = TRUE, random_answer_order = TRUE,
   incorrect = "Hum, pas tout-à-fait... Quelles métriques prennent en compte les doubles zéros comme similarité (deux sites ayant même concentration nulle en une substance chimique se ressemblent).",
   correct = "Excellent ! C'est en fait des métriques différentes qui sont utilisées pour les dénombrement d'espèces ou les données environnementales.")
@@ -464,4 +464,16 @@ question_text(
   placeholder = "Entrez vos commentaires ici...",
   allow_retry = TRUE
 )
+```
+
+```{css, echo=FALSE}
+@media print {
+  .topics {
+    width: 100% !important;
+    padding: 0 0.5em 0 !important;
+  }
+  .topicsContainer, .topicsContainer *, .learnrBanner, .learnrBanner *, .topicActions, .topicActions * {
+    display: none !important;
+  }
+}
 ```

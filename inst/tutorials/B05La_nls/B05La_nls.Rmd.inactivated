@@ -5,7 +5,7 @@ description: "**SDD II Module 5** Régression non linéaire."
 tutorial:
   id: "B05La_nls"
   version: 2.0.1/5
-output: 
+output:
   learnr::tutorial:
     progressive: true
 runtime: shiny_prerendered
@@ -57,7 +57,7 @@ Vous avez à votre disposition :
 
 ```{r}
 chart(data = df1, formula = y ~ t) +
-  geom_point() 
+  geom_point()
 ```
 
 -   la fonction suivante pour calculer votre modèle.
@@ -112,7 +112,7 @@ Des chercheurs en cancérologie essayent de modéliser la croissance d'une tumeu
 
 ```{r}
 chart(data = tumor, formula = volume ~ time) +
-  geom_point() + 
+  geom_point() +
   labs(x = "Temps [Jours]", y = "Volume tumoral [10^9 µm^3]")
 ```
 
@@ -220,7 +220,7 @@ grade_code("Ce modèle s'ajuste aussi dans ces données.")
 question("Quelle est le meilleur modèle ?",
   answer("Modèle de Gompertz", correct = TRUE),
   answer("Courbe logistique"),
-  answer("Modèle de von Bertalanffy"), 
+  answer("Modèle de von Bertalanffy"),
   allow_retry = TRUE, random_answer_order = TRUE)
 ```
 
@@ -236,4 +236,16 @@ question_text(
   placeholder = "Entrez vos commentaires ici...",
   allow_retry = TRUE
 )
+```
+
+```{css, echo=FALSE}
+@media print {
+  .topics {
+    width: 100% !important;
+    padding: 0 0.5em 0 !important;
+  }
+  .topicsContainer, .topicsContainer *, .learnrBanner, .learnrBanner *, .topicActions, .topicActions * {
+    display: none !important;
+  }
+}
 ```

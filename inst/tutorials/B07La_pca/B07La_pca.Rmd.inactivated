@@ -5,7 +5,7 @@ description: "**SDD II Module 7** : Utiliser et interpréter correctement une AC
 tutorial:
   id: "B07La_pca"
   version: 2.0.2/6
-output: 
+output:
   learnr::tutorial:
     progressive: true
 runtime: shiny_prerendered
@@ -86,7 +86,7 @@ plot(peng_corr)
 ```
 
 ```{r corplot_h2-check}
-grade_code("Par défaut, la fonction correlation() utilise la méthode de Pearson qui met en avant les corrélations linéaires, celles précisément qui nous intéressent pour l'ACP. Nous observons des corrélations positives en bleu entre la longueur du bec, de la nageoire et la masse. Par contre, la largeur du bec est inversément corrélée à ces trois autres variables.") 
+grade_code("Par défaut, la fonction correlation() utilise la méthode de Pearson qui met en avant les corrélations linéaires, celles précisément qui nous intéressent pour l'ACP. Nous observons des corrélations positives en bleu entre la longueur du bec, de la nageoire et la masse. Par contre, la largeur du bec est inversément corrélée à ces trois autres variables.")
 ```
 
 ### Linéarisation éventuelle
@@ -139,7 +139,7 @@ summary(penguins_pca)
 ```
 
 ```{r pca_h2-check}
-grade_code("La fonction `summary()` sur un objet **pca** permet de prendre connaissance du partitionnement de la variance entre les différents composantes principales dans le premier tableau. Il permet aussi de connaitre l’importante des variables initiales sur les axes de l’ACP grâce au second tableau. Prenez le temps de lire ce résultat pour répondre à la question suivante.") 
+grade_code("La fonction `summary()` sur un objet **pca** permet de prendre connaissance du partitionnement de la variance entre les différents composantes principales dans le premier tableau. Il permet aussi de connaitre l’importante des variables initiales sur les axes de l’ACP grâce au second tableau. Prenez le temps de lire ce résultat pour répondre à la question suivante.")
 ```
 
 ```{r variante_quiz}
@@ -270,4 +270,16 @@ question_text(
   placeholder = "Entrez vos commentaires ici...",
   allow_retry = TRUE
 )
+```
+
+```{css, echo=FALSE}
+@media print {
+  .topics {
+    width: 100% !important;
+    padding: 0 0.5em 0 !important;
+  }
+  .topicsContainer, .topicsContainer *, .learnrBanner, .learnrBanner *, .topicActions, .topicActions * {
+    display: none !important;
+  }
+}
 ```

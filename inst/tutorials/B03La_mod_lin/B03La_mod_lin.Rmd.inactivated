@@ -5,7 +5,7 @@ description: "**SDD II Module 3** Modèle linéaire."
 tutorial:
   id: "B03La_mod_lin"
   version: 2.1.1/8
-output: 
+output:
   learnr::tutorial:
     progressive: true
 runtime: shiny_prerendered
@@ -146,7 +146,7 @@ chart(corn2, value ~ x %col=% area) +
 ```{r}
 skimr::skim(corn2)
 
-#lm2 <- lm(data = corn2, value ~ x * area) # modèle le plus compliqué doit être simplifié 
+#lm2 <- lm(data = corn2, value ~ x * area) # modèle le plus compliqué doit être simplifié
 #lm2 <- lm(data = corn2, value ~ x + area + x:area)
 lm2 <- lm(data = corn2, value ~ x + x:area)
 #summary(lm2)
@@ -431,4 +431,16 @@ question_text(
   placeholder = "Entrez vos commentaires ici...",
   allow_retry = TRUE
 )
+```
+
+```{css, echo=FALSE}
+@media print {
+  .topics {
+    width: 100% !important;
+    padding: 0 0.5em 0 !important;
+  }
+  .topicsContainer, .topicsContainer *, .learnrBanner, .learnrBanner *, .topicActions, .topicActions * {
+    display: none !important;
+  }
+}
 ```

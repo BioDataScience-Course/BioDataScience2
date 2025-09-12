@@ -273,14 +273,14 @@ quiz(
   question("Sélectionnez l'affirmation correcte concernant le paramètre de dispersion",
     answer("Une surdispersion importante est observée pour ce modèle."),
     answer("Une sousdispersion importante est observée pour ce modèle."),
-    answer("La dispersion est proche de 1 et est correcte.", correct = TRUE), 
+    answer("La dispersion est proche de 1 et est correcte.", correct = TRUE),
     allow_retry = TRUE, random_answer_order = TRUE),
   question("Sélectionnez l'affirmation correcte concernant le critère d'Akaike",
     answer("La valeur brute ne donne aucune information", correct = TRUE),
     answer("La valeur est faible, c'est un bon modèle"),
     answer("La valeur est faible, c'est un mauvais modèle"),
     answer("La valeur est élevée, c'est un bon modèle"),
-    answer("La valeur est élevée, c'est un mauvais modèle"), 
+    answer("La valeur est élevée, c'est un mauvais modèle"),
     allow_retry = TRUE, random_answer_order = TRUE)
 )
 ```
@@ -404,4 +404,16 @@ question_text(
   placeholder = "Entrez vos commentaires ici...",
   allow_retry = TRUE
 )
+```
+
+```{css, echo=FALSE}
+@media print {
+  .topics {
+    width: 100% !important;
+    padding: 0 0.5em 0 !important;
+  }
+  .topicsContainer, .topicsContainer *, .learnrBanner, .learnrBanner *, .topicActions, .topicActions * {
+    display: none !important;
+  }
+}
 ```

@@ -5,7 +5,7 @@ description: "**SDD II Module 2** Maîtriser la régression linéaire polynomial
 tutorial:
   id: "B02Lb_reg_poly"
   version: 2.2.0/5
-output: 
+output:
   learnr::tutorial:
     progressive: true
     allow_skip: true
@@ -19,7 +19,7 @@ SciViews::R("model", lang = "fr")
 # datasets
 reddrum <- read("reddrum", package = "UsingR")
 reddrum$length <- reddrum$length * 0.0254
-reddrum <- labelise(reddrum, 
+reddrum <- labelise(reddrum,
   label = list(length = "Longueur", age = "Âge"),
   units = list(length = "m", age = "années"))
 
@@ -60,7 +60,7 @@ reddrum <- read("reddrum", package = "UsingR")
 # Conversion de pouce en mètre
 reddrum$length <- reddrum$length * 0.0254
 # Ajout des labels et unités
-reddrum <- labelise(reddrum, 
+reddrum <- labelise(reddrum,
   label = list(length = "Longueur", age = "Âge"),
   units = list(length = "m", age = "années"))
 
@@ -322,7 +322,19 @@ question_text(
   incorrect = "Vos commentaires sont enregistrés.",
   placeholder = "Entrez vos commentaires ici...",
   allow_retry = TRUE,
-  submit_button = "Soumettre une réponse", 
+  submit_button = "Soumettre une réponse",
   try_again_button = "Resoumettre une réponse"
 )
+```
+
+```{css, echo=FALSE}
+@media print {
+  .topics {
+    width: 100% !important;
+    padding: 0 0.5em 0 !important;
+  }
+  .topicsContainer, .topicsContainer *, .learnrBanner, .learnrBanner *, .topicActions, .topicActions * {
+    display: none !important;
+  }
+}
 ```

@@ -24,7 +24,7 @@ set.seed(11)
 stations <-  dtx_rows(
   ~id_station,    ~country,     ~city,               ~station,        ~localisation,
      "stat_01", "Belgique",    "Mons",   "Abbaye Saint Denis", "50.4939°N 4.1893°E",
-     "stat_02", "Belgique",    "Mons", "Parc du bois de Mons", "50.4484°N 3.9906°E", 
+     "stat_02", "Belgique",    "Mons", "Parc du bois de Mons", "50.4484°N 3.9906°E",
      "stat_03", "Belgique",    "Mons",      "Jardin Suspendu", "50.4469°N 3.9510°E"
 )
 
@@ -287,14 +287,14 @@ dm_draw(bees_dm2, view_type = "all")
 ```
 
 ```{r request_h2, exercise=TRUE}
-# Filtre 
+# Filtre
 bees_dm2 %>.%
   ___(___, ___ = ___, # filtre sur `stations`
       ___, ___ = ___) %>.% # filtre sur `captures`
   ___(., ___) -> # combinaison des tables
   bees_request
 # Résumé des données
-___ %>.% 
+___ %>.%
   ___(., ___) %>.%
   ___(.) ->
   request2
@@ -304,14 +304,14 @@ ___ %>.%
 ```
 
 ```{r request_h2-hint-1}
-# Filtre 
+# Filtre
 bees_dm2 %>.%
   dm_filter(., stations = station == "Abbaye Saint Denis", # filtre sur `stations`
                ___ = ___) %>.% # filtre sur `captures`
   dm_flatten_to_tbl(., captures) ->  # combinaison des tables
   bees_request
 # Résumé des données par espèce
-bees_request %>.% 
+bees_request %>.%
   ___(., ___) %>.%
   ___ ->
   request2
@@ -324,7 +324,7 @@ bees_request %>.%
 
 ```{r request_h2-solution}
 ## Solution ##
-# Filtre 
+# Filtre
 bees_dm2 %>.%
   dm_filter(., stations = station == "Abbaye Saint Denis", # filtre sur `stations`
                captures = author == "Benrezkallah") %>.% # filtre sur `captures`
@@ -332,9 +332,9 @@ bees_dm2 %>.%
   bees_request
 
 # Résumé des données
-bees_request %>.% 
+bees_request %>.%
   group_by(., species) %>.%
-  count(.) -> 
+  count(.) ->
   request2
 
 # Collecte de la requête
@@ -359,4 +359,16 @@ question_text(
   placeholder = "Entrez vos commentaires ici...",
   allow_retry = TRUE
 )
+```
+
+```{css, echo=FALSE}
+@media print {
+  .topics {
+    width: 100% !important;
+    padding: 0 0.5em 0 !important;
+  }
+  .topicsContainer, .topicsContainer *, .learnrBanner, .learnrBanner *, .topicActions, .topicActions * {
+    display: none !important;
+  }
+}
 ```

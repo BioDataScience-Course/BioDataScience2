@@ -5,7 +5,7 @@ description: "**SDD II Module 6** Regroupement des données par les k-moyennes e
 tutorial:
   id: "B06Lb_kmeans"
   version: 2.2.0/8
-output: 
+output:
   learnr::tutorial:
     progressive: true
 runtime: shiny_prerendered
@@ -129,7 +129,7 @@ question("Sur base du graphique que vous avez réalisé, quelle valeur de *k* ut
   answer("3"),
   answer("4", correct = TRUE),
   answer("5"),
-  answer("Plus de 5"), 
+  answer("Plus de 5"),
   allow_retry = TRUE,
   correct = "Bravo, vous avez trouvé la bonne réponse. Sur le graphique, on choisira une valeur de *k* à la base du coude, lorsque l'ajout d'un *k* supplémentaire ne permet plus de faire baisser la valeur de manière importante.",
   incorrect = "Retentez votre chance. Nous recherchons des sauts importants dans la décroissance de la somme des carrés (*total within sum of square*). L'objectif est de choisir la valeur de *k* à la base du coude, lorsque l'ajout d'un *k* supplémentaire ne permet plus de faire baisser la somme des carrés de manière importante.")
@@ -175,7 +175,7 @@ Tracez un graphique des nitrates `nit` en fonction de l'oxygène dissout `oxy`. 
 
 ```{r graphe_prep}
 envir_scale <- as_dtx(scale(envir))
-set.seed(210219) 
+set.seed(210219)
 envir_kmn <- k_means(envir_scale, k = 4, nstart = 25)
 ```
 
@@ -320,4 +320,16 @@ question_text(
   placeholder = "Entrez vos commentaires ici...",
   allow_retry = TRUE
 )
+```
+
+```{css, echo=FALSE}
+@media print {
+  .topics {
+    width: 100% !important;
+    padding: 0 0.5em 0 !important;
+  }
+  .topicsContainer, .topicsContainer *, .learnrBanner, .learnrBanner *, .topicActions, .topicActions * {
+    display: none !important;
+  }
+}
 ```

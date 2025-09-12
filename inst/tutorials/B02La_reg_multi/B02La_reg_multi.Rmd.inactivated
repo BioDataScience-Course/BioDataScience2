@@ -5,7 +5,7 @@ description: "**SDD II Module 2** Résumé de lm et régression linéaire multip
 tutorial:
   id: "B02La_reg_multi"
   version: 2.4.0/11
-output: 
+output:
   learnr::tutorial:
     progressive: true
     allow_skip: true
@@ -31,13 +31,13 @@ lm_mult_param <- glance(fat_lm2)
 diabetes <- read("diabetes", package = "faraway")
 diabetes <- janitor::clean_names(diabetes)
 diabetes <- smutate(diabetes, weight = weight * 0.453592)
-diabetes <- smutate(diabetes, 
+diabetes <- smutate(diabetes,
   map  = bp_1d + 1/3 * (bp_1s - bp_1d),
   age2 = age^2)
 # Des colonnes de classe "labelled" sont à transformer en "numeric"
 diabetes <- smutate(diabetes, across(function(x) inherits(x, "labelled"), as.numeric))
-diabetes <- labelise(diabetes, 
-  label = list(map = "Tension artérielle moyenne", age = "Âge"), 
+diabetes <- labelise(diabetes,
+  label = list(map = "Tension artérielle moyenne", age = "Âge"),
   units = list(map = "mm Hg", age = "années")
 )
 # lm multi
@@ -170,7 +170,7 @@ correlation(fat[, c("density", "abdom", "thigh")])
 La corrélation linéaire entre `density` et `abdom` est bonne. Elle l'est moins entre `density` et `thigh`, mais nous allons voir dans un instant si cette variable apporte un plus. La corrélation entre `abdom` et `thigh` est assez élevée (77%) mais cela laisse un peu de marge pour exprimer éventuellement une information complémentaire utile au sein du modèle multiple.
 
 ```{r regmulti_h2, exercise=TRUE}
-# régression multiple 
+# régression multiple
 summary(fat_lm2 <- lm(data = ___, ___ ~ ___))
 ```
 
@@ -181,7 +181,7 @@ summary(fat_lm2 <- lm(data = DF, Y  ~ VAR1 + VAR2))
 ```
 
 ```{r regmulti_h2-solution}
-## Solution ## 
+## Solution ##
 summary(fat_lm2 <- lm(data = fat, density ~ abdom + thigh))
 ```
 
@@ -430,7 +430,19 @@ question_text(
   incorrect = "Vos commentaires sont enregistrés.",
   placeholder = "Entrez vos commentaires ici...",
   allow_retry = TRUE,
-  submit_button = "Soumettre une réponse", 
+  submit_button = "Soumettre une réponse",
   try_again_button = "Resoumettre une réponse"
 )
+```
+
+```{css, echo=FALSE}
+@media print {
+  .topics {
+    width: 100% !important;
+    padding: 0 0.5em 0 !important;
+  }
+  .topicsContainer, .topicsContainer *, .learnrBanner, .learnrBanner *, .topicActions, .topicActions * {
+    display: none !important;
+  }
+}
 ```

@@ -114,7 +114,7 @@ chart(bci_mds, labels = 1:50)
 ```
 
 ```{r metric_h2-check}
-grade_code("Vous venez de réaliser votre première MDS métrique. Sur ce graphique, les stations qui sont proches les unes des autres ont un indice de dissimilarité faible et se ressemblent du point de vue de la composition en végétaux. Notez bien que ni l’orientation des axes, ni les valeurs absolues sur ces axes n’ont de significations particulières. Sur ce graphique, vous pouvez voir qu'un petit groupe d'une douzaine de parcelles se détache à gauche du graphique. Un autre groupe s'individualise dans le bas... mais avant d'interpréter, nous devons vérifier le GOF pour déterminer si la représentation reste suffisamment fidèle à la réalité.") 
+grade_code("Vous venez de réaliser votre première MDS métrique. Sur ce graphique, les stations qui sont proches les unes des autres ont un indice de dissimilarité faible et se ressemblent du point de vue de la composition en végétaux. Notez bien que ni l’orientation des axes, ni les valeurs absolues sur ces axes n’ont de significations particulières. Sur ce graphique, vous pouvez voir qu'un petit groupe d'une douzaine de parcelles se détache à gauche du graphique. Un autre groupe s'individualise dans le bas... mais avant d'interpréter, nous devons vérifier le GOF pour déterminer si la représentation reste suffisamment fidèle à la réalité.")
 ```
 
 ### Goodness-of-fit
@@ -143,13 +143,13 @@ glance(bci_mds)
 ```
 
 ```{r gof_h2-check}
-grade_code("Répondez maintenant à la question qui vous est posée ci-dessous.") 
+grade_code("Répondez maintenant à la question qui vous est posée ci-dessous.")
 ```
 
 ```{r qu_mds}
 question("Considérez vous que cette PCoA est exploitable ?",
   answer("oui, sur base du goodness-of-fit, la PCoA est fidèle aux distances"),
-  answer("non, le goodness-of-fit est trop faible, nous devons tenter une MDS non métrique", 
+  answer("non, le goodness-of-fit est trop faible, nous devons tenter une MDS non métrique",
   correct = TRUE),
   allow_retry = TRUE,
   correct = "Ces valeurs sont trop faibles. L'indicateur GOF1 donne une mesure de la part de variance du jeu de données initial qui a pu être représentée. L'indicateur GOF2 quant à lui correspond à la somme des valeurs propres positives uniquement. Dans notre cas, les valeurs de GOF ne sont pas très élevées, nous devons donc considérer que la carte n'est pas très représentative.",
@@ -190,7 +190,7 @@ chart(bci_nmds, labels = 1:50)
 ```
 
 ```{r nonmetric_h2-check}
-grade_code("La représentation que nous obtenons est assez différente de celle de la MDS métrique. On retrouve deux groupes plus ou moins séparés à gauche et au centre du graphique et puis deux stations isolées vers la droite et le haut du graphique.") 
+grade_code("La représentation que nous obtenons est assez différente de celle de la MDS métrique. On retrouve deux groupes plus ou moins séparés à gauche et au centre du graphique et puis deux stations isolées vers la droite et le haut du graphique.")
 ```
 
 ### Qualité de l'ajustement
@@ -221,7 +221,7 @@ glance(bci_nmds)
 ```
 
 ```{r ajust_h2-check}
-grade_code("Bon, on commence à s'habituer à l'usage simple de `glance()`. Analysez maintenant ces mesures et répondez à la question ci-dessous.") 
+grade_code("Bon, on commence à s'habituer à l'usage simple de `glance()`. Analysez maintenant ces mesures et répondez à la question ci-dessous.")
 ```
 
 ```{r qu_nmds}
@@ -267,7 +267,7 @@ chart(bci_sh)
 ```
 
 ```{r shepard_h2-check}
-grade_code("Comme vous le voyez, les points sont relativement proches de la fonction de stress. Et plus ils seront proches, mieux ce sera. Par contre la forme de la fonction de stress n'est pas très linéaire. Nous pouvions nous y attendre, car si cela avait été le cas, la MDS métrique aurait aussi bien fonctionné sur ces données.") 
+grade_code("Comme vous le voyez, les points sont relativement proches de la fonction de stress. Et plus ils seront proches, mieux ce sera. Par contre la forme de la fonction de stress n'est pas très linéaire. Nous pouvions nous y attendre, car si cela avait été le cas, la MDS métrique aurait aussi bien fonctionné sur ces données.")
 ```
 
 ## Conclusion
@@ -282,4 +282,16 @@ question_text(
   placeholder = "Entrez vos commentaires ici...",
   allow_retry = TRUE
 )
+```
+
+```{css, echo=FALSE}
+@media print {
+  .topics {
+    width: 100% !important;
+    padding: 0 0.5em 0 !important;
+  }
+  .topicsContainer, .topicsContainer *, .learnrBanner, .learnrBanner *, .topicActions, .topicActions * {
+    display: none !important;
+  }
+}
 ```
