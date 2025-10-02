@@ -150,7 +150,7 @@ Réalisez à présent la régression linéaire demandée de la variable `area` e
 ```{r rice_lm_h2, exercise=TRUE, warning=FALSE}
 rice_lm <- lm(data = ___, ___ ~ ___) 
 # Résumé de la régression linéaire
-summary(___) |>
+summary_(___) |>
   tabularise()
 # Graphique de la régression
 chart(___)
@@ -159,7 +159,7 @@ chart(___)
 ```{r rice_lm_h2-hint-1, warning=FALSE}
 rice_lm <- lm(data = rice, ___ ~ ___) 
 # Résumé de la régression linéaire
-summary(rice_lm) |>
+summary_(rice_lm) |>
   tabularise()
 # Graphique de la régression
 chart(rice_lm)
@@ -171,7 +171,7 @@ chart(rice_lm)
 ## Solution ##
 rice_lm <- lm(data = rice, area ~ major_axis_length) 
 # Résumé de la régression linéaire
-summary(rice_lm) |>
+summary_(rice_lm) |>
   tabularise()
 # Graphique de la régression
 chart(rice_lm)

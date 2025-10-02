@@ -15,6 +15,38 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
 SciViews::R("model",lang = "fr")
+# Required for RSConnect
+# SciViews::R
+library(rlang)
+library(data.table)
+library(ggplot2)
+library(tibble)
+library(tidyr)
+library(dplyr)
+library(dtplyr)
+library(broom)
+library(forcats)
+library(collapse)
+library(fs)
+library(data.trame)
+library(svFast)
+library(svTidy)
+library(svMisc)
+library(svBase)
+library(svFlow)
+library(data.io)
+library(chart)
+library(tabularise)
+library(SciViews)
+# ... more
+library(readxl)
+library(testthat)
+library(equatags)
+# 'model' and 'infer' packages
+library(modelit)
+library(distributional)
+library(inferit)
+library(faraway)
 
 # fat dataset
 fat <- read("fat", package = "faraway")
@@ -95,18 +127,18 @@ chart(data = fat, density ~ abdom) +
 Ajustez maintenant une régression linéaire simple de `density` en fonction de `abdom` du jeu de données `fat`. Vous placerez le résultat dans `fat_lm1` et vous imprimerez le résumé.
 
 ```{r reglin_h2, exercise=TRUE}
-summary(fat_lm1 <- lm(data = ___, ___ ~ ___))
+summary_(fat_lm1 <- lm(data = ___, ___ ~ ___))
 ```
 
 ```{r reglin_h2-hint}
-summary(fat_lm1 <- lm(data = DF, FORMULA))
+summary_(fat_lm1 <- lm(data = DF, FORMULA))
 
 #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r reglin_h2-solution}
 ## Solution ##
-summary(fat_lm1 <- lm(data = fat, density ~ abdom))
+summary_(fat_lm1 <- lm(data = fat, density ~ abdom))
 ```
 
 ```{r reglin_h2-check}
@@ -177,18 +209,18 @@ La corrélation linéaire entre `density` et `abdom` est bonne. Elle l'est moins
 
 ```{r regmulti_h2, exercise=TRUE}
 # régression multiple
-summary(fat_lm2 <- lm(data = ___, ___ ~ ___))
+summary_(fat_lm2 <- lm(data = ___, ___ ~ ___))
 ```
 
 ```{r regmulti_h2-hint}
-summary(fat_lm2 <- lm(data = DF, Y  ~ VAR1 + VAR2))
+summary_(fat_lm2 <- lm(data = DF, Y  ~ VAR1 + VAR2))
 
 #### ATTENTION: Hint suivant = solution !####
 ```
 
 ```{r regmulti_h2-solution}
 ## Solution ##
-summary(fat_lm2 <- lm(data = fat, density ~ abdom + thigh))
+summary_(fat_lm2 <- lm(data = fat, density ~ abdom + thigh))
 ```
 
 ```{r regmulti_h2-check}
@@ -243,7 +275,7 @@ AIC(fat_lm1, fat_lm2)
 Dans les deux cas, le modèle multiple se démarque de justesse. En effet, la valeur *p* de l'ANOVA étant légèrement supérieure à 1%, elle est moyenne, mais reste inférieure au seuil alpha de 5% choisi. Nous rejetons donc l'hypothèse nulle que le terme supplémentaire n'apporte rien. D'autre part, le critère d'Akaike est très, très légèrement plus faible en faveur du modèle multiple. C'est ténu et le gain en part de variance expliquée (*R*^2^) l'est aussi puisque l'on ne gagne même pas un pour cent. Une présentation "soignée" de ca modèle avec `tabularise()` donne :
 
 ```{r, echo=TRUE, warning=FALSE}
-summary(fat_lm2) |> tabularise()
+summary_(fat_lm2) |> tabularise()
 ```
 
 Le modèle paramétré est extrait ici en utilisant ``` `r eq__(fat_lm2, use_coefs = TRUE, coef_digits = c(2, 5, 6))` ``` dans une balise équation Markdown commençant et terminant par deux signes dollars (`$$...$$`). Ici, l'ajustement manuel du nombre de chiffres significatifs pour les coefficients estimés est *obligatoire* :
@@ -356,13 +388,13 @@ Ici, nous sommes en présence de corrélations très faibles entre les variables
 ```{r regmulti2_h2, exercise=TRUE}
 map_lm <- lm(data = ___, ___ ~ ___)
 # Résumé du modèle
-summary(___)
+summary_(___)
 ```
 
 ```{r regmulti2_h2-hint-1}
 map_lm <- lm(data = ___, ___ ~ ___)
 # Résumé du modèle
-summary(map_lm)
+summary_(map_lm)
 
 #### ATTENTION: Hint suivant = solution !####
 ```
@@ -371,7 +403,7 @@ summary(map_lm)
 ## Solution ##
 map_lm <- lm(data = diabetes, map ~ age + chol + weight)
 # Résumé du modèle
-summary(map_lm)
+summary_(map_lm)
 ```
 
 ```{r regmulti2_h2-check}
@@ -408,7 +440,7 @@ quiz(
 Dans le cas où ces résultats devraient être présentés dans un rapport soigné, vous sortirez évidemment la version `tabularise()` de ce résumé :
 
 ```{r, echo=TRUE, warning=FALSE}
-summary(map_lm) |> tabularise()
+summary_(map_lm) |> tabularise()
 ```
 
 Vous n'oubliez évidemment pas de paramétrer votre modèle en utilisant dans une balise Markdown d'équation encadrée par deux signes dollars (`\$\$`), le chunk en ligne ``` `r eq__(map_lm, use_coefs = TRUE)` ```, comme ci-dessous (vous pouvez aussi ajuster manuellement les chiffres significations avec `coef_digits = c(w, x, y, z)` où `w`, `x`, `y`, `z` sont des entiers indiquant le nombre de chiffres significatifs désirés pour les quatre paramètres, ici `c(1, 3, 4, 3)`) :

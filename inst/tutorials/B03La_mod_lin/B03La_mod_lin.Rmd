@@ -14,6 +14,37 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
 SciViews::R("model", lang = "fr")
+# Required for RSConnect
+# SciViews::R
+library(rlang)
+library(data.table)
+library(ggplot2)
+library(tibble)
+library(tidyr)
+library(dplyr)
+library(dtplyr)
+library(broom)
+library(forcats)
+library(collapse)
+library(fs)
+library(data.trame)
+library(svFast)
+library(svTidy)
+library(svMisc)
+library(svBase)
+library(svFlow)
+library(data.io)
+library(chart)
+library(tabularise)
+library(SciViews)
+# ... more
+library(readxl)
+library(testthat)
+library(equatags)
+# 'model' and 'infer' packages
+library(modelit)
+library(distributional)
+library(inferit)
 ```
 
 ```{r, echo=FALSE}
@@ -58,7 +89,7 @@ Voici un nuage de points et un tableau résumé pour vous familiariser avec les 
 
 ```{r}
 lm1 <- lm(data = corn1, value ~ x * area)
-#summary(lm1)
+#summary_(lm1)
 lm1_param <- glance(lm1)
 lm1_result <- tidy(lm1)
 
@@ -90,17 +121,17 @@ corn1 <- dtx(
 
 ```{r corn1_h3, exercise=TRUE, exercise.setup="corn1_prep", exercise.lines=3, warning=FALSE}
 corn1_lm <- lm(data = ___, ___)
-summary(corn1_lm) |> tabularise()
+summary_(corn1_lm) |> tabularise()
 ```
 
 ```{r corn1_h3-hint-1}
 corn1_lm <- lm(data = DF, FORMULA)
-summary(corn1_lm) |> tabularise()
+summary_(corn1_lm) |> tabularise()
 ```
 
 ```{r corn1_h3-hint-2}
 corn1_lm <- lm(data = DF, VAR1 ~ VAR2 * VAR3)
-summary(corn1_lm) |> tabularise()
+summary_(corn1_lm) |> tabularise()
 
 #### ATTENTION: Hint suivant = solution !####
 ```
@@ -108,7 +139,7 @@ summary(corn1_lm) |> tabularise()
 ```{r corn1_h3-solution}
 ## Solution ##
 corn1_lm <- lm(data = corn1, value ~ x * area)
-summary(corn1_lm) |> tabularise()
+summary_(corn1_lm) |> tabularise()
 ```
 
 ```{r corn1_h3-check}
@@ -155,7 +186,7 @@ skimr::skim(corn2)
 #lm2 <- lm(data = corn2, value ~ x * area) # modèle le plus compliqué doit être simplifié
 #lm2 <- lm(data = corn2, value ~ x + area + x:area)
 lm2 <- lm(data = corn2, value ~ x + x:area)
-#summary(lm2)
+#summary_(lm2)
 lm2_param <- glance(lm2)
 lm2_result <- tidy(lm2)
 ```
@@ -180,12 +211,12 @@ corn2 <- dtx(
 
 ```{r corn2_h4, exercise=TRUE, exercise.setup="corn2_prep", exercise.lines=3, warning=FALSE}
 corn2_lm <- lm(data = ___, ___)
-summary(corn2_lm) |> tabularise()
+summary_(corn2_lm) |> tabularise()
 ```
 
 ```{r corn2_h4-hint-1}
 corn2_lm <- lm(data = DF, VAR1 ~ VAR2 ___)
-summary(corn2_lm) |> tabularise()
+summary_(corn2_lm) |> tabularise()
 ```
 
 ```{r corn2_h4-hint-2}
@@ -194,7 +225,7 @@ corn2_lm <- lm(data = DF, VAR1 ~ VAR2 + VAR3)
 corn2_lm <- lm(data = DF, VAR1 ~ VAR2 + VAR2:VAR3)
 # ou
 corn2_lm <- lm(data = DF, VAR1 ~ VAR2 + VAR3 + VAR2:VAR3)
-summary(corn2_lm) |> tabularise()
+summary_(corn2_lm) |> tabularise()
 ```
 
 ```{r corn2_h4-hint-3}
@@ -203,7 +234,7 @@ corn2_lm <- lm(data = corn2, value ~ x + area)
 corn2_lm <- lm(data = corn2, value ~ x + x:area)
 # ou
 corn2_lm <- lm(data = corn2, value ~ x + area + x:area)
-summary(corn2_lm) |> tabularise()
+summary_(corn2_lm) |> tabularise()
 
 #### ATTENTION: Hint suivant = solution !####
 ```
@@ -211,7 +242,7 @@ summary(corn2_lm) |> tabularise()
 ```{r corn2_h4-solution}
 ## Solution ##
 corn2_lm <- lm(data = corn2, value ~ x + x:area)
-summary(corn2_lm) |> tabularise()
+summary_(corn2_lm) |> tabularise()
 ```
 
 ```{r corn2_h4-check}
@@ -251,7 +282,7 @@ Voici un nuage de points et un tableau résumé pour vous familiariser avec les 
 #lm3 <- lm(data = corn3, value ~ x*area)
 #lm3 <- lm(data = corn3, value ~ x + area + x:area)
 lm3 <- lm(data = corn3, value ~ x + area)
-#summary(lm3)
+#summary_(lm3)
 lm3_param <- glance(lm3)
 lm3_result <- tidy(lm3)
 
@@ -283,12 +314,12 @@ corn3 <- dtx(
 
 ```{r corn3_h4, exercise=TRUE, exercise.setup = "corn3_prep", exercise.lines=3, warning=FALSE}
 corn3_lm <- lm(data = ___, ___)
-summary(corn3_lm) |> tabularise()
+summary_(corn3_lm) |> tabularise()
 ```
 
 ```{r corn3_h4-hint-1}
 corn3_lm <- lm(data = DF, VAR1 ~VAR2 ___)
-summary(corn3_lm) |> tabularise()
+summary_(corn3_lm) |> tabularise()
 ```
 
 ```{r corn3_h4-hint-2}
@@ -297,7 +328,7 @@ corn3_lm <- lm(data = DF, VAR1 ~ VAR2 + VAR3)
 corn3_lm <- lm(data = DF, VAR1 ~ VAR2 + VAR2:VAR3)
 # ou
 corn3_lm <- lm(data = DF, VAR1 ~ VAR2 + VAR3 + VAR2:VAR3)
-summary(corn3_lm) |> tabularise()
+summary_(corn3_lm) |> tabularise()
 ```
 
 ```{r corn3_h4-hint-3}
@@ -306,7 +337,7 @@ corn3_lm <- lm(data = corn3, value ~ x + area)
 corn3_lm <- lm(data = corn3, value ~ x + x:area)
 # ou
 corn3_lm <- lm(data = corn3, value ~ x + area + x:area)
-summary(corn3_lm) |> tabularise()
+summary_(corn3_lm) |> tabularise()
 
 #### ATTENTION: Hint suivant = solution !####
 ```
@@ -314,7 +345,7 @@ summary(corn3_lm) |> tabularise()
 ```{r corn3_h4-solution}
 ## Solution ##
 corn3_lm <- lm(data = corn3, value ~ x + area)
-summary(corn3_lm) |> tabularise()
+summary_(corn3_lm) |> tabularise()
 ```
 
 ```{r corn3_h4-check}
@@ -354,7 +385,7 @@ Voici un nuage de points et un tableau résumé pour vous familiariser avec les 
 #lm4 <- lm(data = corn4, value ~ x * area)
 #lm4 <- lm(data = corn4, value ~ x * area + 0)
 lm4 <- lm(data = corn4, value ~ x + x:area - 1)
-#summary(lm4)
+#summary_(lm4)
 lm4_param <- glance(lm4)
 lm4_result <- tidy(lm4)
 
@@ -386,22 +417,22 @@ corn4 <- dtx(
 
 ```{r corn4_h4, exercise=TRUE, exercise.setup="corn4_prep", exercise.lines=3, warning=FALSE}
 corn4_lm <- lm(data = ___, ___)
-summary(corn4_lm) |> tabularise()
+summary_(corn4_lm) |> tabularise()
 ```
 
 ```{r corn4_h4-hint-1}
 corn4_lm <- lm(data = DF, VAR1 ~ Var2 ___)
-summary(corn4_lm) |> tabularise()
+summary_(corn4_lm) |> tabularise()
 ```
 
 ```{r corn4_h4-hint-2}
 corn4_lm <- lm(data = DF, VAR1 ~ VAR2 + VAR2:VAR3 ___)
-summary(corn4_lm) |> tabularise()
+summary_(corn4_lm) |> tabularise()
 ```
 
 ```{r corn4_h4-hint-3}
 corn4_lm <- lm(data = corn4, value ~ x + x:area ___)
-summary(corn4_lm) |> tabularise()
+summary_(corn4_lm) |> tabularise()
 
 #### ATTENTION: Hint suivant = solution !####
 ```
@@ -409,7 +440,7 @@ summary(corn4_lm) |> tabularise()
 ```{r corn4_h4-solution}
 ## Solution ##
 corn4_lm <- lm(data = corn4, value ~ x + x:area + 0)
-summary(corn4_lm) |> tabularise()
+summary_(corn4_lm) |> tabularise()
 ```
 
 ```{r corn4_h4-check}

@@ -15,6 +15,38 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
 SciViews::R("model", lang = "fr")
+# Required for RSConnect
+# SciViews::R
+library(rlang)
+library(data.table)
+library(ggplot2)
+library(tibble)
+library(tidyr)
+library(dplyr)
+library(dtplyr)
+library(broom)
+library(forcats)
+library(collapse)
+library(fs)
+library(data.trame)
+library(svFast)
+library(svTidy)
+library(svMisc)
+library(svBase)
+library(svFlow)
+library(data.io)
+library(chart)
+library(tabularise)
+library(SciViews)
+# ... more
+library(readxl)
+library(testthat)
+library(equatags)
+# 'model' and 'infer' packages
+library(modelit)
+library(distributional)
+library(inferit)
+library(UsingR)
 
 # datasets
 reddrum <- read("reddrum", package = "UsingR")
@@ -87,7 +119,7 @@ La croissance de ces poissons est particulière. Les juvéniles ont une croissan
 ```{r reglin_h2, exercise=TRUE}
 reddrum_lm1 <- lm(data = ___, ___ ~ ___)
 # Résumé du modèle
-summary(___)
+summary_(___)
 # Graphique du modèle
 chart(___)
 ```
@@ -95,7 +127,7 @@ chart(___)
 ```{r reglin_h2-hint-1}
 reddrum_lm1 <- lm(data = ___, ___ ~ ___)
 # Résumé du modèle
-summary(reddrum_lm1)
+summary_(reddrum_lm1)
 # Graphique du modèle
 chart(reddrum_lm1)
 
@@ -106,7 +138,7 @@ chart(reddrum_lm1)
 ## Solution ##
 reddrum_lm1 <- lm(data = reddrum, length ~ age)
 # Résumé du modèle
-summary(reddrum_lm1)
+summary_(reddrum_lm1)
 # Graphique du modèle
 chart(reddrum_lm1)
 ```
@@ -126,7 +158,7 @@ Réalisez ensuite une **régression linéaire polynomiale d'ordre deux** avec le
 ```{r regpoly_h2, exercise=TRUE}
 reddrum_lm2 <- lm(data = ___, ___ ~ ___ + ___(___))
 # Résumé du modèle
-summary(___)
+summary_(___)
 # Graphique du modèle
 chart(___)
 ```
@@ -134,7 +166,7 @@ chart(___)
 ```{r regpoly_h2-hint-1}
 reddrum_lm2 <- lm(data = ___, ___ ~ ___ + I(___))
 # résumé du modèle
-summary(reddrum_lm2)
+summary_(reddrum_lm2)
 # Graphique du modèle
 chart(reddrum_lm2)
 
@@ -145,7 +177,7 @@ chart(reddrum_lm2)
 ## Solution ##
 reddrum_lm2 <- lm(data = reddrum, length ~ age + I(age^2))
 # résumé du modèle
-summary(reddrum_lm2)
+summary_(reddrum_lm2)
 # Graphique du modèle
 chart(reddrum_lm2)
 ```
@@ -165,7 +197,7 @@ Réalisez à présent une **régression linéaire polynomiale d'ordre trois** av
 ```{r regpoly3_h2, exercise=TRUE}
 reddrum_lm3 <- lm(data = ___, ___ ~ ___ + ___(___) + ___(___))
 # Résumé du modèle
-summary(___)
+summary_(___)
 # Graphique du modèle
 chart(___)
 ```
@@ -173,7 +205,7 @@ chart(___)
 ```{r regpoly3_h2-hint-1}
 reddrum_lm3 <- lm(data = ___, ___ ~ ___ + I(___) + ___(___))
 # résumé du modèle
-summary(reddrum_lm3)
+summary_(reddrum_lm3)
 # Graphique du modèle
 chart(reddrum_lm3)
 
@@ -184,7 +216,7 @@ chart(reddrum_lm3)
 ## Solution ##
 reddrum_lm3 <- lm(data = reddrum, length ~ age + I(age^2) + I(age^3))
 # résumé du modèle
-summary(reddrum_lm3)
+summary_(reddrum_lm3)
 # Graphique du modèle
 chart(reddrum_lm3)
 ```
@@ -211,7 +243,7 @@ quiz(
     answer(sprintf("%.4f", lm_poly_coef$statistic[3])),
     answer(sprintf("%.4f", lm_poly_param$r.squared[1])),
     allow_retry = TRUE, random_answer_order = TRUE
-    ),
+  ),
   question(text = "Quelle est la part de la variance exprimée par ce modèle ?",
     answer(sprintf("%.3f", lm_poly_coef$estimate[1])),
     answer(sprintf("%.3f", lm_poly_coef$estimate[2])),
@@ -221,7 +253,7 @@ quiz(
     answer(sprintf("%.3f", lm_poly_coef$statistic[2])),
     answer(sprintf("%.3f", lm_poly_param$adj.r.squared[1]), correct = TRUE),
     allow_retry = TRUE, random_answer_order = TRUE
-    )
+  )
 )
 ```
 
@@ -232,7 +264,7 @@ Nous avons pu observer que notre modèle s'ajuste de mieux en mieux en augmentan
 ```{r, echo=TRUE}
 reddrum_lm6 <- lm(data = reddrum, length ~ age + I(age^2) + I(age^3) +
   I(age^4) + I(age^5) + I(age^6))
-summary(reddrum_lm6)
+summary_(reddrum_lm6)
 chart(reddrum_lm6)
 ```
 
@@ -247,7 +279,7 @@ Voici à présent le résultat pour un polynôme d'ordre sept.
 ```{r, echo=TRUE}
 reddrum_lm7 <- lm(data = reddrum, length ~ age + I(age^2) + I(age^3) +
   I(age^4) + I(age^5) + I(age^6) + I(age^7))
-summary(reddrum_lm7)
+summary_(reddrum_lm7)
 chart(reddrum_lm7)
 ```
 
@@ -310,7 +342,7 @@ Nous pouvons observer un gain de performance des modèles jusqu'au modèle polyn
 Pour une présentation propre du modèle retenu, nous utilisons `tabularise()` :
 
 ```{r, echo=TRUE, warning=FALSE}
-summary(reddrum_lm6) |> tabularise()
+summary_(reddrum_lm6) |> tabularise()
 ```
 
 Enfin, il est indispensable de paramétrer le modèle. Nous laissons R le faire grâce à la fonction `eq__()` que nous avons déjà employée plusieurs fois :
