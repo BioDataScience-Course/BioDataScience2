@@ -1,3 +1,11 @@
+# BioDataScience2 2025.3.0
+
+-   Learnrs **B03La_mod_lin**, revised for 2025-2026.
+
+# BioDataScience2 2025.2.0
+
+-   Learnrs **B02La_reg_multi** and **B02La_reg_poly** revised for 2025-2026.
+
 # BioDataScience2 2025.1.0
 
 -   Learnrs **B00La_refresh**, **B01La_reg_lin** and **B01Lb_residuals** revised for 2025-2026.
