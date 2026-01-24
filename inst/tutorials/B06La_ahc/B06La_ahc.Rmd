@@ -14,6 +14,36 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
 SciViews::R("explore")
+# Required for RSConnect
+# SciViews::R
+library(rlang)
+library(data.table)
+library(ggplot2)
+library(tibble)
+library(tidyr)
+library(dplyr)
+library(dtplyr)
+library(broom)
+library(forcats)
+library(collapse)
+library(fs)
+library(data.trame)
+library(svFast)
+library(svTidy)
+library(svMisc)
+library(svBase)
+library(svFlow)
+library(data.io)
+library(chart)
+library(tabularise)
+library(SciViews)
+# ... more
+library(readxl)
+library(testthat)
+library(equatags)
+# 'explore' packages
+library(exploreit)
+library(ade4)
 
 # A hack to get fun$type() working in learnr
 #chart <- list(
@@ -49,7 +79,7 @@ BioDataScience2::learnr_server(input, output, session)
 -   Vérifier que vous avez bien compris la logique et les différentes étapes de réalisation d'un dendrogramme : matrice de distance, classification ascendante hiérarchique (CAH), représentation graphique et coupure du dendrogramme pour obtenir des groupes.
 -   Vous préparer à analyser et interpréter de manière autonome un jeu de données multivariées à l'aide de la CAH.
 
-Vous devez avoir étudié le contenu du [module 6](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2024/cah-kmeans-div.html){target="_blank"} du cours et réalisé les exercices H5P qui s'y trouvent avant de vous lancer dans ce tutoriel Learnr.
+Vous devez avoir étudié le contenu du [module 6](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2025/cah-kmeans-div.html){target="_blank"} du cours et réalisé les exercices H5P qui s'y trouvent avant de vous lancer dans ce tutoriel Learnr.
 
 ## Communautés piscicoles de rivière
 

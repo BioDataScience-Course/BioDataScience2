@@ -1,3 +1,8 @@
+# BioDataScience2 2025.6.0
+
+-   Learnr **B06La_ahc** and **B06Lb_kmeans** revised for 2025-2026.
+
+
 # BioDataScience2 2025.5.0
 
 -   Learnr **B05La_nls**, revised for 2025-2026.
