@@ -14,8 +14,39 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
 SciViews::R("explore", lang = "fr")
-
+# Required for RSConnect
+# SciViews::R
+library(rlang)
+library(data.table)
+library(ggplot2)
+library(tibble)
+library(tidyr)
+library(dplyr)
+library(dtplyr)
+library(broom)
+library(forcats)
+library(collapse)
+library(fs)
+library(data.trame)
+library(svFast)
+library(svTidy)
+library(svMisc)
+library(svBase)
+library(svFlow)
+library(data.io)
+library(chart)
+library(tabularise)
+library(SciViews)
+# ... more
+library(readxl)
+library(testthat)
+library(equatags)
+# 'explore' packages
+library(exploreit)
+library(ade4)
+library(palmerpenguins)
 # Preparation du jeu de données
+
 read("penguins", package = "palmerpenguins", lang = "fr") %>.%
   sdrop_na(., bill_length) ->
   penguins
@@ -47,7 +78,7 @@ L'Analyse en Composantes Principales (ACP) est une méthode statistique explorat
 
 -   Vous préparer à interpréter par vous-même les résultats de vos ACP
 
-Avant toute chose, assurez-vous d'avoir bien compris le contenu du [module 7](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2024/acp-afc.html) du cours et en particulier la [section 7.2](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2024/analyse-en-composantes-principales.html).
+Avant toute chose, assurez-vous d'avoir bien compris le contenu du [module 7](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2025/acp-afc.html) du cours et en particulier la [section 7.2](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2025/analyse-en-composantes-principales.html).
 
 ## Manchots en Antarctique
 
