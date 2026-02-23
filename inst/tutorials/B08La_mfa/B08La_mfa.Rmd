@@ -14,6 +14,36 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
 SciViews::R("explore", lang = "fr")
+# Required for RSConnect
+# SciViews::R
+library(rlang)
+library(data.table)
+library(ggplot2)
+library(tibble)
+library(tidyr)
+library(dplyr)
+library(dtplyr)
+library(broom)
+library(forcats)
+library(collapse)
+library(fs)
+library(data.trame)
+library(svFast)
+library(svTidy)
+library(svMisc)
+library(svBase)
+library(svFlow)
+library(data.io)
+library(chart)
+library(tabularise)
+library(SciViews)
+# ... more
+library(readxl)
+library(testthat)
+library(equatags)
+# 'explore' packages
+library(exploreit)
+library(vegan)
 ```
 
 ```{r, echo=FALSE}
@@ -44,7 +74,7 @@ Il est donc utile de comprendre la logique et l'usage de cette analyse. Ce tutor
 
 -   Vous préparer à interpréter par vous-même les résultats de vos AFM
 
-Avant toute chose, assurez vous d'avoir bien compris le contenu de la [section 8.1](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2024/analyse-factorielle-multiple-afm.html) du cours de SDD II.
+Avant toute chose, assurez vous d'avoir bien compris le contenu de la [section 8.1](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2025/analyse-factorielle-multiple-afm.html) du cours de SDD II.
 
 ## Étude de composition floristique
 
@@ -93,7 +123,7 @@ Les données mises à disposition proviennent de l'étude suivante [Väre, H., O
 
 ## Préparation du tableau de données
 
-La première étape consiste dans la réalisation d'un tableau de données unique. Vous allez donc combiner le tableau `envir` avec le tableau `spec` en un seul objet nommé `vare` en spécifiant la colonne similaire entre ces deux tableaux qui est la variable `station` et qui servira de point de référence à la fusion. Affichez ensuite les premières lignes du tableau `vare` avec la fonction `head()`.
+La première étape consiste en la réalisation d'un tableau de données unique. Vous allez donc combiner le tableau `envir` avec le tableau `spec` en un seul objet nommé `vare` en spécifiant la colonne similaire entre ces deux tableaux qui est la variable `station` et qui servira de point de référence à la fusion. Affichez ensuite les premières lignes du tableau `vare` avec la fonction `head()`.
 
 ```{r join}
 read("varechem", package = "vegan") %>.%
