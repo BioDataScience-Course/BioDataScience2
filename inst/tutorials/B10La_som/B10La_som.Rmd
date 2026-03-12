@@ -13,8 +13,38 @@ runtime: shiny_prerendered
 
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
-SciViews::R("explore")
+SciViews::R("explore", lang = "fr")
+# Required for RSConnect
+# SciViews::R
+library(rlang)
+library(data.table)
+library(ggplot2)
+library(tibble)
+library(tidyr)
+library(dplyr)
+library(dtplyr)
+library(broom)
+library(forcats)
+library(collapse)
+library(fs)
+library(data.trame)
+library(svFast)
+library(svTidy)
+library(svMisc)
+library(svBase)
+library(svFlow)
+library(data.io)
+library(chart)
+library(tabularise)
+library(SciViews)
+# ... more
+library(readxl)
+library(testthat)
+library(equatags)
+# 'explore' packages
+library(exploreit)
 library(kohonen)
+library(vegan)
 
 # Preparation du jeu de données
 read("varechem", package = "vegan") %>.%
@@ -45,7 +75,7 @@ Le tutoriel learnr sur les cartes auto-adaptatives (SOM) que vous vous apprêtez
 -   comprendre comment réaliser les différentes étapes de la SOM : transformation du jeu de données en matrice, calcul de la SOM et représentation sous forme de différents graphiques
 -   acquérir les outils nécessaires à l'analyse et l'interprétation d'un jeu de données multivariées grâce à la SOM
 
-Avant toute chose, assurez-vous d'avoir bien compris le contenu du [module 10](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2023/cartes-auto-adaptatives-som.html) du cours. N'oubliez pas de réaliser les exercices H5P qui figurent dans cette section avant de vous lancer dans ce tutoriel.
+Avant toute chose, assurez-vous d'avoir bien compris le contenu du [module 10](https://wp.sciviews.org/sdd-umons2/?iframe=wp.sciviews.org/sdd-umons2-2025/cartes-auto-adaptatives-som.html) du cours. N'oubliez pas de réaliser les exercices H5P qui figurent dans cette section avant de vous lancer dans ce tutoriel.
 
 ## Données environnementales
 
