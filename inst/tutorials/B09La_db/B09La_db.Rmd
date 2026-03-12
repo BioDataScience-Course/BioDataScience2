@@ -14,11 +14,41 @@ runtime: shiny_prerendered
 
 ```{r setup, include=FALSE}
 BioDataScience2::learnr_setup()
-SciViews::R()
+SciViews::R(lang = "fr")
+# Required for RSConnect
+# SciViews::R
+library(rlang)
+library(data.table)
+library(ggplot2)
+library(tibble)
+library(tidyr)
+library(dplyr)
+library(dtplyr)
+library(broom)
+library(forcats)
+library(collapse)
+library(fs)
+library(data.trame)
+library(svFast)
+library(svTidy)
+library(svMisc)
+library(svBase)
+library(svFlow)
+library(data.io)
+library(chart)
+library(tabularise)
+library(SciViews)
+# ... more
+library(readxl)
+library(testthat)
+library(equatags)
 library(DBI)
+library(duckdb)
+library(dbplyr)
 library(dm)
+library(DiagrammeR)
 
-# Données inspirées Benrezkallah 2022
+# Données inspirées de Benrezkallah 2022
 set.seed(11)
 
 stations <-  dtx_rows(
@@ -42,8 +72,8 @@ sleft_join(captures, stations) %>.%
   bees
 
 bees_db <- dbConnect(duckdb::duckdb())
-dbWriteTable(bees_db, "stations", stations)
-dbWriteTable(bees_db, "captures", captures)
+dbWriteTable(bees_db, "stations", as.data.frame(stations)) # No data.trame method
+dbWriteTable(bees_db, "captures", as.data.frame(captures)) # idem
 
 bees_dm <- dm_from_con(bees_db, learn_keys = FALSE) %>.%
   dm_set_colors(., red = stations, orange = captures)
@@ -148,8 +178,8 @@ Créez une base de données au format DuckDB en mémoire et ajoutez vos deux tab
 bees_db <- ___(duckdb::___)
 bees_db
 # Ajout des tables
-___(___, "___", ___)
-___(___, "___", ___)
+___(___, "___", as.data.frame(___))
+___(___, "___", as.data.frame(___))
 # Noms des tables présentes dans bees_db
 dbListTables(bees_db)
 ```
@@ -159,8 +189,8 @@ dbListTables(bees_db)
 bees_db <- dbConnect(duckdb::___)
 bees_db
 # Ajout des tables
-___(___, "___", ___)
-___(___, "___", ___)
+___(___, "___", as.data.frame(stations))
+___(___, "___", as.data.frame(captures))
 # Noms des tables présentes dans bees_db
 dbListTables(bees_db)
 
@@ -173,8 +203,8 @@ dbListTables(bees_db)
 bees_db <- dbConnect(duckdb::duckdb())
 bees_db
 # Ajout des tables
-dbWriteTable(bees_db, "stations", stations)
-dbWriteTable(bees_db, "captures", captures)
+dbWriteTable(bees_db, "stations", as.data.frame(stations))
+dbWriteTable(bees_db, "captures", as.data.frame(captures))
 # Noms des tables présentes dans bees_db
 dbListTables(bees_db)
 ```
