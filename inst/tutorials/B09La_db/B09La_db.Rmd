@@ -115,11 +115,7 @@ Parmi les différents types de bases de données, nous allons nous intéresser a
 
 Ajouter des tables dans une base de données n'est pas une étape complexe. Si l'on ne s'intéresse pas à la **normalisation** des données, les avantages d'une base de données restent très limités. La normalisation vise à optimiser la structure de ces données en **évitant la redondance** en définissant des liens entre les tables. La normalisation va permettre de diminuer la taille d'une base de données, de simplifier les requêtes, et d'optimiser le traitement des requêtes.
 
-Le tableau de données présenté est inspiré des travaux de fin d'études de Benrezkallah [Effet des facteurs pédologiques sur les communautés d'abeilles sauvages dans les potagers de la commune de Mons](http://www.atlashymenoptera.net/biblio/02000/BENREZKALLAH_2022_potager_Mons.pdf) dont voici la citation.
-
-> Benrezkallah J. 2022. Effet des facteurs pédologiques sur les communautés d'abeilles sauvages dans les potagers de la commune de Mons. Mémoire de Master 2 en Sciences biologiques, Université de Mons, Mons, 127 pp.
-
-Cette étude a nécessité la collecte de nombreuses données que le chercheur souhaite gérer sous la forme d'une base de données relationnelle. Aidez ce dernier dans la mise en place de cette base. Les dix premières lignes du jeu de données sont présentées ci-dessous.
+Le tableau de données présenté est inspiré des travaux de fin d'études d'un étudiant. Cette étude a nécessité la collecte de nombreuses données que le chercheur souhaite gérer sous la forme d'une base de données relationnelle. Aidez ce dernier dans la mise en place de cette base. Les dix premières lignes du jeu de données sont présentées ci-dessous.
 
 ```{r, echo=TRUE}
 head(bees, 10)
