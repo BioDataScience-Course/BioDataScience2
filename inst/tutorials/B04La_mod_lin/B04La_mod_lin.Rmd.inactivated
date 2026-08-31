@@ -1,9 +1,9 @@
 ---
 title: "Modèle linéaire"
 author: "Guyliann Engels & Philippe Grosjean"
-description: "**SDD II Module 3** Modèle linéaire."
+description: "**SDD II Module 4** Modèle linéaire."
 tutorial:
-  id: "B03La_mod_lin"
+  id: "B04La_mod_lin"
   version: 3.0.0/8
 output:
   learnr::tutorial:

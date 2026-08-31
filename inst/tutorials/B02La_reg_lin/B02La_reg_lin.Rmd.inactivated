@@ -1,9 +1,9 @@
 ---
 title: "Régression linéaire simple"
 author: "Guyliann Engels & Philippe Grosjean"
-description: "**SDD II Module 1** Réaliser une régression linéaire simple dans R."
+description: "**SDD II Module 2** Réaliser une régression linéaire simple dans R."
 tutorial:
-  id: "B01La_reg_lin"
+  id: "B02La_reg_lin"
   version: 3.0.0/9
 output: 
   learnr::tutorial:

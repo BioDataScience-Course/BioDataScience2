@@ -1,9 +1,9 @@
 ---
 title: "Régression linéaire polynomiale"
 author: "Guyliann Engels & Philippe Grosjean"
-description: "**SDD II Module 2** Maîtriser la régression linéaire polynomiale."
+description: "**SDD II Module 3** Maîtriser la régression linéaire polynomiale."
 tutorial:
-  id: "B02Lb_reg_poly"
+  id: "B03Lb_reg_poly"
   version: 3.0.0/5
 output:
   learnr::tutorial:

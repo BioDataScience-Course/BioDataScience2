@@ -39,11 +39,11 @@ Ceci est un bref formulaire visant à améliorer le cours de science des donnée
 
 ```{r feedback_topic_noscore}
 question("Quelle partie du cours évaluez-vous ?",
-  answer("Module 1 : Régression linéaire I", correct = TRUE),
-  answer("Module 2 : Régression linéaire II", correct = TRUE),
-  answer("Module 3 : Modèle linéaire", correct = TRUE),
-  answer("Module 4 : Modèle linéaire généralisé", correct = TRUE),
-  answer("Module 5 : Régression non linéaire", correct = TRUE),
+  answer("Module 1 : Droite de calibration", correct = TRUE),
+  answer("Module 2 : Régression linéaire I", correct = TRUE),
+  answer("Module 3 : Régression linéaire II", correct = TRUE),
+  answer("Module 4 : Modèle linéaire", correct = TRUE),
+  answer("Module 5 : Modèle linéaire généralisé", correct = TRUE),
   answer("**AA modélisation (Q1, modules 1-5)**", correct = TRUE),
   answer("Module 6 : Classification & indices", correct = TRUE),
   answer("Module 7 : ACP & AFC", correct = TRUE),

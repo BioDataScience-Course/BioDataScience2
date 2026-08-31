@@ -107,7 +107,7 @@ BioDataScience2::learnr_server(input, output, session)
 Ce cours de **Science des données II : analyse et modélisation** fait suite au cours de **Science des données I : visualisation et inférence**. Ils sont disponibles à partir de <https://wp.sciviews.org/>. Ce tutoriel vise à :
 
 -   Réviser les notions essentielles du cours de Science des données I
--   Découvrir quelques nouveautés liées à la SciViews Box 2025
+-   Découvrir quelques nouveautés liées à la SciViews Box 2026
 
 Le cours de Science des données I se divise en deux parties. La première partie traite principalement de la réalisation de graphiques et du remaniement des données. La seconde partie s'intéresse aux probabilités, aux distributions statistiques les plus courantes en biologie ainsi qu'aux tests d'inférence (test *t* de Student, test de Wilcoxon, ANOVA, test de Kruskal-Wallis...).
 
@@ -115,7 +115,7 @@ La matière est bien trop vaste pour revoir tous les concepts du premier cours e
 
 ## Logiciels
 
-Commencez par vous assurer que vous rappelez du rôle des différents logiciels que nous employons dans le cadre de ce cours. Si vous avez des doutes à ce sujet, consultez le premier module de cours de [science des données 1](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2025/outils.html). Répondez aux questions ci-dessous.
+Commencez par vous assurer que vous rappelez du rôle des différents logiciels que nous employons dans le cadre de ce cours. Si vous avez des doutes à ce sujet, consultez le premier module de cours de [science des données 1](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2026/outils.html). Répondez aux questions ci-dessous.
 
 ```{r qu_intro}
 quiz(
@@ -168,7 +168,7 @@ quiz(
 
 ## Git et GitHub
 
-Nous utilisons abondamment Git et GitHub. Révisons maintenant la terminologie spécifique associée à ces outils de gestion de version. Elle est présentée dans les deux premiers modules du cours de [science des données 1](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2025/outils.html).
+Nous utilisons abondamment Git et GitHub. Révisons maintenant la terminologie spécifique associée à ces outils de gestion de version. Elle est présentée dans les deux premiers modules du cours de [science des données 1](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2026/outils.html).
 
 ### Situation 1
 
@@ -375,7 +375,7 @@ La fonction `read()` permet d'importer un nombre important de formats de fichier
 data_types(view = FALSE)
 ```
 
-Analysez l'organisation des fichiers ci-dessous. Le dossier `sharks-GuyliannEngels` contient tous les documents employés pour réaliser une analyse sur le recensement des attaques de requins en Australie. Il s'agit d'un [projet RStudio](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2025/rs.html). Ce projet doit absolument être portable. Il faut donc employer uniquement des [chemins relatifs](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2025/rs.html%23chemins-relatifs). Par exemple, le document `sharks_report.qmd` se trouve dans le dossier `docs`.
+Analysez l'organisation des fichiers ci-dessous. Le dossier `sharks-GuyliannEngels` contient tous les documents employés pour réaliser une analyse sur le recensement des attaques de requins en Australie. Il s'agit d'un [projet RStudio](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2026/rs.html). Ce projet doit absolument être portable. Il faut donc employer uniquement des [chemins relatifs](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2026/rs.html%23chemins-relatifs). Par exemple, le document `sharks_report.qmd` se trouve dans le dossier `docs`.
 
     /home
       /sv
@@ -418,7 +418,7 @@ quiz(
   )
 ```
 
-La [section 4.1 du cours de SDD I](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2025/importation.html) traite de l'importation des données dans R. Relisez cette dernière au besoin.
+La [section 4.1 du cours de SDD I](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2026/importation.html) traite de l'importation des données dans R. Relisez cette dernière au besoin.
 
 -   Rappel concernant les types de fichiers : les blocs-notes et les rapports sont rédigés sous forme de documents **[Quarto](https://quarto.org)** (certains peuvent néanmoins être au format R Markdown). L'extension de fichier est `.qmd` (contre `.Rmd` pour R Markdown). Il y a relativement peu de différences dans l'utilisation de ces deux formats, à part dans l'entête YAML. Cet entête étant en grande partie prérédigé pour vous dans les projets, ce n'est pas un problème !
 
@@ -441,7 +441,7 @@ tabularise(tg_anova, lang = "fr")
 
 ## Visualisation des données
 
-Les graphiques dans R peuvent être de différents types : des graphiques R de base, {lattice} ou {ggplot2}. Une comparaison des moteurs graphiques est réalisée dans la [section 3.5 du cours de SDD I](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2025/moteursgraphiques.html). Dans SciViews-R, nous vous proposons d'employer la fonction `chart()` qui permet de réaliser des graphiques avec l'un de ces trois moteurs. Cependant, par défaut, il s'agit de graphiques {ggplot2} auxquels nous ajoutons une série de couches avec l'opérateur `+`.
+Les graphiques dans R peuvent être de différents types : des graphiques R de base, {lattice} ou {ggplot2}. Une comparaison des moteurs graphiques est réalisée dans la [section 3.5 du cours de SDD I](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2026/moteursgraphiques.html). Dans SciViews-R, nous vous proposons d'employer la fonction `chart()` qui permet de réaliser des graphiques avec l'un de ces trois moteurs. Cependant, par défaut, il s'agit de graphiques {ggplot2} auxquels nous ajoutons une série de couches avec l'opérateur `+`.
 
 ```{r, echo=TRUE}
 # Importation des données
@@ -545,7 +545,7 @@ Les modules 1 à 3 du cours [SDD I](https://wp.sciviews.org/sdd-umons) traitent 
 
 Le remaniement de données est indispensable car vos données sont rarement présentées d'emblée comme elles devraient l'être pour une analyse propre. Vous devez être capable de détecter les valeurs manquantes, de filtrer des observations, de sélectionner des colonnes d'intérêt, de calculer de nouvelles variables, etc.
 
-Dans la SciViews Box 2025, l'utilisation des **data.frame**s, **data.table**s et **tibble**s, trois objets très similaires pour représenter un jeu de données, est remplacée par les **data.trame**s qui sont une forme hybride de data frame. En pratique, cela ne change rien au niveau du remaniement des données, car vos fonctions habituelles telles que `sfilter()`, `sselect()`, `smutate()`... fonctionnent de manière identique. 
+Dans la SciViews Box 2026, l'utilisation des **data.frame**s, **data.table**s et **tibble**s, trois objets très similaires pour représenter un jeu de données, est remplacée par les **data.trame**s qui sont une forme hybride de data frame. En pratique, cela ne change rien au niveau du remaniement des données, car vos fonctions habituelles telles que `sfilter()`, `sselect()`, `smutate()`... fonctionnent de manière identique. 
 
 Voici un petit exercice de remaniement de données pour vous remémorer comme faire... Vous allez vous intéresser au rendement de deux variétés de pommes de terre : la bintje et la fontane. Après 110 jours de culture, des prélèvements sont effectués dans différentes parcelles en Belgique. La production, exprimée en tonnes par hectare, est ainsi quantifiée pour les deux variétés de pommes de terre. Cet exercice utilise des données générées artificiellement, mais qui s'inspirent des observations relayées sur le site du sillon belge d'un [article consulté le 3 septembre 2019](https://www.sillonbelge.be/4731/article/2019-08-28/bintje-et-fontane-apres-110-115-jours-faute-de-casser-la-baraque-ces-deux).
 
@@ -604,7 +604,7 @@ En résumé, on retrouve un équivalent aux cinq fonctions "tidy" principales po
 potatoes1 <- sselect(potatoes,  yield, cultivar)
 ```
 
-Le "pipe" (prononcez *"païpe"* à l'anglaise) natif `|>` est apparu dans la version 4.1.0 de R. Vous connaissez aussi deux autres opérateurs de "pipe" que sont le pipe de {magrittr} `%>%` et le pipe de {svFlow} `%>.%` dans SciViews-R. Ces trois opérateurs permettent de chaîner des instructions pour indiquer de manière claire la succession des opérations. Les pipes améliorent grandement la lisibilité du code. Notez que le pipe `|>` ne requiert pas l'utilisation du `.` dans la fonction qui le suit alors que le pipe `%>.%` l'impose. Il est appelé **pipe explicite** pour cette raison. Vous pouvez retrouver de plus amples informations sur le chaînage des instructions dans la [section 4.5 de SDD I](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2025/chainage.html).
+Le "pipe" (prononcez *"païpe"* à l'anglaise) natif `|>` est apparu dans la version 4.1.0 de R. Vous connaissez aussi deux autres opérateurs de "pipe" que sont le pipe de {magrittr} `%>%` et le pipe de {svFlow} `%>.%` dans SciViews-R. Ces trois opérateurs permettent de chaîner des instructions pour indiquer de manière claire la succession des opérations. Les pipes améliorent grandement la lisibilité du code. Notez que le pipe `|>` ne requiert pas l'utilisation du `.` dans la fonction qui le suit alors que le pipe `%>.%` l'impose. Il est appelé **pipe explicite** pour cette raison. Vous pouvez retrouver de plus amples informations sur le chaînage des instructions dans la [section 4.5 de SDD I](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2026/chainage.html).
 
 *Nous vous proposons de continuer à utiliser le pipe `%>.%` de SciViews-R lors de vos remaniements de données.*
 

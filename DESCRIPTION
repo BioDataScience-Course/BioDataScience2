@@ -1,5 +1,5 @@
 Package: BioDataScience2
-Version: 2025.10.0
+Version: 2026.0.0
 Title: A Series of Learnr Documents for Biological Data Science 2
 Description: Interactive documents using learnr for studying biological data science (second course).
 Authors@R: c(
@@ -17,5 +17,4 @@ LazyData: true
 URL: https://github.com/BioDataScience-Course/BioDataScience2
 BugReports: https://github.com/BioDataScience-Course/BioDataScience2/issues
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
-
+RoxygenNote: 7.3.3

@@ -1,9 +1,9 @@
 ---
 title: "Régression linéaire multiple"
 author: "Guyliann Engels & Philippe Grosjean"
-description: "**SDD II Module 2** Résumé de lm et régression linéaire multiple."
+description: "**SDD II Module 3** Résumé de lm et régression linéaire multiple."
 tutorial:
-  id: "B02La_reg_multi"
+  id: "B03La_reg_multi"
   version: 3.0.0/11
 output:
   learnr::tutorial:

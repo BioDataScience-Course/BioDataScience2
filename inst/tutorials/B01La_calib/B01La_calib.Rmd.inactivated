@@ -1,0 +1,82 @@
+---
+title: "Droite de calibration"
+author: "Guyliann Engels & Philippe Grosjean"
+description: "**SDD II Module 1** Droite de calibration dans R."
+tutorial:
+  id: "B01La_calib_lin"
+  version: 3.0.0/9
+output: 
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+BioDataScience2::learnr_setup()
+SciViews::R("model", lang = "fr")
+# Required for RSConnect
+# SciViews::R
+library(rlang)
+library(data.table)
+library(ggplot2)
+library(tibble)
+library(tidyr)
+library(dplyr)
+library(dtplyr)
+library(broom)
+library(forcats)
+library(collapse)
+library(fs)
+library(data.trame)
+library(svFast)
+library(svTidy)
+library(svMisc)
+library(svBase)
+library(svFlow)
+library(data.io)
+library(chart)
+library(tabularise)
+library(SciViews)
+# ... more
+library(readxl)
+library(testthat)
+library(equatags)
+# 'model' and 'infer' packages
+library(modelit)
+library(distributional)
+library(inferit)
+
+# datasets
+# TODO...
+```
+
+```{r, echo=FALSE}
+BioDataScience2::learnr_banner()
+```
+
+```{r, context="server"}
+if (Sys.info()["user"] == "rstudio-connect") {
+  options(learnr_user_id = session$user)
+  assignInNamespace("default_user_id", function() {
+    getOption("learnr_user_id", unname(Sys.info()["user"]))
+  }, ns = "learnr")
+}
+BioDataScience2::learnr_server(input, output, session)
+```
+
+------------------------------------------------------------------------
+
+## Objectifs
+
+Ce tutoriel vise à maîtriser la réalisation d'une droite de calibration (par exemple pour des mesures spectrophotométriques), et ensuite de l'utiliser pour calculer des concentrations d'échantillons. Cette matière est détaillée dans le [module 1 de science des données II](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons2-2026/calibration.html). Les objectifs de ce tutoriel sont :
+
+-   Comprendre les bases de la régression linéaire
+
+-   Ajuster une droite de calibration à l'aide de la régression linéaire.
+
+-   Calculer la concentration d'échantillons inconnus, ainsi que des indicateurs statistiques, à partir de la droite de calibration.
+
+## TODO...
+
+...

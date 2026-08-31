@@ -1,3 +1,11 @@
+# BioDataScience2 2026.0.0
+
+-   New version for the academic year 2026-2027.
+
+-   Only **B00La_discovery** activated for now.
+
+-   New first module for initiation to regression analysis. All the other modules have an increased number for Q1 (1 ->, 2 -> 3, 3 -> 4 and 4 -> 5). Old module will disappear from SDD II and will be included in SDD III next year.
+
 # BioDataScience2 2025.10.0
 
 -   Learnrs **B10La_som** revised for 2025-2026.
@@ -44,7 +52,7 @@
 
 # BioDataScience2 2025.0.0
 
--   New version for the academic year 2024-2025.
+-   New version for the academic year 2025-2026.
 
 -   Only learnrs for Q1 are activated.
 

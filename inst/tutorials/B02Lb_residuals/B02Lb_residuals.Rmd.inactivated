@@ -1,10 +1,10 @@
 ---
 title: "Analyse des résidus d'une régression"
 author: "Guyliann Engels & Philippe Grosjean"
-description: "**SDD II Module 1** Analyser les résidus d'une régression linéaire simple."
+description: "**SDD II Module 2** Analyser les résidus d'une régression linéaire simple."
 bibliography: references.bib
 tutorial:
-  id: "B01Lb_residuals"
+  id: "B02Lb_residuals"
 version: 3.0.0/6
 output:
   learnr::tutorial:
