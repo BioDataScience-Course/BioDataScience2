@@ -4,8 +4,8 @@ author: "Guyliann Engels & Philippe Grosjean"
 description: "**SDD II Module 1** Droite de calibration dans R."
 tutorial:
   id: "B01La_calib_lin"
-  version: 3.0.0/9
-output: 
+  version: 3.0.0/12
+output:
   learnr::tutorial:
     progressive: true
     allow_skip: true
@@ -46,8 +46,12 @@ library(equatags)
 library(modelit)
 library(distributional)
 library(inferit)
+library(chemCal)
 
 # datasets
+toluene <- read("rl95_toluene", package = "chemCal")
+#toluene <- filter(toluene, amount < 1000)
+toluene <- labelise(toluene, label = list(peak_area = "Aire du pic", amount = "Concentration"), units = list(amount = 'pg'))
 # TODO...
 ```
 
@@ -77,6 +81,634 @@ Ce tutoriel vise à maîtriser la réalisation d'une droite de calibration (par 
 
 -   Calculer la concentration d'échantillons inconnus, ainsi que des indicateurs statistiques, à partir de la droite de calibration.
 
-## TODO...
+## Principe de la calibration analytique
 
-...
+En biologie, il est rare de pouvoir mesurer directement la quantité d'une molécule d'intérêt dans un échantillon. La majorité des instruments de mesure (spectrophotomètres, chromatographes ou spectromètres de masse) ne lisent ni des masses ni des concentrations, mais enregistrent un signal physique brut : une absorbance, un courant électrique ou encore une surface de pic correspondant à un comptage d'ions.
+
+Pour convertir ce signal abstrait en une donnée biologiquement exploitable, le chercheur doit *étalonner* son instrument. C'est le rôle de la *droite de calibration* (ou courbe d'étalonnage).
+
+En pratique, on prépare une série d'échantillons témoins appelés étalons, dont la concentration est *connue avec une très grande précision*. On mesure ensuite le signal produit par chacun de ces étalons (souvent en réalisant plusieurs réplicats). À partir de ces données, on établit la relation mathématique qui lie le signal mesuré ($y$) à la concentration réelle ($x$).
+
+Illustrons ce principe à l'aide de données simulées idéales.
+
+```{r, warning=FALSE}
+set.seed(88022)
+concentrations <- c(0, 10, 20, 50, 75, 100) # x = 0 correspond au blanc
+x <- rep(concentrations, each = 4)             # 4 réplicats par niveau
+
+# Signal y = 60 (signal moyen du blanc/bruit de fond alpha) + 10 * x + bruit aléatoire
+# Le terme rnorm() simule le bruit de fond instrumental (bruit blanc gaussien)
+y <- 60 + 10 * x + rnorm(length(x), mean = 0, sd = 20)
+
+calibration <- data.frame(
+  quantite_connue = x,
+  signal = y
+)
+
+calibration <- labelise(
+  calibration, 
+  label = list(quantite_connue = "Concentration connue", signal = "Signal de l'instrument")
+)
+
+calib_red <- {
+  .= calibration
+  .= summarise_(., me = ~ mean(signal), sd = ~ sd(signal), n = ~ fn(signal), .by = "quantite_connue")
+  .= mutate_(., cv = ~ (sd / me) * 100)
+  .= relocate(., n, .after = last_col())
+  .= rename_(., "Moyenne du signal" = "me", "Écart-type" = "sd", "Coefficient de variation (%)" = "cv", "Nombre d'observations" = "n")
+}
+
+tabularise(calib_red)
+```
+
+Ce tableau récapitule la réponse moyenne de l'appareil pour chaque niveau de concentration. Remarquez d'abord qu'à x=0 (injection du solvant pur, appelé « blanc »), le signal n'est pas nul : l'instrument enregistre le bruit de fond de la ligne de base.
+
+Du point de vue de la variabilité, l'écart-type (sd) demeure quasi constant malgré l'augmentation de la concentration, traduisant une erreur absolue stable sur cette plage de mesure. En revanche, le coefficient de variation (cv), qui rapporte cet écart-type à la moyenne, diminue de manière continue : la précision relative de la mesure s'améliore donc nettement lorsque la concentration augmente.
+
+Le graphique ci-dessous présente la distribution des mesures en fonction des concentrations connues. Intuitivement, on cherche à faire passer une droite à travers ces points afin de modéliser le signal en fonction de la concentration.
+
+```{r, echo=TRUE}
+chart(data = calibration, signal ~ quantite_connue) +
+  geom_point() 
+```
+
+Ajustons maintenant une droite de régression linéaire sur ces données :
+
+```{r, warning=FALSE, echo=TRUE}
+reglin <- lm(data = calibration, signal ~ quantite_connue)
+chart(reglin)
+```
+
+L'équation mathématique de notre modèle s'écrit :
+
+`r equation(reglin)`
+ 
+Cette equation peut s'interpréter comme 
+
+- Le coefficient $\beta$ (pente) traduit la sensibilité de l'instrument (l'augmentation de signal produite par unité de concentration).
+- Le coefficient $\alpha$ (ordonnée à l'origine) correspond au signal estimé du blanc (bruit de fond moyen).
+- Le terme d'erreur $\epsilon$ représente les résidus (l'erreur expérimentale aléatoire liée aux mesures).
+
+
+Les valeurs estimées des coefficients sont présentées dans le tableau suivant :
+
+```{r, warning=FALSE}
+tabularise(reglin)
+```
+
+Pour un échantillon inconnu fournissant un signal y=650, nous pouvons estimer sa concentration en isolant x dans l'équation linéaire :
+
+```{r, echo=TRUE}
+unknown <- 650
+pente <- reglin$coefficients[[2]]
+ordonne <- reglin$coefficients[[1]]
+(unknown-ordonne)/pente
+```
+
+Nous obtenons une concentration estimée de 59,6.
+
+Cependant, plusieurs questions essentielles n'ont pas encore été abordées dans cet exemple :
+
+- Quel est l'intervalle de confiance associé à cette estimation de concentration ?
+- Dans la littérature scientifique, on fait souvent référence aux notions de limite de détection (LOD) et de limite de quantification (LOQ). Comment les calculer rigoureusement ?
+
+Le package R {chemCal} a été spécifiquement développé pour répondre à ces besoins. Il permet d'effectuer une prédiction inverse avec son intervalle de confiance, tout en déterminant la LOD et la LOQ du système analytique.
+
+```{r, echo=TRUE, eval=FALSE}
+# installation du package
+install.packages("chemCal")
+# Chargement du package et donc des fonctions qu'il comprend
+library(chemCal)
+```
+
+```{r, echo=TRUE, warning=FALSE}
+# Prédiction
+inverse.predict(reglin, unknown)
+```
+
+```{r, echo=TRUE, warning=FALSE}
+# Limite de détection 
+cat("Limite de détection \n")
+lod(reglin)
+# Limite de quantification
+cat("Limite de quantification \n")
+loq(reglin)
+```
+
+Toutes ces valeurs remarquables peuvent être reportées sur le graphique de calibration pour une interprétation visuelle immédiate :
+
+```{r, warning=FALSE}
+pred_values <- inverse.predict(reglin, unknown)
+lod_values  <- lod(reglin)
+loq_values  <- loq(reglin)
+
+chart(reglin) +
+  # Zone LOQ (Jaune)
+  annotate("rect", xmin = -Inf, xmax = loq_values[[1]], ymin = -Inf, ymax = loq_values[[2]],
+           fill = "#FFEAA7", alpha = 0.4, color = "#F39C12", linewidth = 0.8) +
+  # Zone LOD (Rose)
+  annotate("rect", xmin = -Inf, xmax = lod_values[[1]], ymin = -Inf, ymax = lod_values[[2]],
+           fill = "#FF8A8A", alpha = 0.4, color = "#E74C3C", linewidth = 0.8) +
+  # Textes
+  annotate("text", x = 30, y = 50,  label = "Non détectable",
+           size = 4, fontface = "bold", color = "#C0392B") +
+  annotate("text", x = 10, y = 350, label = "Non quantifiable",
+           size = 4, fontface = "bold", color = "#D35400") +
+  # Point de prédiction inverse
+  annotate("point", x = pred_values$Prediction, y = 650,
+           size = 3, color = "#27AE60") +
+  # Barre d'erreur horizontale
+  geom_errorbar(
+    data = data.frame(
+      y    = unknown,
+      xmin = pred_values$`Confidence Limits`[1],
+      xmax = pred_values$`Confidence Limits`[2]
+    ),
+    aes(y = y, xmin = xmin, xmax = xmax),
+    orientation = "y",       
+    width       = 20,        
+    color       = "#27AE60",
+    linewidth   = 0.8,
+    inherit.aes = FALSE      
+  )
+```
+
+Prenons à présent un cas concret pour explorer les fonctionnalités du package {chemCal} en détail.
+
+## Cas pratique de dosage du toluène par GC-MS
+
+Le dosage du toluène par chromatographie en phase gazeuse couplée à la spectrométrie de masse (GC-MS) est une méthode analytique de référence pour identifier et quantifier ce composé. Concrètement, le signal physique enregistré par l'instrument correspond à l'aire du pic chromatographique mesurée par le spectromètre de masse.
+
+Les scientifiques ont obtenu le tableau de résultats suivant en injectant des concentrations connues de toluène dans le système GC-MS :
+
+```{r}
+toluene <- read("rl95_toluene", package = "chemCal")
+#toluene <- filter(toluene, amount < 1000)
+toluene <- labelise(toluene, label = list(peak_area = "Aire du pic", amount = "Concentration"), units = list(amount = 'pg'))
+tabularise$headtail(toluene)
+```
+
+
+Réalisez un nuage de points représentant l'aire du pic chromatographique 
+(`peak_area`) en fonction de la quantité de toluène (`amount`). Le tableau de données se nomme `toluene`
+
+```{r toluene_np_h2, exercise=TRUE}
+chart(data = ___, ___ ~ ___) +
+  ___()
+```
+
+```{r toluene_np_h2-hint-1}
+chart(data = ___, ___ ~ ___) +
+  geom_point()
+#### ATTENTION: Hint suivant = solution ! ####
+```
+
+```{r toluene_np_h2-solution}
+## Solution ##
+chart(data = toluene, peak_area ~ amount) +
+  geom_point()
+```
+
+```{r toluene_np_h2-check}
+grade_code("Vous avez représenté correctement les données de calibration. 
+  Observez attentivement la dispersion des points à chaque niveau de 
+  concentration : est-elle constante ou varie-t-elle ?")
+```
+
+Calculez la moyenne, l'écart-type et le nombre d'observations de l'aire du pic 
+chromatographique (`peak_area`) pour chaque niveau de quantité de toluène (`amount`).
+
+```{r toluene_summary_h3, exercise=TRUE}
+summarise_(___, 
+  mean = ___ ~ ___(___), 
+  sd   = ___ ~ ___(___), 
+  n    = ___ ~ ___(___), 
+  .by  = ___)
+```
+
+```{r toluene_summary_h3-hint-1}
+summarise_(toluene, 
+  mean = ~ mean(___), 
+  sd   = ~ sd(___), 
+  n    = ~ fn(___), 
+  .by  = ___)
+```
+
+```{r toluene_summary_h3-hint-2}
+summarise_(toluene, 
+  mean = ~ mean(peak_area), 
+  sd   = ~ sd(peak_area), 
+  n    = ~ fn(peak_area), 
+  .by  = ___)
+#### ATTENTION: Hint suivant = solution ! ####
+```
+
+```{r toluene_summary_h3-solution}
+## Solution ##
+summarise_(toluene, 
+  mean = ~ mean(peak_area), 
+  sd   = ~ sd(peak_area), 
+  n    = ~ fn(peak_area), 
+  .by  = "amount")
+```
+
+```{r toluene_summary_h3-check}
+grade_code("Vous avez calculé les statistiques descriptives par groupe. 
+  Comparez les écarts-types obtenus à chaque niveau de concentration.")
+```
+
+```{r qu_summary}
+quiz(
+  # ── Question 1 : plage de concentrations ──────────────────────────────────
+  question(
+    text = "Quelle est la plage de concentrations couverte par votre gamme étalon ?",
+    answer(
+      "La plage de concentrations est étroite : la valeur la plus élevée est environ 
+       10 fois supérieure à la valeur la plus faible (un ordre de grandeur).",
+      correct = FALSE
+    ),
+    answer(
+      "La plage de concentrations est modérée : la valeur la plus élevée est environ 
+       100 fois supérieure à la valeur la plus faible (deux ordres de grandeur).",
+      correct = FALSE
+    ),
+    answer(
+      "La plage de concentrations est large : la valeur la plus élevée est plus de 
+       1000 fois supérieure à la valeur la plus faible (plus de trois ordres de grandeur).",
+      correct = TRUE
+    ),
+    type         = "single",
+    allow_retry  = TRUE,
+    random_answer_order = TRUE,
+    submit_button   = "Soumettre une réponse",
+    try_again_button = "Resoumettre une réponse",
+    correct   = "Bonne observation. L'étendue de la gamme de calibration influence 
+                 directement le comportement de la variance des résidus.",
+    incorrect = "Observez attentivement les valeurs minimale et maximale de votre 
+                 gamme étalon et calculez leur rapport."
+  ),
+
+  # ── Question 2 : nombre de réplicats ──────────────────────────────────────
+  question(
+    text = "Comment le nombre de réplicats est-il réparti selon les niveaux de concentration ?",
+    answer(
+      "Le nombre de réplicats est identique pour tous les niveaux de concentration.",
+      correct = TRUE
+    ),
+    answer(
+      "Le nombre de réplicats est plus élevé pour les faibles concentrations.",
+      correct = FALSE
+    ),
+    answer(
+      "Le nombre de réplicats est plus élevé pour les fortes concentrations.",
+      correct = FALSE
+    ),
+    answer(
+      "Le nombre de réplicats varie sans tendance claire selon les niveaux de concentration.",
+      correct = FALSE
+    ),
+    type         = "single",
+    allow_retry  = TRUE,
+    random_answer_order = TRUE,
+    submit_button   = "Soumettre une réponse",
+    try_again_button = "Resoumettre une réponse",
+    correct   = "Correct. La répartition des réplicats est un choix expérimental important : 
+                 concentrer les réplicats là où la variance est la plus grande améliore 
+                 la qualité de la régression pondérée.",
+    incorrect = "Comptez le nombre de mesures disponibles à chaque niveau de concentration 
+                 dans votre tableau de données."
+  ),
+
+  # ── Question 3 : comportement de l'écart-type ─────────────────────────────
+  question(
+    text = "Comment l'écart-type des mesures évolue-t-il en fonction de la concentration ?",
+    answer(
+      "L'écart-type est constant quelle que soit la concentration mesurée 
+       (homoscédasticité).",
+      correct = FALSE
+    ),
+    answer(
+      "L'écart-type augmente avec la concentration (hétéroscédasticité croissante).",
+      correct = TRUE
+    ),
+    answer(
+      "L'écart-type diminue avec la concentration (hétéroscédasticité décroissante).",
+      correct = FALSE
+    ),
+    type         = "single",
+    allow_retry  = TRUE,
+    random_answer_order = TRUE,
+    submit_button   = "Soumettre une réponse",
+    try_again_button = "Resoumettre une réponse",
+    correct   = "Bonne lecture des données. Le comportement de l'écart-type est le critère 
+                 décisif : s'il est constant, une régression non pondérée est appropriée ; 
+                 s'il varie avec la concentration, une régression pondérée est nécessaire.",
+    incorrect = "Calculez l'écart-type des réplicats à chaque niveau de concentration 
+                 et observez si ces valeurs augmentent, diminuent ou restent stables."
+  )
+)
+```
+
+Ajustez une droite de régression linéaire simple sur les données de calibration du toluène en modélisant le signal en fonction de la concentration. Visualisez ensuite le résultat graphique à l'aide de `chart()`, puis comparez-le au rendu fourni par la fonction `calplot()` du package `{chemCal}`.
+
+```{r toluene_lm_h3, exercise=TRUE, warning=FALSE, exercise.lines=8}
+# Calcul de la droite de régression
+toluene_mod <- ___(data = ___, ___ ~ ___)
+# Graphique générique obtenu via {chart}
+___(___)
+# Graphique de calibration obtenu via {chemCal}
+___(___)
+```
+
+```{r toluene_lm_h3-hint-1}
+# Calcul de la droite de régression
+toluene_mod <- lm(data = ___, ___ ~ ___)
+# Graphique générique obtenu via {chart}
+chart(___)
+# Graphique de calibration obtenu via {chemCal}
+calplot(___)
+
+```
+
+```{r toluene_lm_h3-hint-2}
+# Calcul de la droite de régression
+toluene_mod <- lm(data = toluene, peak_area ~ ___)
+# Graphique générique obtenu via {chart}
+chart(toluene_mod)
+# Graphique de calibration obtenu via {chemCal}
+calplot(toluene_mod)
+#### ATTENTION: Hint suivant = solution ! ####
+```
+
+```{r toluene_lm_h3-solution}
+## Solution ##
+# Calcul de la droite de régression
+toluene_mod <- lm(data = toluene, peak_area ~ amount)
+# Graphique générique obtenu via {chart}
+chart(toluene_mod)
+# Graphique de calibration obtenu via {chemCal}
+calplot(toluene_mod)
+```
+
+```{r toluene_lm_h3-check}
+grade_code("Vous avez ajusté votre premier modèle de calibration. Comparez 
+  les deux graphiques : chart() affiche la droite ajustée avec les bandes 
+  de confiance, tandis que calplot() ajoute les bandes de prédiction.")
+```
+
+Calculez la limite de détection (LOD) à partir du modèle de calibration du toluène. Observez la valeur renvoyée, exprimée à la fois en unités de concentration et en unités de signal.
+
+```{r prepare-toluene_lm}
+toluene_mod <- lm(data = toluene, peak_area ~ amount)
+```
+
+
+```{r toluene_lod_h2, warning=FALSE, exercise=TRUE, exercise.setup="prepare-toluene_lm"}
+___(___)
+```
+
+```{r toluene_lod_h2-hint-1}
+lod(___)
+#### ATTENTION: Hint suivant = solution ! ####
+```
+
+```{r toluene_lod_h2-solution}
+## Solution ##
+lod(toluene_mod)
+```
+
+```{r toluene_lod_h2-check}
+grade_code("Vous avez calculé la LOD selon les recommandations IUPAC 
+  (alpha = 0.05, beta = 0.05). En dessous de cette concentration, 
+  la présence de l'analyte ne peut pas être confirmée de manière fiable.")
+```
+
+Calculez la limite de quantification (LOQ) à partir du modèle de calibration du toluène. En dessous de cette concentration, la mesure n'est pas suffisamment précise pour que le résultat puisse être quantifié et rapporté.
+
+```{r toluene_loq_h2, warning=FALSE, exercise=TRUE, exercise.setup="prepare-toluene_lm"}
+___(___)
+```
+
+```{r toluene_loq_h2-hint-1}
+loq(___)
+#### ATTENTION: Hint suivant = solution ! ####
+```
+
+```{r toluene_loq_h2-solution}
+## Solution ##
+loq(toluene_mod)
+```
+
+```{r toluene_loq_h2-check}
+grade_code("Vous avez calculé la LOQ (k = 3 par défaut), ce qui signifie 
+  que l'erreur relative maximale tolérée est de 33%. Au-dessus de cette 
+  concentration, la quantification est considérée comme fiable. 
+  Vérifiez que les concentrations de vos trois échantillons inconnus 
+  se situent bien au-dessus de cette limite.")
+```
+
+Trois échantillons inconnus ont été dosés en triplicat. À l'aide de la fonction `inverse.predict()`, calculez la concentration estimée de chaque échantillon ainsi que son intervalle de confiance associé, à partir du modèle de calibration.
+
+```{r toluene_inv_h3, warning = FALSE, exercise=TRUE, exercise.lines=12, exercise.setup="prepare-toluene_lm"}
+echant1 <- c(2099.7, 2101.0, 2115.0)
+echant2 <- c(6283.5, 6276.0, 6307.5)
+echant3 <- c(3803.6, 3826.4, 3792.9)
+
+___(___, ___)
+___(___, ___)
+___(___, ___)
+```
+
+```{r toluene_inv_h3-hint-1}
+echant1 <- c(2099.7, 2101.0, 2115.0)
+echant2 <- c(6283.5, 6276.0, 6307.5)
+echant3 <- c(3803.6, 3826.4, 3792.9)
+
+inverse.predict(toluene_mod, ___)
+inverse.predict(toluene_mod, ___)
+inverse.predict(toluene_mod, ___)
+```
+
+```{r toluene_inv_h3-hint-2}
+echant1 <- c(2099.7, 2101.0, 2115.0)
+echant2 <- c(6283.5, 6276.0, 6307.5)
+echant3 <- c(3803.6, 3826.4, 3792.9)
+
+inverse.predict(toluene_mod, echant1)
+inverse.predict(toluene_mod, ___)
+inverse.predict(toluene_mod, ___)
+#### ATTENTION: Hint suivant = solution ! ####
+```
+
+```{r toluene_inv_h3-solution}
+## Solution ##
+echant1 <- c(2099.7, 2101.0, 2115.0)
+echant2 <- c(6283.5, 6276.0, 6307.5)
+echant3 <- c(3803.6, 3826.4, 3792.9)
+
+inverse.predict(toluene_mod, echant1)
+inverse.predict(toluene_mod, echant2)
+inverse.predict(toluene_mod, echant3)
+```
+
+```{r toluene_inv_h3-check}
+grade_code("Vous avez réalisé trois prédictions inverses à partir de mesures 
+  en triplicat. Notez que passer un vecteur de trois valeurs plutôt qu'une 
+  mesure unique réduit l'incertitude : 
+  ce qui rétrécit l'intervalle de confiance sur la concentration estimée.")
+```
+
+```{r qu_predict}
+quiz(
+  # ── Question 1 : Échantillon 1 ───────────────────────────────────────────
+  question(
+    text = "Vous avez dosé l'échantillon 1 en triplicat et obtenu les signaux 
+    suivants : 2099.7, 2101.0 et 2115.0. Quelle conclusion tirez-vous concernant 
+    la concentration en toluène de cet échantillon ?",
+    answer(
+      "La concentration estimée est fiable et peut être rapportée avec son 
+       intervalle de confiance.",
+      correct = FALSE
+    ),
+    answer(
+      "Le signal est inférieur à la limite de détection : la présence de toluène 
+       ne peut pas être confirmée.",
+      correct = TRUE  # ← À VÉRIFIER selon vos résultats lod() / loq()
+    ),
+    answer(
+      "Du toluène est détecté, mais sa concentration est trop faible pour être 
+       déterminée avec précision : le signal se situe entre la LOD et la LOQ.",
+      correct = FALSE
+    ),
+    allow_retry  = TRUE,
+    random_answer_order = TRUE,
+    submit_button    = "Soumettre une réponse",
+    try_again_button = "Resoumettre une réponse",
+    correct   = "Correct. Le signal de l'échantillon 1 est inférieur à la LOD 
+                 calculée avec lod(toluene_mod). La présence de toluène ne peut 
+                 pas être confirmée à ce niveau de signal.",
+    incorrect = "Comparez le signal moyen de l'échantillon 1 aux valeurs $y 
+                 retournées par lod() et loq() pour situer cet échantillon 
+                 par rapport aux deux limites."
+  ),
+
+  # ── Question 2 : Échantillon 2 ───────────────────────────────────────────
+  question(
+    text = "Vous avez dosé l'échantillon 2 en triplicat et obtenu les signaux 
+    suivants : 6283.5, 6276.0 et 6307.5. Quelle conclusion tirez-vous concernant 
+    la concentration en toluène de cet échantillon ?",
+    answer(
+      "La concentration estimée est fiable et peut être rapportée avec son 
+       intervalle de confiance.",
+      correct = TRUE  # ← À VÉRIFIER selon vos résultats lod() / loq()
+    ),
+    answer(
+      "Le signal est inférieur à la limite de détection : la présence de toluène 
+       ne peut pas être confirmée.",
+      correct = FALSE
+    ),
+    answer(
+      "Du toluène est détecté, mais sa concentration est trop faible pour être 
+       déterminée avec précision : le signal se situe entre la LOD et la LOQ.",
+      correct = FALSE
+    ),
+    allow_retry  = TRUE,
+    random_answer_order = TRUE,
+    submit_button    = "Soumettre une réponse",
+    try_again_button = "Resoumettre une réponse",
+    correct   = "Correct. Le signal de l'échantillon 2 est supérieur à la LOQ 
+                 calculée avec loq(toluene_mod). La concentration peut être 
+                 rapportée avec son intervalle de confiance issu de 
+                 inverse.predict().",
+    incorrect = "Comparez le signal moyen de l'échantillon 2 aux valeurs $y 
+                 retournées par lod() et loq() pour situer cet échantillon 
+                 par rapport aux deux limites."
+  ),
+
+  # ── Question 3 : Échantillon 3 ───────────────────────────────────────────
+  question(
+    text = "Vous avez dosé l'échantillon 3 en triplicat et obtenu les signaux 
+    suivants : 3803.6, 3826.4 et 3792.9. Quelle conclusion tirez-vous concernant 
+    la concentration en toluène de cet échantillon ?",
+    answer(
+      "La concentration estimée est fiable et peut être rapportée avec son 
+       intervalle de confiance.",
+      correct = FALSE
+    ),
+    answer(
+      "Le signal est inférieur à la limite de détection : la présence de toluène 
+       ne peut pas être confirmée.",
+      correct = FALSE
+    ),
+    answer(
+      "Du toluène est détecté, mais sa concentration est trop faible pour être 
+       déterminée avec précision : le signal se situe entre la LOD et la LOQ.",
+      correct = TRUE  # ← À VÉRIFIER selon vos résultats lod() / loq()
+    ),
+    allow_retry  = TRUE,
+    random_answer_order = TRUE,
+    submit_button    = "Soumettre une réponse",
+    try_again_button = "Resoumettre une réponse",
+    correct   = "Correct. Le signal de l'échantillon 3 est supérieur à la LOD 
+                 mais inférieur à la LOQ. La présence de toluène est confirmée, 
+                 mais l'erreur relative sur la concentration dépasse le seuil 
+                 de 33% (k = 3) : la valeur ne peut pas être rapportée 
+                 comme quantification fiable.",
+    incorrect = "Comparez le signal moyen de l'échantillon 3 aux valeurs $y 
+                 retournées par lod() et loq() pour situer cet échantillon 
+                 par rapport aux deux limites."
+  )
+)
+```
+
+
+## Informations supplémentaires
+
+Ajuster une droite de calibration s'avère relativement simple en pratique. Néanmoins, nous n'avons pas encore vérifié la validité de ce modèle. Dans le chapitre suivant, nous aborderons les spécificités techniques de la régression linéaire simple, qui repose sur le respect de plusieurs conditions d'application. Il s'agit d'une notion clé que vous avez déjà explorée lors du second cours de Science des données biologiques.
+
+En l'état, la droite de calibration que nous venons de construire devrait être réévaluée.
+
+Même si la démarche suivie jusqu'ici est parfaitement cohérente, nous n'avons pas contrôlé les hypothèses sous-jacentes du modèle. En examinant les graphiques de diagnostic ci-dessous, nous constatons deux problèmes majeurs au niveau des résidus :
+
+1. **L'hétéroscédasticité (non-homogénéité de la variance) :** le graphique des résidus en fonction des valeurs ajustées (`resfitted`) montre une forme d'entonnoir (ou de cône), où la dispersion des résidus augmente progressivement avec la valeur prédite.
+2. **La non-normalité :** le graphique Quantile-Quantile (`qqplot`) indique que la distribution des résidus s'écarte également de la normalité.
+
+```{r}
+toluene_mod <- lm(data = toluene, peak_area ~ amount)
+```
+
+```{r}
+chart$resfitted(toluene_mod)
+chart$qqplot(toluene_mod)
+```
+
+Les auteurs ayant publié ce jeu de données sur le toluène avaient eux-mêmes mis en évidence qu'une régression linéaire simple par moindres carrés n'était pas adaptée. Ils ont ainsi proposé un modèle plus complexe (par exemple une régression pondérée), qui dépasse le cadre de ce module.
+
+## Conclusion
+
+Votre auto-évaluation concernant la droite de calibration dans R (première partie) est terminée.
+
+```{r comm_noscore, echo=FALSE}
+question_text(
+  "Laissez-nous vos impressions sur ce learnr",
+  answer("", TRUE, message = "Pas de commentaires... C'est bien aussi."),
+  incorrect = "Vos commentaires sont enregistrés.",
+  placeholder = "Entrez vos commentaires ici...",
+  allow_retry = TRUE,
+  submit_button = "Soumettre une réponse", 
+  try_again_button = "Resoumettre une réponse"
+)
+```
+
+```{css, echo=FALSE}
+@media print {
+  .topics {
+    width: 100% !important;
+    padding: 0 0.5em 0 !important;
+  }
+  .topicsContainer, .topicsContainer *, .learnrBanner, .learnrBanner *, .topicActions, .topicActions * {
+    display: none !important;
+  }
+}
+```
+
