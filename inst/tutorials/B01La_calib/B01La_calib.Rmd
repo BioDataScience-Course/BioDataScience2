@@ -83,7 +83,7 @@ Ce tutoriel vise à maîtriser la réalisation d'une droite de calibration (par 
 
 ## Principe de la calibration analytique
 
-En biologie, il est rare de pouvoir mesurer directement la quantité d'une molécule d'intérêt dans un échantillon. La majorité des instruments de mesure (spectrophotomètres, chromatographes ou spectromètres de masse) ne lisent ni des masses ni des concentrations, mais enregistrent un signal physique brut : une absorbance, un courant électrique ou encore une surface de pic correspondant à un comptage d'ions.
+En biologie, il est rare de pouvoir mesurer directement la quantité d'une molécule d'intérêt dans un échantillon. La majorité des instruments de mesure (spectrophotomètres, chromatographes ou spectromètres de masse) ne lisent ni des masses ni des concentrations, mais enregistrent un signal physique brut : une absorbance, un courant électrique ou encore une surface de pic correspondant à un comptage d'ions.
 
 Pour convertir ce signal abstrait en une donnée biologiquement exploitable, le chercheur doit *étalonner* son instrument. C'est le rôle de la *droite de calibration* (ou courbe d'étalonnage).
 
@@ -121,9 +121,9 @@ calib_red <- {
 tabularise(calib_red)
 ```
 
-Ce tableau récapitule la réponse moyenne de l'appareil pour chaque niveau de concentration. Remarquez d'abord qu'à x=0 (injection du solvant pur, appelé « blanc »), le signal n'est pas nul : l'instrument enregistre le bruit de fond de la ligne de base.
+Ce tableau récapitule la réponse moyenne de l'appareil pour chaque niveau de concentration. Remarquez d'abord qu'à x=0 (injection du solvant pur, appelé « blanc »), le signal n'est pas nul : l'instrument enregistre le bruit de fond de la ligne de base.
 
-Du point de vue de la variabilité, l'écart-type (sd) demeure quasi constant malgré l'augmentation de la concentration, traduisant une erreur absolue stable sur cette plage de mesure. En revanche, le coefficient de variation (cv), qui rapporte cet écart-type à la moyenne, diminue de manière continue : la précision relative de la mesure s'améliore donc nettement lorsque la concentration augmente.
+Du point de vue de la variabilité, l'écart-type (sd) demeure quasi constant malgré l'augmentation de la concentration, traduisant une erreur absolue stable sur cette plage de mesure. En revanche, le coefficient de variation (cv), qui rapporte cet écart-type à la moyenne, diminue de manière continue : la précision relative de la mesure s'améliore donc nettement lorsque la concentration augmente.
 
 Le graphique ci-dessous présente la distribution des mesures en fonction des concentrations connues. Intuitivement, on cherche à faire passer une droite à travers ces points afin de modéliser le signal en fonction de la concentration.
 
@@ -139,44 +139,44 @@ reglin <- lm(data = calibration, signal ~ quantite_connue)
 chart(reglin)
 ```
 
-L'équation mathématique de notre modèle s'écrit :
+L'équation mathématique de notre modèle s'écrit :
 
 `r equation(reglin)`
  
-Cette equation peut s'interpréter comme 
+Cette équation peut s'interpréter comme 
 
 - Le coefficient $\beta$ (pente) traduit la sensibilité de l'instrument (l'augmentation de signal produite par unité de concentration).
 - Le coefficient $\alpha$ (ordonnée à l'origine) correspond au signal estimé du blanc (bruit de fond moyen).
 - Le terme d'erreur $\epsilon$ représente les résidus (l'erreur expérimentale aléatoire liée aux mesures).
 
 
-Les valeurs estimées des coefficients sont présentées dans le tableau suivant :
+Les valeurs estimées des coefficients sont présentées dans le tableau suivant :
 
 ```{r, warning=FALSE}
 tabularise(reglin)
 ```
 
-Pour un échantillon inconnu fournissant un signal y=650, nous pouvons estimer sa concentration en isolant x dans l'équation linéaire :
+Pour un échantillon inconnu fournissant un signal y=650, nous pouvons estimer sa concentration en isolant x dans l'équation linéaire :
 
 ```{r, echo=TRUE}
 unknown <- 650
 pente <- reglin$coefficients[[2]]
 ordonne <- reglin$coefficients[[1]]
-(unknown-ordonne)/pente
+(unknown - ordonne)/pente
 ```
 
 Nous obtenons une concentration estimée de 59,6.
 
 Cependant, plusieurs questions essentielles n'ont pas encore été abordées dans cet exemple :
 
-- Quel est l'intervalle de confiance associé à cette estimation de concentration ?
-- Dans la littérature scientifique, on fait souvent référence aux notions de limite de détection (LOD) et de limite de quantification (LOQ). Comment les calculer rigoureusement ?
+- Quel est l'intervalle de confiance associé à cette estimation de concentration ?
+- Dans la littérature scientifique, on fait souvent référence aux notions de limite de détection (LOD) et de limite de quantification (LOQ). Comment les calculer rigoureusement ?
 
 Le package R {chemCal} a été spécifiquement développé pour répondre à ces besoins. Il permet d'effectuer une prédiction inverse avec son intervalle de confiance, tout en déterminant la LOD et la LOQ du système analytique.
 
 ```{r, echo=TRUE, eval=FALSE}
 # installation du package
-install.packages("chemCal")
+if (!require(chemcCal)) install.packages("chemCal")
 # Chargement du package et donc des fonctions qu'il comprend
 library(chemCal)
 ```
@@ -239,7 +239,7 @@ Prenons à présent un cas concret pour explorer les fonctionnalités du package
 
 Le dosage du toluène par chromatographie en phase gazeuse couplée à la spectrométrie de masse (GC-MS) est une méthode analytique de référence pour identifier et quantifier ce composé. Concrètement, le signal physique enregistré par l'instrument correspond à l'aire du pic chromatographique mesurée par le spectromètre de masse.
 
-Les scientifiques ont obtenu le tableau de résultats suivant en injectant des concentrations connues de toluène dans le système GC-MS :
+Les scientifiques ont obtenu le tableau de résultats suivant en injectant des concentrations connues de toluène dans le système GC-MS :
 
 ```{r}
 toluene <- read("rl95_toluene", package = "chemCal")
@@ -248,9 +248,7 @@ toluene <- labelise(toluene, label = list(peak_area = "Aire du pic", amount = "C
 tabularise$headtail(toluene)
 ```
 
-
-Réalisez un nuage de points représentant l'aire du pic chromatographique 
-(`peak_area`) en fonction de la quantité de toluène (`amount`). Le tableau de données se nomme `toluene`
+Réalisez un nuage de points représentant l'aire du pic chromatographique (`peak_area`) en fonction de la quantité de toluène (`amount`). Le tableau de données se nomme `toluene`.
 
 ```{r toluene_np_h2, exercise=TRUE}
 chart(data = ___, ___ ~ ___) +
@@ -275,8 +273,7 @@ grade_code("Vous avez représenté correctement les données de calibration.
   concentration : est-elle constante ou varie-t-elle ?")
 ```
 
-Calculez la moyenne, l'écart-type et le nombre d'observations de l'aire du pic 
-chromatographique (`peak_area`) pour chaque niveau de quantité de toluène (`amount`).
+Calculez la moyenne, l'écart-type et le nombre d'observations de l'aire du pic chromatographique (`peak_area`) pour chaque niveau de quantité de toluène (`amount`) en utilisant les fonctions "svTidy" et "fast" (ety l'argument `.by=` de `summarise_()` au lieu d'un `group_by_()`).
 
 ```{r toluene_summary_h3, exercise=TRUE}
 summarise_(___, 
@@ -288,17 +285,17 @@ summarise_(___,
 
 ```{r toluene_summary_h3-hint-1}
 summarise_(toluene, 
-  mean = ~ mean(___), 
-  sd   = ~ sd(___), 
-  n    = ~ fn(___), 
+  mean = ~fmean(___), 
+  sd   = ~fsd(___), 
+  n    = ~fn(___), 
   .by  = ___)
 ```
 
 ```{r toluene_summary_h3-hint-2}
 summarise_(toluene, 
-  mean = ~ mean(peak_area), 
-  sd   = ~ sd(peak_area), 
-  n    = ~ fn(peak_area), 
+  mean = ~fmean(peak_area), 
+  sd   = ~fsd(peak_area), 
+  n    = ~fn(peak_area), 
   .by  = ___)
 #### ATTENTION: Hint suivant = solution ! ####
 ```
@@ -306,9 +303,9 @@ summarise_(toluene,
 ```{r toluene_summary_h3-solution}
 ## Solution ##
 summarise_(toluene, 
-  mean = ~ mean(peak_area), 
-  sd   = ~ sd(peak_area), 
-  n    = ~ fn(peak_area), 
+  mean = ~fmean(peak_area), 
+  sd   = ~fsd(peak_area), 
+  n    = ~fn(peak_area), 
   .by  = "amount")
 ```
 
@@ -507,7 +504,7 @@ grade_code("Vous avez calculé la LOQ (k = 3 par défaut), ce qui signifie
   se situent bien au-dessus de cette limite.")
 ```
 
-Trois échantillons inconnus ont été dosés en triplicat. À l'aide de la fonction `inverse.predict()`, calculez la concentration estimée de chaque échantillon ainsi que son intervalle de confiance associé, à partir du modèle de calibration.
+Trois échantillons inconnus ont été dosés en triplica. À l'aide de la fonction `inverse.predict()`, calculez la concentration estimée de chaque échantillon ainsi que son intervalle de confiance associé, à partir du modèle de calibration.
 
 ```{r toluene_inv_h3, warning = FALSE, exercise=TRUE, exercise.lines=12, exercise.setup="prepare-toluene_lm"}
 echant1 <- c(2099.7, 2101.0, 2115.0)
@@ -553,7 +550,7 @@ inverse.predict(toluene_mod, echant3)
 
 ```{r toluene_inv_h3-check}
 grade_code("Vous avez réalisé trois prédictions inverses à partir de mesures 
-  en triplicat. Notez que passer un vecteur de trois valeurs plutôt qu'une 
+  en triplica. Notez que passer un vecteur de trois valeurs plutôt qu'une 
   mesure unique réduit l'incertitude : 
   ce qui rétrécit l'intervalle de confiance sur la concentration estimée.")
 ```
