@@ -1,6 +1,11 @@
+# BioDataScience2 2026.2.0
+
+-   Learnrs **B02La_reg_lin** and **B02Lb_residuals** revised for 2026-2027.Ò
+
+
 # BioDataScience2 2026.1.0
 
--   Learnrs **B01La_calib** revised for 2026-2027.
+-   Learnr **B01La_calib** revised for 2026-2027.
 
 
 # BioDataScience2 2026.0.0

@@ -82,7 +82,7 @@ BioDataScience2::learnr_server(input, output, session)
 
 ## Objectifs
 
-Ce tutoriel sur la régression linéaire débute par un rappel sur la corrélation et les corrélogrammes. Cette matière est détaillée dans le [module 6 de science des données I](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2025/correlation.html). Les objectifs de ce tutoriel sont :
+Ce tutoriel sur la régression linéaire débute par un rappel sur la corrélation et les corrélogrammes. Cette matière est détaillée dans le [module 6 de science des données I](https://wp.sciviews.org/sdd-umons/?iframe=wp.sciviews.org/sdd-umons-2026/correlation.html). Les objectifs de ce tutoriel sont :
 
 -   Revoir la corrélation et les indices de Pearson et Spearman
 
